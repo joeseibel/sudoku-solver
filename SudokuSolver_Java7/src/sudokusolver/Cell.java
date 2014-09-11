@@ -1,19 +1,23 @@
 package sudokusolver;
 
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Set;
 
 public class Cell {
 	private final int row;
 	private final int column;
 	
 	private SudokuNumber value = null;
-	private final EnumSet<SudokuNumber> possibleValues;
+	private final EnumSet<SudokuNumber> modifiablePossibleValues;
+	private final Set<SudokuNumber> unmodifiablePossibleValues;
 	
 	public Cell(int row, int column, SudokuNumber value) {
 		this.row = row;
 		this.column = column;
 		this.value = value;
-		possibleValues = value == null ? EnumSet.allOf(SudokuNumber.class) : EnumSet.noneOf(SudokuNumber.class);
+		modifiablePossibleValues = value == null ? EnumSet.allOf(SudokuNumber.class) : EnumSet.noneOf(SudokuNumber.class);
+		unmodifiablePossibleValues = Collections.unmodifiableSet(modifiablePossibleValues);
 	}
 	
 	public int getRow() {
@@ -36,8 +40,12 @@ public class Cell {
 		this.value = value;
 	}
 	
-	public EnumSet<SudokuNumber> getPossibleValues() {
-		return possibleValues;
+	public Set<SudokuNumber> getPossibleValues() {
+		return unmodifiablePossibleValues;
+	}
+	
+	public EnumSet<SudokuNumber> getModifiablePossibleValues() {
+		return modifiablePossibleValues;
 	}
 	
 	public boolean isInSameRow(Cell otherCell) {
@@ -59,6 +67,6 @@ public class Cell {
 	
 	@Override
 	public String toString() {
-		return "[" + row  + "][" + column + "]: " + (value == null ? "0" : value) + " " + possibleValues;
+		return "[" + row  + "][" + column + "]: " + (value == null ? "0" : value) + " " + unmodifiablePossibleValues;
 	}
 }

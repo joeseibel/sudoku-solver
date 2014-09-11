@@ -30,7 +30,6 @@ public class SudokuSolver {
 			if (puzzleIndex != FOCUS_INDEX && FOCUS_INDEX != -1)
 				continue;
 			Puzzle puzzle = new Puzzle(initialValues);
-			fillPossibleValues(puzzle);
 			
 ///			int solvedCount = 0;
 ///			int notSolvedCount = 0;
@@ -80,21 +79,6 @@ public class SudokuSolver {
 			}
 		}
 		scanner.close();
-	}
-	
-	private static void fillPossibleValues(Puzzle puzzle) {
-		for (Cell cell : puzzle.getAllEmptyCells()) {
-			EnumSet<SudokuNumber> possibleValues = cell.getPossibleValues();
-			for (Cell rowCell : puzzle.getRowCells(cell)) {
-				possibleValues.remove(rowCell.getValue());
-			}
-			for (Cell columnCell : puzzle.getColumnCells(cell)) {
-				possibleValues.remove(columnCell.getValue());
-			}
-			for (Cell blockCell : puzzle.getBlockCells(cell)) {
-				possibleValues.remove(blockCell.getValue());
-			}
-		}
 	}
 	
 	private static boolean solve(Puzzle puzzle) {
@@ -177,29 +161,29 @@ public class SudokuSolver {
 	private static boolean nakedPairs(Puzzle puzzle) {
 		boolean changeMade = false;
 		for (Iterable<Cell> row : puzzle.getAllRows()) {
-			ArrayList<EnumSet<SudokuNumber>> nakedPairs = findNakedPairs(row);
-			if (eliminatePossibleValuesBasedOnNakedPairs(row, nakedPairs)) {
+			ArrayList<Set<SudokuNumber>> nakedPairs = findNakedPairs(row);
+			if (eliminatePossibleValuesBasedOnNakedPairs(puzzle, row, nakedPairs)) {
 				changeMade = true;
 			}
 		}
 		for (Iterable<Cell> column : puzzle.getAllColumns()) {
-			ArrayList<EnumSet<SudokuNumber>> nakedPairs = findNakedPairs(column);
-			if (eliminatePossibleValuesBasedOnNakedPairs(column, nakedPairs)) {
+			ArrayList<Set<SudokuNumber>> nakedPairs = findNakedPairs(column);
+			if (eliminatePossibleValuesBasedOnNakedPairs(puzzle, column, nakedPairs)) {
 				changeMade = true;
 			}
 		}
 		for (Iterable<Cell> block : puzzle.getAllBlocks()) {
-			ArrayList<EnumSet<SudokuNumber>> nakedPairs = findNakedPairs(block);
-			if (eliminatePossibleValuesBasedOnNakedPairs(block, nakedPairs)) {
+			ArrayList<Set<SudokuNumber>> nakedPairs = findNakedPairs(block);
+			if (eliminatePossibleValuesBasedOnNakedPairs(puzzle, block, nakedPairs)) {
 				changeMade = true;
 			}
 		}
 		return changeMade;
 	}
 	
-	private static ArrayList<EnumSet<SudokuNumber>> findNakedPairs(Iterable<Cell> unit) {
-		ArrayList<EnumSet<SudokuNumber>> encounteredPairs = new ArrayList<EnumSet<SudokuNumber>>();
-		ArrayList<EnumSet<SudokuNumber>> nakedPairs = new ArrayList<EnumSet<SudokuNumber>>();
+	private static ArrayList<Set<SudokuNumber>> findNakedPairs(Iterable<Cell> unit) {
+		ArrayList<Set<SudokuNumber>> encounteredPairs = new ArrayList<Set<SudokuNumber>>();
+		ArrayList<Set<SudokuNumber>> nakedPairs = new ArrayList<Set<SudokuNumber>>();
 		for (Cell cell : unit) {
 			if (cell.getPossibleValues().size() == 2) {
 				if (encounteredPairs.contains(cell.getPossibleValues())) {
@@ -212,12 +196,13 @@ public class SudokuSolver {
 		return nakedPairs;
 	}
 	
-	private static boolean eliminatePossibleValuesBasedOnNakedPairs(Iterable<Cell> unit, ArrayList<EnumSet<SudokuNumber>> nakedPairs) {
+	private static boolean eliminatePossibleValuesBasedOnNakedPairs(Puzzle puzzle, Iterable<Cell> unit,
+			ArrayList<Set<SudokuNumber>> nakedPairs) {
 		boolean changeMade = false;
-		for (EnumSet<SudokuNumber> pair : nakedPairs) {
+		for (Set<SudokuNumber> pair : nakedPairs) {
 			for (Cell cell : unit) {
 				if (!cell.getPossibleValues().equals(pair)) {
-					if (cell.getPossibleValues().removeAll(pair)) {
+					if (puzzle.removePossibleValues(cell, pair)) {
 						changeMade = true;
 					}
 				}
@@ -229,24 +214,24 @@ public class SudokuSolver {
 	private static boolean nakedTriples(Puzzle puzzle) {
 		boolean changeMade = false;
 		for (Iterable<Cell> row : puzzle.getAllRows()) {
-			if (nakedTriplesForUnit(row)) {
+			if (nakedTriplesForUnit(puzzle, row)) {
 				changeMade = true;
 			}
 		}
 		for (Iterable<Cell> column : puzzle.getAllColumns()) {
-			if (nakedTriplesForUnit(column)) {
+			if (nakedTriplesForUnit(puzzle, column)) {
 				changeMade = true;
 			}
 		}
 		for (Iterable<Cell> block : puzzle.getAllBlocks()) {
-			if (nakedTriplesForUnit(block)) {
+			if (nakedTriplesForUnit(puzzle, block)) {
 				changeMade = true;
 			}
 		}
 		return changeMade;
 	}
 	
-	private static boolean nakedTriplesForUnit(Iterable<Cell> unit) {
+	private static boolean nakedTriplesForUnit(Puzzle puzzle, Iterable<Cell> unit) {
 		ArrayList<Cell> cellsWithTwoOrThreePossibleValues = new ArrayList<Cell>();
 		for (Cell cell : unit) {
 			if (cell.getPossibleValues().size() == 2 || cell.getPossibleValues().size() == 3) {
@@ -256,7 +241,8 @@ public class SudokuSolver {
 		for (int i = 0; i < cellsWithTwoOrThreePossibleValues.size() - 2; i++) {
 			for (int j = i + 1; j < cellsWithTwoOrThreePossibleValues.size() - 1; j++) {
 				for (int l = j + 1; l < cellsWithTwoOrThreePossibleValues.size(); l++) {
-					EnumSet<SudokuNumber> unionOfPossibleValues = EnumSet.copyOf(cellsWithTwoOrThreePossibleValues.get(i).getPossibleValues());
+					EnumSet<SudokuNumber> unionOfPossibleValues =
+							EnumSet.copyOf(cellsWithTwoOrThreePossibleValues.get(i).getPossibleValues());
 					unionOfPossibleValues.addAll(cellsWithTwoOrThreePossibleValues.get(j).getPossibleValues());
 					unionOfPossibleValues.addAll(cellsWithTwoOrThreePossibleValues.get(l).getPossibleValues());
 					if (unionOfPossibleValues.size() == 3) {
@@ -265,7 +251,7 @@ public class SudokuSolver {
 							if (!cell.equals(cellsWithTwoOrThreePossibleValues.get(i)) &&
 									!cell.equals(cellsWithTwoOrThreePossibleValues.get(j)) &&
 									!cell.equals(cellsWithTwoOrThreePossibleValues.get(l)) &&
-									cell.getPossibleValues().removeAll(unionOfPossibleValues)) {
+									puzzle.removePossibleValues(cell, unionOfPossibleValues)) {
 								changeMade = true;
 							}
 						}
@@ -346,7 +332,7 @@ public class SudokuSolver {
 	private static boolean removePossibleNumberFromBlockExceptRow(Puzzle puzzle, SudokuNumber possibleNumber, Cell indexCell) {
 		boolean changeMade = false;
 		for (Cell cell : puzzle.getBlockCells(indexCell)) {
-			if (!cell.isInSameRow(indexCell) && cell.getPossibleValues().remove(possibleNumber)) {
+			if (!cell.isInSameRow(indexCell) && puzzle.removePossibleValue(cell, possibleNumber)) {
 				changeMade = true;
 			}
 		}
@@ -356,7 +342,7 @@ public class SudokuSolver {
 	private static boolean removePossibleNumberFromBlockExceptColumn(Puzzle puzzle, SudokuNumber possibleNumber, Cell indexCell) {
 		boolean changeMade = false;
 		for (Cell cell : puzzle.getBlockCells(indexCell)) {
-			if (!cell.isInSameColumn(indexCell) && cell.getPossibleValues().remove(possibleNumber)) {
+			if (!cell.isInSameColumn(indexCell) && puzzle.removePossibleValue(cell, possibleNumber)) {
 				changeMade = true;
 			}
 		}
@@ -366,7 +352,7 @@ public class SudokuSolver {
 	private static boolean removePossibleNumberFromRowExceptBlock(Puzzle puzzle, SudokuNumber possibleNumber, Cell indexCell) {
 		boolean changeMade = false;
 		for (Cell cell : puzzle.getRowCells(indexCell)) {
-			if (!cell.isInSameBlock(indexCell) && cell.getPossibleValues().remove(possibleNumber)) {
+			if (!cell.isInSameBlock(indexCell) && puzzle.removePossibleValue(cell, possibleNumber)) {
 				changeMade = true;
 			}
 		}
@@ -376,7 +362,7 @@ public class SudokuSolver {
 	private static boolean removePossibleNumberFromColumnExceptBlock(Puzzle puzzle, SudokuNumber possibleNumber, Cell indexCell) {
 		boolean changeMade = false;
 		for (Cell cell : puzzle.getColumnCells(indexCell)) {
-			if (!cell.isInSameBlock(indexCell) && cell.getPossibleValues().remove(possibleNumber)) {
+			if (!cell.isInSameBlock(indexCell) && puzzle.removePossibleValue(cell, possibleNumber)) {
 				changeMade = true;
 			}
 		}
@@ -407,12 +393,12 @@ public class SudokuSolver {
 				if (topLeft.isInSameColumn(bottomLeft) && topRight.isInSameColumn(bottomRight)) {
 					boolean changeMade = false;
 					for (Cell cell : puzzle.getColumnCells(topLeft)) {
-						if (!cell.equals(topLeft) && !cell.equals(bottomLeft) && cell.getPossibleValues().remove(possibleNumber)) {
+						if (!cell.equals(topLeft) && !cell.equals(bottomLeft) && puzzle.removePossibleValue(cell, possibleNumber)) {
 							changeMade = true;
 						}
 					}
 					for (Cell cell : puzzle.getColumnCells(topRight)) {
-						if (!cell.equals(topRight) && !cell.equals(bottomRight) && cell.getPossibleValues().remove(possibleNumber)) {
+						if (!cell.equals(topRight) && !cell.equals(bottomRight) && puzzle.removePossibleValue(cell, possibleNumber)) {
 							changeMade = true;
 						}
 					}
@@ -452,12 +438,12 @@ public class SudokuSolver {
 				if (topLeft.isInSameRow(topRight) && bottomLeft.isInSameRow(bottomRight)) {
 					boolean changeMade = false;
 					for (Cell cell : puzzle.getRowCells(topLeft)) {
-						if (!cell.equals(topLeft) && !cell.equals(topRight) && cell.getPossibleValues().remove(possibleNumber)) {
+						if (!cell.equals(topLeft) && !cell.equals(topRight) && puzzle.removePossibleValue(cell, possibleNumber)) {
 							changeMade = true;
 						}
 					}
 					for (Cell cell : puzzle.getRowCells(bottomLeft)) {
-						if (!cell.equals(bottomLeft) && !cell.equals(bottomRight) && cell.getPossibleValues().remove(possibleNumber)) {
+						if (!cell.equals(bottomLeft) && !cell.equals(bottomRight) && puzzle.removePossibleValue(cell, possibleNumber)) {
 							changeMade = true;
 						}
 					}
@@ -490,7 +476,8 @@ public class SudokuSolver {
 		return chains;
 	}
 	
-	private static void addConjugatePairToGraph(Iterable<Cell> unit, SudokuNumber possibleNumber, Pseudograph<Cell, SudokuEdge> possibleGraph) {
+	private static void addConjugatePairToGraph(Iterable<Cell> unit, SudokuNumber possibleNumber,
+			Pseudograph<Cell, SudokuEdge> possibleGraph) {
 		ArrayList<Cell> possibleCellsInUnit = new ArrayList<Cell>();
 		for (Cell cell : unit) {
 			if (cell.getPossibleValues().contains(possibleNumber)) {
@@ -520,7 +507,7 @@ public class SudokuSolver {
 				coloredChains.add(vertexColors);
 			}
 			//Intentionally used bitwise or operator.  We want to execute both methods.
-			if (simpleColoringRule2TwiceInAUnit(coloredChains, entry.getKey()) |
+			if (simpleColoringRule2TwiceInAUnit(puzzle, coloredChains, entry.getKey()) |
 					simpleColoringRule5TwoColorsElsewhere(puzzle, coloredChains, entry.getKey())) {
 				changeMade = true;
 			}
@@ -569,12 +556,13 @@ public class SudokuSolver {
 		}
 	}
 	
-	private static boolean simpleColoringRule2TwiceInAUnit(ArrayList<HashMap<Cell, VertexColor>> coloredChains, SudokuNumber possibleNumber) {
+	private static boolean simpleColoringRule2TwiceInAUnit(Puzzle puzzle, ArrayList<HashMap<Cell, VertexColor>> coloredChains,
+			SudokuNumber possibleNumber) {
 		boolean changeMade = false;
 		for (HashMap<Cell, VertexColor> vertexColors : coloredChains) {
 			VertexColor contradictingColor = searchForSameColorInSameUnit(vertexColors);
 			if (contradictingColor != null) {
-				removePossibleValuesFromColor(vertexColors, contradictingColor, possibleNumber);
+				removePossibleValuesFromColor(puzzle, vertexColors, contradictingColor, possibleNumber);
 				changeMade = true;
 			}
 		}
@@ -594,11 +582,11 @@ public class SudokuSolver {
 		return null;
 	}
 	
-	private static void removePossibleValuesFromColor(HashMap<Cell, VertexColor> cellColors, VertexColor contradictingColor,
+	private static void removePossibleValuesFromColor(Puzzle puzzle, HashMap<Cell, VertexColor> cellColors, VertexColor contradictingColor,
 			SudokuNumber possibleNumber) {
 		for (Entry<Cell, VertexColor> entry : cellColors.entrySet()) {
 			if (entry.getValue().equals(contradictingColor)) {
-				entry.getKey().getPossibleValues().remove(possibleNumber);
+				puzzle.removePossibleValue(entry.getKey(), possibleNumber);
 			}
 		}
 	}
@@ -609,7 +597,7 @@ public class SudokuSolver {
 			boolean changeMade = false;
 			for (Cell cell : puzzle.getAllEmptyCells()) {
 				if (!vertexColors.containsKey(cell) && canCellSeeColoredCell(cell, vertexColors, VertexColor.BLACK) &&
-						canCellSeeColoredCell(cell, vertexColors, VertexColor.BLUE) && cell.getPossibleValues().remove(possibleNumber)) {
+						canCellSeeColoredCell(cell, vertexColors, VertexColor.BLUE) && puzzle.removePossibleValue(cell, possibleNumber)) {
 					changeMade = true;
 				}
 			}
@@ -662,7 +650,7 @@ public class SudokuSolver {
 							for (Cell emptyCell : puzzle.getAllEmptyCells()) {
 								if (!emptyCell.equals(pivotCell) && !emptyCell.equals(wingA) && !emptyCell.equals(wingB) &&
 										emptyCell.isInSameUnit(wingA) && emptyCell.isInSameUnit(wingB) &&
-										emptyCell.getPossibleValues().removeAll(possibleNumberIntersection)) {
+										puzzle.removePossibleValues(emptyCell, possibleNumberIntersection)) {
 									changeMade = true;
 								}
 							}
@@ -704,7 +692,7 @@ public class SudokuSolver {
 							if (!emptyCell.equals(pivotCell) && !emptyCell.equals(wingCandidates.get(i)) &&
 									!emptyCell.equals(wingCandidates.get(j)) && emptyCell.isInSameUnit(pivotCell) &&
 									emptyCell.isInSameUnit(wingCandidates.get(i)) && emptyCell.isInSameUnit(wingCandidates.get(j)) &&
-									emptyCell.getPossibleValues().removeAll(possibleNumberIntersection)) {
+									puzzle.removePossibleValues(emptyCell, possibleNumberIntersection)) {
 								changeMade = true;
 							}
 						}
@@ -764,8 +752,8 @@ public class SudokuSolver {
 		}
 	}
 	
-	private static void findNewCyclesForNextCell(Pseudograph<Cell, SudokuEdge> graph, ArrayList<ArrayList<Cell>> cycles, ArrayDeque<Cell> path,
-			Cell nextCell) {
+	private static void findNewCyclesForNextCell(Pseudograph<Cell, SudokuEdge> graph, ArrayList<ArrayList<Cell>> cycles,
+			ArrayDeque<Cell> path, Cell nextCell) {
 		if (!path.contains(nextCell)) {
 			path.push(nextCell);
 			findNewCycles(graph, cycles, path);
@@ -938,7 +926,7 @@ public class SudokuSolver {
 		boolean changeMade = false;
 		for (Cell cell : puzzle.getAllEmptyCells()) {
 			if (cell.isInSameUnit(startingCell) && cell.isInSameUnit(endingCell) && !cell.equals(startingCell) && !cell.equals(endingCell) &&
-					cell.getPossibleValues().remove(sharedNumber)) {
+					puzzle.removePossibleValue(cell, sharedNumber)) {
 				changeMade = true;
 			}
 		}
@@ -973,7 +961,7 @@ public class SudokuSolver {
 				vertexColors.put(firstVertex, VertexColor.BLACK);
 				colorGraph(subgraph, vertexColors, firstVertex, VertexColor.BLUE);
 				//Intentionally used bitwise or operator.  We want to execute both methods.
-				if (medusaTwoColorsElsewhere(puzzle, vertexColors) | medusaTwoColorsUnitPlusCell(vertexColors)) {
+				if (medusaTwoColorsElsewhere(puzzle, vertexColors) | medusaTwoColorsUnitPlusCell(puzzle, vertexColors)) {
 					return true;
 				}
 			}
@@ -1033,7 +1021,7 @@ public class SudokuSolver {
 						}
 					}
 					if (canSeeBlackNumber && canSeeBlueNumber) {
-						cell.getPossibleValues().remove(possibleNumber);
+						puzzle.removePossibleValue(cell, possibleNumber);
 						changeMade = true;
 					}
 				}
@@ -1042,10 +1030,10 @@ public class SudokuSolver {
 		return changeMade;
 	}
 	
-	private static boolean medusaTwoColorsUnitPlusCell(HashMap<PossibleNumberInCell, VertexColor> vertexColors) {
+	private static boolean medusaTwoColorsUnitPlusCell(Puzzle puzzle, HashMap<PossibleNumberInCell, VertexColor> vertexColors) {
 		boolean changeMade = false;
 		for (Entry<PossibleNumberInCell, VertexColor> currentColoredNumber : vertexColors.entrySet()) {
-			if (removeOtherPossibleNumberIfItCanSeeOppositeColorInOtherCell(vertexColors, currentColoredNumber.getKey().getCell(),
+			if (removeOtherPossibleNumberIfItCanSeeOppositeColorInOtherCell(puzzle, vertexColors, currentColoredNumber.getKey().getCell(),
 					currentColoredNumber.getValue())) {
 				changeMade = true;
 			}
@@ -1053,8 +1041,8 @@ public class SudokuSolver {
 		return changeMade;
 	}
 	
-	private static boolean removeOtherPossibleNumberIfItCanSeeOppositeColorInOtherCell(HashMap<PossibleNumberInCell, VertexColor> vertexColors,
-			Cell currentCell, VertexColor currentColor) {
+	private static boolean removeOtherPossibleNumberIfItCanSeeOppositeColorInOtherCell(Puzzle puzzle, HashMap<PossibleNumberInCell,
+			VertexColor> vertexColors, Cell currentCell, VertexColor currentColor) {
 		for (SudokuNumber possibleNumberInCurrentCell : currentCell.getPossibleValues()) {
 			if (!vertexColors.containsKey(new PossibleNumberInCell(currentCell, possibleNumberInCurrentCell))) {
 				for (Entry<PossibleNumberInCell, VertexColor> otherColoredNumber : vertexColors.entrySet()) {
@@ -1063,7 +1051,7 @@ public class SudokuSolver {
 					VertexColor otherColor = otherColoredNumber.getValue();
 					if (!otherCell.equals(currentCell) && otherCell.isInSameUnit(currentCell) &&
 							otherPossibleNumber.equals(possibleNumberInCurrentCell) && otherColor.equals(currentColor.getOpposite())) {
-						currentCell.getPossibleValues().remove(possibleNumberInCurrentCell);
+						puzzle.removePossibleValue(currentCell, possibleNumberInCurrentCell);
 						return true;
 					}
 				}
@@ -1102,10 +1090,10 @@ public class SudokuSolver {
 					SudokuNumber possibleNumberOne = possibleNumberIter.next();
 					SudokuNumber possibleNumberTwo = possibleNumberIter.next();
 					if (twoStrongLinksForNumberExists(puzzle, rectangle, oppositeCell, possibleNumberOne)) {
-						oppositeCell.getPossibleValues().remove(possibleNumberTwo);
+						puzzle.removePossibleValue(oppositeCell, possibleNumberTwo);
 						changeMade = true;
 					} else if (twoStrongLinksForNumberExists(puzzle, rectangle, oppositeCell, possibleNumberTwo)) {
-						oppositeCell.getPossibleValues().remove(possibleNumberOne);
+						puzzle.removePossibleValue(oppositeCell, possibleNumberOne);
 						changeMade = true;
 					}
 				}

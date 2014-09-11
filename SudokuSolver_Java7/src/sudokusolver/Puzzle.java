@@ -1,6 +1,7 @@
 package sudokusolver;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -22,6 +23,7 @@ public class Puzzle {
 					new Cell(i / UNIT_SIZE, i % UNIT_SIZE, initialValues[i] == 0 ? null : SudokuNumber.values()[initialValues[i] - 1]);
 		}
 		bruteForce();
+		fillPossibleValues();
 	}
 	
 	public Iterable<Cell> getAllEmptyCells() {
@@ -195,19 +197,31 @@ public class Puzzle {
 		}
 		cell.setValue(newValue);
 		assert cell.getPossibleValues().contains(newValue);
-		cell.getPossibleValues().clear();
+		cell.getModifiablePossibleValues().clear();
 		for (Cell rowCell : getRowCells(cell)) {
-			rowCell.getPossibleValues().remove(newValue);
+			rowCell.getModifiablePossibleValues().remove(newValue);
 			assert rowCell.getValue() != null || !rowCell.getPossibleValues().isEmpty();
 		}
 		for (Cell columnCell : getColumnCells(cell)) {
-			columnCell.getPossibleValues().remove(newValue);
+			columnCell.getModifiablePossibleValues().remove(newValue);
 			assert columnCell.getValue() != null || !columnCell.getPossibleValues().isEmpty();
 		}
 		for (Cell blockCell : getBlockCells(cell)) {
-			blockCell.getPossibleValues().remove(newValue);
+			blockCell.getModifiablePossibleValues().remove(newValue);
 			assert blockCell.getValue() != null || !blockCell.getPossibleValues().isEmpty();
 		}
+	}
+	
+	public boolean removePossibleValue(Cell cell, SudokuNumber possibleValue) {
+		assert !possibleValue.equals(solution[cell.getRow()][cell.getColumn()]);
+		return cell.getModifiablePossibleValues().remove(possibleValue);
+	}
+	
+	public boolean removePossibleValues(Cell cell, Collection<SudokuNumber> possibleValues) {
+		for (SudokuNumber possibleNumber : possibleValues) {
+			assert !possibleNumber.equals(solution[cell.getRow()][cell.getColumn()]);
+		}
+		return cell.getModifiablePossibleValues().removeAll(possibleValues);
 	}
 	
 	public int getEmptyCellCount() {
@@ -246,7 +260,8 @@ public class Puzzle {
 		for (Iterable<Cell> column : getAllColumns()) {
 			EnumSet<SudokuNumber> valuesEncountered = EnumSet.noneOf(SudokuNumber.class);
 			for (Cell cell : column) {
-				assert !valuesEncountered.contains(cell.getValue()) : cell.getValue() + " appears multiple times in column " + cell.getColumn();
+				assert !valuesEncountered.contains(cell.getValue()) :
+					cell.getValue() + " appears multiple times in column " + cell.getColumn();
 				valuesEncountered.add(cell.getValue());
 			}
 		}
@@ -535,5 +550,20 @@ public class Puzzle {
 			}
 		}
 		return true;
+	}
+	
+	private void fillPossibleValues() {
+		for (Cell cell : getAllEmptyCells()) {
+			EnumSet<SudokuNumber> possibleValues = cell.getModifiablePossibleValues();
+			for (Cell rowCell : getRowCells(cell)) {
+				possibleValues.remove(rowCell.getValue());
+			}
+			for (Cell columnCell : getColumnCells(cell)) {
+				possibleValues.remove(columnCell.getValue());
+			}
+			for (Cell blockCell : getBlockCells(cell)) {
+				possibleValues.remove(blockCell.getValue());
+			}
+		}
 	}
 }
