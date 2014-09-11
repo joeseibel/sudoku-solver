@@ -25,7 +25,7 @@ public class Cell {
 	}
 	
 	public int getBlock() {
-		return row - row % 3 + column / 3;
+		return row - row % Puzzle.UNIT_SIZE_SQUARE_ROOT + column / Puzzle.UNIT_SIZE_SQUARE_ROOT;
 	}
 	
 	public SudokuNumber getValue() {
@@ -49,7 +49,8 @@ public class Cell {
 	}
 	
 	public boolean isInSameBlock(Cell otherCell) {
-		return row / 3 == otherCell.row / 3 && column / 3 == otherCell.column / 3;
+		return row / Puzzle.UNIT_SIZE_SQUARE_ROOT == otherCell.row / Puzzle.UNIT_SIZE_SQUARE_ROOT &&
+				column / Puzzle.UNIT_SIZE_SQUARE_ROOT == otherCell.column / Puzzle.UNIT_SIZE_SQUARE_ROOT;
 	}
 	
 	public boolean isInSameUnit(Cell otherCell) {

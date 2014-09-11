@@ -6,17 +6,22 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Puzzle {
-	private static final int UNIT_SIZE = 9;
+	public static final int UNIT_SIZE_SQUARE_ROOT = 3;
+	private static final int UNIT_SIZE = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
 	
-	private Cell[][] board = new Cell[UNIT_SIZE][UNIT_SIZE];
+	private final Cell[][] board = new Cell[UNIT_SIZE][UNIT_SIZE];
+	private final SudokuNumber[][] solution = new SudokuNumber[UNIT_SIZE][UNIT_SIZE];
+	private SudokuNumber[][] trialAndErrorBoard = new SudokuNumber[UNIT_SIZE][UNIT_SIZE];
 	
 	public Puzzle(int[] initialValues) {
 		if (initialValues.length != UNIT_SIZE * UNIT_SIZE) {
 			throw new IllegalArgumentException("initialValues must have a length of " + UNIT_SIZE * UNIT_SIZE);
 		}
 		for (int i = 0; i < initialValues.length; i++) {
-			board[i / 9][i % 9] = new Cell(i / 9, i % 9, initialValues[i] == 0 ? null : SudokuNumber.values()[initialValues[i] - 1]);
+			board[i / UNIT_SIZE][i % UNIT_SIZE] =
+					new Cell(i / UNIT_SIZE, i % UNIT_SIZE, initialValues[i] == 0 ? null : SudokuNumber.values()[initialValues[i] - 1]);
 		}
+		bruteForce();
 	}
 	
 	public Iterable<Cell> getAllEmptyCells() {
@@ -153,10 +158,10 @@ public class Puzzle {
 						for (int rightColumn = leftColumn + 1; rightColumn < UNIT_SIZE; rightColumn++) {
 							Cell topRight = board[topRow][rightColumn];
 							Cell bottomRight = board[bottomRow][rightColumn];
-							int topRowBlock = topRow / 3;
-							int bottomRowBlock = bottomRow / 3;
-							int leftColumnBlock = leftColumn / 3;
-							int rightColumnBlock = rightColumn / 3;
+							int topRowBlock = topRow / UNIT_SIZE_SQUARE_ROOT;
+							int bottomRowBlock = bottomRow / UNIT_SIZE_SQUARE_ROOT;
+							int leftColumnBlock = leftColumn / UNIT_SIZE_SQUARE_ROOT;
+							int rightColumnBlock = rightColumn / UNIT_SIZE_SQUARE_ROOT;
 							if (topRight.getValue() == null && bottomRight.getValue() == null &&
 									((topRowBlock == bottomRowBlock && leftColumnBlock != rightColumnBlock) ||
 											(topRowBlock != bottomRowBlock && leftColumnBlock == rightColumnBlock))) {
@@ -175,6 +180,7 @@ public class Puzzle {
 	}
 	
 	public void setValueAndUpdatePossibleValues(Cell cell, SudokuNumber newValue) {
+		assert newValue.equals(solution[cell.getRow()][cell.getColumn()]);
 		for (Cell rowCell : getRowCells(cell)) {
 			assert !newValue.equals(rowCell.getValue()) :
 				"Value already exists in row. value: " + newValue + ", row: " + cell.getRow() + ", column: " + cell.getColumn();
@@ -430,8 +436,8 @@ public class Puzzle {
 			@Override
 			public Iterator<Cell> iterator() {
 				return new Iterator<Cell>() {
-					private int topLeftRow = blockIndex - blockIndex % 3;
-					private int topLeftColumn = 3 * (blockIndex % 3);
+					private int topLeftRow = blockIndex - blockIndex % UNIT_SIZE_SQUARE_ROOT;
+					private int topLeftColumn = UNIT_SIZE_SQUARE_ROOT * (blockIndex % UNIT_SIZE_SQUARE_ROOT);
 					private int currentRowIndex = topLeftRow;
 					private int currentColumnIndex = topLeftColumn - 1;
 					
@@ -444,7 +450,7 @@ public class Puzzle {
 					public Cell next() {
 						if (hasNext()) {
 							currentColumnIndex++;
-							if (currentColumnIndex >= topLeftColumn + 3) {
+							if (currentColumnIndex >= topLeftColumn + UNIT_SIZE_SQUARE_ROOT) {
 								currentColumnIndex = topLeftColumn;
 								currentRowIndex++;
 							}
@@ -455,13 +461,79 @@ public class Puzzle {
 					
 					@Override
 					public boolean hasNext() {
-						if (currentColumnIndex + 1 < topLeftColumn + 3) {
+						if (currentColumnIndex + 1 < topLeftColumn + UNIT_SIZE_SQUARE_ROOT) {
 							return true;
 						} else
-							return currentRowIndex + 1 < topLeftRow + 3;
+							return currentRowIndex + 1 < topLeftRow + UNIT_SIZE_SQUARE_ROOT;
 					}
 				};
 			}
 		};
+	}
+	
+	private void bruteForce() {
+		for (int row = 0; row < board.length; row++) {
+			for (int column = 0; column < board[row].length; column++) {
+				trialAndErrorBoard[row][column] = board[row][column].getValue();
+			}
+		}
+		int solutionsCount = bruteForceAttempt(0, 0);
+		if (solutionsCount != 1) {
+			throw new IllegalArgumentException("Board has " + solutionsCount + " solutions");
+		}
+		trialAndErrorBoard = null;
+	}
+	
+	private int bruteForceAttempt(int nextRow, int nextColumn) {
+		if (nextRow == UNIT_SIZE) {
+			for (int rowIndex = 0; rowIndex < UNIT_SIZE; rowIndex++) {
+				System.arraycopy(trialAndErrorBoard[rowIndex], 0, solution[rowIndex], 0, UNIT_SIZE);
+			}
+			return 1;
+		}
+		else if (trialAndErrorBoard[nextRow][nextColumn] != null) {
+			if (nextColumn + 1 < UNIT_SIZE) {
+				return bruteForceAttempt(nextRow, nextColumn + 1);
+			} else {
+				return bruteForceAttempt(nextRow + 1, 0);
+			}
+		} else {
+			int solutionsCount = 0;
+			for (SudokuNumber number : SudokuNumber.values()) {
+				if (isValidPlacement(number, nextRow, nextColumn)) {
+					trialAndErrorBoard[nextRow][nextColumn] = number;
+					if (nextColumn + 1 < UNIT_SIZE) {
+						solutionsCount += bruteForceAttempt(nextRow, nextColumn + 1);
+					} else {
+						solutionsCount += bruteForceAttempt(nextRow + 1, 0);
+					}
+					trialAndErrorBoard[nextRow][nextColumn] = null;
+				}
+			}
+			return solutionsCount;
+		}
+	}
+	
+	private boolean isValidPlacement(SudokuNumber number, int row, int column) {
+		for (int columnIndex = 0; columnIndex < trialAndErrorBoard[row].length; columnIndex++) {
+			if (number.equals(trialAndErrorBoard[row][columnIndex])) {
+				return false;
+			}
+		}
+		for (int rowIndex = 0; rowIndex < UNIT_SIZE; rowIndex++) {
+			if (number.equals(trialAndErrorBoard[rowIndex][column])) {
+				return false;
+			}
+		}
+		int topLeftRow = row / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
+		int topLeftColumn = column / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
+		for (int rowIndex = topLeftRow; rowIndex < topLeftRow + UNIT_SIZE_SQUARE_ROOT; rowIndex++) {
+			for (int columnIndex = topLeftColumn; columnIndex < topLeftColumn + UNIT_SIZE_SQUARE_ROOT; columnIndex++) {
+				if (number.equals(trialAndErrorBoard[rowIndex][columnIndex])) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }
