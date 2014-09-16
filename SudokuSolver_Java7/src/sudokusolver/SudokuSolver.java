@@ -17,7 +17,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.Pseudograph;
 
 public class SudokuSolver {
-	private static final int FOCUS_INDEX = 20;
+	private static final int FOCUS_INDEX = -1;
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		Scanner scanner = new Scanner(new File("puzzles/very_hard"));
@@ -809,36 +809,35 @@ public class SudokuSolver {
 	private static boolean xCyclesNiceLoopsRule2(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> chain, SudokuNumber possibleNumber,
 			ArrayList<Cell> cycle) {
 		if (cycle.size() % 2 == 1) {
-			ArrayList<Cell> cellsWithTwoStrongLinks = new ArrayList<Cell>();
 			for (int i = 0; i < cycle.size(); i++) {
-				Cell currentCell = cycle.get(i);
-				Cell previousCell = cycle.get(i == 0 ? cycle.size() - 1 : i - 1);
-				Cell nextCell = cycle.get(i == cycle.size() - 1 ? 0 : i + 1);
-				if (chain.getEdge(currentCell, previousCell).getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK) &&
-						chain.getEdge(currentCell, nextCell).getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) {
-					cellsWithTwoStrongLinks.add(currentCell);
+				if (everyOtherEdgeIsStrong(chain, cycle, i, i)) {
+					Cell previousCell = cycle.get(i == 0 ? cycle.size() - 1 : i - 1);
+					Cell currentCell = cycle.get(i);
+					Cell nextCell = cycle.get(i == cycle.size() - 1 ? 0 : i + 1);
+					assert chain.getEdge(previousCell, currentCell).getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK);
+					assert chain.getEdge(currentCell, nextCell).getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK);
+					puzzle.setValueAndUpdatePossibleValues(currentCell, possibleNumber);
+					return true;
 				}
-			}
-			if (cellsWithTwoStrongLinks.size() == 1 && otherEdgesAlternate(chain, cycle, cellsWithTwoStrongLinks.get(0))) {
-				puzzle.setValueAndUpdatePossibleValues(cellsWithTwoStrongLinks.get(0), possibleNumber);
-				return true;
 			}
 		}
 		return false;
 	}
 	
-	private static boolean otherEdgesAlternate(Pseudograph<Cell, SudokuEdge> graph, ArrayList<Cell> cycle, Cell indexCell) {
-		final int startingIndex = cycle.indexOf(indexCell);
-		SudokuEdge.LinkType previousEdgeType =
-				graph.getEdge(indexCell, cycle.get(incrementListIndex(startingIndex, cycle.size()))).getLinkType();
+	private static boolean everyOtherEdgeIsStrong(Pseudograph<Cell, SudokuEdge> graph, ArrayList<Cell> cycle, int startingIndex,
+			int endingIndex) {
+		if (!SudokuEdge.LinkType.STRONG_LINK.equals(
+				graph.getEdge(cycle.get(startingIndex), cycle.get(incrementListIndex(startingIndex, cycle.size()))).getLinkType())) {
+			return false;
+		}
+		boolean expectingStrongLink = false;
 		int index = incrementListIndex(startingIndex, cycle.size());
 		while (index != startingIndex) {
-			SudokuEdge.LinkType currentEdgeType =
-					graph.getEdge(cycle.get(index), cycle.get(incrementListIndex(index, cycle.size()))).getLinkType();
-			if (currentEdgeType.equals(previousEdgeType)) {
+			if (expectingStrongLink && !SudokuEdge.LinkType.STRONG_LINK.equals(
+					graph.getEdge(cycle.get(index), cycle.get(incrementListIndex(index, cycle.size()))).getLinkType())) {
 				return false;
 			}
-			previousEdgeType = currentEdgeType;
+			expectingStrongLink = !expectingStrongLink;
 			index = incrementListIndex(index, cycle.size());
 		}
 		return true;
