@@ -73,6 +73,7 @@ public class SudokuSolver {
 					System.out.println(puzzle.getPossibleString());
 					System.out.println();
 					System.out.println();
+					System.out.println(puzzle.getSudokuWikiURL());
 					System.out.println();
 				}
 				System.out.println("Puzzle " + puzzleIndex + ": not solved");

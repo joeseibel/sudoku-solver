@@ -248,6 +248,14 @@ public class Puzzle {
 		return result.toString();
 	}
 	
+	public String getSudokuWikiURL() {
+		StringBuilder result = new StringBuilder("http://www.sudokuwiki.org/sudoku.htm?bd=");
+		for (Cell cell : getAllCells()) {
+			result.append(cell.getValue() == null ? 0 : cell.getValue());
+		}
+		return result.toString();
+	}
+	
 	public void validateCompletePuzzle() {
 		assert getEmptyCellCount() == 0 : "Empty cell count is " + getEmptyCellCount();
 		for (Iterable<Cell> row : getAllRows()) {
