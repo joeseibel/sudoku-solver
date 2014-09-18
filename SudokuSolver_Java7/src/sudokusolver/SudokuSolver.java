@@ -708,7 +708,7 @@ public class SudokuSolver {
 	private static boolean xCycles(Puzzle puzzle, HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
 		boolean changeMade = false;
 		for (Entry<SudokuNumber, Pseudograph<Cell, SudokuEdge>> entry : chains.entrySet()) {
-			buildWeakLinks(entry.getValue());
+			buildWeakLinks(puzzle, entry.getKey(), entry.getValue());
 			if (xCyclesForChain(puzzle, entry.getValue(), entry.getKey(), getAllGraphCycles(entry.getValue()))) {
 				changeMade = true;
 			}
@@ -716,7 +716,7 @@ public class SudokuSolver {
 		return changeMade;
 	}
 	
-	private static void buildWeakLinks(Pseudograph<Cell, SudokuEdge> graph) {
+	private static void buildWeakLinks(Puzzle puzzle, SudokuNumber possibleNumber, Pseudograph<Cell, SudokuEdge> graph) {
 		ArrayList<Cell> verticies = new ArrayList<Cell>(graph.vertexSet());
 		for (int i = 0; i < verticies.size() - 1; i++) {
 			for (int j = i + 1; j < verticies.size(); j++) {
@@ -724,6 +724,22 @@ public class SudokuSolver {
 				Cell b = verticies.get(j);
 				if (a.isInSameUnit(b) && !graph.containsEdge(a, b)) {
 					graph.addEdge(a, b).setLinkType(SudokuEdge.LinkType.WEAK_LINK);
+				}
+			}
+		}
+		for (Cell cell : puzzle.getAllEmptyCells()) {
+			if (cell.getPossibleValues().contains(possibleNumber) && !graph.vertexSet().contains(cell)) {
+				ArrayList<Cell> visibleVerticies = new ArrayList<Cell>();
+				for (Cell vertex : graph.vertexSet()) {
+					if (cell.isInSameUnit(vertex)) {
+						visibleVerticies.add(vertex);
+					}
+				}
+				if (visibleVerticies.size() == 2) {
+					graph.addVertex(cell);
+					for (Cell vertex : visibleVerticies) {
+						graph.addEdge(cell, vertex).setLinkType(SudokuEdge.LinkType.WEAK_LINK);
+					}
 				}
 			}
 		}
@@ -800,7 +816,7 @@ public class SudokuSolver {
 	private static boolean xCyclesForChain(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> chain, SudokuNumber possibleNumber,
 			ArrayList<ArrayList<Cell>> cycles) {
 		for (ArrayList<Cell> cycle : cycles) {
-			if (xCyclesNiceLoopsRule2(puzzle, chain, possibleNumber, cycle) /*|| xCyclesNiceLoopsRule3(chain, possibleNumber, cycle)*/) {
+			if (xCyclesNiceLoopsRule2(puzzle, chain, possibleNumber, cycle) || xCyclesNiceLoopsRule3(puzzle, chain, possibleNumber, cycle)) {
 				return true;
 			}
 		}
@@ -833,7 +849,7 @@ public class SudokuSolver {
 		}
 		boolean expectingStrongLink = false;
 		int index = incrementListIndex(startingIndex, cycle.size());
-		while (index != startingIndex) {
+		while (index != endingIndex) {
 			if (expectingStrongLink && !SudokuEdge.LinkType.STRONG_LINK.equals(
 					graph.getEdge(cycle.get(index), cycle.get(incrementListIndex(index, cycle.size()))).getLinkType())) {
 				return false;
@@ -852,26 +868,18 @@ public class SudokuSolver {
 		return index;
 	}
 	
-//	private static boolean xCyclesNiceLoopsRule3(Pseudograph<Cell, SudokuEdge> chain, SudokuNumber possibleNumber, ArrayList<Cell> cycle) {
-//		System.out.println("Posible Number: " + possibleNumber + "; Cycle Size: " + cycle.size());
-//		if (cycle.size() % 2 == 1) {
-//			ArrayList<Cell> cellsWithTwoWeakLinks = new ArrayList<Cell>();
-//			for (int i = 0; i < cycle.size(); i++) {
-//				Cell currentCell = cycle.get(i);
-//				Cell previousCell = cycle.get(i == 0 ? cycle.size() - 1 : i - 1);
-//				Cell nextCell = cycle.get(i == cycle.size() - 1 ? 0 : i + 1);
-//				if (chain.getEdge(currentCell, previousCell).getLinkType().equals(SudokuEdge.LinkType.WEAK_LINK) &&
-//						chain.getEdge(currentCell, nextCell).getLinkType().equals(SudokuEdge.LinkType.WEAK_LINK)) {
-//					cellsWithTwoWeakLinks.add(currentCell);
-//				}
-//			}
-//			if (cellsWithTwoWeakLinks.size() == 1 && otherEdgesAlternate(chain, cycle, cellsWithTwoWeakLinks.get(0))) {
-//				cellsWithTwoWeakLinks.get(0).getPossibleValues().remove(possibleNumber);
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
+	private static boolean xCyclesNiceLoopsRule3(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> chain, SudokuNumber possibleNumber,
+			ArrayList<Cell> cycle) {
+		if (cycle.size() % 2 == 1) {
+			for (int i = 0; i < cycle.size(); i++) {
+				if (everyOtherEdgeIsStrong(chain, cycle, incrementListIndex(i, cycle.size()), i == 0 ? cycle.size() - 1 : i - 1)) {
+					puzzle.removePossibleValue(cycle.get(i), possibleNumber);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	private static boolean xyChain(Puzzle puzzle) {
 		ArrayList<Cell> cellsWithTwoPossibleValues = new ArrayList<Cell>();
