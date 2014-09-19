@@ -697,7 +697,9 @@ public class SudokuSolver {
 								changeMade = true;
 							}
 						}
-						return changeMade;
+						if (changeMade) {
+							return true;
+						}
 					}
 				}
 			}
