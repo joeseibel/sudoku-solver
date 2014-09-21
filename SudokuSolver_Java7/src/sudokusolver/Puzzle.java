@@ -172,6 +172,7 @@ public class Puzzle {
 								rectangle.add(topRight);
 								rectangle.add(bottomLeft);
 								rectangle.add(bottomRight);
+								rectangles.add(rectangle);
 							}
 						}
 					}
