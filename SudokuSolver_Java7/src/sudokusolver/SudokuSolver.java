@@ -18,10 +18,10 @@ import org.jgrapht.graph.Pseudograph;
 
 public class SudokuSolver {
 	public static void main(String[] args) throws FileNotFoundException {
-		solveGnomeSudokuPuzzle("puzzles/easy");
-		solveGnomeSudokuPuzzle("puzzles/medium");
-		solveGnomeSudokuPuzzle("puzzles/hard");
-		solveGnomeSudokuPuzzle("puzzles/very_hard");
+		solveGnomeSudokuPuzzle("../Puzzles/easy");
+		solveGnomeSudokuPuzzle("../Puzzles/medium");
+		solveGnomeSudokuPuzzle("../Puzzles/hard");
+		solveGnomeSudokuPuzzle("../Puzzles/very_hard");
 	}
 	
 	private static void solveGnomeSudokuPuzzle(String filename) throws FileNotFoundException {
