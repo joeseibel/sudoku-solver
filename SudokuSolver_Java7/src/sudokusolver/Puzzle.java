@@ -284,28 +284,6 @@ public class Puzzle {
 		}
 	}
 	
-//	@Override
-//	public String toString() {
-//		StringBuilder result = new StringBuilder();
-//		for (Iterator<Iterable<Cell>> rowIter = getAllRows().iterator(); rowIter.hasNext();) {
-//			for (Iterator<Cell> cellIter = rowIter.next().iterator(); cellIter.hasNext();) {
-//				SudokuNumber value = cellIter.next().getValue();
-//				if (value == null) {
-//					result.append('0');
-//				} else {
-//					result.append(value);
-//				}
-//				if (cellIter.hasNext()) {
-//					result.append(' ');
-//				}
-//			}
-//			if (rowIter.hasNext()) {
-//				result.append('\n');
-//			}
-//		}
-//		return result.toString();
-//	}
-	
 	private static enum AllCellIteratorCellCondition {EMPTY, ONE_POSSIBLE, ALL}
 	
 	private class AllCellIterator implements Iterator<Cell> {
