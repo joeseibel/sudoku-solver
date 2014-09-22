@@ -17,66 +17,48 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.Pseudograph;
 
 public class SudokuSolver {
-	private static final int FOCUS_INDEX = -1;
-	
 	public static void main(String[] args) throws FileNotFoundException {
-		Scanner scanner = new Scanner(new File("puzzles/very_hard"));
+		solveGnomeSudokuPuzzle("puzzles/easy");
+		solveGnomeSudokuPuzzle("puzzles/medium");
+		solveGnomeSudokuPuzzle("puzzles/hard");
+		solveGnomeSudokuPuzzle("puzzles/very_hard");
+	}
+	
+	private static void solveGnomeSudokuPuzzle(String filename) throws FileNotFoundException {
+		File puzzleFile = new File(filename);
+		Scanner scanner = new Scanner(puzzleFile);
 		for (int puzzleIndex = 0; scanner.hasNextInt(); puzzleIndex++) {
 			int[] initialValues = new int[81];
 			for (int i = 0; i < initialValues.length; i++) {
 				initialValues[i] = scanner.nextInt();
 			}
 			scanner.nextLine();
-			if (puzzleIndex != FOCUS_INDEX && FOCUS_INDEX != -1)
-				continue;
 			Puzzle puzzle = new Puzzle(initialValues);
-			
-///			int solvedCount = 0;
-///			int notSolvedCount = 0;
-///			for (int i = 0; i < 10000; i++) {
-///				if (i % 100 == 0) {
-///					System.out.println(i);
-///				}
-///				Puzzle puzzle = new Puzzle(initialValues);
-///				fillPossibleValues(puzzle);
-///				if (solve(puzzle)) {
-///					puzzle.validateCompletePuzzle();
-///					solvedCount++;
-///				} else {
-///					notSolvedCount++;
-///				}
-///			}
-///			System.out.println("solvedCount: " + solvedCount);
-///			System.out.println("notSolvedCount: " + notSolvedCount);
-			
-			
-			if (puzzleIndex == FOCUS_INDEX) {
-				System.out.println();
-				System.out.println();
-				System.out.println();
-				System.out.println(puzzle.getEmptyCellCount());
-				System.out.println(puzzle);
-				System.out.println();
-			}
 			if (solve(puzzle)) {
 				puzzle.validateCompletePuzzle();
-				System.out.println("Puzzle " + puzzleIndex + ": solved");
+				System.out.println(puzzleFile.getName() + " #" + puzzleIndex + ": solved");
 			} else {
-				if (puzzleIndex == FOCUS_INDEX) {
-					System.out.println();
-					System.out.println();
-					System.out.println(puzzle.getEmptyCellCount());
-					System.out.println(puzzle);
-					System.out.println();
-					System.out.println();
-					System.out.println();
-					System.out.println(puzzle.getPossibleString());
-					System.out.println();
-					System.out.println();
-					System.out.println(puzzle.getSudokuWikiURL());
-					System.out.println();
+				System.out.println(puzzleFile.getName() + " #" + puzzleIndex + ": not solved");
+				System.out.println();
+				System.out.println();
+				System.out.println("Original puzzle:");
+				System.out.println();
+				for (int i = 0 ; i < initialValues.length; i++) {
+					System.out.print(initialValues[i]);
+					if ((i + 1) % 9 == 0) {
+						System.out.println();
+					} else {
+						System.out.print(' ');
+					}
 				}
-				System.out.println("Puzzle " + puzzleIndex + ": not solved");
+				System.out.println();
+				System.out.println();
+				System.out.println("Final state:");
+				System.out.println();
+				System.out.println(puzzle);
+				System.out.println();
+				System.out.println(puzzle.getSudokuWikiURL());
+				System.exit(0);
 			}
 		}
 		scanner.close();
