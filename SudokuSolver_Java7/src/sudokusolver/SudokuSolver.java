@@ -28,7 +28,7 @@ public class SudokuSolver {
 		File puzzleFile = new File(filename);
 		Scanner scanner = new Scanner(puzzleFile);
 		for (int puzzleIndex = 0; scanner.hasNextInt(); puzzleIndex++) {
-			int[] initialValues = new int[81];
+			int[] initialValues = new int[Puzzle.UNIT_SIZE * Puzzle.UNIT_SIZE];
 			for (int i = 0; i < initialValues.length; i++) {
 				initialValues[i] = scanner.nextInt();
 			}
@@ -45,7 +45,7 @@ public class SudokuSolver {
 				System.out.println();
 				for (int i = 0 ; i < initialValues.length; i++) {
 					System.out.print(initialValues[i]);
-					if ((i + 1) % 9 == 0) {
+					if ((i + 1) % Puzzle.UNIT_SIZE == 0) {
 						System.out.println();
 					} else {
 						System.out.print(' ');
@@ -64,7 +64,7 @@ public class SudokuSolver {
 		scanner.close();
 	}
 	
-	private static boolean solve(Puzzle puzzle) {
+	public static boolean solve(Puzzle puzzle) {
 		boolean changeMade;
 		do {
 			changeMade = false;

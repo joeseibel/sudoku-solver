@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 
 public class Puzzle {
 	public static final int UNIT_SIZE_SQUARE_ROOT = 3;
-	private static final int UNIT_SIZE = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
+	public static final int UNIT_SIZE = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
 	
 	private final Cell[][] board = new Cell[UNIT_SIZE][UNIT_SIZE];
 	private final SudokuNumber[][] solution = new SudokuNumber[UNIT_SIZE][UNIT_SIZE];
@@ -24,6 +24,15 @@ public class Puzzle {
 		}
 		bruteForce();
 		fillPossibleValues();
+	}
+	
+	public Iterable<Cell> getAllCells() {
+		return new Iterable<Cell>() {
+			@Override
+			public Iterator<Cell> iterator() {
+				return new AllCellIterator(AllCellIteratorCellCondition.ALL);
+			}
+		};
 	}
 	
 	public Iterable<Cell> getAllEmptyCells() {
@@ -353,15 +362,6 @@ public class Puzzle {
 			}
 			return false;
 		}
-	}
-	
-	private Iterable<Cell> getAllCells() {
-		return new Iterable<Cell>() {
-			@Override
-			public Iterator<Cell> iterator() {
-				return new AllCellIterator(AllCellIteratorCellCondition.ALL);
-			}
-		};
 	}
 	
 	private Iterable<Cell> getRowCells(final int rowIndex) {
