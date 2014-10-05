@@ -79,7 +79,7 @@ public class SudokuSolver {
 				} else {
 					HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains = buildChains(puzzle);
 					if (simpleColoring(puzzle, chains) || yWing(puzzle) || xyzWing(puzzle) || xCycles(puzzle, chains) || xyChain(puzzle) ||
-							medusa(puzzle) || hiddenUniqueRectangles(puzzle)) {
+							medusa(puzzle) || hiddenUniqueRectangles(puzzle) || alternatingInferenceChains(puzzle)) {
 						changeMade = true;
 					}
 					//TODO: Put solutions here.
@@ -729,49 +729,50 @@ public class SudokuSolver {
 		}
 	}
 	
-	private static ArrayList<ArrayList<Cell>> getAllGraphCycles(Pseudograph<Cell, SudokuEdge> graph) {
-		ArrayList<ArrayList<Cell>> cycles = new ArrayList<ArrayList<Cell>>();
-		ArrayDeque<Cell> path = new ArrayDeque<Cell>();
-		for (Cell cell : graph.vertexSet()) {
-			path.push(cell);
+	//TODO: This method is too expensive and needs to be removed.  Figure out an alternative to finding all possible cycles.
+	private static <T> ArrayList<ArrayList<T>> getAllGraphCycles(Pseudograph<T, SudokuEdge> graph) {
+		ArrayList<ArrayList<T>> cycles = new ArrayList<ArrayList<T>>();
+		ArrayDeque<T> path = new ArrayDeque<T>();
+		for (T vertex : graph.vertexSet()) {
+			path.push(vertex);
 			findNewCycles(graph, cycles, path);
 			path.pop();
 		}
 		return cycles;
 	}
 	
-	private static void findNewCycles(Pseudograph<Cell, SudokuEdge> graph, ArrayList<ArrayList<Cell>> cycles, ArrayDeque<Cell> path) {
-		Cell previouslyVisitedCell = path.peek();
+	private static <T> void findNewCycles(Pseudograph<T, SudokuEdge> graph, ArrayList<ArrayList<T>> cycles, ArrayDeque<T> path) {
+		T previouslyVisitedVertex = path.peek();
 		for (SudokuEdge edge : graph.edgeSet()) {
-			Cell edgeSource = graph.getEdgeSource(edge);
-			Cell edgeTarget = graph.getEdgeTarget(edge);
-			if (edgeSource.equals(previouslyVisitedCell)) {
-				findNewCyclesForNextCell(graph, cycles, path, edgeTarget);
-			} else if (edgeTarget.equals(previouslyVisitedCell)) {
-				findNewCyclesForNextCell(graph, cycles, path, edgeSource);
+			T edgeSource = graph.getEdgeSource(edge);
+			T edgeTarget = graph.getEdgeTarget(edge);
+			if (edgeSource.equals(previouslyVisitedVertex)) {
+				findNewCyclesForNextVertex(graph, cycles, path, edgeTarget);
+			} else if (edgeTarget.equals(previouslyVisitedVertex)) {
+				findNewCyclesForNextVertex(graph, cycles, path, edgeSource);
 			}
 		}
 	}
 	
-	private static void findNewCyclesForNextCell(Pseudograph<Cell, SudokuEdge> graph, ArrayList<ArrayList<Cell>> cycles,
-			ArrayDeque<Cell> path, Cell nextCell) {
-		if (!path.contains(nextCell)) {
-			path.push(nextCell);
+	private static <T> void findNewCyclesForNextVertex(Pseudograph<T, SudokuEdge> graph, ArrayList<ArrayList<T>> cycles,
+			ArrayDeque<T> path, T nextVertex) {
+		if (!path.contains(nextVertex)) {
+			path.push(nextVertex);
 			findNewCycles(graph, cycles, path);
 			path.pop();
-		} else if (path.size() > 2 && nextCell.equals(path.peekLast())) {
-			ArrayList<Cell> pathAsList = new ArrayList<Cell>(path);
+		} else if (path.size() > 2 && nextVertex.equals(path.peekLast())) {
+			ArrayList<T> pathAsList = new ArrayList<T>(path);
 			if (isNewCycle(cycles, pathAsList)) {
 				cycles.add(pathAsList);
 			}
 		}
 	}
 	
-	private static boolean isNewCycle(ArrayList<ArrayList<Cell>> cycles, ArrayList<Cell> path) {
+	private static <T> boolean isNewCycle(ArrayList<ArrayList<T>> cycles, ArrayList<T> path) {
 		if (cycles.contains(path)) {
 			return false;
 		}
-		for (ArrayList<Cell> existingPath : cycles) {
+		for (ArrayList<T> existingPath : cycles) {
 			if (path.size() == existingPath.size()) {
 				int firstCellIndex = path.indexOf(existingPath.get(0));
 				if (firstCellIndex != -1) {
@@ -825,7 +826,7 @@ public class SudokuSolver {
 		return false;
 	}
 	
-	private static boolean everyOtherEdgeIsStrong(Pseudograph<Cell, SudokuEdge> graph, ArrayList<Cell> cycle, int startingIndex,
+	private static <T> boolean everyOtherEdgeIsStrong(Pseudograph<T, SudokuEdge> graph, ArrayList<T> cycle, int startingIndex,
 			int endingIndex) {
 		if (!SudokuEdge.LinkType.STRONG_LINK.equals(
 				graph.getEdge(cycle.get(startingIndex), cycle.get(incrementListIndex(startingIndex, cycle.size()))).getLinkType())) {
@@ -1107,5 +1108,124 @@ public class SudokuSolver {
 			}
 		}
 		return true;
+	}
+	
+	private static boolean alternatingInferenceChains(final Puzzle puzzle) {
+		final Pseudograph<PossibleNumberInCell, SudokuEdge> graph = new Pseudograph<PossibleNumberInCell, SudokuEdge>(SudokuEdge.class);
+		for (Iterable<Cell> row : puzzle.getAllRows()) {
+			addConjugatePairsToGraph(row, graph);
+		}
+		for (Iterable<Cell> column : puzzle.getAllColumns()) {
+			addConjugatePairsToGraph(column, graph);
+		}
+		for (Iterable<Cell> block : puzzle.getAllBlocks()) {
+			addConjugatePairsToGraph(block, graph);
+		}
+		for (Cell cell : puzzle.getAllEmptyCells()) {
+			if (cell.getPossibleValues().size() == 2) {
+				Iterator<SudokuNumber> iter = cell.getPossibleValues().iterator();
+				PossibleNumberInCell firstVertex = new PossibleNumberInCell(cell, iter.next());
+				PossibleNumberInCell secondVertex = new PossibleNumberInCell(cell, iter.next());
+				graph.addVertex(firstVertex);
+				graph.addVertex(secondVertex);
+				graph.addEdge(firstVertex, secondVertex).setLinkType(SudokuEdge.LinkType.STRONG_LINK);
+			}
+		}
+		ArrayList<PossibleNumberInCell> verticies = new ArrayList<PossibleNumberInCell>(graph.vertexSet());
+		for (int i = 0; i < verticies.size() - 1; i++) {
+			for (int j = i + 1; j < verticies.size(); j++) {
+				PossibleNumberInCell a = verticies.get(i);
+				PossibleNumberInCell b = verticies.get(j);
+				if (a.getCell().isInSameUnit(b.getCell()) && a.getPossibleNumber().equals(b.getPossibleNumber()) && !graph.containsEdge(a, b)) {
+					graph.addEdge(a, b).setLinkType(SudokuEdge.LinkType.WEAK_LINK);
+				}
+			}
+		}
+		for (final PossibleNumberInCell vertex : graph.vertexSet()) {
+			ArrayList<SudokuEdge> strongLinks = new ArrayList<SudokuEdge>();
+			for (SudokuEdge edge : graph.edgesOf(vertex)) {
+				if (edge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) {
+					strongLinks.add(edge);
+				}
+			}
+			for (int i = 0; i < strongLinks.size() - 1; i++) {
+				PossibleNumberInCell nextVertex = graph.getEdgeSource(strongLinks.get(i));
+				if (nextVertex.equals(vertex)) {
+					nextVertex = graph.getEdgeTarget(strongLinks.get(i));
+				}
+				if (!vertex.getCell().equals(nextVertex.getCell())) {
+					for (int j = i + 1; j < strongLinks.size(); j++) {
+						PossibleNumberInCell lastVertex = graph.getEdgeSource(strongLinks.get(j));
+						if (lastVertex.equals(vertex)) {
+							lastVertex = graph.getEdgeTarget(strongLinks.get(j));
+						}
+						if (!vertex.getCell().equals(lastVertex.getCell())) {
+							final ArrayDeque<PossibleNumberInCell> cycle = new ArrayDeque<PossibleNumberInCell>();
+							cycle.push(vertex);
+							cycle.push(nextVertex);
+							if (findAlternatingLinkCycle(graph, strongLinks.get(j), cycle, nextVertex, false)) {
+								puzzle.setValueAndUpdatePossibleValues(vertex.getCell(), vertex.getPossibleNumber());
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	private static boolean findAlternatingLinkCycle(Pseudograph<PossibleNumberInCell, SudokuEdge> graph, SudokuEdge finalEdge, ArrayDeque<PossibleNumberInCell> cycle,
+			PossibleNumberInCell vertex, boolean nextLinkShouldBeStrong) {
+		ArrayList<PossibleNumberInCell> possibleNextVerticies = new ArrayList<PossibleNumberInCell>();
+		for (SudokuEdge nextEdge : graph.edgesOf(vertex)) {
+			if (nextEdge.equals(finalEdge)) {
+				if (nextLinkShouldBeStrong && nextEdge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) {
+					return true;
+				}
+			} else {
+				PossibleNumberInCell nextVertex = graph.getEdgeSource(nextEdge);
+				if (nextVertex.equals(vertex)) {
+					nextVertex = graph.getEdgeTarget(nextEdge);
+				}
+				if (!cycle.contains(nextVertex) &&
+						((nextLinkShouldBeStrong && nextEdge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) || !nextLinkShouldBeStrong)) {
+					possibleNextVerticies.add(nextVertex);
+				}
+			}
+		}
+		for (PossibleNumberInCell nextVertex : possibleNextVerticies) {
+			cycle.push(nextVertex);
+			if (findAlternatingLinkCycle(graph, finalEdge, cycle, nextVertex, !nextLinkShouldBeStrong)) {
+				return true;
+			}
+			cycle.pop();
+		}
+		return false;
+	}
+	
+	private static void addConjugatePairsToGraph(Iterable<Cell> unit, Pseudograph<PossibleNumberInCell, SudokuEdge> possibleGraph) {
+		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<SudokuNumber, ArrayList<Cell>>();
+		for (Cell cell : unit) {
+			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
+				ArrayList<Cell> cellsForNumberList = cellsForPossibleNumber.get(possibleNumber);
+				if (cellsForNumberList == null) {
+					cellsForNumberList = new ArrayList<Cell>();
+					cellsForPossibleNumber.put(possibleNumber, cellsForNumberList);
+				}
+				cellsForNumberList.add(cell);
+			}
+		}
+		for (Entry<SudokuNumber, ArrayList<Cell>> entry : cellsForPossibleNumber.entrySet()) {
+			if (entry.getValue().size() == 2) {
+				PossibleNumberInCell firstVertex = new PossibleNumberInCell(entry.getValue().get(0), entry.getKey());
+				PossibleNumberInCell secondVertex = new PossibleNumberInCell(entry.getValue().get(1), entry.getKey());
+				if (!possibleGraph.containsEdge(firstVertex, secondVertex)) {
+					possibleGraph.addVertex(firstVertex);
+					possibleGraph.addVertex(secondVertex);
+					possibleGraph.addEdge(firstVertex, secondVertex).setLinkType(SudokuEdge.LinkType.STRONG_LINK);
+				}
+			}
+		}
 	}
 }

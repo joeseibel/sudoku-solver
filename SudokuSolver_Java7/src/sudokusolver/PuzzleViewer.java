@@ -7,28 +7,38 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayDeque;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import org.jgrapht.graph.Pseudograph;
+
 public class PuzzleViewer extends JFrame {
 	private static final int BOARD_PIXEL_SIZE = 500;
 	
+	private final Object lock;
+	
 	private final BoardComponent drawingComponent;
 	
-	public PuzzleViewer(String name, int puzzleIndex, Puzzle puzzle) {
-		super(name + " #" + puzzleIndex);
-		drawingComponent = new BoardComponent(puzzle);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	public PuzzleViewer(String title, Puzzle puzzle, Pseudograph<PossibleNumberInCell, SudokuEdge> graph, ArrayDeque<PossibleNumberInCell> cycle, Object lock) {
+		super(title);
+		this.lock = lock;
+		drawingComponent = new BoardComponent(puzzle, graph, cycle);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		layoutComponents();
+		addListeners();
 		pack();
 		setVisible(true);
 	}
-
+	
 	public static void main(String[] args) throws FileNotFoundException {
 		final File puzzleFile = new File(args[0]);
 		Scanner scanner = new Scanner(puzzleFile);
@@ -46,7 +56,7 @@ public class PuzzleViewer extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new PuzzleViewer(puzzleFile.getName(), puzzleIndex, puzzle);
+				new PuzzleViewer(puzzleFile.getName() + " #" + puzzleIndex, puzzle, null, null, null);
 			}
 		});
 	}
@@ -56,17 +66,35 @@ public class PuzzleViewer extends JFrame {
 		add(drawingComponent);
 	}
 	
+	private void addListeners() {
+		if (lock != null) {
+			addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosed(WindowEvent e) {
+					synchronized (lock) {
+						lock.notify();
+					}
+				}
+			});
+		}
+	}
+	
 	private static class BoardComponent extends JComponent {
 		private static final int BOARD_PADDING = 5;
 		private static final Color BLOCK_SHADE_GRAY = new Color(255, 255, 255, 0);
 		private static final BasicStroke THICK_STROKE = new BasicStroke(3);
+		private static final BasicStroke DASHED_STROKE = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10, new float[]{9}, 0);
 		private static final BasicStroke THIN_STROKE = new BasicStroke();
 		private static final Color MAIN_VALUE_COLOR = new Color(187, 0, 0, 200);
 		
 		private final Puzzle puzzle;
+		private final Pseudograph<PossibleNumberInCell, SudokuEdge> graph;
+		private final ArrayDeque<PossibleNumberInCell> cycle;
 		
-		public BoardComponent(Puzzle puzzle) {
+		public BoardComponent(Puzzle puzzle, Pseudograph<PossibleNumberInCell, SudokuEdge> graph, ArrayDeque<PossibleNumberInCell> cycle) {
 			this.puzzle = puzzle;
+			this.graph = graph;
+			this.cycle = cycle;
 		}
 		
 		@Override
@@ -101,44 +129,88 @@ public class PuzzleViewer extends JFrame {
 				} else {
 					g2.setStroke(THIN_STROKE);
 				}
+				int cellOffset = (int)Math.round(cellSize * i);
 				//Horizontal
 				g.drawLine(startX,
-						startY + (int)Math.round(cellSize * i),
+						startY + cellOffset,
 						startX + boardSize,
-						startY + (int)Math.round(cellSize * i));
+						startY + cellOffset);
 				//Vertical
-				g.drawLine(startX + (int)Math.round(cellSize * i),
+				g.drawLine(startX + cellOffset,
 						startY,
-						startX + (int)Math.round(cellSize * i),
+						startX + cellOffset,
 						startY + boardSize);
+			}
+			g2.setStroke(THIN_STROKE);
+
+			double possibleNumberSquareSize = boardSize / (double)(Puzzle.UNIT_SIZE * Puzzle.UNIT_SIZE_SQUARE_ROOT);
+			if (graph != null && cycle != null) {
+				//Draw edge
+				g.setColor(Color.BLUE);
+				PossibleNumberInCell[] cycleArray = cycle.toArray(new PossibleNumberInCell[cycle.size()]);
+				for (int i = 0; i < cycleArray.length; i++) {
+					PossibleNumberInCell firstVertex = cycleArray[i];
+					PossibleNumberInCell secondVertex = cycleArray[i < cycleArray.length - 1 ? i + 1 : 0];
+					double firstVertexCellOffsetX = cellSize * firstVertex.getCell().getColumn();
+					double firstVertexCellOffsetY = cellSize * firstVertex.getCell().getRow();
+					double firstVertexPossibleNumberSquareOffsetX = possibleNumberSquareSize * (firstVertex.getPossibleNumber().ordinal() % Puzzle.UNIT_SIZE_SQUARE_ROOT);
+					double firstVertexPossibleNumberSquareOffsetY = possibleNumberSquareSize * (firstVertex.getPossibleNumber().ordinal() / Puzzle.UNIT_SIZE_SQUARE_ROOT);
+					
+					double secondVertexCellOffsetX = cellSize * secondVertex.getCell().getColumn();
+					double secondVertexCellOffsetY = cellSize * secondVertex.getCell().getRow();
+					double secondVertexPossibleNumberSquareOffsetX = possibleNumberSquareSize * (secondVertex.getPossibleNumber().ordinal() % Puzzle.UNIT_SIZE_SQUARE_ROOT);
+					double secondVertexPossibleNumberSquareOffsetY = possibleNumberSquareSize * (secondVertex.getPossibleNumber().ordinal() / Puzzle.UNIT_SIZE_SQUARE_ROOT);
+					
+					g2.setStroke(graph.getEdge(firstVertex, secondVertex).getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK) ? THICK_STROKE : DASHED_STROKE);
+					g.drawLine(startX + (int)Math.round(firstVertexCellOffsetX + firstVertexPossibleNumberSquareOffsetX + possibleNumberSquareSize / 2),
+							startY + (int)Math.round(firstVertexCellOffsetY + firstVertexPossibleNumberSquareOffsetY + possibleNumberSquareSize / 2),
+							startX + (int)Math.round(secondVertexCellOffsetX + secondVertexPossibleNumberSquareOffsetX + possibleNumberSquareSize / 2),
+							startY + (int)Math.round(secondVertexCellOffsetY + secondVertexPossibleNumberSquareOffsetY + possibleNumberSquareSize / 2));
+				}
+				g2.setStroke(THIN_STROKE);
+				
+				//Draw vertex
+				for (Iterator<PossibleNumberInCell> iter = cycle.iterator(); iter.hasNext();) {
+					PossibleNumberInCell vertex = iter.next();
+					double firstVertexCellOffsetX = cellSize * vertex.getCell().getColumn();
+					double firstVertexCellOffsetY = cellSize * vertex.getCell().getRow();
+					double firstVertexPossibleNumberSquareOffsetX = possibleNumberSquareSize * (vertex.getPossibleNumber().ordinal() % Puzzle.UNIT_SIZE_SQUARE_ROOT);
+					double firstVertexPossibleNumberSquareOffsetY = possibleNumberSquareSize * (vertex.getPossibleNumber().ordinal() / Puzzle.UNIT_SIZE_SQUARE_ROOT);
+					g.setColor(iter.hasNext() ? Color.CYAN : Color.PINK);
+					g.fillOval(startX + (int)Math.round(firstVertexCellOffsetX + firstVertexPossibleNumberSquareOffsetX) + 3,
+						startY + (int)Math.round(firstVertexCellOffsetY + firstVertexPossibleNumberSquareOffsetY) + 3,
+						(int)Math.round(possibleNumberSquareSize) - 6,
+						(int)Math.round(possibleNumberSquareSize) - 6);
+				}
+				g.setColor(Color.BLACK);
 			}
 			
 			//Draw values
 			Font mainValueFont = g.getFont().deriveFont(Font.BOLD, 20);
 			Font possibleValueFont = g.getFont().deriveFont(10.0f);
-			double possibleNumberSquareSize = boardSize / (double)(Puzzle.UNIT_SIZE * Puzzle.UNIT_SIZE_SQUARE_ROOT);
 			for (Cell cell : puzzle.getAllCells()) {
+				double cellOffsetX = cellSize * cell.getColumn();
+				double cellOffsetY = cellSize * cell.getRow();
 				if (cell.getValue() != null) {
 					g.setColor(MAIN_VALUE_COLOR);
 					g.setFont(mainValueFont);
 					Dimension stringSize = getStringSize(g2, cell.getValue().toString());
 					g.drawString(cell.getValue().toString(),
-							startX + (int)Math.round(cellSize * cell.getColumn() + (cellSize - stringSize.width) / 2),
-							startY + (int)Math.round(cellSize * cell.getRow() + (cellSize + stringSize.height) / 2));
+							startX + (int)Math.round(cellOffsetX + (cellSize - stringSize.width) / 2),
+							startY + (int)Math.round(cellOffsetY + (cellSize + stringSize.height) / 2));
 				}
 				for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
+					double possibleNumberSquareOffsetX = possibleNumberSquareSize * (possibleNumber.ordinal() % Puzzle.UNIT_SIZE_SQUARE_ROOT);
+					double possibleNumberSquareOffsetY = possibleNumberSquareSize * (possibleNumber.ordinal() / Puzzle.UNIT_SIZE_SQUARE_ROOT);
 					g.setColor(Color.BLACK);
 					g.setFont(possibleValueFont);
 					Dimension stringSize = getStringSize(g2, possibleNumber.toString());
 					g.drawString(possibleNumber.toString(),
-							startX + (int)Math.round(cellSize * cell.getColumn() +
-									possibleNumberSquareSize * (possibleNumber.ordinal() % Puzzle.UNIT_SIZE_SQUARE_ROOT) +
-									(possibleNumberSquareSize - stringSize.width) / 2),
-							startY + (int)Math.round(cellSize * cell.getRow() +
-									possibleNumberSquareSize * (possibleNumber.ordinal() / Puzzle.UNIT_SIZE_SQUARE_ROOT) +
-									(possibleNumberSquareSize + stringSize.height) / 2));
+							startX + (int)Math.round(cellOffsetX + possibleNumberSquareOffsetX + (possibleNumberSquareSize - stringSize.width) / 2),
+							startY + (int)Math.round(cellOffsetY + possibleNumberSquareOffsetY + (possibleNumberSquareSize + stringSize.height) / 2));
 				}
 			}
+			g.setColor(Color.BLACK);
 		}
 		
 		private Dimension getStringSize(Graphics2D g, String str) {
