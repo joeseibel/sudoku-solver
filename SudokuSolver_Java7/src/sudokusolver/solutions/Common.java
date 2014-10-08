@@ -35,10 +35,7 @@ public class Common {
 	public static <V, E> void colorGraph(Pseudograph<V, E> graph, HashMap<V, VertexColor> vertexColors, V previousVertex,
 			VertexColor nextColor) {
 		for (E connectingEdge : graph.edgesOf(previousVertex)) {
-			V nextVertex = graph.getEdgeSource(connectingEdge);
-			if (nextVertex.equals(previousVertex)) {
-				nextVertex = graph.getEdgeTarget(connectingEdge);
-			}
+			V nextVertex = getOtherVertex(graph, connectingEdge, previousVertex);
 			VertexColor colorOfNextVertex = vertexColors.get(nextVertex);
 			if (colorOfNextVertex == null) {
 				vertexColors.put(nextVertex, nextColor);
@@ -49,5 +46,13 @@ public class Common {
 				assert false;
 			}
 		}
+	}
+	
+	public static <V, E> V getOtherVertex(Pseudograph<V, E> graph, E edge, V vertex) {
+		V otherVertex = graph.getEdgeSource(edge);
+		if (otherVertex.equals(vertex)) {
+			otherVertex = graph.getEdgeTarget(edge);
+		}
+		return otherVertex;
 	}
 }

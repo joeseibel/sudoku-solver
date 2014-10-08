@@ -17,176 +17,119 @@ public class XCycles {
 		boolean changeMade = false;
 		for (Entry<SudokuNumber, Pseudograph<Cell, SudokuEdge>> entry : chains.entrySet()) {
 			buildWeakLinks(puzzle, entry.getKey(), entry.getValue());
-			if (xCyclesForChain(puzzle, entry.getValue(), entry.getKey(), getAllGraphCycles(entry.getValue()))) {
-				changeMade = true;
+			if (xCyclesNiceLoopsRule2(puzzle, entry.getValue(), entry.getKey()) || xCyclesNiceLoopsRule3(puzzle, entry.getValue(), entry.getKey())) {
+				return true;
 			}
 		}
 		return changeMade;
 	}
 	
 	private static void buildWeakLinks(Puzzle puzzle, SudokuNumber possibleNumber, Pseudograph<Cell, SudokuEdge> graph) {
-		ArrayList<Cell> verticies = new ArrayList<Cell>(graph.vertexSet());
-		for (int i = 0; i < verticies.size() - 1; i++) {
-			for (int j = i + 1; j < verticies.size(); j++) {
-				Cell a = verticies.get(i);
-				Cell b = verticies.get(j);
-				if (a.isInSameUnit(b) && !graph.containsEdge(a, b)) {
-					graph.addEdge(a, b).setLinkType(SudokuEdge.LinkType.WEAK_LINK);
+		for (Iterable<Cell> row : puzzle.getAllRows()) {
+			addWeakPairToGraph(row, possibleNumber, graph);
+		}
+		for (Iterable<Cell> column : puzzle.getAllColumns()) {
+			addWeakPairToGraph(column, possibleNumber, graph);
+		}
+		for (Iterable<Cell> block : puzzle.getAllBlocks()) {
+			addWeakPairToGraph(block, possibleNumber, graph);
+		}
+	}
+	
+	private static void addWeakPairToGraph(Iterable<Cell> unit, SudokuNumber possibleNumber, Pseudograph<Cell, SudokuEdge> possibleGraph) {
+		ArrayList<Cell> possibleCellsInUnit = new ArrayList<Cell>();
+		for (Cell cell : unit) {
+			if (cell.getPossibleValues().contains(possibleNumber)) {
+				possibleCellsInUnit.add(cell);
+			}
+		}
+		for (int i = 0; i < possibleCellsInUnit.size() - 1; i++) {
+			Cell firstCell = possibleCellsInUnit.get(i);
+			for (int j = i + 1; j < possibleCellsInUnit.size(); j++) {
+				Cell secondCell = possibleCellsInUnit.get(j);
+				if (!possibleGraph.containsEdge(firstCell, secondCell)) {
+					possibleGraph.addVertex(firstCell);
+					possibleGraph.addVertex(secondCell);
+					possibleGraph.addEdge(firstCell, secondCell).setLinkType(SudokuEdge.LinkType.WEAK_LINK);
 				}
 			}
 		}
-		for (Cell cell : puzzle.getAllEmptyCells()) {
-			if (cell.getPossibleValues().contains(possibleNumber) && !graph.vertexSet().contains(cell)) {
-				ArrayList<Cell> visibleVerticies = new ArrayList<Cell>();
-				for (Cell vertex : graph.vertexSet()) {
-					if (cell.isInSameUnit(vertex)) {
-						visibleVerticies.add(vertex);
-					}
-				}
-				if (visibleVerticies.size() == 2) {
-					graph.addVertex(cell);
-					for (Cell vertex : visibleVerticies) {
-						graph.addEdge(cell, vertex).setLinkType(SudokuEdge.LinkType.WEAK_LINK);
-					}
+	}
+	
+	private static boolean xCyclesNiceLoopsRule2(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> graph, SudokuNumber possibleNumber) {
+		for (Cell vertex : graph.vertexSet()) {
+			ArrayList<SudokuEdge> strongLinks = new ArrayList<SudokuEdge>();
+			for (SudokuEdge edge : graph.edgesOf(vertex)) {
+				if (edge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) {
+					strongLinks.add(edge);
 				}
 			}
-		}
-	}
-	
-	//TODO: This method is too expensive and needs to be removed.  Figure out an alternative to finding all possible cycles.
-	private static <T> ArrayList<ArrayList<T>> getAllGraphCycles(Pseudograph<T, SudokuEdge> graph) {
-		ArrayList<ArrayList<T>> cycles = new ArrayList<ArrayList<T>>();
-		ArrayDeque<T> path = new ArrayDeque<T>();
-		for (T vertex : graph.vertexSet()) {
-			path.push(vertex);
-			findNewCycles(graph, cycles, path);
-			path.pop();
-		}
-		return cycles;
-	}
-	
-	private static <T> void findNewCycles(Pseudograph<T, SudokuEdge> graph, ArrayList<ArrayList<T>> cycles, ArrayDeque<T> path) {
-		T previouslyVisitedVertex = path.peek();
-		for (SudokuEdge edge : graph.edgeSet()) {
-			T edgeSource = graph.getEdgeSource(edge);
-			T edgeTarget = graph.getEdgeTarget(edge);
-			if (edgeSource.equals(previouslyVisitedVertex)) {
-				findNewCyclesForNextVertex(graph, cycles, path, edgeTarget);
-			} else if (edgeTarget.equals(previouslyVisitedVertex)) {
-				findNewCyclesForNextVertex(graph, cycles, path, edgeSource);
-			}
-		}
-	}
-	
-	private static <T> void findNewCyclesForNextVertex(Pseudograph<T, SudokuEdge> graph, ArrayList<ArrayList<T>> cycles,
-			ArrayDeque<T> path, T nextVertex) {
-		if (!path.contains(nextVertex)) {
-			path.push(nextVertex);
-			findNewCycles(graph, cycles, path);
-			path.pop();
-		} else if (path.size() > 2 && nextVertex.equals(path.peekLast())) {
-			ArrayList<T> pathAsList = new ArrayList<T>(path);
-			if (isNewCycle(cycles, pathAsList)) {
-				cycles.add(pathAsList);
-			}
-		}
-	}
-	
-	private static <T> boolean isNewCycle(ArrayList<ArrayList<T>> cycles, ArrayList<T> path) {
-		if (cycles.contains(path)) {
-			return false;
-		}
-		for (ArrayList<T> existingPath : cycles) {
-			if (path.size() == existingPath.size()) {
-				int firstCellIndex = path.indexOf(existingPath.get(0));
-				if (firstCellIndex != -1) {
-					int pathSize = path.size();
-					if (path.subList(firstCellIndex, pathSize).equals(existingPath.subList(0, pathSize - firstCellIndex)) &&
-							path.subList(0, firstCellIndex).equals(existingPath.subList(pathSize - firstCellIndex, pathSize))) {
-						return false;
-					}
-					boolean invertedEquals = true;
-					for (int i = 0; i < pathSize; i++) {
-						int equivalentPathIndex = firstCellIndex - i >= 0 ? firstCellIndex - i : pathSize + firstCellIndex - i;
-						if (!existingPath.get(i).equals(path.get(equivalentPathIndex))) {
-							invertedEquals = false;
-							break;
-						}
-					}
-					if (invertedEquals) {
-						return false;
+			for (int i = 0; i < strongLinks.size() - 1; i++) {
+				Cell nextVertex = Common.getOtherVertex(graph, strongLinks.get(i), vertex);
+				for (int j = i + 1; j < strongLinks.size(); j++) {
+					ArrayDeque<Cell> cycle = new ArrayDeque<Cell>();
+					cycle.push(vertex);
+					cycle.push(nextVertex);
+					if (findAlternatingLinkCycle(graph, strongLinks.get(j), true, cycle, nextVertex, false)) {
+						assert cycle.size() % 2 == 1;
+						puzzle.setValueAndUpdatePossibleValues(vertex, possibleNumber);
+						return true;
 					}
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 	
-	private static boolean xCyclesForChain(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> chain, SudokuNumber possibleNumber,
-			ArrayList<ArrayList<Cell>> cycles) {
-		for (ArrayList<Cell> cycle : cycles) {
-			if (xCyclesNiceLoopsRule2(puzzle, chain, possibleNumber, cycle) || xCyclesNiceLoopsRule3(puzzle, chain, possibleNumber, cycle)) {
+	private static boolean xCyclesNiceLoopsRule3(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> graph, SudokuNumber possibleNumber) {
+		for (Cell vertex : graph.vertexSet()) {
+			SudokuEdge[] edges = graph.edgesOf(vertex).toArray(new SudokuEdge[0]);
+			for (int i = 0; i < edges.length - 1; i++) {
+				Cell nextVertex = Common.getOtherVertex(graph, edges[i], vertex);
+				for (int j = i + 1; j < edges.length; j++) {
+					ArrayDeque<Cell> cycle = new ArrayDeque<Cell>();
+					cycle.push(vertex);
+					cycle.push(nextVertex);
+					if (findAlternatingLinkCycle(graph, edges[j], false, cycle, nextVertex, true)) {
+						assert cycle.size() % 2 == 1;
+						puzzle.removePossibleValue(vertex, possibleNumber);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	private static boolean findAlternatingLinkCycle(Pseudograph<Cell, SudokuEdge> graph, SudokuEdge finalEdge, boolean finalLinkMustBeStrong, ArrayDeque<Cell> cycle,
+			Cell vertex, boolean nextLinkMustBeStrong) {
+		ArrayList<Cell> possibleNextVerticies = new ArrayList<Cell>();
+		for (SudokuEdge nextEdge : graph.edgesOf(vertex)) {
+			if (nextEdge.equals(finalEdge)) {
+				if (finalLinkMustBeStrong) {
+					if (nextLinkMustBeStrong && nextEdge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) {
+						return true;
+					}
+				} else {
+					if (cycle.size() % 2 == 1) {
+						return true;
+					}
+				}
+			} else {
+				Cell nextVertex = Common.getOtherVertex(graph, nextEdge, vertex);
+				if (!cycle.contains(nextVertex) &&
+						((nextLinkMustBeStrong && nextEdge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) || !nextLinkMustBeStrong)) {
+					possibleNextVerticies.add(nextVertex);
+				}
+			}
+		}
+		for (Cell nextVertex : possibleNextVerticies) {
+			cycle.push(nextVertex);
+			if (findAlternatingLinkCycle(graph, finalEdge, finalLinkMustBeStrong, cycle, nextVertex, !nextLinkMustBeStrong)) {
 				return true;
 			}
+			cycle.pop();
 		}
 		return false;
-	}
-	
-	private static boolean xCyclesNiceLoopsRule2(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> chain, SudokuNumber possibleNumber,
-			ArrayList<Cell> cycle) {
-		if (cycle.size() % 2 == 1) {
-			for (int i = 0; i < cycle.size(); i++) {
-				if (everyOtherEdgeIsStrong(chain, cycle, i, i)) {
-					Cell previousCell = cycle.get(i == 0 ? cycle.size() - 1 : i - 1);
-					Cell currentCell = cycle.get(i);
-					Cell nextCell = cycle.get(i == cycle.size() - 1 ? 0 : i + 1);
-					assert chain.getEdge(previousCell, currentCell).getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK);
-					assert chain.getEdge(currentCell, nextCell).getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK);
-					puzzle.setValueAndUpdatePossibleValues(currentCell, possibleNumber);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	private static <T> boolean everyOtherEdgeIsStrong(Pseudograph<T, SudokuEdge> graph, ArrayList<T> cycle, int startingIndex,
-			int endingIndex) {
-		if (!SudokuEdge.LinkType.STRONG_LINK.equals(
-				graph.getEdge(cycle.get(startingIndex), cycle.get(incrementListIndex(startingIndex, cycle.size()))).getLinkType())) {
-			return false;
-		}
-		boolean expectingStrongLink = false;
-		int index = incrementListIndex(startingIndex, cycle.size());
-		while (index != endingIndex) {
-			if (expectingStrongLink && !SudokuEdge.LinkType.STRONG_LINK.equals(
-					graph.getEdge(cycle.get(index), cycle.get(incrementListIndex(index, cycle.size()))).getLinkType())) {
-				return false;
-			}
-			expectingStrongLink = !expectingStrongLink;
-			index = incrementListIndex(index, cycle.size());
-		}
-		return true;
-	}
-	
-	private static boolean xCyclesNiceLoopsRule3(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> chain, SudokuNumber possibleNumber,
-			ArrayList<Cell> cycle) {
-		if (cycle.size() % 2 == 1) {
-			for (int i = 0; i < cycle.size(); i++) {
-				if (everyOtherEdgeIsStrong(chain, cycle, incrementListIndex(i, cycle.size()), i == 0 ? cycle.size() - 1 : i - 1)) {
-					puzzle.removePossibleValue(cycle.get(i), possibleNumber);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	private static int incrementListIndex(int index, int listSize) {
-		index++;
-		if (index == listSize) {
-			return 0;
-		}
-		return index;
 	}
 }
