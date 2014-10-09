@@ -81,7 +81,7 @@ public class SudokuSolver {
 				changeMade = true;
 			}
 			if (puzzle.getEmptyCellCount() != 0) {
-				if (HiddenSingles.hiddenSingles(puzzle) || NakedPairs.nakedPairs(puzzle) || HiddenPairs.hiddenPairs(puzzle) ||NakedTriples.nakedTriples(puzzle) ||
+				if (HiddenSingles.hiddenSingles(puzzle) || NakedPairs.nakedPairs(puzzle) || NakedTriples.nakedTriples(puzzle) || HiddenPairs.hiddenPairs(puzzle) ||
 						IntersectionRemoval.intersectionRemoval(puzzle) || XWing.xWing(puzzle)) {
 					changeMade = true;
 				} else {
