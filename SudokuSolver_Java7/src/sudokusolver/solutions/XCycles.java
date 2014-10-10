@@ -70,7 +70,7 @@ public class XCycles {
 					ArrayDeque<Cell> cycle = new ArrayDeque<Cell>();
 					cycle.push(vertex);
 					cycle.push(nextVertex);
-					if (findAlternatingLinkCycle(graph, strongLinks.get(j), true, cycle, nextVertex, false)) {
+					if (Common.findAlternatingLinkCycle(graph, strongLinks.get(j), true, cycle, nextVertex, false)) {
 						assert cycle.size() % 2 == 1;
 						puzzle.setValueAndUpdatePossibleValues(vertex, possibleNumber);
 						return true;
@@ -90,45 +90,13 @@ public class XCycles {
 					ArrayDeque<Cell> cycle = new ArrayDeque<Cell>();
 					cycle.push(vertex);
 					cycle.push(nextVertex);
-					if (findAlternatingLinkCycle(graph, edges[j], false, cycle, nextVertex, true)) {
+					if (Common.findAlternatingLinkCycle(graph, edges[j], false, cycle, nextVertex, true)) {
 						assert cycle.size() % 2 == 1;
 						puzzle.removePossibleValue(vertex, possibleNumber);
 						return true;
 					}
 				}
 			}
-		}
-		return false;
-	}
-	
-	private static boolean findAlternatingLinkCycle(Pseudograph<Cell, SudokuEdge> graph, SudokuEdge finalEdge, boolean finalLinkMustBeStrong, ArrayDeque<Cell> cycle,
-			Cell vertex, boolean nextLinkMustBeStrong) {
-		ArrayList<Cell> possibleNextVerticies = new ArrayList<Cell>();
-		for (SudokuEdge nextEdge : graph.edgesOf(vertex)) {
-			if (nextEdge.equals(finalEdge)) {
-				if (finalLinkMustBeStrong) {
-					if (nextLinkMustBeStrong && nextEdge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) {
-						return true;
-					}
-				} else {
-					if (cycle.size() % 2 == 1) {
-						return true;
-					}
-				}
-			} else {
-				Cell nextVertex = Common.getOtherVertex(graph, nextEdge, vertex);
-				if (!cycle.contains(nextVertex) &&
-						((nextLinkMustBeStrong && nextEdge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) || !nextLinkMustBeStrong)) {
-					possibleNextVerticies.add(nextVertex);
-				}
-			}
-		}
-		for (Cell nextVertex : possibleNextVerticies) {
-			cycle.push(nextVertex);
-			if (findAlternatingLinkCycle(graph, finalEdge, finalLinkMustBeStrong, cycle, nextVertex, !nextLinkMustBeStrong)) {
-				return true;
-			}
-			cycle.pop();
 		}
 		return false;
 	}

@@ -1,5 +1,6 @@
 package sudokusolver.solutions;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -7,6 +8,7 @@ import java.util.Set;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.Pseudograph;
 
+import sudokusolver.SudokuEdge;
 import sudokusolver.VertexColor;
 
 public class Common {
@@ -54,5 +56,37 @@ public class Common {
 			otherVertex = graph.getEdgeTarget(edge);
 		}
 		return otherVertex;
+	}
+	
+	public static <V> boolean findAlternatingLinkCycle(Pseudograph<V, SudokuEdge> graph, SudokuEdge finalEdge, boolean finalLinkMustBeStrong, ArrayDeque<V> cycle,
+			V vertex, boolean nextLinkMustBeStrong) {
+		ArrayList<V> possibleNextVerticies = new ArrayList<V>();
+		for (SudokuEdge nextEdge : graph.edgesOf(vertex)) {
+			if (nextEdge.equals(finalEdge)) {
+				if (finalLinkMustBeStrong) {
+					if (nextLinkMustBeStrong && nextEdge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) {
+						return true;
+					}
+				} else {
+					if (cycle.size() % 2 == 1) {
+						return true;
+					}
+				}
+			} else {
+				V nextVertex = Common.getOtherVertex(graph, nextEdge, vertex);
+				if (!cycle.contains(nextVertex) &&
+						((nextLinkMustBeStrong && nextEdge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) || !nextLinkMustBeStrong)) {
+					possibleNextVerticies.add(nextVertex);
+				}
+			}
+		}
+		for (V nextVertex : possibleNextVerticies) {
+			cycle.push(nextVertex);
+			if (findAlternatingLinkCycle(graph, finalEdge, finalLinkMustBeStrong, cycle, nextVertex, !nextLinkMustBeStrong)) {
+				return true;
+			}
+			cycle.pop();
+		}
+		return false;
 	}
 }
