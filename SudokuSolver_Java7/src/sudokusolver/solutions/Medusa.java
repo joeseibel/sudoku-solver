@@ -56,12 +56,7 @@ public class Medusa {
 		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<SudokuNumber, ArrayList<Cell>>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
-				ArrayList<Cell> cellsList = cellsForPossibleNumber.get(possibleNumber);
-				if (cellsList == null) {
-					cellsList = new ArrayList<Cell>();
-					cellsForPossibleNumber.put(possibleNumber, cellsList);
-				}
-				cellsList.add(cell);
+				Common.addToValueList(cellsForPossibleNumber, possibleNumber, cell);
 			}
 		}
 		for (Entry<SudokuNumber, ArrayList<Cell>> entry : cellsForPossibleNumber.entrySet()) {

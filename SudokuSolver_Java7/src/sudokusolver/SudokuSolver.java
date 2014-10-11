@@ -1,7 +1,10 @@
 package sudokusolver;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -17,6 +20,7 @@ import sudokusolver.solutions.Medusa;
 import sudokusolver.solutions.NakedPairs;
 import sudokusolver.solutions.NakedTriples;
 import sudokusolver.solutions.SimpleColoring;
+import sudokusolver.solutions.WXYZWing;
 import sudokusolver.solutions.XCycles;
 import sudokusolver.solutions.XWing;
 import sudokusolver.solutions.XYChain;
@@ -24,51 +28,18 @@ import sudokusolver.solutions.XYZWing;
 import sudokusolver.solutions.YWing;
 
 public class SudokuSolver {
-	public static void main(String[] args) throws FileNotFoundException {
-		solveGnomeSudokuPuzzle("../Puzzles/easy");
-		solveGnomeSudokuPuzzle("../Puzzles/medium");
-		solveGnomeSudokuPuzzle("../Puzzles/hard");
-		solveGnomeSudokuPuzzle("../Puzzles/very_hard");
-	}
+	public static final String[] NO_DELIMITER_PUZZLES = new String[]{"../Puzzles/PuzzlesFromSudokuWiki"};
+	public static final String[] GNOME_PUZZLES = new String[]{"../Puzzles/easy", "../Puzzles/medium", "../Puzzles/hard", "../Puzzles/very_hard"};
 	
-	private static void solveGnomeSudokuPuzzle(String filename) throws FileNotFoundException {
-		File puzzleFile = new File(filename);
-		Scanner scanner = new Scanner(puzzleFile);
-		for (int puzzleIndex = 0; scanner.hasNextInt(); puzzleIndex++) {
-			int[] initialValues = new int[Puzzle.UNIT_SIZE * Puzzle.UNIT_SIZE];
-			for (int i = 0; i < initialValues.length; i++) {
-				initialValues[i] = scanner.nextInt();
-			}
-			scanner.nextLine();
-			Puzzle puzzle = new Puzzle(initialValues);
-			if (solve(puzzle)) {
-				puzzle.validateCompletePuzzle();
-				System.out.println(puzzleFile.getName() + " #" + puzzleIndex + ": solved");
-			} else {
-				System.out.println(puzzleFile.getName() + " #" + puzzleIndex + ": not solved");
-				System.out.println();
-				System.out.println();
-				System.out.println("Original puzzle:");
-				System.out.println();
-				for (int i = 0 ; i < initialValues.length; i++) {
-					System.out.print(initialValues[i]);
-					if ((i + 1) % Puzzle.UNIT_SIZE == 0) {
-						System.out.println();
-					} else {
-						System.out.print(' ');
-					}
-				}
-				System.out.println();
-				System.out.println();
-				System.out.println("Final state:");
-				System.out.println();
-				System.out.println(puzzle);
-				System.out.println();
-				System.out.println(puzzle.getSudokuWikiURL());
-				System.exit(0);
-			}
+	public static void main(String[] args) throws IOException {
+		for (String filename : NO_DELIMITER_PUZZLES) {
+			File puzzleFile = new File(filename);
+			solvePuzzles(loadNoDelimiterTextFile(puzzleFile), puzzleFile.getName());
 		}
-		scanner.close();
+		for (String filename : GNOME_PUZZLES) {
+			File puzzleFile = new File(filename);
+			solvePuzzles(loadGnomeSudokuPuzzles(puzzleFile), puzzleFile.getName());
+		}
 	}
 	
 	public static boolean solve(Puzzle puzzle) {
@@ -87,7 +58,7 @@ public class SudokuSolver {
 				} else {
 					HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains = buildChains(puzzle);
 					if (SimpleColoring.simpleColoring(puzzle, chains) || YWing.yWing(puzzle) || XYZWing.xyzWing(puzzle) || XCycles.xCycles(puzzle, chains) ||
-							XYChain.xyChain(puzzle) || Medusa.medusa(puzzle) || HiddenUniqueRectangles.hiddenUniqueRectangles(puzzle) ||
+							XYChain.xyChain(puzzle) || Medusa.medusa(puzzle) || HiddenUniqueRectangles.hiddenUniqueRectangles(puzzle) || WXYZWing.wxyzWing(puzzle) ||
 							AlternatingInferenceChains.alternatingInferenceChains(puzzle)) {
 						changeMade = true;
 					}
@@ -96,6 +67,70 @@ public class SudokuSolver {
 			}
 		} while (changeMade && puzzle.getEmptyCellCount() != 0);
 		return puzzle.getEmptyCellCount() == 0;
+	}
+	
+	public static ArrayList<int[]> loadNoDelimiterTextFile(File puzzleFile) throws IOException {
+		ArrayList<int[]> puzzles = new ArrayList<int[]>();
+		BufferedReader reader = new BufferedReader(new FileReader(puzzleFile));
+		for (int nextChar = reader.read(); nextChar != -1; nextChar = reader.read()) {
+			int[] initialValues = new int[Puzzle.UNIT_SIZE * Puzzle.UNIT_SIZE];
+			initialValues[0] = Character.getNumericValue(nextChar);
+			for (int i = 1; i < initialValues.length; i++) {
+				initialValues[i] = Character.getNumericValue(reader.read());
+			}
+			reader.readLine();
+			puzzles.add(initialValues);
+		}
+		reader.close();
+		return puzzles;
+	}
+	
+	public static ArrayList<int[]> loadGnomeSudokuPuzzles(File puzzleFile) throws FileNotFoundException{
+		ArrayList<int[]> puzzles = new ArrayList<int[]>();
+		Scanner scanner = new Scanner(puzzleFile);
+		while (scanner.hasNextInt()) {
+			int[] initialValues = new int[Puzzle.UNIT_SIZE * Puzzle.UNIT_SIZE];
+			for (int i = 0; i < initialValues.length; i++) {
+				assert scanner.hasNextInt();
+				initialValues[i] = scanner.nextInt();
+			}
+			scanner.nextLine();
+			puzzles.add(initialValues);
+		}
+		scanner.close();
+		return puzzles;
+	}
+	
+	private static void solvePuzzles(ArrayList<int[]> puzzles, String filename) {
+		for (int i = 0; i < puzzles.size(); i++) {
+			Puzzle puzzle = new Puzzle(puzzles.get(i));
+			if (solve(puzzle)) {
+				puzzle.validateCompletePuzzle();
+				System.out.println(filename + " #" + i + ": solved");
+			} else {
+				System.out.println(filename + " #" + i + ": not solved");
+				System.out.println();
+				System.out.println();
+				System.out.println("Original puzzle:");
+				System.out.println();
+				for (int j = 0 ; j < puzzles.get(i).length; j++) {
+					System.out.print(puzzles.get(i)[j]);
+					if ((j + 1) % Puzzle.UNIT_SIZE == 0) {
+						System.out.println();
+					} else {
+						System.out.print(' ');
+					}
+				}
+				System.out.println();
+				System.out.println();
+				System.out.println("Final state:");
+				System.out.println();
+				System.out.println(puzzle);
+				System.out.println();
+				System.out.println(puzzle.getSudokuWikiURL());
+				System.exit(0);
+			}
+		}
 	}
 	
 	private static void checkForSolvedCells(Puzzle puzzle) {

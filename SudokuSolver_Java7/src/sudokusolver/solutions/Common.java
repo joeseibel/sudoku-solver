@@ -8,7 +8,9 @@ import java.util.Set;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.Pseudograph;
 
+import sudokusolver.Cell;
 import sudokusolver.SudokuEdge;
+import sudokusolver.SudokuNumber;
 import sudokusolver.VertexColor;
 
 public class Common {
@@ -88,5 +90,14 @@ public class Common {
 			cycle.pop();
 		}
 		return false;
+	}
+	
+	public static void addToValueList(HashMap<SudokuNumber, ArrayList<Cell>> map, SudokuNumber key, Cell value) {
+		ArrayList<Cell> valueList = map.get(key);
+		if (valueList == null) {
+			valueList = new ArrayList<Cell>();
+			map.put(key, valueList);
+		}
+		valueList.add(value);
 	}
 }

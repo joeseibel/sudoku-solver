@@ -10,10 +10,10 @@ import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Scanner;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -39,24 +39,24 @@ public class PuzzleViewer extends JFrame {
 		setVisible(true);
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException {
-		final File puzzleFile = new File(args[0]);
-		Scanner scanner = new Scanner(puzzleFile);
-		final int puzzleIndex = Integer.parseInt(args[1]);
-		for (int currentPuzzleIndex = 0; currentPuzzleIndex < puzzleIndex; currentPuzzleIndex++) {
-			scanner.nextLine();
+	public static void main(final String[] args) throws IOException {
+		ArrayList<int[]> puzzlesFromFile = null;
+		for (int i = 0; i < SudokuSolver.NO_DELIMITER_PUZZLES.length && puzzlesFromFile == null; i++) {
+			if (SudokuSolver.NO_DELIMITER_PUZZLES[i].equals(args[0])) {
+				puzzlesFromFile = SudokuSolver.loadNoDelimiterTextFile(new File(args[0]));
+			}
 		}
-		int[] initialValues = new int[Puzzle.UNIT_SIZE * Puzzle.UNIT_SIZE];
-		for (int i = 0; i < initialValues.length; i++) {
-			initialValues[i] = scanner.nextInt();
+		for (int i = 0; i < SudokuSolver.GNOME_PUZZLES.length && puzzlesFromFile == null; i++) {
+			if (SudokuSolver.GNOME_PUZZLES[i].equals(args[0])) {
+				puzzlesFromFile = SudokuSolver.loadGnomeSudokuPuzzles(new File(args[0]));
+			}
 		}
-		scanner.close();
-		final Puzzle puzzle = new Puzzle(initialValues);
+		final Puzzle puzzle = new Puzzle(puzzlesFromFile.get(Integer.parseInt(args[1])));
 		SudokuSolver.solve(puzzle);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new PuzzleViewer(puzzleFile.getName() + " #" + puzzleIndex, puzzle, null, null, null);
+				new PuzzleViewer(args[0] + " #" + args[1], puzzle, null, null, null);
 			}
 		});
 	}

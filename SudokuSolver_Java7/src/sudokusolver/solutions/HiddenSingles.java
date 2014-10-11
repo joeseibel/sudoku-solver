@@ -33,12 +33,7 @@ public class HiddenSingles {
 		HashMap<SudokuNumber, ArrayList<Cell>> potentialCells = new HashMap<SudokuNumber, ArrayList<Cell>>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleValue : cell.getPossibleValues()) {
-				ArrayList<Cell> potentialCellsForThisPossibleValue = potentialCells.get(possibleValue);
-				if (potentialCellsForThisPossibleValue == null) {
-					potentialCellsForThisPossibleValue = new ArrayList<Cell>();
-					potentialCells.put(possibleValue, potentialCellsForThisPossibleValue);
-				}
-				potentialCellsForThisPossibleValue.add(cell);
+				Common.addToValueList(potentialCells, possibleValue, cell);
 			}
 		}
 		boolean changeMade = false;

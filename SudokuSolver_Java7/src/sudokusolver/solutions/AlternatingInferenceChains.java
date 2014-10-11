@@ -93,12 +93,7 @@ public class AlternatingInferenceChains {
 		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<SudokuNumber, ArrayList<Cell>>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
-				ArrayList<Cell> cellsForNumberList = cellsForPossibleNumber.get(possibleNumber);
-				if (cellsForNumberList == null) {
-					cellsForNumberList = new ArrayList<Cell>();
-					cellsForPossibleNumber.put(possibleNumber, cellsForNumberList);
-				}
-				cellsForNumberList.add(cell);
+				Common.addToValueList(cellsForPossibleNumber, possibleNumber, cell);
 			}
 		}
 		for (Entry<SudokuNumber, ArrayList<Cell>> entry : cellsForPossibleNumber.entrySet()) {
