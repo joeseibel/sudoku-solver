@@ -34,7 +34,7 @@ public class HiddenPairs {
 			SudokuNumber possibleNumberOne = SudokuNumber.values()[i];
 			for (int j = i + 1; j < SudokuNumber.values().length; j++) {
 				SudokuNumber possibleNumberTwo = SudokuNumber.values()[j];
-				ArrayList<Cell> cellsWithEitherNumber = new ArrayList<Cell>();
+				ArrayList<Cell> cellsWithEitherNumber = new ArrayList<>();
 				for (Cell cell : unit) {
 					if (cell.getPossibleValues().contains(possibleNumberOne) || cell.getPossibleValues().contains(possibleNumberTwo)) {
 						cellsWithEitherNumber.add(cell);

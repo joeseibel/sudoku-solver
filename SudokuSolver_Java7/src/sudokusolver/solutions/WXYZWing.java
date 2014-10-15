@@ -11,7 +11,7 @@ import sudokusolver.SudokuNumber;
 
 public class WXYZWing {
 	public static boolean wxyzWing(Puzzle puzzle) {
-		ArrayList<Cell> emptyCells = new ArrayList<Cell>();
+		ArrayList<Cell> emptyCells = new ArrayList<>();
 		for (Cell cell : puzzle.getAllEmptyCells()) {
 			emptyCells.add(cell);
 		}
@@ -23,7 +23,7 @@ public class WXYZWing {
 					Cell thirdCell = emptyCells.get(k);
 					for (int l = k + 1; l < emptyCells.size(); l++) {
 						Cell fourthCell = emptyCells.get(l);
-						HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumbers = new HashMap<SudokuNumber, ArrayList<Cell>>();
+						HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumbers = new HashMap<>();
 						Cell[] fourCells = new Cell[]{firstCell, secondCell, thirdCell, fourthCell};
 						for (Cell cell : fourCells) {
 							for (SudokuNumber possibleNumber : cell.getPossibleValues()) {

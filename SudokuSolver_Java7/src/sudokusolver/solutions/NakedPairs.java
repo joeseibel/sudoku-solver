@@ -32,8 +32,8 @@ public class NakedPairs {
 	}
 	
 	private static ArrayList<Set<SudokuNumber>> findNakedPairs(Iterable<Cell> unit) {
-		ArrayList<Set<SudokuNumber>> encounteredPairs = new ArrayList<Set<SudokuNumber>>();
-		ArrayList<Set<SudokuNumber>> nakedPairs = new ArrayList<Set<SudokuNumber>>();
+		ArrayList<Set<SudokuNumber>> encounteredPairs = new ArrayList<>();
+		ArrayList<Set<SudokuNumber>> nakedPairs = new ArrayList<>();
 		for (Cell cell : unit) {
 			if (cell.getPossibleValues().size() == 2) {
 				if (encounteredPairs.contains(cell.getPossibleValues())) {

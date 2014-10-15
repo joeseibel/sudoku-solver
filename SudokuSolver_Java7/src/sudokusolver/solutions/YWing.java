@@ -10,7 +10,7 @@ import sudokusolver.SudokuNumber;
 
 public class YWing {
 	public static boolean yWing(Puzzle puzzle) {
-		ArrayList<Cell> cellsWithTwoPossibleValues = new ArrayList<Cell>();
+		ArrayList<Cell> cellsWithTwoPossibleValues = new ArrayList<>();
 		for (Cell cell : puzzle.getAllEmptyCells()) {
 			if (cell.getPossibleValues().size() == 2) {
 				cellsWithTwoPossibleValues.add(cell);
@@ -20,8 +20,8 @@ public class YWing {
 			Iterator<SudokuNumber> iter = pivotCell.getPossibleValues().iterator();
 			SudokuNumber possibleA = iter.next();
 			SudokuNumber possibleB = iter.next();
-			ArrayList<Cell> wingACandidates = new ArrayList<Cell>();
-			ArrayList<Cell> wingBCandidates = new ArrayList<Cell>();
+			ArrayList<Cell> wingACandidates = new ArrayList<>();
+			ArrayList<Cell> wingBCandidates = new ArrayList<>();
 			for (Cell wingCandidate : cellsWithTwoPossibleValues) {
 				if (!wingCandidate.equals(pivotCell) && wingCandidate.isInSameUnit(pivotCell)) {
 					if (wingCandidate.getPossibleValues().contains(possibleA) && !wingCandidate.getPossibleValues().contains(possibleB)) {

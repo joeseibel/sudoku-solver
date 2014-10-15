@@ -10,7 +10,7 @@ import sudokusolver.SudokuNumber;
 
 public class XYChain {
 	public static boolean xyChain(Puzzle puzzle) {
-		ArrayList<Cell> cellsWithTwoPossibleValues = new ArrayList<Cell>();
+		ArrayList<Cell> cellsWithTwoPossibleValues = new ArrayList<>();
 		for (Cell cell : puzzle.getAllEmptyCells()) {
 			if (cell.getPossibleValues().size() == 2) {
 				cellsWithTwoPossibleValues.add(cell);

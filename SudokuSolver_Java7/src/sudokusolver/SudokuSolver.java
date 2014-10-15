@@ -70,7 +70,7 @@ public class SudokuSolver {
 	}
 	
 	public static ArrayList<int[]> loadNoDelimiterTextFile(File puzzleFile) throws IOException {
-		ArrayList<int[]> puzzles = new ArrayList<int[]>();
+		ArrayList<int[]> puzzles = new ArrayList<>();
 		BufferedReader reader = new BufferedReader(new FileReader(puzzleFile));
 		for (int nextChar = reader.read(); nextChar != -1; nextChar = reader.read()) {
 			int[] initialValues = new int[Puzzle.UNIT_SIZE * Puzzle.UNIT_SIZE];
@@ -86,7 +86,7 @@ public class SudokuSolver {
 	}
 	
 	public static ArrayList<int[]> loadGnomeSudokuPuzzles(File puzzleFile) throws FileNotFoundException{
-		ArrayList<int[]> puzzles = new ArrayList<int[]>();
+		ArrayList<int[]> puzzles = new ArrayList<>();
 		Scanner scanner = new Scanner(puzzleFile);
 		while (scanner.hasNextInt()) {
 			int[] initialValues = new int[Puzzle.UNIT_SIZE * Puzzle.UNIT_SIZE];
@@ -144,9 +144,9 @@ public class SudokuSolver {
 	}
 	
 	private static HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> buildChains(Puzzle puzzle) {
-		HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains = new HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>>();
+		HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains = new HashMap<>();
 		for (SudokuNumber possibleNumber : SudokuNumber.values()) {
-			Pseudograph<Cell, SudokuEdge> possibleGraph = new Pseudograph<Cell, SudokuEdge>(SudokuEdge.class);
+			Pseudograph<Cell, SudokuEdge> possibleGraph = new Pseudograph<>(SudokuEdge.class);
 			for (Iterable<Cell> row : puzzle.getAllRows()) {
 				addConjugatePairToGraph(row, possibleNumber, possibleGraph);
 			}
@@ -165,7 +165,7 @@ public class SudokuSolver {
 	
 	private static void addConjugatePairToGraph(Iterable<Cell> unit, SudokuNumber possibleNumber,
 			Pseudograph<Cell, SudokuEdge> possibleGraph) {
-		ArrayList<Cell> possibleCellsInUnit = new ArrayList<Cell>();
+		ArrayList<Cell> possibleCellsInUnit = new ArrayList<>();
 		for (Cell cell : unit) {
 			if (cell.getPossibleValues().contains(possibleNumber)) {
 				possibleCellsInUnit.add(cell);

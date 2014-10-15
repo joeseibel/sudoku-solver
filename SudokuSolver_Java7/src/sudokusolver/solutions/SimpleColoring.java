@@ -16,9 +16,9 @@ public class SimpleColoring {
 	public static boolean simpleColoring(Puzzle puzzle, HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
 		boolean changeMade = false;
 		for (Entry<SudokuNumber, Pseudograph<Cell, SudokuEdge>> entry : chains.entrySet()) {
-			ArrayList<HashMap<Cell, VertexColor>> coloredChains = new ArrayList<HashMap<Cell, VertexColor>>();
+			ArrayList<HashMap<Cell, VertexColor>> coloredChains = new ArrayList<>();
 			for (Pseudograph<Cell, SudokuEdge> chain : Common.getConnectedSubgraphs(entry.getValue(), SudokuEdge.class)) {
-				HashMap<Cell, VertexColor> vertexColors = new HashMap<Cell, VertexColor>();
+				HashMap<Cell, VertexColor> vertexColors = new HashMap<>();
 				Cell firstCell = chain.vertexSet().iterator().next();
 				vertexColors.put(firstCell, VertexColor.BLACK);
 				Common.colorGraph(chain, vertexColors, firstCell, VertexColor.BLUE);
@@ -47,7 +47,7 @@ public class SimpleColoring {
 	}
 	
 	private static VertexColor searchForSameColorInSameUnit(HashMap<Cell, VertexColor> cellColors) {
-		ArrayList<Entry<Cell, VertexColor>> entryList = new ArrayList<Entry<Cell,VertexColor>>(cellColors.entrySet());
+		ArrayList<Entry<Cell, VertexColor>> entryList = new ArrayList<>(cellColors.entrySet());
 		for (int i = 0; i < entryList.size() - 1; i++) {
 			for (int j = i + 1; j < entryList.size(); j++) {
 				if (entryList.get(i).getValue().equals(entryList.get(j).getValue()) &&

@@ -37,7 +37,7 @@ public class XCycles {
 	}
 	
 	private static void addWeakPairToGraph(Iterable<Cell> unit, SudokuNumber possibleNumber, Pseudograph<Cell, SudokuEdge> possibleGraph) {
-		ArrayList<Cell> possibleCellsInUnit = new ArrayList<Cell>();
+		ArrayList<Cell> possibleCellsInUnit = new ArrayList<>();
 		for (Cell cell : unit) {
 			if (cell.getPossibleValues().contains(possibleNumber)) {
 				possibleCellsInUnit.add(cell);
@@ -58,7 +58,7 @@ public class XCycles {
 	
 	private static boolean xCyclesNiceLoopsRule2(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> graph, SudokuNumber possibleNumber) {
 		for (Cell vertex : graph.vertexSet()) {
-			ArrayList<SudokuEdge> strongLinks = new ArrayList<SudokuEdge>();
+			ArrayList<SudokuEdge> strongLinks = new ArrayList<>();
 			for (SudokuEdge edge : graph.edgesOf(vertex)) {
 				if (edge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) {
 					strongLinks.add(edge);
@@ -67,7 +67,7 @@ public class XCycles {
 			for (int i = 0; i < strongLinks.size() - 1; i++) {
 				Cell nextVertex = Common.getOtherVertex(graph, strongLinks.get(i), vertex);
 				for (int j = i + 1; j < strongLinks.size(); j++) {
-					ArrayDeque<Cell> cycle = new ArrayDeque<Cell>();
+					ArrayDeque<Cell> cycle = new ArrayDeque<>();
 					cycle.push(vertex);
 					cycle.push(nextVertex);
 					if (Common.findAlternatingLinkCycle(graph, strongLinks.get(j), true, cycle, nextVertex, false)) {
@@ -87,7 +87,7 @@ public class XCycles {
 			for (int i = 0; i < edges.length - 1; i++) {
 				Cell nextVertex = Common.getOtherVertex(graph, edges[i], vertex);
 				for (int j = i + 1; j < edges.length; j++) {
-					ArrayDeque<Cell> cycle = new ArrayDeque<Cell>();
+					ArrayDeque<Cell> cycle = new ArrayDeque<>();
 					cycle.push(vertex);
 					cycle.push(nextVertex);
 					if (Common.findAlternatingLinkCycle(graph, edges[j], false, cycle, nextVertex, true)) {

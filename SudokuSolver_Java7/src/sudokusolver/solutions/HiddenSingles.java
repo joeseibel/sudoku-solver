@@ -30,7 +30,7 @@ public class HiddenSingles {
 	}
 	
 	private static boolean hiddenSingles(Puzzle puzzle, Iterable<Cell> unit) {
-		HashMap<SudokuNumber, ArrayList<Cell>> potentialCells = new HashMap<SudokuNumber, ArrayList<Cell>>();
+		HashMap<SudokuNumber, ArrayList<Cell>> potentialCells = new HashMap<>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleValue : cell.getPossibleValues()) {
 				Common.addToValueList(potentialCells, possibleValue, cell);

@@ -15,13 +15,13 @@ import sudokusolver.VertexColor;
 
 public class Common {
 	public static <V, E> ArrayList<Pseudograph<V, E>> getConnectedSubgraphs(Pseudograph<V, E> graph, Class<? extends E> edgeClass) {
-		ArrayList<Pseudograph<V, E>> connectedSubgraphs = new ArrayList<Pseudograph<V,E>>();
-		ConnectivityInspector<V, E> inspector = new ConnectivityInspector<V, E>(graph);
+		ArrayList<Pseudograph<V, E>> connectedSubgraphs = new ArrayList<>();
+		ConnectivityInspector<V, E> inspector = new ConnectivityInspector<>(graph);
 		if (inspector.isGraphConnected()) {
 			connectedSubgraphs.add(graph);
 		} else {
 			for (Set<V> subgraphVerticies : inspector.connectedSets()) {
-				Pseudograph<V, E> subgraph = new Pseudograph<V, E>(edgeClass);
+				Pseudograph<V, E> subgraph = new Pseudograph<>(edgeClass);
 				for (V vertex : subgraphVerticies) {
 					subgraph.addVertex(vertex);
 				}
@@ -62,7 +62,7 @@ public class Common {
 	
 	public static <V> boolean findAlternatingLinkCycle(Pseudograph<V, SudokuEdge> graph, SudokuEdge finalEdge, boolean finalLinkMustBeStrong, ArrayDeque<V> cycle,
 			V vertex, boolean nextLinkMustBeStrong) {
-		ArrayList<V> possibleNextVerticies = new ArrayList<V>();
+		ArrayList<V> possibleNextVerticies = new ArrayList<>();
 		for (SudokuEdge nextEdge : graph.edgesOf(vertex)) {
 			if (nextEdge.equals(finalEdge)) {
 				if (finalLinkMustBeStrong) {
@@ -95,7 +95,7 @@ public class Common {
 	public static void addToValueList(HashMap<SudokuNumber, ArrayList<Cell>> map, SudokuNumber key, Cell value) {
 		ArrayList<Cell> valueList = map.get(key);
 		if (valueList == null) {
-			valueList = new ArrayList<Cell>();
+			valueList = new ArrayList<>();
 			map.put(key, valueList);
 		}
 		valueList.add(value);

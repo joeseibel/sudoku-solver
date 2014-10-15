@@ -17,7 +17,7 @@ import sudokusolver.VertexColor;
 
 public class Medusa {
 	public static boolean medusa(Puzzle puzzle) {
-		Pseudograph<PossibleNumberInCell, DefaultEdge> graph = new Pseudograph<PossibleNumberInCell, DefaultEdge>(DefaultEdge.class);
+		Pseudograph<PossibleNumberInCell, DefaultEdge> graph = new Pseudograph<>(DefaultEdge.class);
 		for (Iterable<Cell> row : puzzle.getAllRows()) {
 			buildGraphForUnit(graph, row);
 		}
@@ -39,7 +39,7 @@ public class Medusa {
 		}
 		if (!graph.vertexSet().isEmpty()) {
 			for (Pseudograph<PossibleNumberInCell, DefaultEdge> subgraph : Common.getConnectedSubgraphs(graph, DefaultEdge.class)) {
-				HashMap<PossibleNumberInCell, VertexColor> vertexColors = new HashMap<PossibleNumberInCell, VertexColor>();
+				HashMap<PossibleNumberInCell, VertexColor> vertexColors = new HashMap<>();
 				PossibleNumberInCell firstVertex = subgraph.vertexSet().iterator().next();
 				vertexColors.put(firstVertex, VertexColor.BLACK);
 				Common.colorGraph(subgraph, vertexColors, firstVertex, VertexColor.BLUE);
@@ -53,7 +53,7 @@ public class Medusa {
 	}
 	
 	private static void buildGraphForUnit(Pseudograph<PossibleNumberInCell, DefaultEdge> graph, Iterable<Cell> unit) {
-		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<SudokuNumber, ArrayList<Cell>>();
+		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
 				Common.addToValueList(cellsForPossibleNumber, possibleNumber, cell);
@@ -71,7 +71,7 @@ public class Medusa {
 	}
 	
 	private static boolean medusaTwoColorsElsewhere(Puzzle puzzle, HashMap<PossibleNumberInCell, VertexColor> vertexColors) {
-		HashSet<Cell> cellsContainingColors = new HashSet<Cell>();
+		HashSet<Cell> cellsContainingColors = new HashSet<>();
 		for (PossibleNumberInCell possibleNumberInCell : vertexColors.keySet()) {
 			cellsContainingColors.add(possibleNumberInCell.getCell());
 		}

@@ -159,7 +159,7 @@ public class Puzzle {
 	}
 	
 	public ArrayList<ArrayList<Cell>> getRectangles() {
-		ArrayList<ArrayList<Cell>> rectangles = new ArrayList<ArrayList<Cell>>();
+		ArrayList<ArrayList<Cell>> rectangles = new ArrayList<>();
 		for (int topRow = 0; topRow < UNIT_SIZE - 1; topRow++) {
 			for (int bottomRow = topRow + 1; bottomRow < UNIT_SIZE; bottomRow++) {
 				for (int leftColumn = 0; leftColumn < UNIT_SIZE - 1; leftColumn++) {
@@ -176,7 +176,7 @@ public class Puzzle {
 							if (topRight.getValue() == null && bottomRight.getValue() == null &&
 									((topRowBlock == bottomRowBlock && leftColumnBlock != rightColumnBlock) ||
 											(topRowBlock != bottomRowBlock && leftColumnBlock == rightColumnBlock))) {
-								ArrayList<Cell> rectangle = new ArrayList<Cell>();
+								ArrayList<Cell> rectangle = new ArrayList<>();
 								rectangle.add(topLeft);
 								rectangle.add(topRight);
 								rectangle.add(bottomLeft);

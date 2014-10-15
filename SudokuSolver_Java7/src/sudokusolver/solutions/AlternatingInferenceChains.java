@@ -15,7 +15,7 @@ import sudokusolver.SudokuNumber;
 
 public class AlternatingInferenceChains {
 	public static boolean alternatingInferenceChains(Puzzle puzzle) {
-		Pseudograph<PossibleNumberInCell, SudokuEdge> graph = new Pseudograph<PossibleNumberInCell, SudokuEdge>(SudokuEdge.class);
+		Pseudograph<PossibleNumberInCell, SudokuEdge> graph = new Pseudograph<>(SudokuEdge.class);
 		for (Iterable<Cell> row : puzzle.getAllRows()) {
 			addPairsToGraph(row, graph);
 		}
@@ -46,7 +46,7 @@ public class AlternatingInferenceChains {
 	
 	private static boolean alternatingInferenceChainsNiceLoopsRule2(Puzzle puzzle, Pseudograph<PossibleNumberInCell, SudokuEdge> graph) {
 		for (PossibleNumberInCell vertex : graph.vertexSet()) {
-			ArrayList<SudokuEdge> strongLinks = new ArrayList<SudokuEdge>();
+			ArrayList<SudokuEdge> strongLinks = new ArrayList<>();
 			for (SudokuEdge edge : graph.edgesOf(vertex)) {
 				if (edge.getLinkType().equals(SudokuEdge.LinkType.STRONG_LINK)) {
 					strongLinks.add(edge);
@@ -55,7 +55,7 @@ public class AlternatingInferenceChains {
 			for (int i = 0; i < strongLinks.size() - 1; i++) {
 				PossibleNumberInCell nextVertex = Common.getOtherVertex(graph, strongLinks.get(i), vertex);
 				for (int j = i + 1; j < strongLinks.size(); j++) {
-					ArrayDeque<PossibleNumberInCell> cycle = new ArrayDeque<PossibleNumberInCell>();
+					ArrayDeque<PossibleNumberInCell> cycle = new ArrayDeque<>();
 					cycle.push(vertex);
 					cycle.push(nextVertex);
 					if (Common.findAlternatingLinkCycle(graph, strongLinks.get(j), true, cycle, nextVertex, false)) {
@@ -75,7 +75,7 @@ public class AlternatingInferenceChains {
 			for (int i = 0; i < edges.length - 1; i++) {
 				PossibleNumberInCell nextVertex = Common.getOtherVertex(graph, edges[i], vertex);
 				for (int j = i + 1; j < edges.length; j++) {
-					ArrayDeque<PossibleNumberInCell> cycle = new ArrayDeque<PossibleNumberInCell>();
+					ArrayDeque<PossibleNumberInCell> cycle = new ArrayDeque<>();
 					cycle.push(vertex);
 					cycle.push(nextVertex);
 					if (Common.findAlternatingLinkCycle(graph, edges[j], false, cycle, nextVertex, true)) {
@@ -90,7 +90,7 @@ public class AlternatingInferenceChains {
 	}
 	
 	private static void addPairsToGraph(Iterable<Cell> unit, Pseudograph<PossibleNumberInCell, SudokuEdge> possibleGraph) {
-		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<SudokuNumber, ArrayList<Cell>>();
+		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
 				Common.addToValueList(cellsForPossibleNumber, possibleNumber, cell);

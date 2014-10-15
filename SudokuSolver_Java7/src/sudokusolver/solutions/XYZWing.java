@@ -9,8 +9,8 @@ import sudokusolver.SudokuNumber;
 
 public class XYZWing {
 	public static boolean xyzWing(Puzzle puzzle) {
-		ArrayList<Cell> cellsWithThreePossibleValues = new ArrayList<Cell>();
-		ArrayList<Cell> cellsWithTwoPossibleValues = new ArrayList<Cell>();
+		ArrayList<Cell> cellsWithThreePossibleValues = new ArrayList<>();
+		ArrayList<Cell> cellsWithTwoPossibleValues = new ArrayList<>();
 		for (Cell cell : puzzle.getAllEmptyCells()) {
 			if (cell.getPossibleValues().size() == 3) {
 				cellsWithThreePossibleValues.add(cell);
@@ -19,7 +19,7 @@ public class XYZWing {
 			}
 		}
 		for (Cell pivotCell : cellsWithThreePossibleValues) {
-			ArrayList<Cell> wingCandidates = new ArrayList<Cell>();
+			ArrayList<Cell> wingCandidates = new ArrayList<>();
 			for (Cell cell : cellsWithTwoPossibleValues) {
 				if (pivotCell.isInSameUnit(cell) && pivotCell.getPossibleValues().containsAll(cell.getPossibleValues())) {
 					wingCandidates.add(cell);

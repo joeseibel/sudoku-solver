@@ -79,9 +79,9 @@ public class XWing {
 	}
 	
 	private static ArrayList<ArrayList<Cell>> getUnitPairs(SudokuNumber possibleNumber, Iterable<Iterable<Cell>> units) {
-		ArrayList<ArrayList<Cell>> unitPairs = new ArrayList<ArrayList<Cell>>();
+		ArrayList<ArrayList<Cell>> unitPairs = new ArrayList<>();
 		for (Iterable<Cell> unit : units) {
-			ArrayList<Cell> pairForCurrentUnit = new ArrayList<Cell>();
+			ArrayList<Cell> pairForCurrentUnit = new ArrayList<>();
 			for (Cell cell : unit) {
 				if (cell.getPossibleValues().contains(possibleNumber)) {
 					pairForCurrentUnit.add(cell);

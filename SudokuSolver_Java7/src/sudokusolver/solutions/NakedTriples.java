@@ -29,7 +29,7 @@ public class NakedTriples {
 	}
 	
 	private static boolean nakedTriplesForUnit(Puzzle puzzle, Iterable<Cell> unit) {
-		ArrayList<Cell> cellsWithTwoOrThreePossibleValues = new ArrayList<Cell>();
+		ArrayList<Cell> cellsWithTwoOrThreePossibleValues = new ArrayList<>();
 		for (Cell cell : unit) {
 			if (cell.getPossibleValues().size() == 2 || cell.getPossibleValues().size() == 3) {
 				cellsWithTwoOrThreePossibleValues.add(cell);
