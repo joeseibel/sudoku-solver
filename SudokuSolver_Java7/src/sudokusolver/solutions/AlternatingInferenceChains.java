@@ -12,6 +12,7 @@ import sudokusolver.PossibleNumberInCell;
 import sudokusolver.Puzzle;
 import sudokusolver.SudokuEdge;
 import sudokusolver.SudokuNumber;
+import sudokusolver.Util;
 
 public class AlternatingInferenceChains {
 	public static boolean alternatingInferenceChains(Puzzle puzzle) {
@@ -93,7 +94,7 @@ public class AlternatingInferenceChains {
 		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
-				Common.addToValueList(cellsForPossibleNumber, possibleNumber, cell);
+				Util.addToValueList(cellsForPossibleNumber, possibleNumber, cell);
 			}
 		}
 		for (Entry<SudokuNumber, ArrayList<Cell>> entry : cellsForPossibleNumber.entrySet()) {

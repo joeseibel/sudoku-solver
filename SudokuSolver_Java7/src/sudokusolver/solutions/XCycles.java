@@ -14,46 +14,12 @@ import sudokusolver.SudokuNumber;
 
 public class XCycles {
 	public static boolean xCycles(Puzzle puzzle, HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
-		boolean changeMade = false;
 		for (Entry<SudokuNumber, Pseudograph<Cell, SudokuEdge>> entry : chains.entrySet()) {
-			buildWeakLinks(puzzle, entry.getKey(), entry.getValue());
 			if (xCyclesNiceLoopsRule2(puzzle, entry.getValue(), entry.getKey()) || xCyclesNiceLoopsRule3(puzzle, entry.getValue(), entry.getKey())) {
 				return true;
 			}
 		}
-		return changeMade;
-	}
-	
-	private static void buildWeakLinks(Puzzle puzzle, SudokuNumber possibleNumber, Pseudograph<Cell, SudokuEdge> graph) {
-		for (Iterable<Cell> row : puzzle.getAllRows()) {
-			addWeakPairToGraph(row, possibleNumber, graph);
-		}
-		for (Iterable<Cell> column : puzzle.getAllColumns()) {
-			addWeakPairToGraph(column, possibleNumber, graph);
-		}
-		for (Iterable<Cell> block : puzzle.getAllBlocks()) {
-			addWeakPairToGraph(block, possibleNumber, graph);
-		}
-	}
-	
-	private static void addWeakPairToGraph(Iterable<Cell> unit, SudokuNumber possibleNumber, Pseudograph<Cell, SudokuEdge> possibleGraph) {
-		ArrayList<Cell> possibleCellsInUnit = new ArrayList<>();
-		for (Cell cell : unit) {
-			if (cell.getPossibleValues().contains(possibleNumber)) {
-				possibleCellsInUnit.add(cell);
-			}
-		}
-		for (int i = 0; i < possibleCellsInUnit.size() - 1; i++) {
-			Cell firstCell = possibleCellsInUnit.get(i);
-			for (int j = i + 1; j < possibleCellsInUnit.size(); j++) {
-				Cell secondCell = possibleCellsInUnit.get(j);
-				if (!possibleGraph.containsEdge(firstCell, secondCell)) {
-					possibleGraph.addVertex(firstCell);
-					possibleGraph.addVertex(secondCell);
-					possibleGraph.addEdge(firstCell, secondCell).setLinkType(SudokuEdge.LinkType.WEAK_LINK);
-				}
-			}
-		}
+		return false;
 	}
 	
 	private static boolean xCyclesNiceLoopsRule2(Puzzle puzzle, Pseudograph<Cell, SudokuEdge> graph, SudokuNumber possibleNumber) {

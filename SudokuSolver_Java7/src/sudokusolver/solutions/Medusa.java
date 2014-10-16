@@ -13,6 +13,7 @@ import sudokusolver.Cell;
 import sudokusolver.PossibleNumberInCell;
 import sudokusolver.Puzzle;
 import sudokusolver.SudokuNumber;
+import sudokusolver.Util;
 import sudokusolver.VertexColor;
 
 public class Medusa {
@@ -56,7 +57,7 @@ public class Medusa {
 		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
-				Common.addToValueList(cellsForPossibleNumber, possibleNumber, cell);
+				Util.addToValueList(cellsForPossibleNumber, possibleNumber, cell);
 			}
 		}
 		for (Entry<SudokuNumber, ArrayList<Cell>> entry : cellsForPossibleNumber.entrySet()) {

@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import org.jgrapht.graph.Pseudograph;
@@ -57,12 +58,16 @@ public class SudokuSolver {
 					changeMade = true;
 				} else {
 					HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains = buildChains(puzzle);
-					if (SimpleColoring.simpleColoring(puzzle, chains) || YWing.yWing(puzzle) || XYZWing.xyzWing(puzzle) || XCycles.xCycles(puzzle, chains) ||
-							XYChain.xyChain(puzzle) || Medusa.medusa(puzzle) || HiddenUniqueRectangles.hiddenUniqueRectangles(puzzle) || WXYZWing.wxyzWing(puzzle) ||
-							AlternatingInferenceChains.alternatingInferenceChains(puzzle)) {
+					if (SimpleColoring.simpleColoring(puzzle, chains) || YWing.yWing(puzzle) || XYZWing.xyzWing(puzzle)) {
 						changeMade = true;
+					} else {
+						buildWeakLinks(puzzle, chains);
+						if (XCycles.xCycles(puzzle, chains) || XYChain.xyChain(puzzle) || Medusa.medusa(puzzle) || HiddenUniqueRectangles.hiddenUniqueRectangles(puzzle) ||
+								WXYZWing.wxyzWing(puzzle) || AlternatingInferenceChains.alternatingInferenceChains(puzzle)) {
+							changeMade = true;
+						}
+						//TODO: Put solutions here.
 					}
-					//TODO: Put solutions here.
 				}
 			}
 		} while (changeMade && puzzle.getEmptyCellCount() != 0);
@@ -178,6 +183,44 @@ public class SudokuSolver {
 				possibleGraph.addVertex(firstCell);
 				possibleGraph.addVertex(secondCell);
 				possibleGraph.addEdge(firstCell, secondCell).setLinkType(SudokuEdge.LinkType.STRONG_LINK);
+			}
+		}
+	}
+	
+	private static void buildWeakLinks(Puzzle puzzle, HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
+		for (Iterable<Cell> row : puzzle.getAllRows()) {
+			addWeakPairsToGraph(row, chains);
+		}
+		for (Iterable<Cell> column : puzzle.getAllColumns()) {
+			addWeakPairsToGraph(column, chains);
+		}
+		for (Iterable<Cell> block : puzzle.getAllBlocks()) {
+			addWeakPairsToGraph(block, chains);
+		}
+	}
+	
+	private static void addWeakPairsToGraph(Iterable<Cell> unit, HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
+		HashMap<SudokuNumber, ArrayList<Cell>> possibleCellsInUnit = new HashMap<>();
+		for (Cell cell : unit) {
+			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
+				Util.addToValueList(possibleCellsInUnit, possibleNumber, cell);
+			}
+		}
+		for (Entry<SudokuNumber, ArrayList<Cell>> entry : possibleCellsInUnit.entrySet()) {
+			if (chains.get(entry.getKey()) == null) {
+				chains.put(entry.getKey(), new Pseudograph<Cell, SudokuEdge>(SudokuEdge.class));
+			}
+			for (int i = 0; i < possibleCellsInUnit.get(entry.getKey()).size() - 1; i++) {
+				Cell firstCell = possibleCellsInUnit.get(entry.getKey()).get(i);
+				for (int j = i + 1; j < possibleCellsInUnit.get(entry.getKey()).size(); j++) {
+					Cell secondCell = possibleCellsInUnit.get(entry.getKey()).get(j);
+					Pseudograph<Cell, SudokuEdge> graph = chains.get(entry.getKey());
+					if (!graph.containsEdge(firstCell, secondCell)) {
+						graph.addVertex(firstCell);
+						graph.addVertex(secondCell);
+						graph.addEdge(firstCell, secondCell).setLinkType(SudokuEdge.LinkType.WEAK_LINK);
+					}
+				}
 			}
 		}
 	}

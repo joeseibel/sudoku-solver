@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import sudokusolver.Cell;
 import sudokusolver.Puzzle;
 import sudokusolver.SudokuNumber;
+import sudokusolver.Util;
 
 public class WXYZWing {
 	public static boolean wxyzWing(Puzzle puzzle) {
@@ -27,7 +28,7 @@ public class WXYZWing {
 						Cell[] fourCells = new Cell[]{firstCell, secondCell, thirdCell, fourthCell};
 						for (Cell cell : fourCells) {
 							for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
-								Common.addToValueList(cellsForPossibleNumbers, possibleNumber, cell);
+								Util.addToValueList(cellsForPossibleNumbers, possibleNumber, cell);
 							}
 						}
 						if (cellsForPossibleNumbers.size() == 4) {

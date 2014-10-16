@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import sudokusolver.Cell;
 import sudokusolver.Puzzle;
 import sudokusolver.SudokuNumber;
+import sudokusolver.Util;
 
 public class HiddenSingles {
 	public static boolean hiddenSingles(Puzzle puzzle) {
@@ -33,7 +34,7 @@ public class HiddenSingles {
 		HashMap<SudokuNumber, ArrayList<Cell>> potentialCells = new HashMap<>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleValue : cell.getPossibleValues()) {
-				Common.addToValueList(potentialCells, possibleValue, cell);
+				Util.addToValueList(potentialCells, possibleValue, cell);
 			}
 		}
 		boolean changeMade = false;
