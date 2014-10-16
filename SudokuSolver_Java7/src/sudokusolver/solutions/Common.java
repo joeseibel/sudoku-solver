@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
-import org.jgrapht.graph.Pseudograph;
+import org.jgrapht.graph.SimpleGraph;
 
 import sudokusolver.SudokuEdge;
 import sudokusolver.VertexColor;
@@ -20,7 +20,7 @@ public class Common {
 			connectedSubgraphs.add(graph);
 		} else {
 			for (Set<V> subgraphVerticies : inspector.connectedSets()) {
-				Pseudograph<V, E> subgraph = new Pseudograph<>(edgeClass);
+				SimpleGraph<V, E> subgraph = new SimpleGraph<>(edgeClass);
 				for (V vertex : subgraphVerticies) {
 					subgraph.addVertex(vertex);
 				}

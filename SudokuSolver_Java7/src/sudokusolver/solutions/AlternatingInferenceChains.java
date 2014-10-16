@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.jgrapht.graph.Pseudograph;
+import org.jgrapht.graph.SimpleGraph;
 
 import sudokusolver.Cell;
 import sudokusolver.PossibleNumberInCell;
@@ -16,7 +16,7 @@ import sudokusolver.Util;
 
 public class AlternatingInferenceChains {
 	public static boolean alternatingInferenceChains(Puzzle puzzle) {
-		Pseudograph<PossibleNumberInCell, SudokuEdge> graph = new Pseudograph<>(SudokuEdge.class);
+		SimpleGraph<PossibleNumberInCell, SudokuEdge> graph = new SimpleGraph<>(SudokuEdge.class);
 		for (Iterable<Cell> row : puzzle.getAllRows()) {
 			addPairsToGraph(row, graph);
 		}
@@ -45,7 +45,7 @@ public class AlternatingInferenceChains {
 		return false;
 	}
 	
-	private static boolean alternatingInferenceChainsNiceLoopsRule2(Puzzle puzzle, Pseudograph<PossibleNumberInCell, SudokuEdge> graph) {
+	private static boolean alternatingInferenceChainsNiceLoopsRule2(Puzzle puzzle, SimpleGraph<PossibleNumberInCell, SudokuEdge> graph) {
 		for (PossibleNumberInCell vertex : graph.vertexSet()) {
 			ArrayList<SudokuEdge> strongLinks = new ArrayList<>();
 			for (SudokuEdge edge : graph.edgesOf(vertex)) {
@@ -70,7 +70,7 @@ public class AlternatingInferenceChains {
 		return false;
 	}
 	
-	private static boolean alternatingInferenceChainsNiceLoopsRule3(Puzzle puzzle, Pseudograph<PossibleNumberInCell, SudokuEdge> graph) {
+	private static boolean alternatingInferenceChainsNiceLoopsRule3(Puzzle puzzle, SimpleGraph<PossibleNumberInCell, SudokuEdge> graph) {
 		for (PossibleNumberInCell vertex : graph.vertexSet()) {
 			SudokuEdge[] edges = graph.edgesOf(vertex).toArray(new SudokuEdge[0]);
 			for (int i = 0; i < edges.length - 1; i++) {
@@ -90,7 +90,7 @@ public class AlternatingInferenceChains {
 		return false;
 	}
 	
-	private static void addPairsToGraph(Iterable<Cell> unit, Pseudograph<PossibleNumberInCell, SudokuEdge> possibleGraph) {
+	private static void addPairsToGraph(Iterable<Cell> unit, SimpleGraph<PossibleNumberInCell, SudokuEdge> possibleGraph) {
 		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {

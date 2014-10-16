@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.Pseudograph;
+import org.jgrapht.graph.SimpleGraph;
 
 import sudokusolver.Cell;
 import sudokusolver.PossibleNumberInCell;
@@ -19,7 +19,7 @@ import sudokusolver.VertexColor;
 
 public class Medusa {
 	public static boolean medusa(Puzzle puzzle) {
-		Pseudograph<PossibleNumberInCell, DefaultEdge> graph = new Pseudograph<>(DefaultEdge.class);
+		SimpleGraph<PossibleNumberInCell, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
 		for (Iterable<Cell> row : puzzle.getAllRows()) {
 			buildGraphForUnit(graph, row);
 		}
@@ -54,7 +54,7 @@ public class Medusa {
 		return false;
 	}
 	
-	private static void buildGraphForUnit(Pseudograph<PossibleNumberInCell, DefaultEdge> graph, Iterable<Cell> unit) {
+	private static void buildGraphForUnit(SimpleGraph<PossibleNumberInCell, DefaultEdge> graph, Iterable<Cell> unit) {
 		HashMap<SudokuNumber, ArrayList<Cell>> cellsForPossibleNumber = new HashMap<>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {

@@ -19,7 +19,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.jgrapht.graph.Pseudograph;
+import org.jgrapht.graph.SimpleGraph;
 
 public class PuzzleViewer extends JFrame {
 	private static final int BOARD_PIXEL_SIZE = 500;
@@ -28,7 +28,7 @@ public class PuzzleViewer extends JFrame {
 	
 	private final BoardComponent drawingComponent;
 	
-	public PuzzleViewer(String title, Puzzle puzzle, Pseudograph<PossibleNumberInCell, SudokuEdge> graph, ArrayDeque<PossibleNumberInCell> cycle, Object lock) {
+	public PuzzleViewer(String title, Puzzle puzzle, SimpleGraph<PossibleNumberInCell, SudokuEdge> graph, ArrayDeque<PossibleNumberInCell> cycle, Object lock) {
 		super(title);
 		this.lock = lock;
 		drawingComponent = new BoardComponent(puzzle, graph, cycle);
@@ -88,10 +88,10 @@ public class PuzzleViewer extends JFrame {
 		private static final Color MAIN_VALUE_COLOR = new Color(187, 0, 0, 200);
 		
 		private final Puzzle puzzle;
-		private final Pseudograph<PossibleNumberInCell, SudokuEdge> graph;
+		private final SimpleGraph<PossibleNumberInCell, SudokuEdge> graph;
 		private final ArrayDeque<PossibleNumberInCell> cycle;
 		
-		public BoardComponent(Puzzle puzzle, Pseudograph<PossibleNumberInCell, SudokuEdge> graph, ArrayDeque<PossibleNumberInCell> cycle) {
+		public BoardComponent(Puzzle puzzle, SimpleGraph<PossibleNumberInCell, SudokuEdge> graph, ArrayDeque<PossibleNumberInCell> cycle) {
 			this.puzzle = puzzle;
 			this.graph = graph;
 			this.cycle = cycle;

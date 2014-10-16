@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import org.jgrapht.graph.Pseudograph;
+import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.UnmodifiableUndirectedGraph;
 
 import sudokusolver.solutions.AlternatingInferenceChains;
@@ -60,7 +60,7 @@ public class SudokuSolver {
 						IntersectionRemoval.intersectionRemoval(puzzle) || XWing.xWing(puzzle)) {
 					changeMade = true;
 				} else {
-					HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains = buildChains(puzzle);
+					HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> chains = buildChains(puzzle);
 					if (SimpleColoring.simpleColoring(puzzle, unmodifiableView(chains)) || YWing.yWing(puzzle) || XYZWing.xyzWing(puzzle)) {
 						changeMade = true;
 					} else {
@@ -152,10 +152,10 @@ public class SudokuSolver {
 		} while (emptyCellCountBeforeSolution != puzzle.getEmptyCellCount());
 	}
 	
-	private static HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> buildChains(Puzzle puzzle) {
-		HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains = new HashMap<>();
+	private static HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> buildChains(Puzzle puzzle) {
+		HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> chains = new HashMap<>();
 		for (SudokuNumber possibleNumber : SudokuNumber.values()) {
-			Pseudograph<Cell, SudokuEdge> possibleGraph = new Pseudograph<>(SudokuEdge.class);
+			SimpleGraph<Cell, SudokuEdge> possibleGraph = new SimpleGraph<>(SudokuEdge.class);
 			for (Iterable<Cell> row : puzzle.getAllRows()) {
 				addConjugatePairToGraph(row, possibleNumber, possibleGraph);
 			}
@@ -172,8 +172,7 @@ public class SudokuSolver {
 		return chains;
 	}
 	
-	private static void addConjugatePairToGraph(Iterable<Cell> unit, SudokuNumber possibleNumber,
-			Pseudograph<Cell, SudokuEdge> possibleGraph) {
+	private static void addConjugatePairToGraph(Iterable<Cell> unit, SudokuNumber possibleNumber, SimpleGraph<Cell, SudokuEdge> possibleGraph) {
 		ArrayList<Cell> possibleCellsInUnit = new ArrayList<>();
 		for (Cell cell : unit) {
 			if (cell.getPossibleValues().contains(possibleNumber)) {
@@ -191,7 +190,7 @@ public class SudokuSolver {
 		}
 	}
 	
-	private static void buildWeakLinks(Puzzle puzzle, HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
+	private static void buildWeakLinks(Puzzle puzzle, HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> chains) {
 		for (Iterable<Cell> row : puzzle.getAllRows()) {
 			addWeakPairsToGraph(row, chains);
 		}
@@ -203,7 +202,7 @@ public class SudokuSolver {
 		}
 	}
 	
-	private static void addWeakPairsToGraph(Iterable<Cell> unit, HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
+	private static void addWeakPairsToGraph(Iterable<Cell> unit, HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> chains) {
 		HashMap<SudokuNumber, ArrayList<Cell>> possibleCellsInUnit = new HashMap<>();
 		for (Cell cell : unit) {
 			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
@@ -212,13 +211,13 @@ public class SudokuSolver {
 		}
 		for (Entry<SudokuNumber, ArrayList<Cell>> entry : possibleCellsInUnit.entrySet()) {
 			if (chains.get(entry.getKey()) == null) {
-				chains.put(entry.getKey(), new Pseudograph<Cell, SudokuEdge>(SudokuEdge.class));
+				chains.put(entry.getKey(), new SimpleGraph<Cell, SudokuEdge>(SudokuEdge.class));
 			}
 			for (int i = 0; i < possibleCellsInUnit.get(entry.getKey()).size() - 1; i++) {
 				Cell firstCell = possibleCellsInUnit.get(entry.getKey()).get(i);
 				for (int j = i + 1; j < possibleCellsInUnit.get(entry.getKey()).size(); j++) {
 					Cell secondCell = possibleCellsInUnit.get(entry.getKey()).get(j);
-					Pseudograph<Cell, SudokuEdge> graph = chains.get(entry.getKey());
+					SimpleGraph<Cell, SudokuEdge> graph = chains.get(entry.getKey());
 					if (!graph.containsEdge(firstCell, secondCell)) {
 						graph.addVertex(firstCell);
 						graph.addVertex(secondCell);
@@ -229,9 +228,9 @@ public class SudokuSolver {
 		}
 	}
 	
-	private static Map<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> unmodifiableView(HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
+	private static Map<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> unmodifiableView(HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> chains) {
 		HashMap<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> unmodifiableChains = new HashMap<>();
-		for (Entry<SudokuNumber, Pseudograph<Cell, SudokuEdge>> entry : chains.entrySet()) {
+		for (Entry<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> entry : chains.entrySet()) {
 			unmodifiableChains.put(entry.getKey(), new UnmodifiableUndirectedGraph<>(entry.getValue()));
 		}
 		return Collections.unmodifiableMap(unmodifiableChains);
