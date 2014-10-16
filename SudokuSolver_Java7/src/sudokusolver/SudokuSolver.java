@@ -6,11 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
 import org.jgrapht.graph.Pseudograph;
+import org.jgrapht.graph.UnmodifiableUndirectedGraph;
 
 import sudokusolver.solutions.AlternatingInferenceChains;
 import sudokusolver.solutions.HiddenPairs;
@@ -58,12 +61,13 @@ public class SudokuSolver {
 					changeMade = true;
 				} else {
 					HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains = buildChains(puzzle);
-					if (SimpleColoring.simpleColoring(puzzle, chains) || YWing.yWing(puzzle) || XYZWing.xyzWing(puzzle)) {
+					if (SimpleColoring.simpleColoring(puzzle, unmodifiableView(chains)) || YWing.yWing(puzzle) || XYZWing.xyzWing(puzzle)) {
 						changeMade = true;
 					} else {
 						buildWeakLinks(puzzle, chains);
-						if (XCycles.xCycles(puzzle, chains) || XYChain.xyChain(puzzle) || Medusa.medusa(puzzle) || HiddenUniqueRectangles.hiddenUniqueRectangles(puzzle) ||
-								WXYZWing.wxyzWing(puzzle) || AlternatingInferenceChains.alternatingInferenceChains(puzzle)) {
+						if (XCycles.xCycles(puzzle, unmodifiableView(chains)) || XYChain.xyChain(puzzle) || Medusa.medusa(puzzle) ||
+								HiddenUniqueRectangles.hiddenUniqueRectangles(puzzle) || WXYZWing.wxyzWing(puzzle) ||
+								AlternatingInferenceChains.alternatingInferenceChains(puzzle)) {
 							changeMade = true;
 						}
 						//TODO: Put solutions here.
@@ -223,5 +227,13 @@ public class SudokuSolver {
 				}
 			}
 		}
+	}
+	
+	private static Map<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> unmodifiableView(HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
+		HashMap<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> unmodifiableChains = new HashMap<>();
+		for (Entry<SudokuNumber, Pseudograph<Cell, SudokuEdge>> entry : chains.entrySet()) {
+			unmodifiableChains.put(entry.getKey(), new UnmodifiableUndirectedGraph<>(entry.getValue()));
+		}
+		return Collections.unmodifiableMap(unmodifiableChains);
 	}
 }

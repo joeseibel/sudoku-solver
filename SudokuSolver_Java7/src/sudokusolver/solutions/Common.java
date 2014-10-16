@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.Pseudograph;
 
@@ -12,8 +13,8 @@ import sudokusolver.SudokuEdge;
 import sudokusolver.VertexColor;
 
 public class Common {
-	public static <V, E> ArrayList<Pseudograph<V, E>> getConnectedSubgraphs(Pseudograph<V, E> graph, Class<? extends E> edgeClass) {
-		ArrayList<Pseudograph<V, E>> connectedSubgraphs = new ArrayList<>();
+	public static <V, E> ArrayList<UndirectedGraph<V, E>> getConnectedSubgraphs(UndirectedGraph<V, E> graph, Class<? extends E> edgeClass) {
+		ArrayList<UndirectedGraph<V, E>> connectedSubgraphs = new ArrayList<>();
 		ConnectivityInspector<V, E> inspector = new ConnectivityInspector<>(graph);
 		if (inspector.isGraphConnected()) {
 			connectedSubgraphs.add(graph);
@@ -34,8 +35,7 @@ public class Common {
 		return connectedSubgraphs;
 	}
 	
-	public static <V, E> void colorGraph(Pseudograph<V, E> graph, HashMap<V, VertexColor> vertexColors, V previousVertex,
-			VertexColor nextColor) {
+	public static <V, E> void colorGraph(UndirectedGraph<V, E> graph, HashMap<V, VertexColor> vertexColors, V previousVertex, VertexColor nextColor) {
 		for (E connectingEdge : graph.edgesOf(previousVertex)) {
 			V nextVertex = getOtherVertex(graph, connectingEdge, previousVertex);
 			VertexColor colorOfNextVertex = vertexColors.get(nextVertex);
@@ -50,7 +50,7 @@ public class Common {
 		}
 	}
 	
-	public static <V, E> V getOtherVertex(Pseudograph<V, E> graph, E edge, V vertex) {
+	public static <V, E> V getOtherVertex(UndirectedGraph<V, E> graph, E edge, V vertex) {
 		V otherVertex = graph.getEdgeSource(edge);
 		if (otherVertex.equals(vertex)) {
 			otherVertex = graph.getEdgeTarget(edge);
@@ -58,7 +58,7 @@ public class Common {
 		return otherVertex;
 	}
 	
-	public static <V> boolean findAlternatingLinkCycle(Pseudograph<V, SudokuEdge> graph, SudokuEdge finalEdge, boolean finalLinkMustBeStrong, ArrayDeque<V> cycle,
+	public static <V> boolean findAlternatingLinkCycle(UndirectedGraph<V, SudokuEdge> graph, SudokuEdge finalEdge, boolean finalLinkMustBeStrong, ArrayDeque<V> cycle,
 			V vertex, boolean nextLinkMustBeStrong) {
 		ArrayList<V> possibleNextVerticies = new ArrayList<>();
 		for (SudokuEdge nextEdge : graph.edgesOf(vertex)) {

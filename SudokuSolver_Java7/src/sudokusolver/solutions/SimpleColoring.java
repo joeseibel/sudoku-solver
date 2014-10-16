@@ -2,9 +2,11 @@ package sudokusolver.solutions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jgrapht.graph.Pseudograph;
+import org.jgrapht.UndirectedGraph;
+import org.jgrapht.graph.UnmodifiableUndirectedGraph;
 
 import sudokusolver.Cell;
 import sudokusolver.Puzzle;
@@ -13,11 +15,11 @@ import sudokusolver.SudokuNumber;
 import sudokusolver.VertexColor;
 
 public class SimpleColoring {
-	public static boolean simpleColoring(Puzzle puzzle, HashMap<SudokuNumber, Pseudograph<Cell, SudokuEdge>> chains) {
+	public static boolean simpleColoring(Puzzle puzzle, Map<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> chains) {
 		boolean changeMade = false;
-		for (Entry<SudokuNumber, Pseudograph<Cell, SudokuEdge>> entry : chains.entrySet()) {
+		for (Entry<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> entry : chains.entrySet()) {
 			ArrayList<HashMap<Cell, VertexColor>> coloredChains = new ArrayList<>();
-			for (Pseudograph<Cell, SudokuEdge> chain : Common.getConnectedSubgraphs(entry.getValue(), SudokuEdge.class)) {
+			for (UndirectedGraph<Cell, SudokuEdge> chain : Common.getConnectedSubgraphs(entry.getValue(), SudokuEdge.class)) {
 				HashMap<Cell, VertexColor> vertexColors = new HashMap<>();
 				Cell firstCell = chain.vertexSet().iterator().next();
 				vertexColors.put(firstCell, VertexColor.BLACK);
