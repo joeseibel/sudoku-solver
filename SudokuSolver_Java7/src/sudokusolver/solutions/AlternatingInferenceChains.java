@@ -35,7 +35,7 @@ public class AlternatingInferenceChains {
 					assert !graph.containsEdge(firstVertex, secondVertex);
 					graph.addVertex(firstVertex);
 					graph.addVertex(secondVertex);
-					graph.addEdge(firstVertex, secondVertex).setLinkType(possibleNumbers.length == 2 ? SudokuEdge.LinkType.STRONG_LINK : SudokuEdge.LinkType.WEAK_LINK);
+					graph.addEdge(firstVertex, secondVertex, new SudokuEdge(possibleNumbers.length == 2 ? SudokuEdge.LinkType.STRONG_LINK : SudokuEdge.LinkType.WEAK_LINK));
 				}
 			}
 		}
@@ -105,8 +105,8 @@ public class AlternatingInferenceChains {
 					if (!possibleGraph.containsEdge(firstVertex, secondVertex)) {
 						possibleGraph.addVertex(firstVertex);
 						possibleGraph.addVertex(secondVertex);
-						possibleGraph.addEdge(firstVertex, secondVertex).setLinkType(
-								entry.getValue().size() == 2 ? SudokuEdge.LinkType.STRONG_LINK : SudokuEdge.LinkType.WEAK_LINK);
+						possibleGraph.addEdge(firstVertex, secondVertex,
+								new SudokuEdge(entry.getValue().size() == 2 ? SudokuEdge.LinkType.STRONG_LINK : SudokuEdge.LinkType.WEAK_LINK));
 					}
 				}
 			}

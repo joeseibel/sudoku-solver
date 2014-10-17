@@ -154,38 +154,39 @@ public class SudokuSolver {
 	
 	private static HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> buildChains(Puzzle puzzle) {
 		HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> chains = new HashMap<>();
-		for (SudokuNumber possibleNumber : SudokuNumber.values()) {
-			SimpleGraph<Cell, SudokuEdge> possibleGraph = new SimpleGraph<>(SudokuEdge.class);
-			for (Iterable<Cell> row : puzzle.getAllRows()) {
-				addConjugatePairToGraph(row, possibleNumber, possibleGraph);
-			}
-			for (Iterable<Cell> column : puzzle.getAllColumns()) {
-				addConjugatePairToGraph(column, possibleNumber, possibleGraph);
-			}
-			for (Iterable<Cell> block : puzzle.getAllBlocks()) {
-				addConjugatePairToGraph(block, possibleNumber, possibleGraph);
-			}
-			if (!possibleGraph.vertexSet().isEmpty()) {
-				chains.put(possibleNumber, possibleGraph);
-			}
+		for (Iterable<Cell> row : puzzle.getAllRows()) {
+			addConjugatePairsToGraph(row, chains);
+		}
+		for (Iterable<Cell> column : puzzle.getAllColumns()) {
+			addConjugatePairsToGraph(column, chains);
+		}
+		for (Iterable<Cell> block : puzzle.getAllBlocks()) {
+			addConjugatePairsToGraph(block, chains);
 		}
 		return chains;
 	}
 	
-	private static void addConjugatePairToGraph(Iterable<Cell> unit, SudokuNumber possibleNumber, SimpleGraph<Cell, SudokuEdge> possibleGraph) {
-		ArrayList<Cell> possibleCellsInUnit = new ArrayList<>();
+	private static void addConjugatePairsToGraph(Iterable<Cell> unit, HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> chains) {
+		HashMap<SudokuNumber, ArrayList<Cell>> possibleCellsInUnit = new HashMap<>();
 		for (Cell cell : unit) {
-			if (cell.getPossibleValues().contains(possibleNumber)) {
-				possibleCellsInUnit.add(cell);
+			for (SudokuNumber possibleNumber : cell.getPossibleValues()) {
+				Util.addToValueList(possibleCellsInUnit, possibleNumber, cell);
 			}
 		}
-		if (possibleCellsInUnit.size() == 2) {
-			Cell firstCell = possibleCellsInUnit.get(0);
-			Cell secondCell = possibleCellsInUnit.get(1);
-			if (!possibleGraph.containsEdge(firstCell, secondCell)) {
-				possibleGraph.addVertex(firstCell);
-				possibleGraph.addVertex(secondCell);
-				possibleGraph.addEdge(firstCell, secondCell).setLinkType(SudokuEdge.LinkType.STRONG_LINK);
+		for (Entry<SudokuNumber, ArrayList<Cell>> entry : possibleCellsInUnit.entrySet()) {
+			if (entry.getValue().size() == 2) {
+				SimpleGraph<Cell, SudokuEdge> graph = chains.get(entry.getKey());
+				if (graph == null) {
+					graph = new SimpleGraph<>(SudokuEdge.class);
+					chains.put(entry.getKey(), graph);
+				}
+				Cell firstCell = entry.getValue().get(0);
+				Cell secondCell = entry.getValue().get(1);
+				if (!graph.containsEdge(firstCell, secondCell)) {
+					graph.addVertex(firstCell);
+					graph.addVertex(secondCell);
+					graph.addEdge(firstCell, secondCell, new SudokuEdge(SudokuEdge.LinkType.STRONG_LINK));
+				}
 			}
 		}
 	}
@@ -210,18 +211,19 @@ public class SudokuSolver {
 			}
 		}
 		for (Entry<SudokuNumber, ArrayList<Cell>> entry : possibleCellsInUnit.entrySet()) {
-			if (chains.get(entry.getKey()) == null) {
-				chains.put(entry.getKey(), new SimpleGraph<Cell, SudokuEdge>(SudokuEdge.class));
+			SimpleGraph<Cell, SudokuEdge> graph = chains.get(entry.getKey());
+			if (graph == null) {
+				graph = new SimpleGraph<>(SudokuEdge.class);
+				chains.put(entry.getKey(), graph);
 			}
 			for (int i = 0; i < possibleCellsInUnit.get(entry.getKey()).size() - 1; i++) {
 				Cell firstCell = possibleCellsInUnit.get(entry.getKey()).get(i);
 				for (int j = i + 1; j < possibleCellsInUnit.get(entry.getKey()).size(); j++) {
 					Cell secondCell = possibleCellsInUnit.get(entry.getKey()).get(j);
-					SimpleGraph<Cell, SudokuEdge> graph = chains.get(entry.getKey());
 					if (!graph.containsEdge(firstCell, secondCell)) {
 						graph.addVertex(firstCell);
 						graph.addVertex(secondCell);
-						graph.addEdge(firstCell, secondCell).setLinkType(SudokuEdge.LinkType.WEAK_LINK);
+						graph.addEdge(firstCell, secondCell, new SudokuEdge(SudokuEdge.LinkType.WEAK_LINK));
 					}
 				}
 			}

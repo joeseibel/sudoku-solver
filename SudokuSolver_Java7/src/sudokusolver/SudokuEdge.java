@@ -5,9 +5,9 @@ import org.jgrapht.graph.DefaultEdge;
 public class SudokuEdge extends DefaultEdge {
 	public enum LinkType {STRONG_LINK, WEAK_LINK}
 	
-	private LinkType linkType = null;
+	private final LinkType linkType;
 	
-	public void setLinkType(LinkType linkType) {
+	public SudokuEdge(LinkType linkType) {
 		this.linkType = linkType;
 	}
 	

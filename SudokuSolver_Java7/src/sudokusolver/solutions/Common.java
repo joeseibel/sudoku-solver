@@ -7,13 +7,15 @@ import java.util.Set;
 
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
+import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
 import sudokusolver.SudokuEdge;
 import sudokusolver.VertexColor;
 
 public class Common {
-	public static <V, E> ArrayList<UndirectedGraph<V, E>> getConnectedSubgraphs(UndirectedGraph<V, E> graph, Class<? extends E> edgeClass) {
+	@SuppressWarnings("unchecked")
+	public static <V, E extends DefaultEdge> ArrayList<UndirectedGraph<V, E>> getConnectedSubgraphs(UndirectedGraph<V, E> graph, Class<? extends E> edgeClass) {
 		ArrayList<UndirectedGraph<V, E>> connectedSubgraphs = new ArrayList<>();
 		ConnectivityInspector<V, E> inspector = new ConnectivityInspector<>(graph);
 		if (inspector.isGraphConnected()) {
@@ -26,7 +28,7 @@ public class Common {
 				}
 				for (E edge : graph.edgeSet()) {
 					if (subgraphVerticies.contains(graph.getEdgeSource(edge))) {
-						subgraph.addEdge(graph.getEdgeSource(edge), graph.getEdgeTarget(edge));
+						subgraph.addEdge(graph.getEdgeSource(edge), graph.getEdgeTarget(edge), (E)edge.clone());
 					}
 				}
 				connectedSubgraphs.add(subgraph);
