@@ -16,6 +16,7 @@ import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.UnmodifiableUndirectedGraph;
 
 import sudokusolver.solutions.AlternatingInferenceChains;
+import sudokusolver.solutions.GroupedXCycles;
 import sudokusolver.solutions.HiddenPairs;
 import sudokusolver.solutions.HiddenSingles;
 import sudokusolver.solutions.HiddenUniqueRectangles;
@@ -67,6 +68,7 @@ public class SudokuSolver {
 						buildWeakLinks(puzzle, chains);
 						if (XCycles.xCycles(puzzle, unmodifiableView(chains)) || XYChain.xyChain(puzzle) || Medusa.medusa(puzzle) ||
 								HiddenUniqueRectangles.hiddenUniqueRectangles(puzzle) || WXYZWing.wxyzWing(puzzle) ||
+								GroupedXCycles.groupedXCycles(puzzle, unmodifiableView(chains)) ||
 								AlternatingInferenceChains.alternatingInferenceChains(puzzle)) {
 							changeMade = true;
 						}

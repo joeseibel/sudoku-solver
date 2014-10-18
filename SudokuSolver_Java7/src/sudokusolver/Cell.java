@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class Cell {
+public class Cell implements CellOrGroup {
 	private final int row;
 	private final int column;
 	

@@ -84,6 +84,41 @@ public class Puzzle {
 		};
 	}
 	
+	public Iterable<ArrayList<Cell>> getAllRowsAsLists() {
+		return new Iterable<ArrayList<Cell>>() {
+			@Override
+			public Iterator<ArrayList<Cell>> iterator() {
+				return new Iterator<ArrayList<Cell>>() {
+					private int currentRowIndex = -1;
+					
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+					
+					@Override
+					public ArrayList<Cell> next() {
+						if (currentRowIndex + 1 < UNIT_SIZE) {
+							currentRowIndex++;
+							ArrayList<Cell> row = new ArrayList<>();
+							for (int columnIndex = 0; columnIndex < UNIT_SIZE; columnIndex++) {
+								row.add(board[currentRowIndex][columnIndex]);
+							}
+							return row;
+						} else {
+							throw new NoSuchElementException();
+						}
+					}
+					
+					@Override
+					public boolean hasNext() {
+						return currentRowIndex + 1 < UNIT_SIZE;
+					}
+				};
+			}
+		};
+	}
+	
 	public Iterable<Iterable<Cell>> getAllColumns() {
 		return new Iterable<Iterable<Cell>>() {
 			@Override
@@ -101,6 +136,41 @@ public class Puzzle {
 						if (currentColumnIndex + 1 < UNIT_SIZE) {
 							currentColumnIndex++;
 							return getColumnCells(currentColumnIndex);
+						} else {
+							throw new NoSuchElementException();
+						}
+					}
+					
+					@Override
+					public boolean hasNext() {
+						return currentColumnIndex + 1 < UNIT_SIZE;
+					}
+				};
+			}
+		};
+	}
+	
+	public Iterable<ArrayList<Cell>> getAllColumnsAsLists() {
+		return new Iterable<ArrayList<Cell>>() {
+			@Override
+			public Iterator<ArrayList<Cell>> iterator() {
+				return new Iterator<ArrayList<Cell>>() {
+					private int currentColumnIndex = -1;
+					
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+					
+					@Override
+					public ArrayList<Cell> next() {
+						if (currentColumnIndex + 1 < UNIT_SIZE) {
+							currentColumnIndex++;
+							ArrayList<Cell> column = new ArrayList<>();
+							for (int rowIndex = 0; rowIndex < UNIT_SIZE; rowIndex++) {
+								column.add(board[rowIndex][currentColumnIndex]);
+							}
+							return column;
 						} else {
 							throw new NoSuchElementException();
 						}
