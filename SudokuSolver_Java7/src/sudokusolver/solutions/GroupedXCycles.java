@@ -254,7 +254,8 @@ public class GroupedXCycles {
 			assert cells.size() <= Puzzle.UNIT_SIZE_SQUARE_ROOT;
 			int block = cells.get(0).getBlock();
 			for (ListIterator<Cell> iter = cells.listIterator(1); iter.hasNext();) {
-				assert block == iter.next().getBlock();
+				Cell cell = iter.next();
+				assert block == cell.getBlock();
 			}
 			this.cells = Collections.unmodifiableList(cells);
 		}
@@ -269,7 +270,8 @@ public class GroupedXCycles {
 			super(cells);
 			int row = cells.get(0).getRow();
 			for (ListIterator<Cell> iter = cells.listIterator(1); iter.hasNext();) {
-				assert row == iter.next().getRow();
+				Cell cell = iter.next();
+				assert row == cell.getRow();
 			}
 		}
 	
@@ -283,7 +285,8 @@ public class GroupedXCycles {
 			super(cells);
 			int column = cells.get(0).getColumn();
 			for (ListIterator<Cell> iter = cells.listIterator(1); iter.hasNext();) {
-				assert column == iter.next().getColumn();
+				Cell cell = iter.next();
+				assert column == cell.getColumn();
 			}
 		}
 		
