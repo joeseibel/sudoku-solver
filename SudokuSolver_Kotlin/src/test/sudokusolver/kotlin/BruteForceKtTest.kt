@@ -22,6 +22,18 @@ internal class BruteForceKtTest {
         val board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010"
         assertEquals(MultipleSolutions, bruteForce(board.toOptionalBoard()))
     }
+
+    @Test
+    fun bruteForceAlreadySolved() {
+        val board = "817942563234615789569837142451329678623781495978564321796158234182473956345296817"
+        assertEquals(SingleSolution(board.toBoard()), bruteForce(board.toOptionalBoard()))
+    }
+
+    @Test
+    fun bruteForceInvalidSolution() {
+        val board = "817942563234615789569837142451329678623781495978564321796158234182473956345296818"
+        assertEquals(NoSolutions, bruteForce(board.toOptionalBoard()))
+    }
 }
 
 private fun String.toBoard(): Board<SudokuNumber> {

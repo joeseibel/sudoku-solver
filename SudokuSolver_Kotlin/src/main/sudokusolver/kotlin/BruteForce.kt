@@ -6,6 +6,11 @@ object MultipleSolutions : BruteForceSolution()
 data class SingleSolution(val solution: Board<SudokuNumber>) : BruteForceSolution()
 
 fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
+    if (board.cells.count { it == null } == 0) {
+        val filledBoard = board.mapCells { it!! }
+        return if (isSolved(filledBoard)) SingleSolution(filledBoard) else NoSolutions
+    }
+
     val trialAndError = board.toMutableBoard()
 
     fun bruteForce(rowIndex: Int, columnIndex: Int): BruteForceSolution {
@@ -47,4 +52,10 @@ fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
     }
 
     return bruteForce(0, 0)
+}
+
+private fun isSolved(board: Board<SudokuNumber>): Boolean {
+    return board.rows.all { it.toSet().size == UNIT_SIZE }
+            && board.columns.all { it.toSet().size == UNIT_SIZE }
+            && board.blocks.all { it.toSet().size == UNIT_SIZE }
 }
