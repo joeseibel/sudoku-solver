@@ -14,12 +14,7 @@ package sudokusolver.kotlin
  *
  *
  * TODO:
- *  -toSudokuNumber
- *  -What should be inlined?
- *  -Use rows instead of elements.
  *  -return changes to be made instead of making them.
- *  -Restrict functions and methods
- *  -toString for optional board
  */
 
 fun main() {
