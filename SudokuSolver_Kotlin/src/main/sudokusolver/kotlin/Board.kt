@@ -71,13 +71,13 @@ abstract class AbstractBoard<out T> {
 }
 
 class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
-    override val rows: List<List<T>> = elements.map { row -> row.toList() }
+    override val rows: List<List<T>> = elements.map(Iterable<T>::toList)
 
     init {
         requireSize(rows)
     }
 
-    val cells: List<T> by lazy { rows.flatten() }
+    val cells: List<T> by lazy(rows::flatten)
     val columns: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } } }
     val blocks: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex(index)) } }
 
@@ -110,18 +110,14 @@ fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)
 fun String.toOptionalBoard(): Board<SudokuNumber?> {
     require(length == UNIT_SIZE * UNIT_SIZE)
     return Board(chunked(UNIT_SIZE).map { row ->
-        row.map { cell ->
-            if (cell == '0') null else SudokuNumber.values()[cell.toInt() - '0'.toInt() - 1]
-        }
+        row.map { cell -> if (cell == '0') null else SudokuNumber.values()[cell.toInt() - '0'.toInt() - 1] }
     })
 }
 
 fun String.toBoard(): Board<SudokuNumber> {
     require(length == UNIT_SIZE * UNIT_SIZE)
     return Board(chunked(UNIT_SIZE).map { row ->
-        row.map { cell ->
-            SudokuNumber.values()[cell.toInt() - '0'.toInt() - 1]
-        }
+        row.map { cell -> SudokuNumber.values()[cell.toInt() - '0'.toInt() - 1] }
     })
 }
 

@@ -227,7 +227,7 @@ internal class FundamentalLogicKtTest {
         fillSolvedCells(finalBoard)
 
         val expected = "000105090140000670080002400063070010900000003010090520007200080026000035000409060"
-        assertEquals(expected.toOptionalBoard(), finalBoard.mapCells { it.value })
+        assertEquals(expected.toOptionalBoard(), finalBoard.mapCells(Cell::value))
     }
 
     private fun Cell.setCandidates(vararg candidates: Int) {
