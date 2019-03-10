@@ -141,10 +141,8 @@ class Cell(value: SudokuNumber?, private val knownSolution: SudokuNumber) {
     val candidates: Set<SudokuNumber> = _candidates
 
     fun removeCandidate(candidate: SudokuNumber) {
-        if (candidate in _candidates) {
-            require(candidate != knownSolution) { "Cannot remove candidate $candidate." }
-            _candidates.remove(candidate)
-        }
+        require(candidate != knownSolution) { "Cannot remove candidate $candidate." }
+        _candidates.remove(candidate)
     }
 
     fun removeCandidates(candidates: Iterable<SudokuNumber>) {

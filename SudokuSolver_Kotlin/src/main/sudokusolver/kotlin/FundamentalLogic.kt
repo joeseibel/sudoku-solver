@@ -7,9 +7,11 @@ fun pruneCandidates(board: Board<Cell>) {
             .withIndex()
             .filterValueNotNull()
             .forEach { (columnIndex, value) ->
-                board.getRow(rowIndex).forEach { it.removeCandidate(value) }
-                board.getColumn(columnIndex).forEach { it.removeCandidate(value) }
-                board.getBlock(BlockIndex(rowIndex, columnIndex)).forEach { it.removeCandidate(value) }
+                board.getRow(rowIndex).filter { value in it.candidates }.forEach { it.removeCandidate(value) }
+                board.getColumn(columnIndex).filter { value in it.candidates }.forEach { it.removeCandidate(value) }
+                board.getBlock(BlockIndex(rowIndex, columnIndex))
+                    .filter { value in it.candidates }
+                    .forEach { it.removeCandidate(value) }
             }
     }
 }
