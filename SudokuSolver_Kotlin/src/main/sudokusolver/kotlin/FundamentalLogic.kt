@@ -13,7 +13,7 @@ fun pruneCandidates(board: AbstractBoard<Cell>): List<RemoveCandidates> {
                 val sameBlock = board.getBlock(BlockIndex(rowIndex, columnIndex))
                 val visibleValues = (sameRow + sameColumn + sameBlock)
                     .filterIsInstance<SolvedCell>()
-                    .map(SolvedCell::value)
+                    .map { it.value }
                     .toEnumSet()
                 val toRemove = cell.candidates intersect visibleValues
                 IndexedValue(columnIndex, toRemove)

@@ -73,7 +73,7 @@ abstract class AbstractBoard<out T> {
 }
 
 class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
-    override val rows: List<List<T>> = elements.map(Iterable<T>::toList)
+    override val rows: List<List<T>> = elements.map { it.toList() }
 
     init {
         requireSize(rows)
