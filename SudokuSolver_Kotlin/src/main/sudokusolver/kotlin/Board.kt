@@ -140,7 +140,7 @@ class Cell(value: SudokuNumber?, private val knownSolution: SudokuNumber) {
 
     val candidates: Set<SudokuNumber> = _candidates
 
-    fun removeCandidate(candidate: SudokuNumber) {
+    private fun removeCandidate(candidate: SudokuNumber) {
         require(candidate != knownSolution) { "Cannot remove candidate $candidate." }
         _candidates.remove(candidate)
     }
