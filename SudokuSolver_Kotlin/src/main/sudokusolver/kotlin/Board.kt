@@ -33,6 +33,8 @@ class BlockIndex {
 
 abstract class AbstractBoard<out T> {
     abstract val rows: List<List<T>>
+    val cells: List<T>
+        get() = rows.flatten()
 
     operator fun get(rowIndex: Int, columnIndex: Int): T = rows[rowIndex][columnIndex]
 
@@ -77,11 +79,12 @@ class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
         requireSize(rows)
     }
 
-    val cells: List<T> by lazy(rows::flatten)
     val columns: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } } }
     val blocks: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex(index)) } }
 
     inline fun <R> mapCells(transform: (T) -> R): Board<R> = Board(rows.map { row -> row.map(transform) })
+    inline fun <R> mapCellsToMutableBoard(transform: (T) -> R): MutableBoard<R> =
+        MutableBoard(rows.map { row -> row.map(transform) })
 }
 
 class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
@@ -96,6 +99,8 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     }
 
     inline fun <R> mapCellsToBoard(transform: (T) -> R): Board<R> = Board(rows.map { row -> row.map(transform) })
+
+    fun toBoard(): Board<T> = Board(rows)
 }
 
 private fun requireSize(elements: List<List<*>>) {
@@ -121,31 +126,14 @@ fun String.toBoard(): Board<SudokuNumber> {
     })
 }
 
-fun buildCellBoard(board: Board<SudokuNumber?>, knownSolution: Board<SudokuNumber>): Board<Cell> =
-    Board(board.rows.zip(knownSolution.rows) { boardRow, knownRow -> boardRow.zip(knownRow, ::Cell) })
+fun buildCellBoard(board: Board<SudokuNumber?>): Board<Cell> =
+    board.mapCells { value -> if (value == null) UnsolvedCell() else SolvedCell(value) }
 
-class Cell(value: SudokuNumber?, private val knownSolution: SudokuNumber) {
-    private var _value: SudokuNumber? = value
-    val value: SudokuNumber?
-        get() = _value
+fun buildMutableCellBoard(board: Board<SudokuNumber?>): MutableBoard<Cell> =
+    board.mapCellsToMutableBoard { value -> if (value == null) UnsolvedCell() else SolvedCell(value) }
 
-    fun setValue(value: SudokuNumber) {
-        require(value == knownSolution) { "Cannot set value $value. Solution is $knownSolution." }
-        _value = value
-        _candidates.clear()
-    }
-
-    private val _candidates: EnumSet<SudokuNumber> =
-        if (value == null) EnumSet.allOf(SudokuNumber::class.java) else EnumSet.noneOf(SudokuNumber::class.java)
-
-    val candidates: Set<SudokuNumber> = _candidates
-
-    private fun removeCandidate(candidate: SudokuNumber) {
-        require(candidate != knownSolution) { "Cannot remove candidate $candidate." }
-        _candidates.remove(candidate)
-    }
-
-    fun removeCandidates(candidates: Iterable<SudokuNumber>) {
-        candidates.forEach(::removeCandidate)
-    }
+sealed class Cell
+class SolvedCell(val value: SudokuNumber) : Cell()
+class UnsolvedCell : Cell() {
+    val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)
 }

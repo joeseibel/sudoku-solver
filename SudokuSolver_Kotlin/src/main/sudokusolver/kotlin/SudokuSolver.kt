@@ -11,7 +11,7 @@ fun main() {
             is UnableToSolve -> {
                 """
                     |Unable to solve:
-                    |${solution.board.mapCells { it.value?.toString() ?: "0" }}
+                    |${solution.board}
                 """.trimMargin()
             }
         }
@@ -31,29 +31,41 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
         MultipleSolutions -> return InvalidMultipleSolutions
 
         is SingleSolution -> {
-            val board = buildCellBoard(input, bruteForceSolution.solution)
+            val board = buildMutableCellBoard(input)
             do {
-                if (board.cells.all { it.value != null }) {
+                if (board.cells.filterIsInstance<UnsolvedCell>().isEmpty()) {
                     return Solution(bruteForceSolution.solution)
                 }
                 val modifications = pruneCandidates(board)
                     .ifEmpty { fillSolvedCells(board) }
                 modifications.forEach { modification ->
+                    val row = modification.row
+                    val column = modification.column
+                    val cell = board[row, column]
+                    check(cell is UnsolvedCell) { "[$row, $column] is already solved." }
+                    val knownSolution = bruteForceSolution.solution[row, column]
                     when (modification) {
                         is RemoveCandidates -> {
-                            val (row, column, candidates) = modification
-                            board[row, column].removeCandidates(candidates)
+                            modification.candidates.forEach { candidate ->
+                                check(candidate != knownSolution) {
+                                    "Cannot remove candidate $candidate from [$row, $column]"
+                                }
+                                cell.candidates -= candidate
+                            }
                         }
 
                         is SetValue -> {
-                            val (row, column, value) = modification
-                            board[row, column].setValue(value)
+                            val value = modification.value
+                            check(value == knownSolution) {
+                                "Cannot set value $value to [$row, $column]. Solution is $knownSolution"
+                            }
+                            board[row, column] = SolvedCell(value)
                         }
                     }
                 }
             } while (modifications.isNotEmpty())
 
-            return UnableToSolve(board)
+            return UnableToSolve(board.toBoard())
         }
     }
 }

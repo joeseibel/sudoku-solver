@@ -21,8 +21,7 @@ internal class FundamentalLogicKtTest {
     @Test
     fun testPruneCandidates() {
         val board = "000105000140000670080002400063070010900000003010090520007200080026000035000409000"
-        val knownSolution = "672145398145983672389762451263574819958621743714398526597236184426817935831459267"
-        val finalBoard = buildCellBoard(board.toOptionalBoard(), knownSolution.toBoard())
+        val finalBoard = buildCellBoard(board.toOptionalBoard())
         val modifications = pruneCandidates(finalBoard)
 
         assertEquals(53, modifications.size)
@@ -103,8 +102,7 @@ internal class FundamentalLogicKtTest {
     @Test
     fun testFillSolvedCells() {
         val board = "000105000140000670080002400063070010900000003010090520007200080026000035000409000"
-        val knownSolution = "672145398145983672389762451263574819958621743714398526597236184426817935831459267"
-        val finalBoard = buildCellBoard(board.toOptionalBoard(), knownSolution.toBoard())
+        val finalBoard = buildCellBoard(board.toOptionalBoard())
 
         finalBoard.getRow(0).apply {
             this[0].setCandidates(2, 3, 6, 7)
@@ -185,6 +183,6 @@ internal class FundamentalLogicKtTest {
     }
 
     private fun Cell.setCandidates(vararg candidates: Int) {
-        removeCandidates(EnumSet.complementOf(numbers(*candidates)))
+        (this as UnsolvedCell).candidates -= EnumSet.complementOf(numbers(*candidates))
     }
 }
