@@ -1,22 +1,5 @@
 package sudokusolver.kotlin
 
-/*
- * Options:
- *   Solve or not solve.
- *      Mutate board, return true or false.
- *   Solve and log steps saying which solutions did what.
- *      Mutate board, return log information
- *   Step through the solution, highlighting numbers about to be changed.
- *      Don't mutate board, return change instructions.
- *      -or-
- *      Mutate board, return log information. From log, show highlighted numbers, then update UI board.
- *
- *
- *
- * TODO:
- *  -return changes to be made instead of making them.
- */
-
 fun main() {
     val board = "000105000140000670080002400063070010900000003010090520007200080026000035000409000"
     println(
@@ -50,12 +33,26 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
         is SingleSolution -> {
             val board = buildCellBoard(input, bruteForceSolution.solution)
             do {
-                pruneCandidates(board)
                 if (board.cells.all { it.value != null }) {
                     return Solution(bruteForceSolution.solution)
                 }
-                val modified = fillSolvedCells(board)
-            } while (modified)
+                val modifications = pruneCandidates(board)
+                    .ifEmpty { fillSolvedCells(board) }
+                modifications.forEach { modification ->
+                    when (modification) {
+                        is RemoveCandidates -> {
+                            val (row, column, candidates) = modification
+                            board[row, column].removeCandidates(candidates)
+                        }
+
+                        is SetValue -> {
+                            val (row, column, value) = modification
+                            board[row, column].setValue(value)
+                        }
+                    }
+                }
+            } while (modifications.isNotEmpty())
+
             return UnableToSolve(board)
         }
     }
