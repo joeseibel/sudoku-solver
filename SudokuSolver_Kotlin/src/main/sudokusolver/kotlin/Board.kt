@@ -127,14 +127,14 @@ fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)
 fun String.toOptionalBoard(): Board<SudokuNumber?> {
     require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED" }
     return Board(chunked(UNIT_SIZE).map { row ->
-        row.map { cell -> if (cell == '0') null else SudokuNumber.values()[cell.toInt() - '0'.toInt() - 1] }
+        row.map { cell -> if (cell == '0') null else SudokuNumber.values()[Character.getNumericValue(cell) - 1] }
     })
 }
 
 fun String.toBoard(): Board<SudokuNumber> {
     require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED" }
     return Board(chunked(UNIT_SIZE).map { row ->
-        row.map { cell -> SudokuNumber.values()[cell.toInt() - '0'.toInt() - 1] }
+        row.map { cell -> SudokuNumber.values()[Character.getNumericValue(cell) - 1] }
     })
 }
 
