@@ -4,6 +4,7 @@ import java.util.*
 
 private const val UNIT_SIZE_SQUARE_ROOT = 3
 const val UNIT_SIZE = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT
+private const val UNIT_SIZE_SQUARED = UNIT_SIZE * UNIT_SIZE
 
 enum class SudokuNumber {
     ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE;
@@ -124,14 +125,14 @@ private fun requireSize(elements: List<List<*>>) {
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)
 
 fun String.toOptionalBoard(): Board<SudokuNumber?> {
-    require(length == UNIT_SIZE * UNIT_SIZE)
+    require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED" }
     return Board(chunked(UNIT_SIZE).map { row ->
         row.map { cell -> if (cell == '0') null else SudokuNumber.values()[cell.toInt() - '0'.toInt() - 1] }
     })
 }
 
 fun String.toBoard(): Board<SudokuNumber> {
-    require(length == UNIT_SIZE * UNIT_SIZE)
+    require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED" }
     return Board(chunked(UNIT_SIZE).map { row ->
         row.map { cell -> SudokuNumber.values()[cell.toInt() - '0'.toInt() - 1] }
     })
