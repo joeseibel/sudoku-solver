@@ -33,8 +33,9 @@ class BlockIndex {
 
 abstract class AbstractBoard<out T> {
     abstract val rows: List<List<T>>
-    val cells: List<T>
-        get() = rows.flatten()
+    abstract val columns: List<List<T>>
+    abstract val blocks: List<List<T>>
+    abstract val cells: List<T>
 
     operator fun get(rowIndex: Int, columnIndex: Int): T = rows[rowIndex][columnIndex]
 
@@ -79,8 +80,9 @@ class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
         requireSize(rows)
     }
 
-    val columns: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } } }
-    val blocks: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex(index)) } }
+    override val columns: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } } }
+    override val blocks: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex(index)) } }
+    override val cells: List<T> by lazy { rows.flatten() }
 
     inline fun <R> mapCells(transform: (T) -> R): Board<R> = Board(rows.map { row -> row.map(transform) })
     inline fun <R> mapCellsToMutableBoard(transform: (T) -> R): MutableBoard<R> =
@@ -93,6 +95,15 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     init {
         requireSize(rows)
     }
+
+    override val columns: List<List<T>>
+        get() = (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } }
+
+    override val blocks: List<List<T>>
+        get() = (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex(index)) }
+
+    override val cells: List<T>
+        get() = rows.flatten()
 
     operator fun set(rowIndex: Int, columnIndex: Int, element: T) {
         rows[rowIndex][columnIndex] = element
