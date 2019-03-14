@@ -12,6 +12,14 @@ enum class SudokuNumber {
     override fun toString(): String = "${ordinal + 1}"
 }
 
+fun numbers(vararg numbers: Int): EnumSet<SudokuNumber> {
+    val set = EnumSet.noneOf(SudokuNumber::class.java)
+    set.addAll(numbers.asSequence().map { SudokuNumber.values()[it - 1] })
+    return set
+}
+
+fun Char.toSudokuNumber(): SudokuNumber = SudokuNumber.values()[Character.getNumericValue(this) - 1]
+
 class BlockIndex {
     val row: Int
     val column: Int
@@ -26,7 +34,7 @@ class BlockIndex {
     }
 
     constructor(index: Int) {
-        require(index in 0 until UNIT_SIZE) { "index is $index, must be between 0 and ${UNIT_SIZE - 1}. " }
+        require(index in 0 until UNIT_SIZE) { "index is $index, must be between 0 and ${UNIT_SIZE - 1}." }
         row = index / UNIT_SIZE_SQUARE_ROOT
         column = index % UNIT_SIZE_SQUARE_ROOT
     }
@@ -116,36 +124,69 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
 }
 
 private fun requireSize(elements: List<List<*>>) {
-    require(elements.size == UNIT_SIZE) { "elements size is ${elements.size}, must be $UNIT_SIZE" }
+    require(elements.size == UNIT_SIZE) { "elements size is ${elements.size}, must be $UNIT_SIZE." }
     elements.forEachIndexed { index, row ->
-        require(row.size == UNIT_SIZE) { "elements[$index] size is ${row.size}, must be $UNIT_SIZE" }
+        require(row.size == UNIT_SIZE) { "elements[$index] size is ${row.size}, must be $UNIT_SIZE." }
     }
 }
 
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)
 
+fun Board<SudokuNumber?>.toMutableCellBoard(): MutableBoard<Cell> =
+    mapCellsToMutableBoard { if (it == null) UnsolvedCell() else SolvedCell(it) }
+
 fun String.toOptionalBoard(): Board<SudokuNumber?> {
-    require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED" }
-    return Board(chunked(UNIT_SIZE).map { row ->
-        row.map { cell -> if (cell == '0') null else SudokuNumber.values()[Character.getNumericValue(cell) - 1] }
-    })
+    require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED." }
+    return Board(chunked(UNIT_SIZE).map { row -> row.map { cell -> if (cell == '0') null else cell.toSudokuNumber() } })
 }
 
 fun String.toBoard(): Board<SudokuNumber> {
-    require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED" }
-    return Board(chunked(UNIT_SIZE).map { row ->
-        row.map { cell -> SudokuNumber.values()[Character.getNumericValue(cell) - 1] }
+    require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED." }
+    return Board(chunked(UNIT_SIZE).map { row -> row.map { it.toSudokuNumber() } })
+}
+
+fun createCellBoardFromSimpleString(simpleBoard: String): Board<Cell> {
+    require(simpleBoard.length == UNIT_SIZE_SQUARED) {
+        "simpleBoard.length is ${simpleBoard.length}, must be $UNIT_SIZE_SQUARED."
+    }
+    return Board(simpleBoard.chunked(UNIT_SIZE).map { row ->
+        row.map { cell -> if (cell == '0') UnsolvedCell() else SolvedCell(cell.toSudokuNumber()) }
     })
 }
 
-fun buildCellBoard(board: Board<SudokuNumber?>): Board<Cell> =
-    board.mapCells { value -> if (value == null) UnsolvedCell() else SolvedCell(value) }
+fun createCellBoardFromStringWithCandidates(withCandidates: String): Board<Cell> {
+    val cells = mutableListOf<Cell>()
+    var index = 0
+    while (index < withCandidates.length) {
+        when (val ch = withCandidates[index]) {
+            in '1'..'9' -> {
+                cells += SolvedCell(ch.toSudokuNumber())
+                index++
+            }
 
-fun buildMutableCellBoard(board: Board<SudokuNumber?>): MutableBoard<Cell> =
-    board.mapCellsToMutableBoard { value -> if (value == null) UnsolvedCell() else SolvedCell(value) }
+            '{' -> {
+                index++
+                val closingBrace = withCandidates.indexOf('}', index)
+                require(closingBrace != -1) { "Unmatched '{'." }
+                require(closingBrace != index) { "Empty \"{}\"." }
+                val charsInBraces = (index until closingBrace).map { withCandidates[it] }
+                require(!charsInBraces.contains('{')) { "Nested '{'." }
+                charsInBraces.forEach { charInBrace ->
+                    require(charInBrace in '1'..'9') { "Invalid character: '$charInBrace'." }
+                }
+                val candidates = EnumSet.copyOf((index until closingBrace).map { withCandidates[it].toSudokuNumber() })
+                cells += UnsolvedCell(candidates)
+                index = closingBrace + 1
+            }
+
+            '}' -> throw IllegalArgumentException("Unmatched '}'.")
+            else -> throw IllegalArgumentException("Invalid character: '$ch'.")
+        }
+    }
+    require(cells.size == UNIT_SIZE_SQUARED) { "Found ${cells.size} cells, required $UNIT_SIZE_SQUARED" }
+    return Board(cells.chunked(UNIT_SIZE))
+}
 
 sealed class Cell
-class SolvedCell(val value: SudokuNumber) : Cell()
-class UnsolvedCell : Cell() {
-    val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)
-}
+data class SolvedCell(val value: SudokuNumber) : Cell()
+data class UnsolvedCell(val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)) : Cell()
