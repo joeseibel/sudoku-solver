@@ -137,19 +137,19 @@ fun Board<SudokuNumber?>.toMutableCellBoard(): MutableBoard<Cell> =
 
 fun String.toOptionalBoard(): Board<SudokuNumber?> {
     require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED." }
-    return Board(chunked(UNIT_SIZE).map { row -> row.map { cell -> if (cell == '0') null else cell.toSudokuNumber() } })
+    return Board(chunked(UNIT_SIZE) { row -> row.map { cell -> if (cell == '0') null else cell.toSudokuNumber() } })
 }
 
 fun String.toBoard(): Board<SudokuNumber> {
     require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED." }
-    return Board(chunked(UNIT_SIZE).map { row -> row.map { it.toSudokuNumber() } })
+    return Board(chunked(UNIT_SIZE) { row -> row.map { it.toSudokuNumber() } })
 }
 
 fun createCellBoardFromSimpleString(simpleBoard: String): Board<Cell> {
     require(simpleBoard.length == UNIT_SIZE_SQUARED) {
         "simpleBoard.length is ${simpleBoard.length}, must be $UNIT_SIZE_SQUARED."
     }
-    return Board(simpleBoard.chunked(UNIT_SIZE).map { row ->
+    return Board(simpleBoard.chunked(UNIT_SIZE) { row ->
         row.map { cell -> if (cell == '0') UnsolvedCell() else SolvedCell(cell.toSudokuNumber()) }
     })
 }
