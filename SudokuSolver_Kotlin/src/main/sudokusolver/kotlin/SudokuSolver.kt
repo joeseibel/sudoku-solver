@@ -1,5 +1,12 @@
 package sudokusolver.kotlin
 
+import sudokusolver.kotlin.logic.MultipleSolutions
+import sudokusolver.kotlin.logic.NoSolutions
+import sudokusolver.kotlin.logic.SingleSolution
+import sudokusolver.kotlin.logic.bruteForce
+import sudokusolver.kotlin.logic.fillSolvedCells
+import sudokusolver.kotlin.logic.pruneCandidates
+
 fun main() {
     val board = "000105000140000670080002400063070010900000003010090520007200080026000035000409000"
     println(

@@ -2,6 +2,8 @@ package sudokusolver.kotlin
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import sudokusolver.kotlin.logic.fillSolvedCells
+import sudokusolver.kotlin.logic.pruneCandidates
 
 internal class FundamentalLogicKtTest {
     /*

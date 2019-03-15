@@ -1,6 +1,15 @@
-package sudokusolver.kotlin
+package sudokusolver.kotlin.logic
 
-import java.util.*
+import sudokusolver.kotlin.AbstractBoard
+import sudokusolver.kotlin.BlockIndex
+import sudokusolver.kotlin.Cell
+import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.SetValue
+import sudokusolver.kotlin.SolvedCell
+import sudokusolver.kotlin.UnsolvedCell
+import sudokusolver.kotlin.filterValueIsInstance
+import sudokusolver.kotlin.intersect
+import sudokusolver.kotlin.toEnumSet
 
 fun pruneCandidates(board: AbstractBoard<Cell>): List<RemoveCandidates> {
     return board.rows.withIndex().flatMap { (rowIndex, row) ->
@@ -24,21 +33,6 @@ fun pruneCandidates(board: AbstractBoard<Cell>): List<RemoveCandidates> {
     }
 }
 
-private fun <T : Enum<T>> Iterable<T>.toEnumSet(): EnumSet<T> =
-    this as? EnumSet ?: EnumSet.copyOf(this as? Collection ?: toSet())
-
-private infix fun <T : Enum<T>> EnumSet<T>.intersect(other: EnumSet<T>): EnumSet<T> {
-    val set = EnumSet.copyOf(this)
-    set.retainAll(other)
-    return set
-}
-
-private inline fun <reified R> Sequence<IndexedValue<*>>.filterValueIsInstance(): Sequence<IndexedValue<R>> =
-    filter { (_, value) -> value is R }.map { (index, value) -> IndexedValue(index, value as R) }
-
-private inline fun <reified R> Iterable<IndexedValue<*>>.filterValueIsInstance(): List<IndexedValue<R>> =
-    filter { (_, value) -> value is R }.map { (index, value) -> IndexedValue(index, value as R) }
-
 fun fillSolvedCells(board: AbstractBoard<Cell>): List<SetValue> {
     return board.rows.withIndex().flatMap { (rowIndex, row) ->
         row.withIndex()
@@ -47,16 +41,3 @@ fun fillSolvedCells(board: AbstractBoard<Cell>): List<SetValue> {
             .map { (columnIndex, cell) -> SetValue(rowIndex, columnIndex, cell.candidates.first()) }
     }
 }
-
-sealed class BoardModification {
-    abstract val row: Int
-    abstract val column: Int
-}
-
-data class RemoveCandidates(
-    override val row: Int,
-    override val column: Int,
-    val candidates: Iterable<SudokuNumber>
-) : BoardModification()
-
-data class SetValue(override val row: Int, override val column: Int, val value: SudokuNumber) : BoardModification()

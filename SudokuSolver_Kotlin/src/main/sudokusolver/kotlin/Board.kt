@@ -1,44 +1,8 @@
 package sudokusolver.kotlin
 
-import java.util.*
-
 private const val UNIT_SIZE_SQUARE_ROOT = 3
 const val UNIT_SIZE = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT
-private const val UNIT_SIZE_SQUARED = UNIT_SIZE * UNIT_SIZE
-
-enum class SudokuNumber {
-    ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE;
-
-    override fun toString(): String = "${ordinal + 1}"
-}
-
-fun numbers(vararg numbers: Int): EnumSet<SudokuNumber> {
-    val set = EnumSet.noneOf(SudokuNumber::class.java)
-    set.addAll(numbers.asSequence().map { SudokuNumber.values()[it - 1] })
-    return set
-}
-
-fun Char.toSudokuNumber(): SudokuNumber = SudokuNumber.values()[Character.getNumericValue(this) - 1]
-
-class BlockIndex {
-    val row: Int
-    val column: Int
-
-    constructor(cellRow: Int, cellColumn: Int) {
-        require(cellRow in 0 until UNIT_SIZE) { "cellRow is $cellRow, must be between 0 and ${UNIT_SIZE - 1}." }
-        require(cellColumn in 0 until UNIT_SIZE) {
-            "cellColumn is $cellColumn, must be between 0 and ${UNIT_SIZE - 1}."
-        }
-        row = cellRow / UNIT_SIZE_SQUARE_ROOT
-        column = cellColumn / UNIT_SIZE_SQUARE_ROOT
-    }
-
-    constructor(index: Int) {
-        require(index in 0 until UNIT_SIZE) { "index is $index, must be between 0 and ${UNIT_SIZE - 1}." }
-        row = index / UNIT_SIZE_SQUARE_ROOT
-        column = index % UNIT_SIZE_SQUARE_ROOT
-    }
-}
+const val UNIT_SIZE_SQUARED = UNIT_SIZE * UNIT_SIZE
 
 abstract class AbstractBoard<out T> {
     abstract val rows: List<List<T>>
@@ -79,6 +43,15 @@ abstract class AbstractBoard<out T> {
             |------+-------+------
             |${joinRows(6, 9)}
         """.trimMargin()
+    }
+
+    protected companion object {
+        fun requireSize(elements: List<List<*>>) {
+            require(elements.size == UNIT_SIZE) { "elements size is ${elements.size}, must be $UNIT_SIZE." }
+            elements.forEachIndexed { index, row ->
+                require(row.size == UNIT_SIZE) { "elements[$index] size is ${row.size}, must be $UNIT_SIZE." }
+            }
+        }
     }
 }
 
@@ -123,17 +96,27 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     fun toBoard(): Board<T> = Board(rows)
 }
 
-private fun requireSize(elements: List<List<*>>) {
-    require(elements.size == UNIT_SIZE) { "elements size is ${elements.size}, must be $UNIT_SIZE." }
-    elements.forEachIndexed { index, row ->
-        require(row.size == UNIT_SIZE) { "elements[$index] size is ${row.size}, must be $UNIT_SIZE." }
+class BlockIndex {
+    val row: Int
+    val column: Int
+
+    constructor(cellRow: Int, cellColumn: Int) {
+        require(cellRow in 0 until UNIT_SIZE) { "cellRow is $cellRow, must be between 0 and ${UNIT_SIZE - 1}." }
+        require(cellColumn in 0 until UNIT_SIZE) {
+            "cellColumn is $cellColumn, must be between 0 and ${UNIT_SIZE - 1}."
+        }
+        row = cellRow / UNIT_SIZE_SQUARE_ROOT
+        column = cellColumn / UNIT_SIZE_SQUARE_ROOT
+    }
+
+    constructor(index: Int) {
+        require(index in 0 until UNIT_SIZE) { "index is $index, must be between 0 and ${UNIT_SIZE - 1}." }
+        row = index / UNIT_SIZE_SQUARE_ROOT
+        column = index % UNIT_SIZE_SQUARE_ROOT
     }
 }
 
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)
-
-fun Board<SudokuNumber?>.toMutableCellBoard(): MutableBoard<Cell> =
-    mapCellsToMutableBoard { if (it == null) UnsolvedCell() else SolvedCell(it) }
 
 fun String.toOptionalBoard(): Board<SudokuNumber?> {
     require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED." }
@@ -144,49 +127,3 @@ fun String.toBoard(): Board<SudokuNumber> {
     require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED." }
     return Board(chunked(UNIT_SIZE) { row -> row.map { it.toSudokuNumber() } })
 }
-
-fun createCellBoardFromSimpleString(simpleBoard: String): Board<Cell> {
-    require(simpleBoard.length == UNIT_SIZE_SQUARED) {
-        "simpleBoard.length is ${simpleBoard.length}, must be $UNIT_SIZE_SQUARED."
-    }
-    return Board(simpleBoard.chunked(UNIT_SIZE) { row ->
-        row.map { cell -> if (cell == '0') UnsolvedCell() else SolvedCell(cell.toSudokuNumber()) }
-    })
-}
-
-fun createCellBoardFromStringWithCandidates(withCandidates: String): Board<Cell> {
-    val cells = mutableListOf<Cell>()
-    var index = 0
-    while (index < withCandidates.length) {
-        when (val ch = withCandidates[index]) {
-            in '1'..'9' -> {
-                cells += SolvedCell(ch.toSudokuNumber())
-                index++
-            }
-
-            '{' -> {
-                index++
-                val closingBrace = withCandidates.indexOf('}', index)
-                require(closingBrace != -1) { "Unmatched '{'." }
-                require(closingBrace != index) { "Empty \"{}\"." }
-                val charsInBraces = (index until closingBrace).map { withCandidates[it] }
-                require(!charsInBraces.contains('{')) { "Nested '{'." }
-                charsInBraces.forEach { charInBrace ->
-                    require(charInBrace in '1'..'9') { "Invalid character: '$charInBrace'." }
-                }
-                val candidates = EnumSet.copyOf((index until closingBrace).map { withCandidates[it].toSudokuNumber() })
-                cells += UnsolvedCell(candidates)
-                index = closingBrace + 1
-            }
-
-            '}' -> throw IllegalArgumentException("Unmatched '}'.")
-            else -> throw IllegalArgumentException("Invalid character: '$ch'.")
-        }
-    }
-    require(cells.size == UNIT_SIZE_SQUARED) { "Found ${cells.size} cells, required $UNIT_SIZE_SQUARED" }
-    return Board(cells.chunked(UNIT_SIZE))
-}
-
-sealed class Cell
-data class SolvedCell(val value: SudokuNumber) : Cell()
-data class UnsolvedCell(val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)) : Cell()

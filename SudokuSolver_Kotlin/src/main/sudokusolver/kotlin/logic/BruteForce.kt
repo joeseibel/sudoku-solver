@@ -1,4 +1,10 @@
-package sudokusolver.kotlin
+package sudokusolver.kotlin.logic
+
+import sudokusolver.kotlin.BlockIndex
+import sudokusolver.kotlin.Board
+import sudokusolver.kotlin.SudokuNumber
+import sudokusolver.kotlin.UNIT_SIZE
+import sudokusolver.kotlin.toMutableBoard
 
 sealed class BruteForceSolution
 object NoSolutions : BruteForceSolution()
