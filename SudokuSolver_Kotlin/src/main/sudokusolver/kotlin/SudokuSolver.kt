@@ -38,7 +38,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
         MultipleSolutions -> return InvalidMultipleSolutions
 
         is SingleSolution -> {
-            val board = input.toMutableCellBoard()
+            val board = createMutableCellBoard(input)
             do {
                 if (board.cells.filterIsInstance<UnsolvedCell>().isEmpty()) {
                     return Solution(bruteForceSolution.solution)

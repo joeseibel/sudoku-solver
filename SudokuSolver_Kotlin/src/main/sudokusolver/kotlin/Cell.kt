@@ -6,15 +6,15 @@ sealed class Cell
 data class SolvedCell(val value: SudokuNumber) : Cell()
 data class UnsolvedCell(val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)) : Cell()
 
-fun Board<SudokuNumber?>.toMutableCellBoard(): MutableBoard<Cell> =
-    mapCellsToMutableBoard { if (it == null) UnsolvedCell() else SolvedCell(it) }
+fun createMutableCellBoard(board: Board<SudokuNumber?>): MutableBoard<Cell> =
+    board.mapCellsToMutableBoard { if (it == null) UnsolvedCell() else SolvedCell(it) }
 
 fun createCellBoardFromSimpleString(simpleBoard: String): Board<Cell> {
     require(simpleBoard.length == UNIT_SIZE_SQUARED) {
         "simpleBoard.length is ${simpleBoard.length}, must be $UNIT_SIZE_SQUARED."
     }
     return Board(simpleBoard.chunked(UNIT_SIZE) { row ->
-        row.map { cell -> if (cell == '0') UnsolvedCell() else SolvedCell(cell.toSudokuNumber()) }
+        row.map { cell -> if (cell == '0') UnsolvedCell() else SolvedCell(sudokuNumber(cell)) }
     })
 }
 
@@ -24,7 +24,7 @@ fun createCellBoardFromStringWithCandidates(withCandidates: String): Board<Cell>
     while (index < withCandidates.length) {
         when (val ch = withCandidates[index]) {
             in '1'..'9' -> {
-                cells += SolvedCell(ch.toSudokuNumber())
+                cells += SolvedCell(sudokuNumber(ch))
                 index++
             }
 
@@ -38,7 +38,7 @@ fun createCellBoardFromStringWithCandidates(withCandidates: String): Board<Cell>
                 charsInBraces.forEach { charInBrace ->
                     require(charInBrace in '1'..'9') { "Invalid character: '$charInBrace'." }
                 }
-                val candidates = (index until closingBrace).map { withCandidates[it].toSudokuNumber() }.toEnumSet()
+                val candidates = (index until closingBrace).map { sudokuNumber(withCandidates[it]) }.toEnumSet()
                 cells += UnsolvedCell(candidates)
                 index = closingBrace + 1
             }
