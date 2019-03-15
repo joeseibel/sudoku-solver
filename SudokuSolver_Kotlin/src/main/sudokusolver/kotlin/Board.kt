@@ -15,18 +15,17 @@ abstract class AbstractBoard<out T> {
     fun getRow(rowIndex: Int): List<T> = rows[rowIndex]
     fun getColumn(columnIndex: Int): List<T> = rows.map { row -> row[columnIndex] }
 
-    fun getBlock(blockIndex: BlockIndex): List<T> {
-        return rows.drop(blockIndex.row * UNIT_SIZE_SQUARE_ROOT).take(UNIT_SIZE_SQUARE_ROOT).flatMap { row ->
+    fun getBlock(blockIndex: BlockIndex): List<T> =
+        rows.drop(blockIndex.row * UNIT_SIZE_SQUARE_ROOT).take(UNIT_SIZE_SQUARE_ROOT).flatMap { row ->
             row.drop(blockIndex.column * UNIT_SIZE_SQUARE_ROOT).take(UNIT_SIZE_SQUARE_ROOT)
         }
-    }
 
     override fun equals(other: Any?): Boolean = other is AbstractBoard<*> && rows == other.rows
     override fun hashCode(): Int = rows.hashCode()
 
     override fun toString(): String {
-        fun joinRows(fromIndex: Int, toIndex: Int): String {
-            return rows.subList(fromIndex, toIndex).joinToString("\n") { row ->
+        fun joinRows(fromIndex: Int, toIndex: Int) =
+            rows.subList(fromIndex, toIndex).joinToString("\n") { row ->
                 fun joinCells(fromIndex: Int, toIndex: Int) = row.subList(fromIndex, toIndex).joinToString(" ")
 
                 val first = joinCells(0, 3)
@@ -34,7 +33,6 @@ abstract class AbstractBoard<out T> {
                 val third = joinCells(6, 9)
                 "$first | $second | $third"
             }
-        }
 
         return """
             |${joinRows(0, 3)}

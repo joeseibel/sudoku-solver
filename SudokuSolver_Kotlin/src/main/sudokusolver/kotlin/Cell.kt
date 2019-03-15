@@ -38,8 +38,7 @@ fun createCellBoardFromStringWithCandidates(withCandidates: String): Board<Cell>
                 charsInBraces.forEach { charInBrace ->
                     require(charInBrace in '1'..'9') { "Invalid character: '$charInBrace'." }
                 }
-                val candidates = (index until closingBrace).map { sudokuNumber(withCandidates[it]) }.toEnumSet()
-                cells += UnsolvedCell(candidates)
+                cells += UnsolvedCell((index until closingBrace).map { sudokuNumber(withCandidates[it]) }.toEnumSet())
                 index = closingBrace + 1
             }
 
