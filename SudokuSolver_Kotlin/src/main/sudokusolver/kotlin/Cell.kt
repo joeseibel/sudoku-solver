@@ -6,6 +6,20 @@ sealed class Cell
 data class SolvedCell(val value: SudokuNumber) : Cell()
 data class UnsolvedCell(val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)) : Cell()
 
+fun Board<Cell>.toSimpleString(): String = cells.joinToString("") { cell ->
+    when (cell) {
+        is SolvedCell -> cell.value.toString()
+        is UnsolvedCell -> "0"
+    }
+}
+
+fun Board<Cell>.toStringWithCandidates(): String = cells.joinToString("") { cell ->
+    when (cell) {
+        is SolvedCell -> cell.value.toString()
+        is UnsolvedCell -> "{${cell.candidates.joinToString("")}}"
+    }
+}
+
 fun createMutableCellBoard(board: Board<SudokuNumber?>): MutableBoard<Cell> =
     board.mapCellsToMutableBoard { if (it == null) UnsolvedCell() else SolvedCell(it) }
 

@@ -1,9 +1,13 @@
-package sudokusolver.kotlin
+package sudokusolver.kotlin.logic
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sudokusolver.kotlin.logic.fillSolvedCells
-import sudokusolver.kotlin.logic.pruneCandidates
+import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.SetValue
+import sudokusolver.kotlin.SudokuNumber
+import sudokusolver.kotlin.createCellBoardFromSimpleString
+import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
+import sudokusolver.kotlin.sudokuNumbers
 
 internal class FundamentalLogicKtTest {
     /*

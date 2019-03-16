@@ -5,10 +5,11 @@ import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
 import sudokusolver.kotlin.logic.bruteForce
 import sudokusolver.kotlin.logic.fillSolvedCells
+import sudokusolver.kotlin.logic.hiddenSingles
 import sudokusolver.kotlin.logic.pruneCandidates
 
 fun main() {
-    val board = "000105000140000670080002400063070010900000003010090520007200080026000035000409000"
+    val board = "200070038000006070300040600008020700100000006007030400004080009060400000910060002"
     println(
         when (val solution = solve(board.toOptionalBoard())) {
             InvalidNoSolutions -> "No Solutions"
@@ -17,9 +18,10 @@ fun main() {
 
             is UnableToSolve -> {
                 """
-                    |Unable to solve:
-                    |${solution.board}
-                """.trimMargin()
+                    Unable to solve:
+                    Simple String: ${solution.board.toSimpleString()}
+                    With Candidates: ${solution.board.toStringWithCandidates()}
+                """.trimIndent()
             }
         }
     )
@@ -45,6 +47,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                 }
                 val modifications = pruneCandidates(board)
                     .ifEmpty { fillSolvedCells(board) }
+                    .ifEmpty { hiddenSingles(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
@@ -56,6 +59,9 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                             modification.candidates.forEach { candidate ->
                                 check(candidate != knownSolution) {
                                     "Cannot remove candidate $candidate from [$row, $column]"
+                                }
+                                check(candidate in cell.candidates) {
+                                    "$candidate is not a candidate of [$row, $column]"
                                 }
                                 cell.candidates -= candidate
                             }

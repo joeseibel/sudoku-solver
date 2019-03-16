@@ -1,6 +1,6 @@
 package sudokusolver.kotlin
 
-private const val UNIT_SIZE_SQUARE_ROOT = 3
+const val UNIT_SIZE_SQUARE_ROOT = 3
 const val UNIT_SIZE = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT
 const val UNIT_SIZE_SQUARED = UNIT_SIZE * UNIT_SIZE
 
@@ -112,6 +112,9 @@ class BlockIndex {
         row = index / UNIT_SIZE_SQUARE_ROOT
         column = index % UNIT_SIZE_SQUARE_ROOT
     }
+
+    fun getCellRowIndex(inBlockIndex: Int) = row * UNIT_SIZE_SQUARE_ROOT + inBlockIndex / UNIT_SIZE_SQUARE_ROOT
+    fun getCellColumnIndex(inBlockIndex: Int) = column * UNIT_SIZE_SQUARE_ROOT + inBlockIndex % UNIT_SIZE_SQUARE_ROOT
 }
 
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)

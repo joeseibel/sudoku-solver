@@ -1,11 +1,9 @@
-package sudokusolver.kotlin
+package sudokusolver.kotlin.logic
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sudokusolver.kotlin.logic.MultipleSolutions
-import sudokusolver.kotlin.logic.NoSolutions
-import sudokusolver.kotlin.logic.SingleSolution
-import sudokusolver.kotlin.logic.bruteForce
+import sudokusolver.kotlin.toBoard
+import sudokusolver.kotlin.toOptionalBoard
 
 internal class BruteForceKtTest {
     @Test
