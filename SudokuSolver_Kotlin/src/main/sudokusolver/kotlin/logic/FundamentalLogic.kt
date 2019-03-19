@@ -1,7 +1,7 @@
 package sudokusolver.kotlin.logic
 
-import sudokusolver.kotlin.AbstractBoard
 import sudokusolver.kotlin.BlockIndex
+import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SetValue
@@ -11,7 +11,7 @@ import sudokusolver.kotlin.filterValueIsInstance
 import sudokusolver.kotlin.intersect
 import sudokusolver.kotlin.toEnumSet
 
-fun pruneCandidates(board: AbstractBoard<Cell>): List<RemoveCandidates> {
+fun pruneCandidates(board: Board<Cell>): List<RemoveCandidates> {
     return board.rows.withIndex().flatMap { (rowIndex, row) ->
         row.asSequence()
             .withIndex()
@@ -33,7 +33,7 @@ fun pruneCandidates(board: AbstractBoard<Cell>): List<RemoveCandidates> {
     }
 }
 
-fun fillSolvedCells(board: AbstractBoard<Cell>): List<SetValue> {
+fun fillSolvedCells(board: Board<Cell>): List<SetValue> {
     return board.rows.withIndex().flatMap { (rowIndex, row) ->
         row.withIndex()
             .filterValueIsInstance<UnsolvedCell>()

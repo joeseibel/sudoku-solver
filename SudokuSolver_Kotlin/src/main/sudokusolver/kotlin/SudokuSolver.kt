@@ -40,18 +40,33 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
         MultipleSolutions -> return InvalidMultipleSolutions
 
         is SingleSolution -> {
-            val board = createMutableCellBoard(input)
+            val mutableBoard = createMutableCellBoard(input)
             do {
-                if (board.cells.filterIsInstance<UnsolvedCell>().isEmpty()) {
+                if (mutableBoard.cells.filterIsInstance<UnsolvedCell>().isEmpty()) {
                     return Solution(bruteForceSolution.solution)
                 }
+                /*
+                 * Why do I convert the MutableBoard to an immutable Board just to pass the immutable one to the logic
+                 * functions? I wanted the logic functions to have the guarantee the the board will not change while
+                 * they are running. Even if I have the logic functions take an AbstractBoard, that would be no
+                 * guarantee. That would simply prevent the logic function from mutating the board without casting it.
+                 * The only way to have mutability here and true immutability in the logic functions is to copy the
+                 * contents from MutableBoard to Board.
+                 *
+                 * In this case, Rust would be better here than the JVM. In Rust, the board would be owned and mutable
+                 * here. Read-only references would then be passed to the logic functions. The Rust compiler would
+                 * ensure that the board is never modified here while read-only references are borrowed by the logic
+                 * functions. With Rust, we could have mutability here, guaranteed immutability in the logic functions,
+                 * and no copying.
+                 */
+                val board = mutableBoard.toBoard()
                 val modifications = pruneCandidates(board)
                     .ifEmpty { fillSolvedCells(board) }
                     .ifEmpty { hiddenSingles(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
-                    val cell = board[row, column]
+                    val cell = mutableBoard[row, column]
                     check(cell is UnsolvedCell) { "[$row, $column] is already solved." }
                     val knownSolution = bruteForceSolution.solution[row, column]
                     when (modification) {
@@ -72,13 +87,13 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                             check(value == knownSolution) {
                                 "Cannot set value $value to [$row, $column]. Solution is $knownSolution"
                             }
-                            board[row, column] = SolvedCell(value)
+                            mutableBoard[row, column] = SolvedCell(value)
                         }
                     }
                 }
             } while (modifications.isNotEmpty())
 
-            return UnableToSolve(board.toBoard())
+            return UnableToSolve(mutableBoard.toBoard())
         }
     }
 }

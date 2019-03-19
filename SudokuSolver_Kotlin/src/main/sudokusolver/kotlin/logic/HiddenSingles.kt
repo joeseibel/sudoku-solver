@@ -1,14 +1,14 @@
 package sudokusolver.kotlin.logic
 
-import sudokusolver.kotlin.AbstractBoard
 import sudokusolver.kotlin.BlockIndex
+import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.filterValueIsInstance
 
-fun hiddenSingles(board: AbstractBoard<Cell>): List<SetValue> {
+fun hiddenSingles(board: Board<Cell>): List<SetValue> {
     val rowModifications = hiddenSingles(board.rows) { unitIndex, cellIndex, number ->
         SetValue(unitIndex, cellIndex, number)
     }
