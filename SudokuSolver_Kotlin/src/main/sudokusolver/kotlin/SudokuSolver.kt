@@ -4,8 +4,8 @@ import sudokusolver.kotlin.logic.MultipleSolutions
 import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
 import sudokusolver.kotlin.logic.bruteForce
-import sudokusolver.kotlin.logic.fillSolvedCells
 import sudokusolver.kotlin.logic.hiddenSingles
+import sudokusolver.kotlin.logic.nakedSingles
 import sudokusolver.kotlin.logic.pruneCandidates
 
 fun main() {
@@ -61,7 +61,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                  */
                 val board = mutableBoard.toBoard()
                 val modifications = pruneCandidates(board)
-                    .ifEmpty { fillSolvedCells(board) }
+                    .ifEmpty { nakedSingles(board) }
                     .ifEmpty { hiddenSingles(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
