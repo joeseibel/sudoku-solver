@@ -70,11 +70,47 @@ class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
 }
 
 class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
-    override val rows: List<MutableList<T>> = elements.map { it.toList().toMutableList() }
+    /*
+     * Motivation for storing the board internally as a List<MutableList<T>>:
+     *
+     * I considered having the second dimension be an Array instead of a MutableList. Ideally, the second dimension
+     * would be a type that permits mutating values, but not the size. In other words, it should have the method set,
+     * but not have the methods add, remove, addAll, removeAll, retainAll, clear, or removeAt. Array perfectly fits that
+     * criteria, so why don't I use it?
+     *
+     * There are two issues that caused me to choose MutableList over Array: generics and conversions.
+     *
+     * Arrays are not type-erased generics and the specific member type is a part of the Array's type at runtime.
+     * Specifying a concrete type is required when creating an Array. However, MutableBoard is generic with its type
+     * erased, so T cannot be used to create an Array. This is why the normal Kotlin Array creation methods such as
+     * arrayOf and toTypedArray won't work here. What would work is to call java.lang.reflect.Array.newInstance and pass
+     * in the java.lang.Class for the member type. However, that would require adding a Class parameter to
+     * MutableBoard's constructor. I really don't like that idea. It would expose this issue to the use site and the
+     * details of using an Array or MutableList should be internal to this class.
+     *
+     * One possible workaround is for the second dimension to be an Array of Any. Retrieving elements would then require
+     * a cast to T. This defeats the purpose of generics within MutableBoard as a cast to T is unchecked. I would then
+     * have to manually ensure that I am being type safe within MutableBoard. Given the small size of MutableBoard, this
+     * is not too great of a burden. However, it is a larger burden than manually ensuring that I don't call any size
+     * changing methods within this class.
+     *
+     * The other reason I chose MutableList has to do with the fact that the rows property has the type List<List<T>>.
+     * If I stored the second dimension as an Array, then every access of rows would involve 9 conversions from Array to
+     * List. This seems silly when I can simply return _rows since MutableList extends List.
+     *
+     * I could have the type of rows be Iterable<Iterable<T>> instead of List<List<T>>. In that case, I could return
+     * a List<Array<T>> here and a List<List<T>> in Board since Array and List both extend Iterable. However, I
+     * specifically want to return List and allow access by index. If Array implemented List, then conversion would not
+     * be an issue.
+     */
+    private val _rows: List<MutableList<T>> = elements.map { it.toMutableList() }
 
     init {
-        requireSize(rows)
+        requireSize(_rows)
     }
+
+    override val rows: List<List<T>>
+        get() = _rows
 
     override val columns: List<List<T>>
         get() = (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } }
@@ -86,7 +122,7 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
         get() = rows.flatten()
 
     operator fun set(rowIndex: Int, columnIndex: Int, element: T) {
-        rows[rowIndex][columnIndex] = element
+        _rows[rowIndex][columnIndex] = element
     }
 
     inline fun <R> mapCellsToBoard(transform: (T) -> R): Board<R> = Board(rows.map { row -> row.map(transform) })
