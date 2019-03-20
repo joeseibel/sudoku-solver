@@ -1,5 +1,7 @@
 package sudokusolver.kotlin
 
+import java.util.*
+
 /*
  * Motivation for BoardModification:
  *
@@ -49,7 +51,7 @@ sealed class BoardModification {
 data class RemoveCandidates(
     override val row: Int,
     override val column: Int,
-    val candidates: Iterable<SudokuNumber>
+    val candidates: EnumSet<SudokuNumber>
 ) : BoardModification()
 
 data class SetValue(override val row: Int, override val column: Int, val value: SudokuNumber) : BoardModification()
