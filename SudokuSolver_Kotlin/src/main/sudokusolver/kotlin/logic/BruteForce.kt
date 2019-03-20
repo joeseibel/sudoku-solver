@@ -35,7 +35,9 @@ fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
             else -> {
                 val rowInvalid = trialAndError.getRow(rowIndex).filterNotNull()
                 val columnInvalid = trialAndError.getColumn(columnIndex).filterNotNull()
-                val blockInvalid = trialAndError.getBlock(BlockIndex(rowIndex, columnIndex)).filterNotNull()
+                val blockInvalid = trialAndError
+                    .getBlock(BlockIndex.fromCellIndicies(rowIndex, columnIndex))
+                    .filterNotNull()
                 val valid = SudokuNumber.values().toSet() - rowInvalid - columnInvalid - blockInvalid
                 var singleSolution: SingleSolution? = null
                 valid.forEach { guess ->

@@ -18,7 +18,7 @@ fun pruneCandidates(board: Board<Cell>): List<RemoveCandidates> {
             .map { (columnIndex, cell) ->
                 val sameRow = board.getRow(rowIndex)
                 val sameColumn = board.getColumn(columnIndex)
-                val sameBlock = board.getBlock(BlockIndex(rowIndex, columnIndex))
+                val sameBlock = board.getBlock(BlockIndex.fromCellIndicies(rowIndex, columnIndex))
                 val visibleValues = (sameRow + sameColumn + sameBlock)
                     .filterIsInstance<SolvedCell>()
                     .map { it.value }

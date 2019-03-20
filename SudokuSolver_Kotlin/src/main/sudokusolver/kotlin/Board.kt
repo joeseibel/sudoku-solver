@@ -61,7 +61,9 @@ class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     }
 
     override val columns: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } } }
-    override val blocks: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex(index)) } }
+    override val blocks: List<List<T>> by lazy {
+        (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex.fromSingleIndex(index)) }
+    }
     override val cells: List<T> by lazy { rows.flatten() }
 
     inline fun <R> mapCells(transform: (T) -> R): Board<R> = Board(rows.map { row -> row.map(transform) })
@@ -116,7 +118,7 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
         get() = (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } }
 
     override val blocks: List<List<T>>
-        get() = (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex(index)) }
+        get() = (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex.fromSingleIndex(index)) }
 
     override val cells: List<T>
         get() = rows.flatten()
@@ -130,27 +132,35 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     fun toBoard(): Board<T> = Board(rows)
 }
 
-class BlockIndex {
-    val row: Int
-    val column: Int
-
-    constructor(cellRow: Int, cellColumn: Int) {
-        require(cellRow in 0 until UNIT_SIZE) { "cellRow is $cellRow, must be between 0 and ${UNIT_SIZE - 1}." }
-        require(cellColumn in 0 until UNIT_SIZE) {
-            "cellColumn is $cellColumn, must be between 0 and ${UNIT_SIZE - 1}."
+data class BlockIndex(val row: Int, val column: Int) {
+    init {
+        require(row in 0 until UNIT_SIZE_SQUARE_ROOT) {
+            "row is $row, must be between 0 and ${UNIT_SIZE_SQUARE_ROOT - 1}."
         }
-        row = cellRow / UNIT_SIZE_SQUARE_ROOT
-        column = cellColumn / UNIT_SIZE_SQUARE_ROOT
-    }
-
-    constructor(index: Int) {
-        require(index in 0 until UNIT_SIZE) { "index is $index, must be between 0 and ${UNIT_SIZE - 1}." }
-        row = index / UNIT_SIZE_SQUARE_ROOT
-        column = index % UNIT_SIZE_SQUARE_ROOT
+        require(column in 0 until UNIT_SIZE_SQUARE_ROOT) {
+            "column is $column, must be between 0 and ${UNIT_SIZE_SQUARE_ROOT - 1}."
+        }
     }
 
     fun getCellRowIndex(inBlockIndex: Int) = row * UNIT_SIZE_SQUARE_ROOT + inBlockIndex / UNIT_SIZE_SQUARE_ROOT
     fun getCellColumnIndex(inBlockIndex: Int) = column * UNIT_SIZE_SQUARE_ROOT + inBlockIndex % UNIT_SIZE_SQUARE_ROOT
+
+    companion object {
+        fun fromCellIndicies(cellRow: Int, cellColumn: Int): BlockIndex {
+            require(cellRow in 0 until UNIT_SIZE) {
+                "cellRow is $cellRow, must be between 0 and ${UNIT_SIZE - 1}."
+            }
+            require(cellColumn in 0 until UNIT_SIZE) {
+                "cellColumn is $cellColumn, must be between 0 and ${UNIT_SIZE - 1}."
+            }
+            return BlockIndex(cellRow / UNIT_SIZE_SQUARE_ROOT, cellColumn / UNIT_SIZE_SQUARE_ROOT)
+        }
+
+        fun fromSingleIndex(index: Int): BlockIndex {
+            require(index in 0 until UNIT_SIZE) { "index is $index, must be between 0 and ${UNIT_SIZE - 1}." }
+            return BlockIndex(index / UNIT_SIZE_SQUARE_ROOT, index % UNIT_SIZE_SQUARE_ROOT)
+        }
+    }
 }
 
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)

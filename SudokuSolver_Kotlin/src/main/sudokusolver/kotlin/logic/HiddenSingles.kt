@@ -16,7 +16,7 @@ fun hiddenSingles(board: Board<Cell>): List<SetValue> {
         SetValue(cellIndex, unitIndex, number)
     }
     val blockModifications = hiddenSingles(board.blocks) { unitIndex, cellIndex, number ->
-        val blockIndex = BlockIndex(unitIndex)
+        val blockIndex = BlockIndex.fromSingleIndex(unitIndex)
         SetValue(blockIndex.getCellRowIndex(cellIndex), blockIndex.getCellColumnIndex(cellIndex), number)
     }
     return (rowModifications + columnModifications + blockModifications).distinct()
