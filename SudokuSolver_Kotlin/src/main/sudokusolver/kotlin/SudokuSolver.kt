@@ -87,7 +87,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                             check(value == knownSolution) {
                                 "Cannot set value $value to [$row, $column]. Solution is $knownSolution"
                             }
-                            mutableBoard[row, column] = SolvedCell(value)
+                            mutableBoard[row, column] = SolvedCell(row, column, value)
                         }
                     }
                 }

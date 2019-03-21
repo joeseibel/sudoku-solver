@@ -67,8 +67,11 @@ class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     override val cells: List<T> by lazy { rows.flatten() }
 
     inline fun <R> mapCells(transform: (T) -> R): Board<R> = Board(rows.map { row -> row.map(transform) })
-    inline fun <R> mapCellsToMutableBoard(transform: (T) -> R): MutableBoard<R> =
-        MutableBoard(rows.map { row -> row.map(transform) })
+
+    inline fun <R> mapCellsToMutableBoardIndexed(transform: (row: Int, column: Int, T) -> R): MutableBoard<R> =
+        MutableBoard(rows.mapIndexed { rowIndex, row ->
+            row.mapIndexed { columnIndex, cell -> transform(rowIndex, columnIndex, cell) }
+        })
 }
 
 class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
@@ -141,9 +144,6 @@ data class BlockIndex(val row: Int, val column: Int) {
             "column is $column, must be between 0 and ${UNIT_SIZE_SQUARE_ROOT - 1}."
         }
     }
-
-    fun getCellRowIndex(inBlockIndex: Int) = row * UNIT_SIZE_SQUARE_ROOT + inBlockIndex / UNIT_SIZE_SQUARE_ROOT
-    fun getCellColumnIndex(inBlockIndex: Int) = column * UNIT_SIZE_SQUARE_ROOT + inBlockIndex % UNIT_SIZE_SQUARE_ROOT
 
     companion object {
         fun fromCellIndicies(cellRow: Int, cellColumn: Int): BlockIndex {

@@ -52,6 +52,16 @@ data class RemoveCandidates(
     override val row: Int,
     override val column: Int,
     val candidates: EnumSet<SudokuNumber>
-) : BoardModification()
+) : BoardModification() {
+    constructor(cell: UnsolvedCell, candidates: EnumSet<SudokuNumber>) : this(cell.row, cell.column, candidates) {
+        candidates.forEach { candidate ->
+            require(candidate in cell.candidates) { "$candidate  is not a candidate for [$row, $column]" }
+        }
+    }
+}
 
-data class SetValue(override val row: Int, override val column: Int, val value: SudokuNumber) : BoardModification()
+data class SetValue(override val row: Int, override val column: Int, val value: SudokuNumber) : BoardModification() {
+    constructor(cell: UnsolvedCell, value: SudokuNumber) : this(cell.row, cell.column, value) {
+        require(value in cell.candidates) { "$value is not a candidate for [$row, $column]" }
+    }
+}
