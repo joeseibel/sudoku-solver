@@ -8,23 +8,31 @@ import sudokusolver.kotlin.logic.hiddenSingles
 import sudokusolver.kotlin.logic.nakedSingles
 import sudokusolver.kotlin.logic.pruneCandidates
 
-fun main() {
-    val board = "200070038000006070300040600008020700100000006007030400004080009060400000910060002"
-    println(
-        when (val solution = solve(board.toOptionalBoard())) {
-            InvalidNoSolutions -> "No Solutions"
-            InvalidMultipleSolutions -> "Multiple Solutions"
-            is Solution -> solution.board
+fun main(args: Array<String>) {
+    if (args.size != 1) {
+        println("usage: SudokuSolverKt board")
+    } else {
+        val board = args.first()
+        if (board.length != UNIT_SIZE_SQUARED || board.any { it !in '0'..'9' }) {
+            println("board must be $UNIT_SIZE_SQUARED numbers with blanks expressed as 0")
+        } else {
+            println(
+                when (val solution = solve(board.toOptionalBoard())) {
+                    InvalidNoSolutions -> "No Solutions"
+                    InvalidMultipleSolutions -> "Multiple Solutions"
+                    is Solution -> solution.board
 
-            is UnableToSolve -> {
-                """
-                    Unable to solve:
-                    Simple String: ${solution.board.toSimpleString()}
-                    With Candidates: ${solution.board.toStringWithCandidates()}
-                """.trimIndent()
-            }
+                    is UnableToSolve -> {
+                        """
+                            Unable to solve:
+                            Simple String: ${solution.board.toSimpleString()}
+                            With Candidates: ${solution.board.toStringWithCandidates()}
+                        """.trimIndent()
+                    }
+                }
+            )
         }
-    )
+    }
 }
 
 private sealed class SolveResult
