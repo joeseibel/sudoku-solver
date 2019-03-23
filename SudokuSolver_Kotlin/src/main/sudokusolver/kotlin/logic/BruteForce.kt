@@ -36,7 +36,7 @@ fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
                 val rowInvalid = trialAndError.getRow(rowIndex).filterNotNull()
                 val columnInvalid = trialAndError.getColumn(columnIndex).filterNotNull()
                 val blockInvalid = trialAndError
-                    .getBlock(BlockIndex.fromCellIndicies(rowIndex, columnIndex))
+                    .getBlock(BlockIndex.fromCellIndices(rowIndex, columnIndex))
                     .filterNotNull()
                 val valid = SudokuNumber.values().toSet() - rowInvalid - columnInvalid - blockInvalid
                 var singleSolution: SingleSolution? = null

@@ -146,7 +146,7 @@ data class BlockIndex(val row: Int, val column: Int) {
     }
 
     companion object {
-        fun fromCellIndicies(cellRow: Int, cellColumn: Int): BlockIndex {
+        fun fromCellIndices(cellRow: Int, cellColumn: Int): BlockIndex {
             require(cellRow in 0 until UNIT_SIZE) {
                 "cellRow is $cellRow, must be between 0 and ${UNIT_SIZE - 1}."
             }
