@@ -1,6 +1,6 @@
 package sudokusolver.kotlin
 
-import java.util.*
+import java.util.EnumSet
 
 /*
  * Motivation for BoardModification:

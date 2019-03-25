@@ -1,6 +1,6 @@
 package sudokusolver.kotlin
 
-import java.util.*
+import java.util.EnumSet
 
 fun <T : Enum<T>> Iterable<T>.toEnumSet(): EnumSet<T> =
     this as? EnumSet ?: EnumSet.copyOf(this as? Collection ?: toSet())

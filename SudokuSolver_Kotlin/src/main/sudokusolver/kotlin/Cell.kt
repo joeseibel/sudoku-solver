@@ -1,6 +1,6 @@
 package sudokusolver.kotlin
 
-import java.util.*
+import java.util.EnumSet
 
 /*
  * Motivation for storing the row and column indices in the Cell:
