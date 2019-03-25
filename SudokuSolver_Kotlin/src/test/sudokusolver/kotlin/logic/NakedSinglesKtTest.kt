@@ -1,6 +1,6 @@
 package sudokusolver.kotlin.logic
 
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.assertSetValue
 import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
@@ -34,7 +34,7 @@ internal class NakedSinglesKtTest {
         """.trimIndent().replace("\n", "")
         val modifications = nakedSingles(createCellBoardFromStringWithCandidates(board))
 
-        Assertions.assertEquals(2, modifications.size)
+        assertEquals(2, modifications.size)
         assertSetValue(modifications[0], 0, 7, 9)
         assertSetValue(modifications[1], 8, 7, 6)
     }
