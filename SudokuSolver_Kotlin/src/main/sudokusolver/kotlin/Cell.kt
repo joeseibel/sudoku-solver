@@ -31,13 +31,17 @@ sealed class Cell {
     val block: BlockIndex by lazy { BlockIndex.fromCellIndices(row, column) }
 }
 
-data class SolvedCell(override val row: Int, override val column: Int, val value: SudokuNumber) : Cell()
+data class SolvedCell(override val row: Int, override val column: Int, val value: SudokuNumber) : Cell() {
+    override fun toString(): String = value.toString()
+}
 
 data class UnsolvedCell(
     override val row: Int,
     override val column: Int,
     val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)
-) : Cell()
+) : Cell() {
+    override fun toString(): String = "0"
+}
 
 fun Board<Cell>.toSimpleString(): String =
     cells.joinToString("") { cell ->

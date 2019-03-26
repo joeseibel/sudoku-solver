@@ -5,6 +5,7 @@ import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
 import sudokusolver.kotlin.logic.bruteForce
 import sudokusolver.kotlin.logic.hiddenSingles
+import sudokusolver.kotlin.logic.nakedPairs
 import sudokusolver.kotlin.logic.nakedSingles
 import sudokusolver.kotlin.logic.pruneCandidates
 
@@ -24,10 +25,11 @@ fun main(args: Array<String>) {
 
                     is UnableToSolve -> {
                         """
-                            Unable to solve:
-                            Simple String: ${solution.board.toSimpleString()}
-                            With Candidates: ${solution.board.toStringWithCandidates()}
-                        """.trimIndent()
+                            |Unable to solve:
+                            |${solution.board}
+                            |Simple String: ${solution.board.toSimpleString()}
+                            |With Candidates: ${solution.board.toStringWithCandidates()}
+                        """.trimMargin()
                     }
                 }
             )
@@ -71,6 +73,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                 val modifications = pruneCandidates(board)
                     .ifEmpty { nakedSingles(board) }
                     .ifEmpty { hiddenSingles(board) }
+                    .ifEmpty { nakedPairs(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
