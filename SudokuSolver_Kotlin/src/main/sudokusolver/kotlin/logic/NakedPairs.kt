@@ -10,7 +10,7 @@ import sudokusolver.kotlin.zipEvery
 import java.util.EnumSet
 
 fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> {
-    val modifications = (board.rows + board.columns + board.blocks).flatMap { unit ->
+    val modifications = board.units.flatMap { unit ->
         unit.filterIsInstance<UnsolvedCell>()
             .filter { it.candidates.size == 2 }
             .zipEvery()

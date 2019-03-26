@@ -8,6 +8,7 @@ abstract class AbstractBoard<out T> {
     abstract val rows: List<List<T>>
     abstract val columns: List<List<T>>
     abstract val blocks: List<List<T>>
+    abstract val units: List<List<T>>
     abstract val cells: List<T>
 
     operator fun get(rowIndex: Int, columnIndex: Int): T = rows[rowIndex][columnIndex]
@@ -64,6 +65,7 @@ class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     override val blocks: List<List<T>> by lazy {
         (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex.fromSingleIndex(index)) }
     }
+    override val units: List<List<T>> by lazy { rows + columns + blocks }
     override val cells: List<T> by lazy { rows.flatten() }
 
     inline fun <R> mapCells(transform: (T) -> R): Board<R> = Board(rows.map { row -> row.map(transform) })
@@ -122,6 +124,9 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
 
     override val blocks: List<List<T>>
         get() = (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex.fromSingleIndex(index)) }
+
+    override val units: List<List<T>>
+        get() = rows + columns + blocks
 
     override val cells: List<T>
         get() = rows.flatten()
