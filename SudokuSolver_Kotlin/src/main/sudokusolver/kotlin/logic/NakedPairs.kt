@@ -10,7 +10,7 @@ import sudokusolver.kotlin.zipEvery
 import java.util.EnumSet
 
 fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> {
-    val modifications = board.units.flatMap { unit ->
+    val candidatesToRemove = board.units.flatMap { unit ->
         unit.filterIsInstance<UnsolvedCell>()
             .filter { it.candidates.size == 2 }
             .zipEvery()
@@ -18,17 +18,13 @@ fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> {
             .flatMap { (a, b) ->
                 unit.filterIsInstance<UnsolvedCell>()
                     .filter { it != a && it != b }
-                    .mapNotNull { cell ->
-                        (cell.candidates intersect a.candidates).takeUnless { it.isEmpty() }?.let { cell to it }
-                    }
-                    .map { (cell, candidates) -> RemoveCandidates(cell, candidates) }
+                    .flatMap { cell -> (cell.candidates intersect a.candidates).map { candidate -> cell to candidate } }
             }
     }
-    return modifications.groupBy { it.row to it.column }.map { (index, grouped) ->
-        val (row, column) = index
-        val union = grouped.fold(EnumSet.noneOf(SudokuNumber::class.java)) { set, modification ->
-            set.also { it += modification.candidates }
-        }
-        RemoveCandidates(row, column, union)
-    }
+    return candidatesToRemove.groupingBy { (cell, _) -> cell }
+        .fold(
+            { _, _ -> EnumSet.noneOf(SudokuNumber::class.java) },
+            { _, accumulator, (_, candidate) -> accumulator.also { it += candidate } }
+        )
+        .map { (cell, candidates) -> RemoveCandidates(cell, candidates) }
 }
