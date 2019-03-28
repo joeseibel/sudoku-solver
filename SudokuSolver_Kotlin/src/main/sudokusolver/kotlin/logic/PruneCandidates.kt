@@ -6,7 +6,7 @@ import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SolvedCell
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
-import sudokusolver.kotlin.intersect
+import sudokusolver.kotlin.enumIntersect
 import java.util.EnumSet
 
 fun pruneCandidates(board: Board<Cell>): List<RemoveCandidates> =
@@ -17,7 +17,7 @@ fun pruneCandidates(board: Board<Cell>): List<RemoveCandidates> =
         (sameRow + sameColumn + sameBlock)
             .filterIsInstance<SolvedCell>()
             .mapTo(EnumSet.noneOf(SudokuNumber::class.java)) { it.value }
-            .let { visibleValues -> cell.candidates intersect visibleValues }
+            .let { visibleValues -> cell.candidates enumIntersect visibleValues }
             .takeUnless { it.isEmpty() }
             ?.let { toRemove -> RemoveCandidates(cell, toRemove) }
     }

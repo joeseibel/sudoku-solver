@@ -5,7 +5,7 @@ import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
-import sudokusolver.kotlin.intersect
+import sudokusolver.kotlin.enumIntersect
 import sudokusolver.kotlin.zipEvery
 import java.util.EnumSet
 
@@ -18,7 +18,9 @@ fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> {
             .flatMap { (a, b) ->
                 unit.filterIsInstance<UnsolvedCell>()
                     .filter { it != a && it != b }
-                    .flatMap { cell -> (cell.candidates intersect a.candidates).map { candidate -> cell to candidate } }
+                    .flatMap { cell ->
+                        (cell.candidates enumIntersect a.candidates).map { candidate -> cell to candidate }
+                    }
             }
     }
     return candidatesToRemove.groupingBy { (cell, _) -> cell }
