@@ -14,6 +14,12 @@ infix fun <T : Enum<T>> EnumSet<T>.enumIntersect(other: EnumSet<T>): EnumSet<T> 
 fun <T : Enum<T>> enumUnion(a: EnumSet<T>, b: EnumSet<T>, c: EnumSet<T>): EnumSet<T> =
     EnumSet.copyOf(a).apply { this += b }.apply { this += c }
 
+infix fun <T : Enum<T>> EnumSet<T>.enumMinus(other: EnumSet<T>): EnumSet<T> =
+    EnumSet.copyOf(this).apply { this -= other }
+
+fun <T> Array<T>.zipEveryPair(): List<Pair<T, T>> =
+    mapIndexed { firstIndex, first -> drop(firstIndex + 1).map { second -> first to second } }.flatten()
+
 fun <T> List<T>.zipEveryPair(): List<Pair<T, T>> =
     mapIndexed { firstIndex, first -> drop(firstIndex + 1).map { second -> first to second } }.flatten()
 
