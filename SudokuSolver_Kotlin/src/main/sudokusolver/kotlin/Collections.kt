@@ -23,6 +23,13 @@ fun <T> Array<T>.zipEveryPair(): List<Pair<T, T>> =
 fun <T> List<T>.zipEveryPair(): List<Pair<T, T>> =
     mapIndexed { firstIndex, first -> drop(firstIndex + 1).map { second -> first to second } }.flatten()
 
+fun <T> Array<T>.zipEveryTriple(): List<Triple<T, T, T>> =
+    mapIndexed { firstIndex, first ->
+        withIndex().drop(firstIndex + 1).flatMap { (secondIndex, second) ->
+            drop(secondIndex + 1).map { third -> Triple(first, second, third) }
+        }
+    }.flatten()
+
 fun <T> List<T>.zipEveryTriple(): List<Triple<T, T, T>> =
     mapIndexed { firstIndex, first ->
         withIndex().drop(firstIndex + 1).flatMap { (secondIndex, second) ->
