@@ -4,7 +4,10 @@ import sudokusolver.kotlin.BlockIndex
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UNIT_SIZE
+import sudokusolver.kotlin.enumMinus
+import sudokusolver.kotlin.enumUnion
 import sudokusolver.kotlin.toMutableBoard
+import java.util.EnumSet
 
 sealed class BruteForceSolution
 object NoSolutions : BruteForceSolution()
@@ -49,12 +52,14 @@ fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
             trialAndError[rowIndex, columnIndex] != null -> moveToNextCell()
 
             else -> {
-                val rowInvalid = trialAndError.getRow(rowIndex).filterNotNull()
-                val columnInvalid = trialAndError.getColumn(columnIndex).filterNotNull()
-                val blockInvalid = trialAndError
-                    .getBlock(BlockIndex.fromCellIndices(rowIndex, columnIndex))
-                    .filterNotNull()
-                val valid = SudokuNumber.values().toSet() - rowInvalid - columnInvalid - blockInvalid
+                val rowInvalid = trialAndError.getRow(rowIndex)
+                    .filterNotNullTo(EnumSet.noneOf(SudokuNumber::class.java))
+                val columnInvalid = trialAndError.getColumn(columnIndex)
+                    .filterNotNullTo(EnumSet.noneOf(SudokuNumber::class.java))
+                val blockInvalid = trialAndError.getBlock(BlockIndex.fromCellIndices(rowIndex, columnIndex))
+                    .filterNotNullTo(EnumSet.noneOf(SudokuNumber::class.java))
+                val invalid = enumUnion(rowInvalid, columnInvalid, blockInvalid)
+                val valid = EnumSet.allOf(SudokuNumber::class.java) enumMinus invalid
                 var singleSolution: SingleSolution? = null
                 valid.forEach { guess ->
                     trialAndError[rowIndex, columnIndex] = guess
