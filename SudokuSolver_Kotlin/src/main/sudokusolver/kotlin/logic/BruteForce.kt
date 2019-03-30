@@ -11,6 +11,22 @@ object NoSolutions : BruteForceSolution()
 object MultipleSolutions : BruteForceSolution()
 data class SingleSolution(val solution: Board<SudokuNumber>) : BruteForceSolution()
 
+/*
+ * Recursively tries every number for each unsolved cell looking for a solution.
+ *
+ * Motivation for implementing a brute force solution:
+ *
+ * The purpose of this solver is to go through the exercise of implementing various logical solutions. Why implement
+ * brute force if I only care about logical solutions? The first reason is to check the correctness of the logical
+ * solutions. When solving a board, the first thing that is done is to get the brute force solution. After that, any
+ * logical modifications will be checked against the brute force solution. If a logical solution tries to set an
+ * incorrect value to a cell or remove a candidate from a cell which is the known solution, then an
+ * IllegalStateException is thrown.
+ *
+ * The second reason for implementing brute force is to check for the number of solutions for a board before trying the
+ * logical solutions. If a board cannot be solve or if it has multiple solutions, then I don't bother with the logical
+ * solutions. The logical solutions are written assuming the they are operating on a board with only one solution.
+ */
 fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
     if (board.cells.count { it == null } == 0) {
         val filledBoard = board.mapCells { it!! }

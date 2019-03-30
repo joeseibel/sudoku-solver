@@ -8,6 +8,17 @@ import sudokusolver.kotlin.enumIntersect
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.zipEveryPair
 
+/*
+ * http://www.sudokuwiki.org/Naked_Candidates#NP
+ *
+ * If a pair of unsolved cells in a unit has the same two candidates, then those two candidates must be placed in those
+ * two cells. The two candidates can be removed from every other cell in the unit.
+ *
+ * For each unit
+ *   For each pair of unsolved cells
+ *     If the cells have the same candidates and they are two in number
+ *       Remove the candidates from every other cell in the unit
+ */
 fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> {
     return board.units.flatMap { unit ->
         unit.filterIsInstance<UnsolvedCell>()
