@@ -23,8 +23,8 @@ import java.util.EnumSet
  *       If those cells are also the only unsolved cells with the second candidate
  *         Remove every other candidate from the two cells
  */
-fun hiddenPairs(board: Board<Cell>): List<RemoveCandidates> {
-    return board.units.flatMap { unit ->
+fun hiddenPairs(board: Board<Cell>): List<RemoveCandidates> =
+    board.units.flatMap { unit ->
         SudokuNumber.values().zipEveryPair().mapNotNull { (a, b) ->
             unit.filterIsInstance<UnsolvedCell>()
                 .filter { a in it.candidates }
@@ -36,4 +36,3 @@ fun hiddenPairs(board: Board<Cell>): List<RemoveCandidates> {
                 }
         }.flatten()
     }.mergeToRemoveCandidates()
-}

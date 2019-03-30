@@ -21,8 +21,8 @@ import sudokusolver.kotlin.zipEveryTriple
  *     If the union has three candidates
  *       Remove the candidates from every other cell in the unit
  */
-fun nakedTriples(board: Board<Cell>): List<RemoveCandidates> {
-    return board.units.flatMap { unit ->
+fun nakedTriples(board: Board<Cell>): List<RemoveCandidates> =
+    board.units.flatMap { unit ->
         unit.filterIsInstance<UnsolvedCell>().zipEveryTriple().mapNotNull { (a, b, c) ->
             enumUnion(a.candidates, b.candidates, c.candidates)
                 .takeIf { it.size == 3 }
@@ -35,4 +35,3 @@ fun nakedTriples(board: Board<Cell>): List<RemoveCandidates> {
                 }
         }.flatten()
     }.mergeToRemoveCandidates()
-}

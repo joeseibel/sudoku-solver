@@ -19,8 +19,8 @@ import sudokusolver.kotlin.zipEveryPair
  *     If the cells have the same candidates and they are two in number
  *       Remove the candidates from every other cell in the unit
  */
-fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> {
-    return board.units.flatMap { unit ->
+fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> =
+    board.units.flatMap { unit ->
         unit.filterIsInstance<UnsolvedCell>()
             .filter { it.candidates.size == 2 }
             .zipEveryPair()
@@ -33,4 +33,3 @@ fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> {
                     }
             }
     }.mergeToRemoveCandidates()
-}
