@@ -27,9 +27,12 @@ fun main(args: Array<String>) {
                     is UnableToSolve -> {
                         """
                             |Unable to solve:
-                            |${solution.board}
+                            |/*
+                            | * ${solution.board.toString().lines().joinToString("\n * ")}
+                            | */
                             |Simple String: ${solution.board.toSimpleString()}
-                            |With Candidates: ${solution.board.toStringWithCandidates()}
+                            |With Candidates:
+                            |${solution.board.toStringWithCandidates()}
                         """.trimMargin()
                     }
                 }

@@ -51,12 +51,15 @@ fun Board<Cell>.toSimpleString(): String =
         }
     }
 
-fun Board<Cell>.toStringWithCandidates(): String = cells.joinToString("") { cell ->
-    when (cell) {
-        is SolvedCell -> cell.value.toString()
-        is UnsolvedCell -> "{${cell.candidates.joinToString("")}}"
+fun Board<Cell>.toStringWithCandidates(): String =
+    rows.joinToString("\n") { row ->
+        row.joinToString("") { cell ->
+            when (cell) {
+                is SolvedCell -> cell.value.toString()
+                is UnsolvedCell -> "{${cell.candidates.joinToString("")}}"
+            }
+        }
     }
-}
 
 fun createMutableCellBoard(board: Board<SudokuNumber?>): MutableBoard<Cell> =
     board.mapCellsToMutableBoardIndexed { row, column, cell ->
