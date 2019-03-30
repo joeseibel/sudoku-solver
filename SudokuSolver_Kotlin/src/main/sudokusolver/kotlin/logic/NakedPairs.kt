@@ -3,17 +3,16 @@ package sudokusolver.kotlin.logic
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.enumIntersect
-import sudokusolver.kotlin.zipEvery
-import java.util.EnumSet
+import sudokusolver.kotlin.mergeToRemoveCandidates
+import sudokusolver.kotlin.zipEveryPair
 
 fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> {
-    val candidatesToRemove = board.units.flatMap { unit ->
+    return board.units.flatMap { unit ->
         unit.filterIsInstance<UnsolvedCell>()
             .filter { it.candidates.size == 2 }
-            .zipEvery()
+            .zipEveryPair()
             .filter { (a, b) -> a.candidates == b.candidates }
             .flatMap { (a, b) ->
                 unit.filterIsInstance<UnsolvedCell>()
@@ -22,11 +21,5 @@ fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> {
                         (cell.candidates enumIntersect a.candidates).map { candidate -> cell to candidate }
                     }
             }
-    }
-    return candidatesToRemove.groupingBy { (cell, _) -> cell }
-        .fold(
-            { _, _ -> EnumSet.noneOf(SudokuNumber::class.java) },
-            { _, accumulator, (_, candidate) -> accumulator.also { it += candidate } }
-        )
-        .map { (cell, candidates) -> RemoveCandidates(cell, candidates) }
+    }.mergeToRemoveCandidates()
 }

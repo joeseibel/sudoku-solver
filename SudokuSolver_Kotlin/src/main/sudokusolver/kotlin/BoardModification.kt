@@ -65,3 +65,11 @@ data class SetValue(override val row: Int, override val column: Int, val value: 
         require(value in cell.candidates) { "$value is not a candidate for [$row, $column]" }
     }
 }
+
+fun List<Pair<UnsolvedCell, SudokuNumber>>.mergeToRemoveCandidates(): List<RemoveCandidates> =
+    groupingBy { (cell, _) -> cell }
+        .fold(
+            { _, _ -> EnumSet.noneOf(SudokuNumber::class.java) },
+            { _, candidates, (_, candidate) -> candidates.also { it += candidate } }
+        )
+        .map { (cell, candidates) -> RemoveCandidates(cell, candidates) }
