@@ -11,8 +11,12 @@ import java.util.EnumSet
 infix fun <T : Enum<T>> EnumSet<T>.enumIntersect(other: EnumSet<T>): EnumSet<T> =
     EnumSet.copyOf(this).apply { retainAll(other) }
 
-fun <T : Enum<T>> enumUnion(a: EnumSet<T>, b: EnumSet<T>, c: EnumSet<T>): EnumSet<T> =
-    EnumSet.copyOf(a).apply { this += b }.apply { this += c }
+inline fun <reified T : Enum<T>> enumUnion(vararg sets: EnumSet<T>): EnumSet<T> =
+    when (sets.size) {
+        0 -> EnumSet.noneOf(T::class.java)
+        1 -> sets.first()
+        else -> EnumSet.noneOf(T::class.java).also { union -> sets.forEach { set -> union += set } }
+    }
 
 infix fun <T : Enum<T>> EnumSet<T>.enumMinus(other: EnumSet<T>): EnumSet<T> =
     EnumSet.copyOf(this).apply { this -= other }
@@ -34,5 +38,16 @@ fun <T> List<T>.zipEveryTriple(): List<Triple<T, T, T>> =
     mapIndexed { firstIndex, first ->
         withIndex().drop(firstIndex + 1).flatMap { (secondIndex, second) ->
             drop(secondIndex + 1).map { third -> Triple(first, second, third) }
+        }
+    }.flatten()
+
+data class Quad<out A, out B, out C, out D>(val first: A, val second: B, val third: C, val fourth: D)
+
+fun <T> List<T>.zipEveryQuad(): List<Quad<T, T, T, T>> =
+    mapIndexed { firstIndex, first ->
+        withIndex().drop(firstIndex + 1).flatMap { (secondIndex, second) ->
+            withIndex().drop(secondIndex + 1).flatMap { (thirdIndex, third) ->
+                drop(thirdIndex + 1).map { fourth -> Quad(first, second, third, fourth) }
+            }
         }
     }.flatten()
