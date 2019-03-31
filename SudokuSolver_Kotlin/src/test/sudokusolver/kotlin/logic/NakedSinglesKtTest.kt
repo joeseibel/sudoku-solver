@@ -1,8 +1,8 @@
 package sudokusolver.kotlin.logic
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
-import sudokusolver.kotlin.assertSetValue
+import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
 
 internal class NakedSinglesKtTest {
@@ -32,10 +32,10 @@ internal class NakedSinglesKtTest {
             {48}26{78}{18}{178}{179}35
             {358}{35}{158}4{13568}9{127}{6}{1267}
         """.trimIndent().replace("\n", "")
-        val modifications = nakedSingles(createCellBoardFromStringWithCandidates(board)).sorted()
-
-        assertEquals(2, modifications.size)
-        assertSetValue(modifications[0], 0, 7, 9)
-        assertSetValue(modifications[1], 8, 7, 6)
+        val expected = listOf(
+            SetValue(0, 7, 9),
+            SetValue(8, 7, 6)
+        )
+        assertIterableEquals(expected, nakedSingles(createCellBoardFromStringWithCandidates(board)).sorted())
     }
 }

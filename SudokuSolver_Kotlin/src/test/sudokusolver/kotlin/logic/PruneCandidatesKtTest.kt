@@ -1,8 +1,8 @@
 package sudokusolver.kotlin.logic
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
-import sudokusolver.kotlin.assertRemoveCandidates
+import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.createCellBoardFromSimpleString
 
 internal class PruneCandidatesKtTest {
@@ -22,61 +22,61 @@ internal class PruneCandidatesKtTest {
     @Test
     fun testPruneCandidates() {
         val board = "000105000140000670080002400063070010900000003010090520007200080026000035000409000"
-        val modifications = pruneCandidates(createCellBoardFromSimpleString(board)).sorted()
-
-        assertEquals(53, modifications.size)
-        assertRemoveCandidates(modifications[0], 0, 0, 1, 4, 5, 8, 9)
-        assertRemoveCandidates(modifications[1], 0, 1, 1, 2, 4, 5, 6, 8)
-        assertRemoveCandidates(modifications[2], 0, 2, 1, 3, 4, 5, 6, 7, 8)
-        assertRemoveCandidates(modifications[3], 0, 4, 1, 2, 5, 7, 9)
-        assertRemoveCandidates(modifications[4], 0, 6, 1, 4, 5, 6, 7)
-        assertRemoveCandidates(modifications[5], 0, 7, 1, 2, 3, 4, 5, 6, 7, 8)
-        assertRemoveCandidates(modifications[6], 0, 8, 1, 3, 4, 5, 6, 7)
-        assertRemoveCandidates(modifications[7], 1, 2, 1, 3, 4, 6, 7, 8)
-        assertRemoveCandidates(modifications[8], 1, 3, 1, 2, 4, 5, 6, 7)
-        assertRemoveCandidates(modifications[9], 1, 4, 1, 2, 4, 5, 6, 7, 9)
-        assertRemoveCandidates(modifications[10], 1, 5, 1, 2, 4, 5, 6, 7, 9)
-        assertRemoveCandidates(modifications[11], 1, 8, 1, 3, 4, 5, 6, 7)
-        assertRemoveCandidates(modifications[12], 2, 0, 1, 2, 4, 8, 9)
-        assertRemoveCandidates(modifications[13], 2, 2, 1, 2, 3, 4, 6, 7, 8)
-        assertRemoveCandidates(modifications[14], 2, 3, 1, 2, 4, 5, 8)
-        assertRemoveCandidates(modifications[15], 2, 4, 1, 2, 4, 5, 7, 8, 9)
-        assertRemoveCandidates(modifications[16], 2, 7, 1, 2, 3, 4, 6, 7, 8)
-        assertRemoveCandidates(modifications[17], 2, 8, 2, 3, 4, 5, 6, 7, 8)
-        assertRemoveCandidates(modifications[18], 3, 0, 1, 3, 6, 7, 9)
-        assertRemoveCandidates(modifications[19], 3, 3, 1, 2, 3, 4, 6, 7, 9)
-        assertRemoveCandidates(modifications[20], 3, 5, 1, 2, 3, 5, 6, 7, 9)
-        assertRemoveCandidates(modifications[21], 3, 6, 1, 2, 3, 4, 5, 6, 7)
-        assertRemoveCandidates(modifications[22], 3, 8, 1, 2, 3, 5, 6, 7)
-        assertRemoveCandidates(modifications[23], 4, 1, 1, 2, 3, 4, 6, 8, 9)
-        assertRemoveCandidates(modifications[24], 4, 2, 1, 3, 6, 7, 9)
-        assertRemoveCandidates(modifications[25], 4, 3, 1, 2, 3, 4, 7, 9)
-        assertRemoveCandidates(modifications[26], 4, 4, 3, 7, 9)
-        assertRemoveCandidates(modifications[27], 4, 5, 2, 3, 5, 7, 9)
-        assertRemoveCandidates(modifications[28], 4, 6, 1, 2, 3, 4, 5, 6, 9)
-        assertRemoveCandidates(modifications[29], 4, 7, 1, 2, 3, 5, 7, 8, 9)
-        assertRemoveCandidates(modifications[30], 5, 0, 1, 2, 3, 5, 6, 9)
-        assertRemoveCandidates(modifications[31], 5, 2, 1, 2, 3, 5, 6, 7, 9)
-        assertRemoveCandidates(modifications[32], 5, 3, 1, 2, 4, 5, 7, 9)
-        assertRemoveCandidates(modifications[33], 5, 5, 1, 2, 5, 7, 9)
-        assertRemoveCandidates(modifications[34], 5, 8, 1, 2, 3, 5, 9)
-        assertRemoveCandidates(modifications[35], 6, 0, 1, 2, 6, 7, 8, 9)
-        assertRemoveCandidates(modifications[36], 6, 1, 1, 2, 4, 6, 7, 8)
-        assertRemoveCandidates(modifications[37], 6, 4, 2, 4, 7, 8, 9)
-        assertRemoveCandidates(modifications[38], 6, 5, 2, 4, 5, 7, 8, 9)
-        assertRemoveCandidates(modifications[39], 6, 6, 2, 3, 4, 5, 6, 7, 8)
-        assertRemoveCandidates(modifications[40], 6, 8, 2, 3, 5, 7, 8)
-        assertRemoveCandidates(modifications[41], 7, 0, 1, 2, 3, 5, 6, 7, 9)
-        assertRemoveCandidates(modifications[42], 7, 3, 1, 2, 3, 4, 5, 6, 9)
-        assertRemoveCandidates(modifications[43], 7, 4, 2, 3, 4, 5, 6, 7, 9)
-        assertRemoveCandidates(modifications[44], 7, 5, 2, 3, 4, 5, 6, 9)
-        assertRemoveCandidates(modifications[45], 7, 6, 2, 3, 4, 5, 6, 8)
-        assertRemoveCandidates(modifications[46], 8, 0, 1, 2, 4, 6, 7, 9)
-        assertRemoveCandidates(modifications[47], 8, 1, 1, 2, 4, 6, 7, 8, 9)
-        assertRemoveCandidates(modifications[48], 8, 2, 2, 3, 4, 6, 7, 9)
-        assertRemoveCandidates(modifications[49], 8, 4, 2, 4, 7, 9)
-        assertRemoveCandidates(modifications[50], 8, 6, 3, 4, 5, 6, 8, 9)
-        assertRemoveCandidates(modifications[51], 8, 7, 1, 2, 3, 4, 5, 7, 8, 9)
-        assertRemoveCandidates(modifications[52], 8, 8, 3, 4, 5, 8, 9)
+        val expected = listOf(
+            RemoveCandidates(0, 0, 1, 4, 5, 8, 9),
+            RemoveCandidates(0, 1, 1, 2, 4, 5, 6, 8),
+            RemoveCandidates(0, 2, 1, 3, 4, 5, 6, 7, 8),
+            RemoveCandidates(0, 4, 1, 2, 5, 7, 9),
+            RemoveCandidates(0, 6, 1, 4, 5, 6, 7),
+            RemoveCandidates(0, 7, 1, 2, 3, 4, 5, 6, 7, 8),
+            RemoveCandidates(0, 8, 1, 3, 4, 5, 6, 7),
+            RemoveCandidates(1, 2, 1, 3, 4, 6, 7, 8),
+            RemoveCandidates(1, 3, 1, 2, 4, 5, 6, 7),
+            RemoveCandidates(1, 4, 1, 2, 4, 5, 6, 7, 9),
+            RemoveCandidates(1, 5, 1, 2, 4, 5, 6, 7, 9),
+            RemoveCandidates(1, 8, 1, 3, 4, 5, 6, 7),
+            RemoveCandidates(2, 0, 1, 2, 4, 8, 9),
+            RemoveCandidates(2, 2, 1, 2, 3, 4, 6, 7, 8),
+            RemoveCandidates(2, 3, 1, 2, 4, 5, 8),
+            RemoveCandidates(2, 4, 1, 2, 4, 5, 7, 8, 9),
+            RemoveCandidates(2, 7, 1, 2, 3, 4, 6, 7, 8),
+            RemoveCandidates(2, 8, 2, 3, 4, 5, 6, 7, 8),
+            RemoveCandidates(3, 0, 1, 3, 6, 7, 9),
+            RemoveCandidates(3, 3, 1, 2, 3, 4, 6, 7, 9),
+            RemoveCandidates(3, 5, 1, 2, 3, 5, 6, 7, 9),
+            RemoveCandidates(3, 6, 1, 2, 3, 4, 5, 6, 7),
+            RemoveCandidates(3, 8, 1, 2, 3, 5, 6, 7),
+            RemoveCandidates(4, 1, 1, 2, 3, 4, 6, 8, 9),
+            RemoveCandidates(4, 2, 1, 3, 6, 7, 9),
+            RemoveCandidates(4, 3, 1, 2, 3, 4, 7, 9),
+            RemoveCandidates(4, 4, 3, 7, 9),
+            RemoveCandidates(4, 5, 2, 3, 5, 7, 9),
+            RemoveCandidates(4, 6, 1, 2, 3, 4, 5, 6, 9),
+            RemoveCandidates(4, 7, 1, 2, 3, 5, 7, 8, 9),
+            RemoveCandidates(5, 0, 1, 2, 3, 5, 6, 9),
+            RemoveCandidates(5, 2, 1, 2, 3, 5, 6, 7, 9),
+            RemoveCandidates(5, 3, 1, 2, 4, 5, 7, 9),
+            RemoveCandidates(5, 5, 1, 2, 5, 7, 9),
+            RemoveCandidates(5, 8, 1, 2, 3, 5, 9),
+            RemoveCandidates(6, 0, 1, 2, 6, 7, 8, 9),
+            RemoveCandidates(6, 1, 1, 2, 4, 6, 7, 8),
+            RemoveCandidates(6, 4, 2, 4, 7, 8, 9),
+            RemoveCandidates(6, 5, 2, 4, 5, 7, 8, 9),
+            RemoveCandidates(6, 6, 2, 3, 4, 5, 6, 7, 8),
+            RemoveCandidates(6, 8, 2, 3, 5, 7, 8),
+            RemoveCandidates(7, 0, 1, 2, 3, 5, 6, 7, 9),
+            RemoveCandidates(7, 3, 1, 2, 3, 4, 5, 6, 9),
+            RemoveCandidates(7, 4, 2, 3, 4, 5, 6, 7, 9),
+            RemoveCandidates(7, 5, 2, 3, 4, 5, 6, 9),
+            RemoveCandidates(7, 6, 2, 3, 4, 5, 6, 8),
+            RemoveCandidates(8, 0, 1, 2, 4, 6, 7, 9),
+            RemoveCandidates(8, 1, 1, 2, 4, 6, 7, 8, 9),
+            RemoveCandidates(8, 2, 2, 3, 4, 6, 7, 9),
+            RemoveCandidates(8, 4, 2, 4, 7, 9),
+            RemoveCandidates(8, 6, 3, 4, 5, 6, 8, 9),
+            RemoveCandidates(8, 7, 1, 2, 3, 4, 5, 7, 8, 9),
+            RemoveCandidates(8, 8, 3, 4, 5, 8, 9)
+        )
+        assertIterableEquals(expected, pruneCandidates(createCellBoardFromSimpleString(board)).sorted())
     }
 }

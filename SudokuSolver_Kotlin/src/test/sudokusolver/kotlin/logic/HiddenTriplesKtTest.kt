@@ -1,8 +1,8 @@
 package sudokusolver.kotlin.logic
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
-import sudokusolver.kotlin.assertRemoveCandidates
+import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
 
 internal class HiddenTriplesKtTest {
@@ -32,11 +32,11 @@ internal class HiddenTriplesKtTest {
             {57}{25}6{257}19843
             3{12458}{247}{24578}{478}{2578}{269}{16}{129}
         """.trimIndent().replace("\n", "")
-        val modifications = hiddenTriples(createCellBoardFromStringWithCandidates(board)).sorted()
-
-        assertEquals(3, modifications.size)
-        assertRemoveCandidates(modifications[0], 0, 3, 4, 7, 8)
-        assertRemoveCandidates(modifications[1], 0, 6, 4, 9)
-        assertRemoveCandidates(modifications[2], 0, 8, 4, 7, 8, 9)
+        val expected = listOf(
+            RemoveCandidates(0, 3, 4, 7, 8),
+            RemoveCandidates(0, 6, 4, 9),
+            RemoveCandidates(0, 8, 4, 7, 8, 9)
+        )
+        assertIterableEquals(expected, hiddenTriples(createCellBoardFromStringWithCandidates(board)).sorted())
     }
 }

@@ -1,8 +1,8 @@
 package sudokusolver.kotlin.logic
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
-import sudokusolver.kotlin.assertRemoveCandidates
+import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
 
 internal class NakedTriplesKtTest {
@@ -32,13 +32,13 @@ internal class NakedTriplesKtTest {
             2{689}{5679}{1578}{158}{57}4{589}3
             13{59}642{589}7{58}
         """.trimIndent().replace("\n", "")
-        val modifications = nakedTriples(createCellBoardFromStringWithCandidates(board)).sorted()
-
-        assertEquals(4, modifications.size)
-        assertRemoveCandidates(modifications[0], 4, 0, 5, 9)
-        assertRemoveCandidates(modifications[1], 4, 2, 5, 9)
-        assertRemoveCandidates(modifications[2], 4, 6, 5, 8, 9)
-        assertRemoveCandidates(modifications[3], 4, 7, 5, 8, 9)
+        val expected = listOf(
+            RemoveCandidates(4, 0, 5, 9),
+            RemoveCandidates(4, 2, 5, 9),
+            RemoveCandidates(4, 6, 5, 8, 9),
+            RemoveCandidates(4, 7, 5, 8, 9)
+        )
+        assertIterableEquals(expected, nakedTriples(createCellBoardFromStringWithCandidates(board)).sorted())
     }
 
     /*
@@ -67,17 +67,17 @@ internal class NakedTriplesKtTest {
             9{268}{268}735{48}{248}1
             4{15}{15}928637
         """.trimIndent().replace("\n", "")
-        val modifications = nakedTriples(createCellBoardFromStringWithCandidates(board)).sorted()
-
-        assertEquals(9, modifications.size)
-        assertRemoveCandidates(modifications[0], 3, 1, 1, 8)
-        assertRemoveCandidates(modifications[1], 3, 2, 1, 8)
-        assertRemoveCandidates(modifications[2], 3, 6, 8)
-        assertRemoveCandidates(modifications[3], 3, 7, 2, 8)
-        assertRemoveCandidates(modifications[4], 4, 2, 1, 5)
-        assertRemoveCandidates(modifications[5], 5, 1, 1, 5, 8)
-        assertRemoveCandidates(modifications[6], 5, 2, 1, 5, 8)
-        assertRemoveCandidates(modifications[7], 5, 6, 8)
-        assertRemoveCandidates(modifications[8], 5, 7, 2, 8)
+        val expected = listOf(
+            RemoveCandidates(3, 1, 1, 8),
+            RemoveCandidates(3, 2, 1, 8),
+            RemoveCandidates(3, 6, 8),
+            RemoveCandidates(3, 7, 2, 8),
+            RemoveCandidates(4, 2, 1, 5),
+            RemoveCandidates(5, 1, 1, 5, 8),
+            RemoveCandidates(5, 2, 1, 5, 8),
+            RemoveCandidates(5, 6, 8),
+            RemoveCandidates(5, 7, 2, 8)
+        )
+        assertIterableEquals(expected, nakedTriples(createCellBoardFromStringWithCandidates(board)).sorted())
     }
 }

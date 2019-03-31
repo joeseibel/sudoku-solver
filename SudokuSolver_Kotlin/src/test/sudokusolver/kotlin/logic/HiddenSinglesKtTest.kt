@@ -1,8 +1,8 @@
 package sudokusolver.kotlin.logic
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
-import sudokusolver.kotlin.assertSetValue
+import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
 
 internal class HiddenSinglesKtTest {
@@ -32,17 +32,17 @@ internal class HiddenSinglesKtTest {
             {578}6{235}4{159}{123579}{1358}{158}{1357}
             91{35}{357}6{357}{358}{458}2
         """.trimIndent().replace("\n", "")
-        val modifications = hiddenSingles(createCellBoardFromStringWithCandidates(board)).sorted()
-
-        assertEquals(9, modifications.size)
-        assertSetValue(modifications[0], 0, 1, 4)
-        assertSetValue(modifications[1], 0, 2, 6)
-        assertSetValue(modifications[2], 1, 3, 3)
-        assertSetValue(modifications[3], 1, 8, 4)
-        assertSetValue(modifications[4], 2, 1, 7)
-        assertSetValue(modifications[5], 6, 7, 6)
-        assertSetValue(modifications[6], 7, 0, 8)
-        assertSetValue(modifications[7], 7, 8, 7)
-        assertSetValue(modifications[8], 8, 7, 4)
+        val expected = listOf(
+            SetValue(0, 1, 4),
+            SetValue(0, 2, 6),
+            SetValue(1, 3, 3),
+            SetValue(1, 8, 4),
+            SetValue(2, 1, 7),
+            SetValue(6, 7, 6),
+            SetValue(7, 0, 8),
+            SetValue(7, 8, 7),
+            SetValue(8, 7, 4)
+        )
+        assertIterableEquals(expected, hiddenSingles(createCellBoardFromStringWithCandidates(board)).sorted())
     }
 }

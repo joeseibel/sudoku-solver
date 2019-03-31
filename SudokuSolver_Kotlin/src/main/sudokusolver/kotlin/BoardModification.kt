@@ -63,12 +63,20 @@ data class RemoveCandidates(
             require(candidate in cell.candidates) { "$candidate  is not a candidate for [$row, $column]" }
         }
     }
+
+    constructor(row: Int, column: Int, vararg candidates: Int) : this(
+        row,
+        column,
+        candidates.mapTo(EnumSet.noneOf(SudokuNumber::class.java)) { SudokuNumber.values()[it - 1] }
+    )
 }
 
 data class SetValue(override val row: Int, override val column: Int, val value: SudokuNumber) : BoardModification() {
     constructor(cell: UnsolvedCell, value: SudokuNumber) : this(cell.row, cell.column, value) {
         require(value in cell.candidates) { "$value is not a candidate for [$row, $column]" }
     }
+
+    constructor(row: Int, column: Int, value: Int) : this(row, column, value.let { SudokuNumber.values()[it - 1] })
 }
 
 fun List<Pair<UnsolvedCell, SudokuNumber>>.mergeToRemoveCandidates(): List<RemoveCandidates> =
