@@ -6,6 +6,7 @@ import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.enumMinus
+import sudokusolver.kotlin.enumUnion
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.zipEveryTriple
 import java.util.EnumSet
@@ -29,9 +30,7 @@ fun hiddenTriples(board: Board<Cell>): List<RemoveCandidates> =
                 .filter { a in it.candidates || b in it.candidates || c in it.candidates }
                 .takeIf { it.size == 3 }
                 ?.takeIf { cells ->
-                    val union = cells.fold(EnumSet.noneOf(SudokuNumber::class.java)) { union, cell ->
-                        union.also { it += cell.candidates }
-                    }
+                    val union = enumUnion(*cells.map { it.candidates }.toTypedArray())
                     a in union && b in union && c in union
                 }
                 ?.flatMap { cell ->

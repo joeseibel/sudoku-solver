@@ -5,6 +5,7 @@ import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
 import sudokusolver.kotlin.logic.bruteForce
 import sudokusolver.kotlin.logic.hiddenPairs
+import sudokusolver.kotlin.logic.hiddenQuads
 import sudokusolver.kotlin.logic.hiddenSingles
 import sudokusolver.kotlin.logic.hiddenTriples
 import sudokusolver.kotlin.logic.nakedPairs
@@ -85,6 +86,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { hiddenPairs(board) }
                     .ifEmpty { hiddenTriples(board) }
                     .ifEmpty { nakedQuads(board) }
+                    .ifEmpty { hiddenQuads(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
