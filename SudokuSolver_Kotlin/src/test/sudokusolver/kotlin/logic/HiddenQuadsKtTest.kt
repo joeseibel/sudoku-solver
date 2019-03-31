@@ -32,7 +32,7 @@ internal class HiddenQuadsKtTest {
             {4789}{689}{578}213{4576}{47}{67}
             13{246}75{46}{26}98
         """.trimIndent().replace("\n", "")
-        val modifications = hiddenQuads(createCellBoardFromStringWithCandidates(board))
+        val modifications = hiddenQuads(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(1, modifications.size)
         assertRemoveCandidates(modifications[0], 7, 6, 6)
@@ -64,7 +64,7 @@ internal class HiddenQuadsKtTest {
             2{345}{34}{39}6{359}817
             {37}{3578}{378}{23}{235}1694
         """.trimIndent().replace("\n", "")
-        val modifications = hiddenQuads(createCellBoardFromStringWithCandidates(board))
+        val modifications = hiddenQuads(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(4, modifications.size)
         assertRemoveCandidates(modifications[0], 3, 3, 3, 7, 8)

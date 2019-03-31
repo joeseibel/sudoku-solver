@@ -32,7 +32,7 @@ internal class HiddenPairsKtTest {
             {16}{169}54{1679}32{79}8
             {12468}{1234689}{23}{19}{16789}{69}{459}{34579}{34579}
         """.trimIndent().replace("\n", "")
-        val modifications = hiddenPairs(createCellBoardFromStringWithCandidates(board))
+        val modifications = hiddenPairs(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(2, modifications.size)
         assertRemoveCandidates(modifications[0], 0, 7, 2, 3, 4, 5, 9)
@@ -65,7 +65,7 @@ internal class HiddenPairsKtTest {
             34{57}{15}{12}{257}{69}{69}8
             168943275
         """.trimIndent().replace("\n", "")
-        val modifications = hiddenPairs(createCellBoardFromStringWithCandidates(board))
+        val modifications = hiddenPairs(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(4, modifications.size)
         assertRemoveCandidates(modifications[0], 3, 2, 5, 6)

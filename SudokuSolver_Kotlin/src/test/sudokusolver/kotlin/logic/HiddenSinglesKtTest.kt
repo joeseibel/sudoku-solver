@@ -32,17 +32,17 @@ internal class HiddenSinglesKtTest {
             {578}6{235}4{159}{123579}{1358}{158}{1357}
             91{35}{357}6{357}{358}{458}2
         """.trimIndent().replace("\n", "")
-        val modifications = hiddenSingles(createCellBoardFromStringWithCandidates(board))
+        val modifications = hiddenSingles(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(9, modifications.size)
         assertSetValue(modifications[0], 0, 1, 4)
         assertSetValue(modifications[1], 0, 2, 6)
         assertSetValue(modifications[2], 1, 3, 3)
-        assertSetValue(modifications[3], 2, 1, 7)
-        assertSetValue(modifications[4], 6, 7, 6)
-        assertSetValue(modifications[5], 8, 7, 4)
-        assertSetValue(modifications[6], 1, 8, 4)
+        assertSetValue(modifications[3], 1, 8, 4)
+        assertSetValue(modifications[4], 2, 1, 7)
+        assertSetValue(modifications[5], 6, 7, 6)
+        assertSetValue(modifications[6], 7, 0, 8)
         assertSetValue(modifications[7], 7, 8, 7)
-        assertSetValue(modifications[8], 7, 0, 8)
+        assertSetValue(modifications[8], 8, 7, 4)
     }
 }

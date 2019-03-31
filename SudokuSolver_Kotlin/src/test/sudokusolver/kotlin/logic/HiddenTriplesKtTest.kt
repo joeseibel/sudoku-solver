@@ -32,7 +32,7 @@ internal class HiddenTriplesKtTest {
             {57}{25}6{257}19843
             3{12458}{247}{24578}{478}{2578}{269}{16}{129}
         """.trimIndent().replace("\n", "")
-        val modifications = hiddenTriples(createCellBoardFromStringWithCandidates(board))
+        val modifications = hiddenTriples(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(3, modifications.size)
         assertRemoveCandidates(modifications[0], 0, 3, 4, 7, 8)

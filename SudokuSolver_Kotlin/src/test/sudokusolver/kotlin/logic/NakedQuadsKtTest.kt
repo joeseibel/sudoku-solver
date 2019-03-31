@@ -32,7 +32,7 @@ internal class NakedQuadsKtTest {
             {18}392{18}5467
             7{568}{568}9{68}4132
         """.trimIndent().replace("\n", "")
-        val modifications = nakedQuads(createCellBoardFromStringWithCandidates(board))
+        val modifications = nakedQuads(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(4, modifications.size)
         assertRemoveCandidates(modifications[0], 0, 1, 1, 5)

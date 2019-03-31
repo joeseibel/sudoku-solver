@@ -32,7 +32,7 @@ internal class NakedPairsKtTest {
             {18}{168}39{12567}{2567}4{12568}{1256}
             24{168}{15}3{56}7{1568}9
         """.trimIndent().replace("\n", "")
-        val modifications = nakedPairs(createCellBoardFromStringWithCandidates(board))
+        val modifications = nakedPairs(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(9, modifications.size)
         assertRemoveCandidates(modifications[0], 0, 3, 1)
@@ -41,8 +41,8 @@ internal class NakedPairsKtTest {
         assertRemoveCandidates(modifications[3], 2, 0, 1, 7)
         assertRemoveCandidates(modifications[4], 2, 4, 6, 7)
         assertRemoveCandidates(modifications[5], 3, 4, 8)
-        assertRemoveCandidates(modifications[6], 5, 4, 8)
-        assertRemoveCandidates(modifications[7], 3, 7, 5, 8)
+        assertRemoveCandidates(modifications[6], 3, 7, 5, 8)
+        assertRemoveCandidates(modifications[7], 5, 4, 8)
         assertRemoveCandidates(modifications[8], 5, 8, 5)
     }
 
@@ -72,15 +72,15 @@ internal class NakedPairsKtTest {
             2{47}{789}{37}{378}{689}{346}15
             {47}1{789}{37}5{689}{346}2{34}
         """.trimIndent().replace("\n", "")
-        val modifications = nakedPairs(createCellBoardFromStringWithCandidates(board))
+        val modifications = nakedPairs(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(7, modifications.size)
         assertRemoveCandidates(modifications[0], 0, 3, 7)
         assertRemoveCandidates(modifications[1], 1, 3, 7)
-        assertRemoveCandidates(modifications[2], 2, 3, 7)
-        assertRemoveCandidates(modifications[3], 1, 5, 1, 2)
+        assertRemoveCandidates(modifications[2], 1, 5, 1, 2)
+        assertRemoveCandidates(modifications[3], 2, 3, 7)
         assertRemoveCandidates(modifications[4], 7, 2, 7)
-        assertRemoveCandidates(modifications[5], 8, 2, 7)
-        assertRemoveCandidates(modifications[6], 7, 4, 3, 7)
+        assertRemoveCandidates(modifications[5], 7, 4, 3, 7)
+        assertRemoveCandidates(modifications[6], 8, 2, 7)
     }
 }

@@ -32,7 +32,7 @@ internal class NakedTriplesKtTest {
             2{689}{5679}{1578}{158}{57}4{589}3
             13{59}642{589}7{58}
         """.trimIndent().replace("\n", "")
-        val modifications = nakedTriples(createCellBoardFromStringWithCandidates(board))
+        val modifications = nakedTriples(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(4, modifications.size)
         assertRemoveCandidates(modifications[0], 4, 0, 5, 9)
@@ -67,16 +67,16 @@ internal class NakedTriplesKtTest {
             9{268}{268}735{48}{248}1
             4{15}{15}928637
         """.trimIndent().replace("\n", "")
-        val modifications = nakedTriples(createCellBoardFromStringWithCandidates(board))
+        val modifications = nakedTriples(createCellBoardFromStringWithCandidates(board)).sorted()
 
         assertEquals(9, modifications.size)
         assertRemoveCandidates(modifications[0], 3, 1, 1, 8)
         assertRemoveCandidates(modifications[1], 3, 2, 1, 8)
-        assertRemoveCandidates(modifications[2], 4, 2, 1, 5)
-        assertRemoveCandidates(modifications[3], 5, 1, 1, 5, 8)
-        assertRemoveCandidates(modifications[4], 5, 2, 1, 5, 8)
-        assertRemoveCandidates(modifications[5], 3, 6, 8)
-        assertRemoveCandidates(modifications[6], 3, 7, 2, 8)
+        assertRemoveCandidates(modifications[2], 3, 6, 8)
+        assertRemoveCandidates(modifications[3], 3, 7, 2, 8)
+        assertRemoveCandidates(modifications[4], 4, 2, 1, 5)
+        assertRemoveCandidates(modifications[5], 5, 1, 1, 5, 8)
+        assertRemoveCandidates(modifications[6], 5, 2, 1, 5, 8)
         assertRemoveCandidates(modifications[7], 5, 6, 8)
         assertRemoveCandidates(modifications[8], 5, 7, 2, 8)
     }
