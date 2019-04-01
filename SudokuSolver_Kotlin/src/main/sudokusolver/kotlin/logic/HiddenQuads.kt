@@ -21,7 +21,7 @@ import java.util.EnumSet
  *   For each quad of candidates
  *     Find every unsolved cell that has any of the candidates
  *     If there are four cells and each candidate is found among the four cells
- *       Remove very other candidate from the four cells
+ *       Remove every other candidate from the four cells
  */
 fun hiddenQuads(board: Board<Cell>): List<RemoveCandidates> =
     board.units.flatMap { unit ->
