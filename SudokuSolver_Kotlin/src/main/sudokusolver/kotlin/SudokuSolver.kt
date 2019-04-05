@@ -3,6 +3,7 @@ package sudokusolver.kotlin
 import sudokusolver.kotlin.logic.MultipleSolutions
 import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
+import sudokusolver.kotlin.logic.boxLineReduction
 import sudokusolver.kotlin.logic.bruteForce
 import sudokusolver.kotlin.logic.hiddenPairs
 import sudokusolver.kotlin.logic.hiddenQuads
@@ -89,6 +90,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { nakedQuads(board) }
                     .ifEmpty { hiddenQuads(board) }
                     .ifEmpty { pointingPairsPointingTriples(board) }
+                    .ifEmpty { boxLineReduction(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
