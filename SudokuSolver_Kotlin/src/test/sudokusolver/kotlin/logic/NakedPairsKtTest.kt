@@ -3,7 +3,7 @@ package sudokusolver.kotlin.logic
 import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
+import sudokusolver.kotlin.parseCellsWithCandidates
 
 internal class NakedPairsKtTest {
     /*
@@ -43,7 +43,7 @@ internal class NakedPairsKtTest {
             RemoveCandidates(5, 4, 8),
             RemoveCandidates(5, 8, 5)
         )
-        assertIterableEquals(expected, nakedPairs(createCellBoardFromStringWithCandidates(board)).sorted())
+        assertIterableEquals(expected, nakedPairs(parseCellsWithCandidates(board)).sorted())
     }
 
     /*
@@ -81,6 +81,6 @@ internal class NakedPairsKtTest {
             RemoveCandidates(7, 4, 3, 7),
             RemoveCandidates(8, 2, 7)
         )
-        assertIterableEquals(expected, nakedPairs(createCellBoardFromStringWithCandidates(board)).sorted())
+        assertIterableEquals(expected, nakedPairs(parseCellsWithCandidates(board)).sorted())
     }
 }

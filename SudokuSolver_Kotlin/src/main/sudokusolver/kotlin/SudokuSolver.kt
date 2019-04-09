@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
             println("board must be $UNIT_SIZE_SQUARED numbers with blanks expressed as 0")
         } else {
             println(
-                when (val solution = solve(board.toOptionalBoard())) {
+                when (val solution = solve(parseOptionalBoard(board))) {
                     InvalidNoSolutions -> "No Solutions"
                     InvalidMultipleSolutions -> "Multiple Solutions"
                     is Solution -> solution.board

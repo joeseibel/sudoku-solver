@@ -3,7 +3,7 @@ package sudokusolver.kotlin.logic
 import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.SetValue
-import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
+import sudokusolver.kotlin.parseCellsWithCandidates
 
 internal class NakedSinglesKtTest {
     /*
@@ -36,6 +36,6 @@ internal class NakedSinglesKtTest {
             SetValue(0, 7, 9),
             SetValue(8, 7, 6)
         )
-        assertIterableEquals(expected, nakedSingles(createCellBoardFromStringWithCandidates(board)).sorted())
+        assertIterableEquals(expected, nakedSingles(parseCellsWithCandidates(board)).sorted())
     }
 }

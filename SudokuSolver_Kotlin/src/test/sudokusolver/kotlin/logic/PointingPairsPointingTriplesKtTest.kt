@@ -3,7 +3,7 @@ package sudokusolver.kotlin.logic
 import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
+import sudokusolver.kotlin.parseCellsWithCandidates
 
 internal class PointingPairsPointingTriplesKtTest {
     /*
@@ -45,7 +45,7 @@ internal class PointingPairsPointingTriplesKtTest {
         )
         assertIterableEquals(
             expected,
-            pointingPairsPointingTriples(createCellBoardFromStringWithCandidates(board)).sorted()
+            pointingPairsPointingTriples(parseCellsWithCandidates(board)).sorted()
         )
     }
 
@@ -93,7 +93,7 @@ internal class PointingPairsPointingTriplesKtTest {
         )
         assertIterableEquals(
             expected,
-            pointingPairsPointingTriples(createCellBoardFromStringWithCandidates(board)).sorted()
+            pointingPairsPointingTriples(parseCellsWithCandidates(board)).sorted()
         )
     }
 
@@ -138,7 +138,7 @@ internal class PointingPairsPointingTriplesKtTest {
         )
         assertIterableEquals(
             expected,
-            pointingPairsPointingTriples(createCellBoardFromStringWithCandidates(board)).sorted()
+            pointingPairsPointingTriples(parseCellsWithCandidates(board)).sorted()
         )
     }
 }

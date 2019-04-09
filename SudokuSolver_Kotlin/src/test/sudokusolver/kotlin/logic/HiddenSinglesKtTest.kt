@@ -3,7 +3,7 @@ package sudokusolver.kotlin.logic
 import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.SetValue
-import sudokusolver.kotlin.createCellBoardFromStringWithCandidates
+import sudokusolver.kotlin.parseCellsWithCandidates
 
 internal class HiddenSinglesKtTest {
     /*
@@ -43,6 +43,6 @@ internal class HiddenSinglesKtTest {
             SetValue(7, 8, 7),
             SetValue(8, 7, 4)
         )
-        assertIterableEquals(expected, hiddenSingles(createCellBoardFromStringWithCandidates(board)).sorted())
+        assertIterableEquals(expected, hiddenSingles(parseCellsWithCandidates(board)).sorted())
     }
 }

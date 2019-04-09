@@ -169,13 +169,3 @@ data class BlockIndex(val row: Int, val column: Int) {
 }
 
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)
-
-fun String.toOptionalBoard(): Board<SudokuNumber?> {
-    require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED." }
-    return Board(chunked(UNIT_SIZE) { row -> row.map { cell -> if (cell == '0') null else sudokuNumber(cell) } })
-}
-
-fun String.toBoard(): Board<SudokuNumber> {
-    require(length == UNIT_SIZE_SQUARED) { "String length is $length, must be $UNIT_SIZE_SQUARED." }
-    return Board(chunked(UNIT_SIZE) { row -> row.map { sudokuNumber(it) } })
-}

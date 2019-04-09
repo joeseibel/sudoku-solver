@@ -66,7 +66,7 @@ fun createMutableCellBoard(board: Board<SudokuNumber?>): MutableBoard<Cell> =
         if (cell == null) UnsolvedCell(row, column) else SolvedCell(row, column, cell)
     }
 
-fun createCellBoardFromSimpleString(simpleBoard: String): Board<Cell> {
+fun parseSimpleCells(simpleBoard: String): Board<Cell> {
     require(simpleBoard.length == UNIT_SIZE_SQUARED) {
         "simpleBoard.length is ${simpleBoard.length}, must be $UNIT_SIZE_SQUARED."
     }
@@ -81,7 +81,7 @@ fun createCellBoardFromSimpleString(simpleBoard: String): Board<Cell> {
     })
 }
 
-fun createCellBoardFromStringWithCandidates(withCandidates: String): Board<Cell> {
+fun parseCellsWithCandidates(withCandidates: String): Board<Cell> {
     val cellBuilders = mutableListOf<(row: Int, column: Int) -> Cell>()
     var index = 0
     while (index < withCandidates.length) {
