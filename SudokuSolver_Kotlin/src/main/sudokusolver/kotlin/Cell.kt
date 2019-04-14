@@ -32,6 +32,11 @@ sealed class Cell {
 }
 
 data class SolvedCell(override val row: Int, override val column: Int, val value: SudokuNumber) : Cell() {
+    init {
+        require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
+        require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
+    }
+
     override fun toString(): String = value.toString()
 }
 
@@ -40,6 +45,12 @@ data class UnsolvedCell(
     override val column: Int,
     val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)
 ) : Cell() {
+    init {
+        require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
+        require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
+        require(candidates.isNotEmpty()) { "candidates must not be empty." }
+    }
+
     override fun toString(): String = "0"
 }
 
