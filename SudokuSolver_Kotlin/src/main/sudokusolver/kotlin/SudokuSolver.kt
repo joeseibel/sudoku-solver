@@ -54,8 +54,7 @@ private class Solution(val board: Board<SudokuNumber>) : SolveResult()
 private class UnableToSolve(val board: Board<Cell>) : SolveResult()
 
 private fun solve(input: Board<SudokuNumber?>): SolveResult {
-    val bruteForceSolution = bruteForce(input)
-    when (bruteForceSolution) {
+    when (val bruteForceSolution = bruteForce(input)) {
         NoSolutions -> return InvalidNoSolutions
         MultipleSolutions -> return InvalidMultipleSolutions
 
