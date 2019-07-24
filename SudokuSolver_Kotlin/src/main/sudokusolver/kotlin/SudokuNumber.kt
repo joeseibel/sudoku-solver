@@ -6,7 +6,19 @@ enum class SudokuNumber {
     override fun toString(): String = "${ordinal + 1}"
 }
 
-fun sudokuNumber(ch: Char): SudokuNumber = SudokuNumber.values()[Character.getNumericValue(ch) - 1]
+fun sudokuNumber(ch: Char): SudokuNumber =
+    when (ch) {
+        '1' -> SudokuNumber.ONE
+        '2' -> SudokuNumber.TWO
+        '3' -> SudokuNumber.THREE
+        '4' -> SudokuNumber.FOUR
+        '5' -> SudokuNumber.FIVE
+        '6' -> SudokuNumber.SIX
+        '7' -> SudokuNumber.SEVEN
+        '8' -> SudokuNumber.EIGHT
+        '9' -> SudokuNumber.NINE
+        else -> throw IllegalArgumentException("ch is '$ch', must be between '1' and '9'.")
+    }
 
 fun parseOptionalBoard(board: String): Board<SudokuNumber?> {
     require(board.length == UNIT_SIZE_SQUARED) { "String length is ${board.length}, must be $UNIT_SIZE_SQUARED." }
