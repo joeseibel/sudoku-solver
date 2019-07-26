@@ -90,10 +90,20 @@ data class SetValue(override val row: Int, override val column: Int, val value: 
     constructor(row: Int, column: Int, value: Int) : this(row, column, value.let { SudokuNumber.values()[it - 1] })
 }
 
+/*
+ * The receiver represents a list of numbers that should be removed from specific cells. This helper function allows the
+ * logic functions to focus on simply marking the numbers to be removed, then at the end use this function to produce at
+ * most one RemoveCandidates per cell.
+ *
+ * The implementation is a little complicated in order to only use EnumSet for SudokuNumber. It is functionally
+ * equivalent to the following:
+ *      groupBy(keySelector = { (cell, _) -> cell }, valueTransform = { (_, candidate) -> candidate })
+ *          .map { (cell, candidates) -> RemoveCandidates(cell, EnumSet.copyOf(candidates)) }
+ */
 fun List<Pair<UnsolvedCell, SudokuNumber>>.mergeToRemoveCandidates(): List<RemoveCandidates> =
     groupingBy { (cell, _) -> cell }
         .fold(
-            { _, _ -> EnumSet.noneOf(SudokuNumber::class.java) },
-            { _, candidates, (_, candidate) -> candidates.also { it += candidate } }
+            initialValueSelector = { _, _ -> EnumSet.noneOf(SudokuNumber::class.java) },
+            operation = { _, candidates, (_, candidate) -> candidates.also { it += candidate } }
         )
         .map { (cell, candidates) -> RemoveCandidates(cell, candidates) }

@@ -1,5 +1,9 @@
 package sudokusolver.kotlin
 
+/*
+ * The only collection that should be used for SudokuNumber is EnumSet. Sometimes this will lead to more complicated
+ * code to avoid using a List or Set.
+ */
 enum class SudokuNumber {
     ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE;
 
