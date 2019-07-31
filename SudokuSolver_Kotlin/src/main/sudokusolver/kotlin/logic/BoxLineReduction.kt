@@ -25,10 +25,11 @@ import sudokusolver.kotlin.mergeToRemoveCandidates
  *     If the candidate appears in unsolved cells of the same block
  *       Remove the candidate from cells of the block which are outside of the column
  */
-fun boxLineReduction(board: Board<Cell>): List<RemoveCandidates> {
-    fun boxLineReduction(units: List<List<Cell>>, getUnitIndex: (Cell) -> Int) =
-        units.flatMap { unit ->
-            SudokuNumber.values().mapNotNull { candidate ->
+fun boxLineReduction(board: Board<Cell>): List<RemoveCandidates> =
+    SudokuNumber.values().flatMap { candidate ->
+
+        fun boxLineReduction(units: List<List<Cell>>, getUnitIndex: (Cell) -> Int) =
+            units.mapNotNull { unit ->
                 unit.filterIsInstance<UnsolvedCell>()
                     .filter { candidate in it.candidates }
                     .takeIf { withCandidate -> withCandidate.map { it.block }.toSet().size == 1 }
@@ -39,9 +40,8 @@ fun boxLineReduction(board: Board<Cell>): List<RemoveCandidates> {
                             .map { it to candidate }
                     }
             }.flatten()
-        }
 
-    val rowRemovals = boxLineReduction(board.rows) { it.row }
-    val columnRemovals = boxLineReduction(board.columns) { it.column }
-    return (rowRemovals + columnRemovals).mergeToRemoveCandidates()
-}
+        val rowRemovals = boxLineReduction(board.rows) { it.row }
+        val columnRemovals = boxLineReduction(board.columns) { it.column }
+        rowRemovals + columnRemovals
+    }.mergeToRemoveCandidates()
