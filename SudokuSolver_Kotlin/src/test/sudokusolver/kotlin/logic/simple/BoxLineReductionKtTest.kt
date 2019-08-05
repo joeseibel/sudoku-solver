@@ -1,4 +1,4 @@
-package sudokusolver.kotlin.logic
+package sudokusolver.kotlin.logic.simple
 
 import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test

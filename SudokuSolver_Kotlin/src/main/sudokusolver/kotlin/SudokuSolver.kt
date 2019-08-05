@@ -3,19 +3,19 @@ package sudokusolver.kotlin
 import sudokusolver.kotlin.logic.MultipleSolutions
 import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
-import sudokusolver.kotlin.logic.boxLineReduction
 import sudokusolver.kotlin.logic.bruteForce
-import sudokusolver.kotlin.logic.hiddenPairs
-import sudokusolver.kotlin.logic.hiddenQuads
-import sudokusolver.kotlin.logic.hiddenSingles
-import sudokusolver.kotlin.logic.hiddenTriples
-import sudokusolver.kotlin.logic.nakedPairs
-import sudokusolver.kotlin.logic.nakedQuads
-import sudokusolver.kotlin.logic.nakedSingles
-import sudokusolver.kotlin.logic.nakedTriples
-import sudokusolver.kotlin.logic.pointingPairsPointingTriples
-import sudokusolver.kotlin.logic.pruneCandidates
-import sudokusolver.kotlin.logic.xWing
+import sudokusolver.kotlin.logic.simple.boxLineReduction
+import sudokusolver.kotlin.logic.simple.hiddenPairs
+import sudokusolver.kotlin.logic.simple.hiddenQuads
+import sudokusolver.kotlin.logic.simple.hiddenSingles
+import sudokusolver.kotlin.logic.simple.hiddenTriples
+import sudokusolver.kotlin.logic.simple.nakedPairs
+import sudokusolver.kotlin.logic.simple.nakedQuads
+import sudokusolver.kotlin.logic.simple.nakedSingles
+import sudokusolver.kotlin.logic.simple.nakedTriples
+import sudokusolver.kotlin.logic.simple.pointingPairsPointingTriples
+import sudokusolver.kotlin.logic.simple.pruneCandidates
+import sudokusolver.kotlin.logic.tough.xWing
 
 fun main(args: Array<String>) {
     if (args.size != 1) {

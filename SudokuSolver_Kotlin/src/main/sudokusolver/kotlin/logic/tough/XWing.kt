@@ -1,4 +1,4 @@
-package sudokusolver.kotlin.logic
+package sudokusolver.kotlin.logic.tough
 
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
