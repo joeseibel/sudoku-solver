@@ -51,6 +51,9 @@ data class UnsolvedCell(
         require(candidates.isNotEmpty()) { "candidates must not be empty." }
     }
 
+    infix fun isInSameUnit(other: UnsolvedCell): Boolean =
+        row == other.row || column == other.column || block == other.block
+
     override fun toString(): String = "0"
 }
 
