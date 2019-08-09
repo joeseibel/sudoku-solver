@@ -15,6 +15,7 @@ import sudokusolver.kotlin.logic.simple.nakedSingles
 import sudokusolver.kotlin.logic.simple.nakedTriples
 import sudokusolver.kotlin.logic.simple.pointingPairsPointingTriples
 import sudokusolver.kotlin.logic.simple.pruneCandidates
+import sudokusolver.kotlin.logic.tough.simpleColoringRule2
 import sudokusolver.kotlin.logic.tough.xWing
 
 fun main(args: Array<String>) {
@@ -92,6 +93,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { pointingPairsPointingTriples(board) }
                     .ifEmpty { boxLineReduction(board) }
                     .ifEmpty { xWing(board) }
+                    .ifEmpty { simpleColoringRule2(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
