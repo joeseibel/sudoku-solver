@@ -18,6 +18,7 @@ import sudokusolver.kotlin.logic.simple.pruneCandidates
 import sudokusolver.kotlin.logic.tough.simpleColoring
 import sudokusolver.kotlin.logic.tough.swordfish
 import sudokusolver.kotlin.logic.tough.xWing
+import sudokusolver.kotlin.logic.tough.xyzWing
 import sudokusolver.kotlin.logic.tough.yWing
 
 fun main(args: Array<String>) {
@@ -98,6 +99,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { simpleColoring(board) }
                     .ifEmpty { yWing(board) }
                     .ifEmpty { swordfish(board) }
+                    .ifEmpty { xyzWing(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
