@@ -4,6 +4,7 @@ import sudokusolver.kotlin.logic.MultipleSolutions
 import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
 import sudokusolver.kotlin.logic.bruteForce
+import sudokusolver.kotlin.logic.diabolical.xCyclesRule1
 import sudokusolver.kotlin.logic.simple.boxLineReduction
 import sudokusolver.kotlin.logic.simple.hiddenPairs
 import sudokusolver.kotlin.logic.simple.hiddenQuads
@@ -100,6 +101,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { yWing(board) }
                     .ifEmpty { swordfish(board) }
                     .ifEmpty { xyzWing(board) }
+                    .ifEmpty { xCyclesRule1(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
