@@ -26,22 +26,22 @@ import sudokusolver.kotlin.mergeToRemoveCandidates
 fun pointingPairsPointingTriples(board: Board<Cell>): List<RemoveCandidates> =
     board.blocks.flatMap { block ->
         val unsolved = block.filterIsInstance<UnsolvedCell>()
-        SudokuNumber.values().mapNotNull { candidate ->
-
-            fun removeFromOtherBlocks(unit: List<Cell>) =
-                unit.filterIsInstance<UnsolvedCell>()
-                    .filter { it.block != block.first().block && candidate in it.candidates }
-                    .map { it to candidate }
-
+        val blockIndex = block.first().block
+        SudokuNumber.values().flatMap { candidate ->
             val withCandidate = unsolved.filter { candidate in it.candidates }
-            when {
-                withCandidate.map { it.row }.toSet().size == 1 ->
-                    removeFromOtherBlocks(board.getRow(withCandidate.first().row))
 
-                withCandidate.map { it.column }.toSet().size == 1 ->
-                    removeFromOtherBlocks(board.getColumn(withCandidate.first().column))
+            fun pointingPairsPointingTriples(getUnit: (Int) -> List<Cell>, getUnitIndex: (Cell) -> Int) =
+                withCandidate.map(getUnitIndex)
+                    .toSet()
+                    .singleOrNull()
+                    ?.let(getUnit)
+                    ?.filterIsInstance<UnsolvedCell>()
+                    ?.filter { it.block != blockIndex && candidate in it.candidates }
+                    ?.map { it to candidate }
+                    ?: emptyList()
 
-                else -> null
-            }
-        }.flatten()
+            val rowModifications = pointingPairsPointingTriples(board::getRow, Cell::row)
+            val columnModifications = pointingPairsPointingTriples(board::getColumn, Cell::column)
+            rowModifications + columnModifications
+        }
     }.mergeToRemoveCandidates()

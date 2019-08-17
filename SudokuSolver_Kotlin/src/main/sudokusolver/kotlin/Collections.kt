@@ -14,7 +14,7 @@ infix fun <T : Enum<T>> EnumSet<T>.enumIntersect(other: EnumSet<T>): EnumSet<T> 
 inline fun <reified T : Enum<T>> enumUnion(vararg sets: EnumSet<T>): EnumSet<T> =
     when (sets.size) {
         0 -> EnumSet.noneOf(T::class.java)
-        1 -> sets.first()
+        1 -> sets.single()
         else -> EnumSet.noneOf(T::class.java).also { union -> sets.forEach { set -> union += set } }
     }
 

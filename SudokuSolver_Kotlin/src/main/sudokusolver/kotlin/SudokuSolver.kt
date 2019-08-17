@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
     if (args.size != 1) {
         println("usage: SudokuSolverKt board")
     } else {
-        val board = args.first()
+        val board = args.single()
         if (board.length != UNIT_SIZE_SQUARED || board.any { it !in '0'..'9' }) {
             println("board must be $UNIT_SIZE_SQUARED numbers with blanks expressed as 0")
         } else {

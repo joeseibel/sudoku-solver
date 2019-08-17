@@ -41,7 +41,7 @@ fun yWing(board: Board<Cell>): List<RemoveCandidates> {
             (hinge.candidates enumIntersect wingB.candidates).size == 1 &&
             wingCandidates.size == 1
         ) {
-            val candidate = wingCandidates.first()
+            val candidate = wingCandidates.single()
             board.cells
                 .filterIsInstance<UnsolvedCell>()
                 .filter { cell ->
