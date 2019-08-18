@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.parseCellsWithCandidates
@@ -66,5 +67,37 @@ internal class XCyclesKtTest {
             RemoveCandidates(6, 8, 8)
         )
         assertIterableEquals(expected, xCyclesRule1(parseCellsWithCandidates(board)).sorted())
+    }
+
+    /*
+     * 8 0 4 | 5 3 7 | 0 0 0
+     * 0 2 3 | 6 1 4 | 0 8 5
+     * 6 0 5 | 9 8 2 | 0 3 4
+     * ------+-------+------
+     * 0 0 0 | 1 0 5 | 8 7 0
+     * 5 0 0 | 7 0 8 | 3 0 6
+     * 0 8 0 | 2 0 3 | 4 5 0
+     * ------+-------+------
+     * 2 0 0 | 8 5 9 | 0 0 3
+     * 0 5 0 | 3 7 1 | 2 0 8
+     * 0 0 8 | 4 2 6 | 5 0 7
+     */
+    @Test
+    fun textXCyclesRule2() {
+        val board = """
+            8{19}4537{169}{126}{12}
+            {79}23614{79}85
+            6{17}5982{17}34
+            {349}{346}{269}1{469}587{29}
+            5{49}{12}7{49}83{12}6
+            {179}8{1679}2{69}345{19}
+            2{467}{167}859{16}{146}3
+            {49}5{69}3712{469}8
+            {139}{39}84265{19}7
+        """.trimIndent().replace("\n", "")
+        val expected = listOf(
+            SetValue(8, 0, 1)
+        )
+        assertIterableEquals(expected, xCyclesRule2(parseCellsWithCandidates(board)).sorted())
     }
 }

@@ -1,6 +1,7 @@
 package sudokusolver.kotlin.logic.diabolical
 
 import org.jgrapht.Graph
+import org.jgrapht.Graphs
 import org.jgrapht.alg.connectivity.ConnectivityInspector
 import org.jgrapht.graph.AsUnmodifiableGraph
 import org.jgrapht.graph.SimpleGraph
@@ -13,6 +14,7 @@ import org.jgrapht.io.IntegerComponentNameProvider
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.mergeToRemoveCandidates
@@ -117,6 +119,67 @@ fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
                 }
             }
     }.flatten().mergeToRemoveCandidates()
+
+/*
+ * http://www.sudokuwiki.org/X_Cycles
+ * http://www.sudokuwiki.org/X_Cycles_Part_2
+ *
+ * X-Cycles is based on a graph type which is an extension of single's chain. An X-Cycles graph is for a single
+ * candidate and can have either strong or weak links. A strong link connects two cells in a unit when they are the only
+ * unsolved cells in that unit with the candidate. A weak link connects two cells in a unit when they are not the only
+ * unsolved cells in that unit with the candidate. An X-Cycle is a cycle in the graph in which the edges alternate
+ * between strong and weak links. If one cell of a link is the solution, then the other cell must not be the solution.
+ * If one cell of a strong link is not the solution, then the other cell must be the solution.
+ *
+ * Rule 2:
+ *
+ * If an X-Cycle has an odd number of vertices and the edges alternate between strong and weak, except for one vertex
+ * which is connected by two strong links, then the graph is a contradiction. Removing the candidate from the vertex of
+ * interest implies that the candidate must be the solution for that vertex, thus causing the cycle to contradict
+ * itself. However, considering the candidate to be the solution for that vertex does not cause any contradiction in the
+ * cycle. Therefore, the candidate must be the solution for that vertex.
+ *
+ * For each candidate
+ *   For each unit
+ *     If the candidate appears in two unsolved cells of the unit
+ *       Create a strong edge between the two cells
+ *   For each pair of vertices
+ *     If there is not an edge between the vertices and they can see each other
+ *       Create a weak edge between the pair of vertices
+ *   For each cycle in the graph
+ *     If the cycle has an odd number of vertices
+ *       If there is exactly one vertex connected by two strong edges
+ *         If the other edges of the cycle alternate between strong and weak
+ *           Set the candidate as the value for the vertex
+ */
+fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
+    SudokuNumber.values().flatMap { candidate ->
+        val graph = createStrongLinks(board, candidate).addWeakLinks()
+        graph.vertexSet()
+            .filter { vertex ->
+                graph.edgesOf(vertex).filter { it.isStrong }.zipEveryPair().any { (edgeA, edgeB) ->
+                    val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
+                    val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
+
+                    fun alternatingPathExists(
+                        currentVertex: UnsolvedCell,
+                        nextIsStrong: Boolean,
+                        visited: Set<UnsolvedCell>
+                    ): Boolean {
+                        val nextVertices = graph.edgesOf(currentVertex)
+                            .filter { it.isStrong == nextIsStrong }
+                            .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
+                            .let { it - visited }
+                        return end in nextVertices && !nextIsStrong || nextVertices.any { nextVertex ->
+                            alternatingPathExists(nextVertex, !nextIsStrong, visited + setOf(currentVertex))
+                        }
+                    }
+
+                    alternatingPathExists(start, false, setOf(vertex, start))
+                }
+            }
+            .map { SetValue(it, candidate) }
+    }
 
 private fun createStrongLinks(board: Board<Cell>, candidate: SudokuNumber): Graph<UnsolvedCell, XCyclesEdge> =
     board.units
