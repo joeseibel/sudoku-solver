@@ -18,8 +18,8 @@ internal class XCyclesKtTest {
         val b = UnsolvedCell(0, 3)
         val c = UnsolvedCell(2, 5)
         val dot = GraphBuilder(SimpleGraph<UnsolvedCell, XCyclesEdge>(XCyclesEdge::class.java))
-            .addEdge(a, b, XCyclesEdge(true))
-            .addEdge(b, c, XCyclesEdge(false))
+            .addEdge(a, b, XCyclesEdge(EdgeType.STRONG))
+            .addEdge(b, c, XCyclesEdge(EdgeType.WEAK))
             .buildAsUnmodifiable()
             .toDOT(SudokuNumber.ONE)
         assertEquals("""

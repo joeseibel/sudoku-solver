@@ -22,7 +22,21 @@ import sudokusolver.kotlin.toSimpleString
 import sudokusolver.kotlin.zipEveryPair
 import java.io.StringWriter
 
-class XCyclesEdge(val isStrong: Boolean)
+enum class EdgeType {
+    STRONG {
+        override val opposite: EdgeType
+            get() = WEAK
+    },
+
+    WEAK {
+        override val opposite: EdgeType
+            get() = STRONG
+    };
+
+    abstract val opposite: EdgeType
+}
+
+class XCyclesEdge(val type: EdgeType)
 
 fun <V : Cell> Graph<V, XCyclesEdge>.toDOT(candidate: SudokuNumber): String {
     val writer = StringWriter()
@@ -32,7 +46,8 @@ fun <V : Cell> Graph<V, XCyclesEdge>.toDOT(candidate: SudokuNumber): String {
         null,
         null,
         ComponentAttributeProvider {
-            it.takeUnless { it.isStrong }?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
+            it.takeIf { it.type == EdgeType.WEAK }
+                ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
         },
         ComponentNameProvider { candidate.toString() }
     ).exportGraph(this, writer)
@@ -98,7 +113,7 @@ fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
                 if (graph.vertexSet().any { graph.degreeOf(it) > 2 }) {
                     throw NotImplementedError("Need to find all cycles for board: ${board.toSimpleString()}")
                 }
-                graph.edgeSet().filter { !it.isStrong }.flatMap { edge ->
+                graph.edgeSet().filter { it.type == EdgeType.WEAK }.flatMap { edge ->
                     val source = graph.getEdgeSource(edge)
                     val target = graph.getEdgeTarget(edge)
 
@@ -157,10 +172,10 @@ fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
         val graph = createStrongLinks(board, candidate).addWeakLinks()
         graph.vertexSet()
             .filter { vertex ->
-                graph.edgesOf(vertex).filter { it.isStrong }.zipEveryPair().any { (edgeA, edgeB) ->
+                graph.edgesOf(vertex).filter { it.type == EdgeType.STRONG }.zipEveryPair().any { (edgeA, edgeB) ->
                     val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
                     val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
-                    alternatingPathExists(graph, vertex, start, end, false)
+                    alternatingPathExists(graph, vertex, start, end, EdgeType.WEAK)
                 }
             }
             .map { SetValue(it, candidate) }
@@ -203,10 +218,10 @@ fun xCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
         val graph = createStrongLinks(board, candidate).addWeakLinks().additionalWeakLinks(board, candidate)
         graph.vertexSet()
             .filter { vertex ->
-                graph.edgesOf(vertex).filter { !it.isStrong }.zipEveryPair().any { (edgeA, edgeB) ->
+                graph.edgesOf(vertex).filter { it.type == EdgeType.WEAK }.zipEveryPair().any { (edgeA, edgeB) ->
                     val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
                     val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
-                    alternatingPathExists(graph, vertex, start, end, true)
+                    alternatingPathExists(graph, vertex, start, end, EdgeType.STRONG)
                 }
             }
             .map { it to candidate }
@@ -217,20 +232,20 @@ private fun alternatingPathExists(
     vertex: UnsolvedCell,
     start: UnsolvedCell,
     end: UnsolvedCell,
-    endEdgesAreStrong: Boolean
+    endEdgesType: EdgeType
 ): Boolean {
 
-    fun alternatingPathExists(currentVertex: UnsolvedCell, nextIsStrong: Boolean, visited: Set<UnsolvedCell>): Boolean {
+    fun alternatingPathExists(currentVertex: UnsolvedCell, nextType: EdgeType, visited: Set<UnsolvedCell>): Boolean {
         val nextVertices = graph.edgesOf(currentVertex)
-            .filter { it.isStrong == nextIsStrong }
+            .filter { it.type == nextType }
             .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
             .let { it - visited }
-        return end in nextVertices && endEdgesAreStrong == nextIsStrong || nextVertices.any { nextVertex ->
-            alternatingPathExists(nextVertex, !nextIsStrong, visited + setOf(currentVertex))
+        return end in nextVertices && endEdgesType == nextType || nextVertices.any { nextVertex ->
+            alternatingPathExists(nextVertex, nextType.opposite, visited + setOf(currentVertex))
         }
     }
 
-    return alternatingPathExists(start, endEdgesAreStrong, setOf(vertex, start))
+    return alternatingPathExists(start, endEdgesType, setOf(vertex, start))
 }
 
 private fun createStrongLinks(board: Board<Cell>, candidate: SudokuNumber): Graph<UnsolvedCell, XCyclesEdge> =
@@ -238,7 +253,7 @@ private fun createStrongLinks(board: Board<Cell>, candidate: SudokuNumber): Grap
         .map { unit -> unit.filterIsInstance<UnsolvedCell>().filter { candidate in it.candidates } }
         .filter { withCandidate -> withCandidate.size == 2 }
         .fold(GraphBuilder(SimpleGraph<UnsolvedCell, XCyclesEdge>(XCyclesEdge::class.java))) { builder, (a, b) ->
-            builder.addEdge(a, b, XCyclesEdge(true))
+            builder.addEdge(a, b, XCyclesEdge(EdgeType.STRONG))
         }
         .buildAsUnmodifiable()
 
@@ -250,7 +265,7 @@ private fun Graph<UnsolvedCell, XCyclesEdge>.addWeakLinks(): Graph<UnsolvedCell,
         .fold(
             GraphBuilder(SimpleGraph<UnsolvedCell, XCyclesEdge>(XCyclesEdge::class.java)).addGraph(this)
         ) { builder, (a, b) ->
-            builder.addEdge(a, b, XCyclesEdge(false))
+            builder.addEdge(a, b, XCyclesEdge(EdgeType.WEAK))
         }
         .buildAsUnmodifiable()
 
@@ -266,7 +281,7 @@ private fun Graph<UnsolvedCell, XCyclesEdge>.additionalWeakLinks(
         ) { outerBuilder, cell ->
             vertexSet()
                 .filter { it isInSameUnit cell }
-                .fold(outerBuilder) { builder, vertex -> builder.addEdge(vertex, cell, XCyclesEdge(false)) }
+                .fold(outerBuilder) { builder, vertex -> builder.addEdge(vertex, cell, XCyclesEdge(EdgeType.WEAK)) }
         }
         .buildAsUnmodifiable()
 
@@ -281,7 +296,7 @@ private fun Graph<UnsolvedCell, XCyclesEdge>.trim(): Graph<UnsolvedCell, XCycles
 
     tailrec fun trimHelper() {
         val toRemove = graph.vertexSet().filter { vertex ->
-            graph.edgesOf(vertex).map { it.isStrong }.toSet().size != 2
+            graph.edgesOf(vertex).map { it.type }.toSet().size != 2
         }
         if (toRemove.isNotEmpty()) {
             graph.removeAllVertices(toRemove)
