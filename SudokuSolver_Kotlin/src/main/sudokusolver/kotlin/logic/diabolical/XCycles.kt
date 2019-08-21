@@ -171,13 +171,7 @@ fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
     SudokuNumber.values().flatMap { candidate ->
         val graph = createStrongLinks(board, candidate).addWeakLinks()
         graph.vertexSet()
-            .filter { vertex ->
-                graph.edgesOf(vertex).filter { it.type == EdgeType.STRONG }.zipEveryPair().any { (edgeA, edgeB) ->
-                    val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
-                    val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
-                    alternatingPathExists(graph, vertex, start, end, EdgeType.WEAK)
-                }
-            }
+            .filter { vertex -> alternatingPathExists(graph, vertex, EdgeType.STRONG) }
             .map { SetValue(it, candidate) }
     }
 
@@ -217,36 +211,9 @@ fun xCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->
         val graph = createStrongLinks(board, candidate).addWeakLinks().additionalWeakLinks(board, candidate)
         graph.vertexSet()
-            .filter { vertex ->
-                graph.edgesOf(vertex).filter { it.type == EdgeType.WEAK }.zipEveryPair().any { (edgeA, edgeB) ->
-                    val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
-                    val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
-                    alternatingPathExists(graph, vertex, start, end, EdgeType.STRONG)
-                }
-            }
+            .filter { vertex -> alternatingPathExists(graph, vertex, EdgeType.WEAK) }
             .map { it to candidate }
     }.mergeToRemoveCandidates()
-
-private fun alternatingPathExists(
-    graph: Graph<UnsolvedCell, XCyclesEdge>,
-    vertex: UnsolvedCell,
-    start: UnsolvedCell,
-    end: UnsolvedCell,
-    endEdgesType: EdgeType
-): Boolean {
-
-    fun alternatingPathExists(currentVertex: UnsolvedCell, nextType: EdgeType, visited: Set<UnsolvedCell>): Boolean {
-        val nextVertices = graph.edgesOf(currentVertex)
-            .filter { it.type == nextType }
-            .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
-            .let { it - visited }
-        return end in nextVertices && endEdgesType == nextType || nextVertices.any { nextVertex ->
-            alternatingPathExists(nextVertex, nextType.opposite, visited + setOf(currentVertex))
-        }
-    }
-
-    return alternatingPathExists(start, endEdgesType, setOf(vertex, start))
-}
 
 private fun createStrongLinks(board: Board<Cell>, candidate: SudokuNumber): Graph<UnsolvedCell, XCyclesEdge> =
     board.units
@@ -290,14 +257,11 @@ private fun Graph<UnsolvedCell, XCyclesEdge>.additionalWeakLinks(
  * empty or only contain vertices with a degree of two or more and be connected by at least one strong link and one weak
  * link.
  */
-private fun Graph<UnsolvedCell, XCyclesEdge>.trim(): Graph<UnsolvedCell, XCyclesEdge> {
-    val graph = GraphBuilder(SimpleGraph<UnsolvedCell, XCyclesEdge>(XCyclesEdge::class.java))
-        .addGraph(this).build()
+private fun <V> Graph<V, XCyclesEdge>.trim(): Graph<V, XCyclesEdge> {
+    val graph = GraphBuilder(SimpleGraph<V, XCyclesEdge>(XCyclesEdge::class.java)).addGraph(this).build()
 
     tailrec fun trimHelper() {
-        val toRemove = graph.vertexSet().filter { vertex ->
-            graph.edgesOf(vertex).map { it.type }.toSet().size != 2
-        }
+        val toRemove = graph.vertexSet().filter { vertex -> graph.edgesOf(vertex).map { it.type }.toSet().size != 2 }
         if (toRemove.isNotEmpty()) {
             graph.removeAllVertices(toRemove)
             trimHelper()
@@ -306,4 +270,23 @@ private fun Graph<UnsolvedCell, XCyclesEdge>.trim(): Graph<UnsolvedCell, XCycles
 
     trimHelper()
     return AsUnmodifiableGraph(graph)
+}
+
+private fun <V> alternatingPathExists(graph: Graph<V, XCyclesEdge>, vertex: V, adjacentEdgesType: EdgeType): Boolean {
+    return graph.edgesOf(vertex).filter { it.type == adjacentEdgesType }.zipEveryPair().any { (edgeA, edgeB) ->
+        val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
+        val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
+
+        fun alternatingPathExists(currentVertex: V, nextType: EdgeType, visited: Set<V>): Boolean {
+            val nextVertices = graph.edgesOf(currentVertex)
+                .filter { it.type == nextType }
+                .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
+                .let { it - visited }
+            return end in nextVertices && adjacentEdgesType.opposite == nextType || nextVertices.any { nextVertex ->
+                alternatingPathExists(nextVertex, nextType.opposite, visited + setOf(currentVertex))
+            }
+        }
+
+        alternatingPathExists(start, adjacentEdgesType.opposite, setOf(vertex, start))
+    }
 }
