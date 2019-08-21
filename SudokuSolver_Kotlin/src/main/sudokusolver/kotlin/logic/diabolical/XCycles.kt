@@ -160,26 +160,78 @@ fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
                 graph.edgesOf(vertex).filter { it.isStrong }.zipEveryPair().any { (edgeA, edgeB) ->
                     val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
                     val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
-
-                    fun alternatingPathExists(
-                        currentVertex: UnsolvedCell,
-                        nextIsStrong: Boolean,
-                        visited: Set<UnsolvedCell>
-                    ): Boolean {
-                        val nextVertices = graph.edgesOf(currentVertex)
-                            .filter { it.isStrong == nextIsStrong }
-                            .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
-                            .let { it - visited }
-                        return end in nextVertices && !nextIsStrong || nextVertices.any { nextVertex ->
-                            alternatingPathExists(nextVertex, !nextIsStrong, visited + setOf(currentVertex))
-                        }
-                    }
-
-                    alternatingPathExists(start, false, setOf(vertex, start))
+                    alternatingPathExists(graph, vertex, start, end, false)
                 }
             }
             .map { SetValue(it, candidate) }
     }
+
+/*
+ * http://www.sudokuwiki.org/X_Cycles
+ * http://www.sudokuwiki.org/X_Cycles_Part_2
+ *
+ * X-Cycles is based on a graph type which is an extension of single's chain. An X-Cycles graph is for a single
+ * candidate and can have either strong or weak links. A strong link connects two cells in a unit when they are the only
+ * unsolved cells in that unit with the candidate. A weak link connects two cells in a unit when they are not the only
+ * unsolved cells in that unit with the candidate. An X-Cycle is a cycle in the graph in which the edges alternate
+ * between strong and weak links. If one cell of a link is the solution, then the other cell must not be the solution.
+ * If one cell of a strong link is not the solution, then the other cell must be the solution.
+ *
+ * Rule 3:
+ *
+ * If an X-Cycle has an odd number of vertices and the edges alternate between strong and weak, except for one vertex
+ * which is connected by two weak links, then the graph is a contradiction. Considering the candidate to be the solution
+ * for the vertex of interest implies that the candidate must be removed from that vertex, thus causing the cycle to
+ * contradict itself. However, removing the candidate from that vertex does not cause any contradiction in the cycle.
+ * Therefore, the candidate can be removed from the vertex.
+ *
+ * For each candidate
+ *   For each unit
+ *     If the candidate appears in two unsolved cells of the unit
+ *       Create a strong edge between the two cells
+ *     If the candidate appears in more than two unsolved cells of the unit
+ *       For each pair of unsolved cells with the candidate in the unit
+ *         Create a weak edge between the pair of cells
+ *   For each cycle in the graph
+ *     If the cycle has an odd number of vertices
+ *       If there is exactly one vertex connected by two weak edges
+ *         If the other edges of the cycle alternate between strong and weak
+ *           Remove the candidate from the vertex
+ */
+fun xCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
+    SudokuNumber.values().flatMap { candidate ->
+        val graph = createStrongLinks(board, candidate).addWeakLinks().additionalWeakLinks(board, candidate)
+        graph.vertexSet()
+            .filter { vertex ->
+                graph.edgesOf(vertex).filter { !it.isStrong }.zipEveryPair().any { (edgeA, edgeB) ->
+                    val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
+                    val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
+                    alternatingPathExists(graph, vertex, start, end, true)
+                }
+            }
+            .map { it to candidate }
+    }.mergeToRemoveCandidates()
+
+private fun alternatingPathExists(
+    graph: Graph<UnsolvedCell, XCyclesEdge>,
+    vertex: UnsolvedCell,
+    start: UnsolvedCell,
+    end: UnsolvedCell,
+    endEdgesAreStrong: Boolean
+): Boolean {
+
+    fun alternatingPathExists(currentVertex: UnsolvedCell, nextIsStrong: Boolean, visited: Set<UnsolvedCell>): Boolean {
+        val nextVertices = graph.edgesOf(currentVertex)
+            .filter { it.isStrong == nextIsStrong }
+            .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
+            .let { it - visited }
+        return end in nextVertices && endEdgesAreStrong == nextIsStrong || nextVertices.any { nextVertex ->
+            alternatingPathExists(nextVertex, !nextIsStrong, visited + setOf(currentVertex))
+        }
+    }
+
+    return alternatingPathExists(start, endEdgesAreStrong, setOf(vertex, start))
+}
 
 private fun createStrongLinks(board: Board<Cell>, candidate: SudokuNumber): Graph<UnsolvedCell, XCyclesEdge> =
     board.units
@@ -199,6 +251,22 @@ private fun Graph<UnsolvedCell, XCyclesEdge>.addWeakLinks(): Graph<UnsolvedCell,
             GraphBuilder(SimpleGraph<UnsolvedCell, XCyclesEdge>(XCyclesEdge::class.java)).addGraph(this)
         ) { builder, (a, b) ->
             builder.addEdge(a, b, XCyclesEdge(false))
+        }
+        .buildAsUnmodifiable()
+
+private fun Graph<UnsolvedCell, XCyclesEdge>.additionalWeakLinks(
+    board: Board<Cell>,
+    candidate: SudokuNumber
+): Graph<UnsolvedCell, XCyclesEdge> =
+    board.cells
+        .filterIsInstance<UnsolvedCell>()
+        .filter { candidate in it.candidates && it !in vertexSet() }
+        .fold(
+            GraphBuilder(SimpleGraph<UnsolvedCell, XCyclesEdge>(XCyclesEdge::class.java)).addGraph(this)
+        ) { outerBuilder, cell ->
+            vertexSet()
+                .filter { it isInSameUnit cell }
+                .fold(outerBuilder) { builder, vertex -> builder.addEdge(vertex, cell, XCyclesEdge(false)) }
         }
         .buildAsUnmodifiable()
 
