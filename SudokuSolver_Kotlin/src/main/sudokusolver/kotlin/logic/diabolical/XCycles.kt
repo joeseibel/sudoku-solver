@@ -22,38 +22,6 @@ import sudokusolver.kotlin.toSimpleString
 import sudokusolver.kotlin.zipEveryPair
 import java.io.StringWriter
 
-enum class EdgeType {
-    STRONG {
-        override val opposite: EdgeType
-            get() = WEAK
-    },
-
-    WEAK {
-        override val opposite: EdgeType
-            get() = STRONG
-    };
-
-    abstract val opposite: EdgeType
-}
-
-class XCyclesEdge(val type: EdgeType)
-
-fun <V : Cell> Graph<V, XCyclesEdge>.toDOT(candidate: SudokuNumber): String {
-    val writer = StringWriter()
-    DOTExporter<V, XCyclesEdge>(
-        IntegerComponentNameProvider(),
-        ComponentNameProvider { "[${it.row},${it.column}]" },
-        null,
-        null,
-        ComponentAttributeProvider {
-            it.takeIf { it.type == EdgeType.WEAK }
-                ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
-        },
-        ComponentNameProvider { candidate.toString() }
-    ).exportGraph(this, writer)
-    return writer.toString()
-}
-
 /*
  * http://www.sudokuwiki.org/X_Cycles
  * http://www.sudokuwiki.org/X_Cycles_Part_2
@@ -136,16 +104,6 @@ fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
     }.flatten().mergeToRemoveCandidates()
 
 /*
- * http://www.sudokuwiki.org/X_Cycles
- * http://www.sudokuwiki.org/X_Cycles_Part_2
- *
- * X-Cycles is based on a graph type which is an extension of single's chain. An X-Cycles graph is for a single
- * candidate and can have either strong or weak links. A strong link connects two cells in a unit when they are the only
- * unsolved cells in that unit with the candidate. A weak link connects two cells in a unit when they are not the only
- * unsolved cells in that unit with the candidate. An X-Cycle is a cycle in the graph in which the edges alternate
- * between strong and weak links. If one cell of a link is the solution, then the other cell must not be the solution.
- * If one cell of a strong link is not the solution, then the other cell must be the solution.
- *
  * Rule 2:
  *
  * If an X-Cycle has an odd number of vertices and the edges alternate between strong and weak, except for one vertex
@@ -176,16 +134,6 @@ fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
     }
 
 /*
- * http://www.sudokuwiki.org/X_Cycles
- * http://www.sudokuwiki.org/X_Cycles_Part_2
- *
- * X-Cycles is based on a graph type which is an extension of single's chain. An X-Cycles graph is for a single
- * candidate and can have either strong or weak links. A strong link connects two cells in a unit when they are the only
- * unsolved cells in that unit with the candidate. A weak link connects two cells in a unit when they are not the only
- * unsolved cells in that unit with the candidate. An X-Cycle is a cycle in the graph in which the edges alternate
- * between strong and weak links. If one cell of a link is the solution, then the other cell must not be the solution.
- * If one cell of a strong link is not the solution, then the other cell must be the solution.
- *
  * Rule 3:
  *
  * If an X-Cycle has an odd number of vertices and the edges alternate between strong and weak, except for one vertex
@@ -214,6 +162,38 @@ fun xCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
             .filter { vertex -> alternatingPathExists(graph, vertex, EdgeType.WEAK) }
             .map { it to candidate }
     }.mergeToRemoveCandidates()
+
+enum class EdgeType {
+    STRONG {
+        override val opposite: EdgeType
+            get() = WEAK
+    },
+
+    WEAK {
+        override val opposite: EdgeType
+            get() = STRONG
+    };
+
+    abstract val opposite: EdgeType
+}
+
+class XCyclesEdge(val type: EdgeType)
+
+fun <V : Cell> Graph<V, XCyclesEdge>.toDOT(candidate: SudokuNumber): String {
+    val writer = StringWriter()
+    DOTExporter<V, XCyclesEdge>(
+        IntegerComponentNameProvider(),
+        ComponentNameProvider { "[${it.row},${it.column}]" },
+        null,
+        null,
+        ComponentAttributeProvider {
+            it.takeIf { it.type == EdgeType.WEAK }
+                ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
+        },
+        ComponentNameProvider { candidate.toString() }
+    ).exportGraph(this, writer)
+    return writer.toString()
+}
 
 private fun createStrongLinks(board: Board<Cell>, candidate: SudokuNumber): Graph<UnsolvedCell, XCyclesEdge> =
     board.units
