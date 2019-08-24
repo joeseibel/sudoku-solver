@@ -272,8 +272,8 @@ private fun <V> Graph<V, XCyclesEdge>.trim(): Graph<V, XCyclesEdge> {
     return AsUnmodifiableGraph(graph)
 }
 
-private fun <V> alternatingPathExists(graph: Graph<V, XCyclesEdge>, vertex: V, adjacentEdgesType: EdgeType): Boolean {
-    return graph.edgesOf(vertex).filter { it.type == adjacentEdgesType }.zipEveryPair().any { (edgeA, edgeB) ->
+private fun <V> alternatingPathExists(graph: Graph<V, XCyclesEdge>, vertex: V, adjacentEdgesType: EdgeType): Boolean =
+    graph.edgesOf(vertex).filter { it.type == adjacentEdgesType }.zipEveryPair().any { (edgeA, edgeB) ->
         val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
         val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
 
@@ -289,4 +289,3 @@ private fun <V> alternatingPathExists(graph: Graph<V, XCyclesEdge>, vertex: V, a
 
         alternatingPathExists(start, adjacentEdgesType.opposite, setOf(vertex, start))
     }
-}
