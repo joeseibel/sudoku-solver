@@ -27,7 +27,7 @@ import java.util.EnumSet
  * simplifies the process of writing and understanding the tests. It is now the responsibility of the solver to apply
  * the modifications while checking the validity of the modifications.
  *
- * Return a List<BoardModification> has potential benefit if I want to log the modifications to the console or even
+ * Returning a List<BoardModification> has potential benefit if I want to log the modifications to the console or even
  * write a GUI that steps through the solver. When stepping, the GUI could highlight the candidates indicated in the
  * BoardModifications before actually applying the changes.
  *
