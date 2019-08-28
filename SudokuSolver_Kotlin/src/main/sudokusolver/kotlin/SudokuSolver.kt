@@ -18,7 +18,8 @@ import sudokusolver.kotlin.logic.simple.nakedSingles
 import sudokusolver.kotlin.logic.simple.nakedTriples
 import sudokusolver.kotlin.logic.simple.pointingPairsPointingTriples
 import sudokusolver.kotlin.logic.simple.pruneCandidates
-import sudokusolver.kotlin.logic.tough.simpleColoring
+import sudokusolver.kotlin.logic.tough.simpleColoringRule2
+import sudokusolver.kotlin.logic.tough.simpleColoringRule4
 import sudokusolver.kotlin.logic.tough.swordfish
 import sudokusolver.kotlin.logic.tough.xWing
 import sudokusolver.kotlin.logic.tough.xyzWing
@@ -99,7 +100,8 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { pointingPairsPointingTriples(board) }
                     .ifEmpty { boxLineReduction(board) }
                     .ifEmpty { xWing(board) }
-                    .ifEmpty { simpleColoring(board) }
+                    .ifEmpty { simpleColoringRule2(board) }
+                    .ifEmpty { simpleColoringRule4(board) }
                     .ifEmpty { yWing(board) }
                     .ifEmpty { swordfish(board) }
                     .ifEmpty { xyzWing(board) }
