@@ -1,9 +1,8 @@
 package sudokusolver.kotlin.logic.tough
 
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.parseCellsWithCandidates
+import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class XWingKtTest {
     /*
@@ -40,7 +39,7 @@ internal class XWingKtTest {
             RemoveCandidates(8, 3, 7),
             RemoveCandidates(8, 7, 7)
         )
-        assertIterableEquals(expected, xWing(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xWing)
     }
 
     /*
@@ -77,7 +76,7 @@ internal class XWingKtTest {
             RemoveCandidates(8, 3, 2),
             RemoveCandidates(8, 8, 2)
         )
-        assertIterableEquals(expected, xWing(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xWing)
     }
 
     /*
@@ -113,7 +112,7 @@ internal class XWingKtTest {
             RemoveCandidates(5, 8, 4),
             RemoveCandidates(6, 5, 4, 6)
         )
-        assertIterableEquals(expected, xWing(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xWing)
     }
 
     /*
@@ -149,6 +148,6 @@ internal class XWingKtTest {
             RemoveCandidates(5, 0, 2),
             RemoveCandidates(8, 0, 2)
         )
-        assertIterableEquals(expected, xWing(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xWing)
     }
 }

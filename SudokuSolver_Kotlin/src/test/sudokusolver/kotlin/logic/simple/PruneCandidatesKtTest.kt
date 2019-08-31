@@ -1,8 +1,8 @@
 package sudokusolver.kotlin.logic.simple
 
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.logic.assertLogicalSolution
 import sudokusolver.kotlin.parseSimpleCells
 
 internal class PruneCandidatesKtTest {
@@ -77,6 +77,6 @@ internal class PruneCandidatesKtTest {
             RemoveCandidates(8, 7, 1, 2, 3, 4, 5, 7, 8, 9),
             RemoveCandidates(8, 8, 3, 4, 5, 8, 9)
         )
-        assertIterableEquals(expected, pruneCandidates(parseSimpleCells(board)).sorted())
+        assertLogicalSolution(expected, parseSimpleCells(board), ::pruneCandidates)
     }
 }

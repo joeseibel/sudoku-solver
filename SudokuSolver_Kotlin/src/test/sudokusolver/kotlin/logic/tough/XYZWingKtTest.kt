@@ -1,9 +1,8 @@
 package sudokusolver.kotlin.logic.tough
 
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.parseCellsWithCandidates
+import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class XYZWingKtTest {
     /*
@@ -35,7 +34,7 @@ internal class XYZWingKtTest {
         val expected = listOf(
             RemoveCandidates(5, 6, 1)
         )
-        assertIterableEquals(expected, xyzWing(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xyzWing)
     }
 
     /*
@@ -67,7 +66,7 @@ internal class XYZWingKtTest {
         val expected = listOf(
             RemoveCandidates(4, 8, 6)
         )
-        assertIterableEquals(expected, xyzWing(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xyzWing)
     }
 
     /*
@@ -99,7 +98,7 @@ internal class XYZWingKtTest {
         val expected = listOf(
             RemoveCandidates(8, 4, 5)
         )
-        assertIterableEquals(expected, xyzWing(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xyzWing)
     }
 
     /*
@@ -132,6 +131,6 @@ internal class XYZWingKtTest {
             RemoveCandidates(3, 3, 9),
             RemoveCandidates(4, 3, 9)
         )
-        assertIterableEquals(expected, xyzWing(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xyzWing)
     }
 }

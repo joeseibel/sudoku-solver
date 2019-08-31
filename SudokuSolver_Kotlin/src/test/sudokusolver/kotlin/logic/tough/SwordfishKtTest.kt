@@ -1,9 +1,8 @@
 package sudokusolver.kotlin.logic.tough
 
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.parseCellsWithCandidates
+import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class SwordfishKtTest {
     /*
@@ -39,7 +38,7 @@ internal class SwordfishKtTest {
             RemoveCandidates(2, 8, 8),
             RemoveCandidates(3, 5, 8)
         )
-        assertIterableEquals(expected, swordfish(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::swordfish)
     }
 
     /*
@@ -76,7 +75,7 @@ internal class SwordfishKtTest {
             RemoveCandidates(8, 5, 9),
             RemoveCandidates(8, 6, 9)
         )
-        assertIterableEquals(expected, swordfish(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::swordfish)
     }
 
     /*
@@ -118,7 +117,7 @@ internal class SwordfishKtTest {
             RemoveCandidates(6, 6, 4),
             RemoveCandidates(6, 8, 4)
         )
-        assertIterableEquals(expected, swordfish(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::swordfish)
     }
 
     /*
@@ -160,7 +159,7 @@ internal class SwordfishKtTest {
             RemoveCandidates(5, 5, 2),
             RemoveCandidates(5, 6, 2)
         )
-        assertIterableEquals(expected, swordfish(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::swordfish)
     }
 
     /*
@@ -200,6 +199,6 @@ internal class SwordfishKtTest {
             RemoveCandidates(7, 2, 7, 8),
             RemoveCandidates(7, 3, 7, 8)
         )
-        assertIterableEquals(expected, swordfish(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::swordfish)
     }
 }

@@ -1,9 +1,8 @@
 package sudokusolver.kotlin.logic.simple
 
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.parseCellsWithCandidates
+import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class BoxLineReductionKtTest {
     /*
@@ -37,7 +36,7 @@ internal class BoxLineReductionKtTest {
             RemoveCandidates(1, 8, 4),
             RemoveCandidates(2, 8, 4)
         )
-        assertIterableEquals(expected, boxLineReduction(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::boxLineReduction)
     }
 
     /*
@@ -80,6 +79,6 @@ internal class BoxLineReductionKtTest {
             RemoveCandidates(8, 2, 1, 3),
             RemoveCandidates(8, 4, 7)
         )
-        assertIterableEquals(expected, boxLineReduction(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::boxLineReduction)
     }
 }

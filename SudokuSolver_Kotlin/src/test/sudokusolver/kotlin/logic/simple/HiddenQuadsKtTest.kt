@@ -1,9 +1,8 @@
 package sudokusolver.kotlin.logic.simple
 
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.parseCellsWithCandidates
+import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class HiddenQuadsKtTest {
     /*
@@ -35,7 +34,7 @@ internal class HiddenQuadsKtTest {
         val expected = listOf(
             RemoveCandidates(7, 6, 6)
         )
-        assertIterableEquals(expected, hiddenQuads(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::hiddenQuads)
     }
 
     /*
@@ -70,6 +69,6 @@ internal class HiddenQuadsKtTest {
             RemoveCandidates(5, 3, 3, 7, 8),
             RemoveCandidates(5, 5, 3, 5, 7, 8)
         )
-        assertIterableEquals(expected, hiddenQuads(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::hiddenQuads)
     }
 }

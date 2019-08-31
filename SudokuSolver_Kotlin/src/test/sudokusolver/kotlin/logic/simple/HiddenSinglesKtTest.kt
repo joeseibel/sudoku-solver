@@ -1,9 +1,8 @@
 package sudokusolver.kotlin.logic.simple
 
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.SetValue
-import sudokusolver.kotlin.parseCellsWithCandidates
+import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class HiddenSinglesKtTest {
     /*
@@ -43,6 +42,6 @@ internal class HiddenSinglesKtTest {
             SetValue(7, 8, 7),
             SetValue(8, 7, 4)
         )
-        assertIterableEquals(expected, hiddenSingles(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::hiddenSingles)
     }
 }

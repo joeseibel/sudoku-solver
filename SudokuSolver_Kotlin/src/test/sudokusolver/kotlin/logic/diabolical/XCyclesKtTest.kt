@@ -3,13 +3,12 @@ package sudokusolver.kotlin.logic.diabolical
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
-import sudokusolver.kotlin.parseCellsWithCandidates
+import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class XCyclesKtTest {
     @Test
@@ -17,12 +16,12 @@ internal class XCyclesKtTest {
         val a = UnsolvedCell(0, 0)
         val b = UnsolvedCell(0, 3)
         val c = UnsolvedCell(2, 5)
-        val dot = GraphBuilder(SimpleGraph<UnsolvedCell, XCyclesEdge>(XCyclesEdge::class.java))
+        val actual = GraphBuilder(SimpleGraph<UnsolvedCell, XCyclesEdge>(XCyclesEdge::class.java))
             .addEdge(a, b, XCyclesEdge(EdgeType.STRONG))
             .addEdge(b, c, XCyclesEdge(EdgeType.WEAK))
             .buildAsUnmodifiable()
             .toDOT(SudokuNumber.ONE)
-        assertEquals("""
+        val expected = """
             strict graph 1 {
               1 [ label="[0,0]" ];
               2 [ label="[0,3]" ];
@@ -31,7 +30,8 @@ internal class XCyclesKtTest {
               2 -- 3 [ style="dashed" ];
             }
             
-        """.trimIndent(), dot)
+        """.trimIndent()
+        assertEquals(expected, actual)
     }
 
     /*
@@ -66,7 +66,7 @@ internal class XCyclesKtTest {
             RemoveCandidates(6, 2, 8),
             RemoveCandidates(6, 8, 8)
         )
-        assertIterableEquals(expected, xCyclesRule1(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xCyclesRule1)
     }
 
     /*
@@ -98,7 +98,7 @@ internal class XCyclesKtTest {
         val expected = listOf(
             SetValue(8, 0, 1)
         )
-        assertIterableEquals(expected, xCyclesRule2(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xCyclesRule2)
     }
 
     /*
@@ -130,7 +130,7 @@ internal class XCyclesKtTest {
         val expected = listOf(
             RemoveCandidates(2, 2, 1)
         )
-        assertIterableEquals(expected, xCyclesRule3(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xCyclesRule3)
     }
 
     /*
@@ -162,7 +162,7 @@ internal class XCyclesKtTest {
         val expected = listOf(
             RemoveCandidates(8, 2, 1)
         )
-        assertIterableEquals(expected, xCyclesRule3(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xCyclesRule3)
     }
 
     /*
@@ -194,7 +194,7 @@ internal class XCyclesKtTest {
         val expected = listOf(
             RemoveCandidates(4, 8, 2, 9)
         )
-        assertIterableEquals(expected, xCyclesRule3(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xCyclesRule3)
     }
 
     /*
@@ -227,6 +227,6 @@ internal class XCyclesKtTest {
             RemoveCandidates(8, 1, 8),
             RemoveCandidates(8, 2, 8)
         )
-        assertIterableEquals(expected, xCyclesRule3(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::xCyclesRule3)
     }
 }

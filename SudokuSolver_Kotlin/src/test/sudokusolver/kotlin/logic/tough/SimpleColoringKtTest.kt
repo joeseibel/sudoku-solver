@@ -1,9 +1,8 @@
 package sudokusolver.kotlin.logic.tough
 
-import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.parseCellsWithCandidates
+import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class SimpleColoringKtTest {
     /*
@@ -43,7 +42,7 @@ internal class SimpleColoringKtTest {
             RemoveCandidates(7, 4, 5),
             RemoveCandidates(8, 8, 5)
         )
-        assertIterableEquals(expected, simpleColoringRule2(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule2)
     }
 
     /*
@@ -82,7 +81,7 @@ internal class SimpleColoringKtTest {
             RemoveCandidates(7, 4, 7),
             RemoveCandidates(8, 1, 7)
         )
-        assertIterableEquals(expected, simpleColoringRule2(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule2)
     }
 
     /*
@@ -118,7 +117,7 @@ internal class SimpleColoringKtTest {
             RemoveCandidates(4, 1, 9),
             RemoveCandidates(5, 3, 9)
         )
-        assertIterableEquals(expected, simpleColoringRule2(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule2)
     }
 
     /*
@@ -152,7 +151,7 @@ internal class SimpleColoringKtTest {
             RemoveCandidates(8, 4, 5),
             RemoveCandidates(8, 7, 5)
         )
-        assertIterableEquals(expected, simpleColoringRule2(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule2)
     }
 
     /*
@@ -185,7 +184,7 @@ internal class SimpleColoringKtTest {
             RemoveCandidates(4, 0, 5),
             RemoveCandidates(4, 2, 5)
         )
-        assertIterableEquals(expected, simpleColoringRule4(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule4)
     }
 
     /*
@@ -218,7 +217,7 @@ internal class SimpleColoringKtTest {
             RemoveCandidates(1, 4, 3),
             RemoveCandidates(1, 8, 8)
         )
-        assertIterableEquals(expected, simpleColoringRule4(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule4)
     }
 
     /*
@@ -252,7 +251,7 @@ internal class SimpleColoringKtTest {
             RemoveCandidates(4, 0, 7),
             RemoveCandidates(8, 3, 7)
         )
-        assertIterableEquals(expected, simpleColoringRule4(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule4)
     }
 
     /*
@@ -284,7 +283,7 @@ internal class SimpleColoringKtTest {
         val expected = listOf(
             RemoveCandidates(1, 7, 2, 4)
         )
-        assertIterableEquals(expected, simpleColoringRule4(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule4)
     }
 
     /*
@@ -316,7 +315,7 @@ internal class SimpleColoringKtTest {
         val expected = listOf(
             RemoveCandidates(1, 7, 6)
         )
-        assertIterableEquals(expected, simpleColoringRule4(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule4)
     }
 
     /*
@@ -350,6 +349,6 @@ internal class SimpleColoringKtTest {
             RemoveCandidates(2, 7, 8),
             RemoveCandidates(4, 8, 7)
         )
-        assertIterableEquals(expected, simpleColoringRule4(parseCellsWithCandidates(board)).sorted())
+        assertLogicalSolution(expected, board, ::simpleColoringRule4)
     }
 }
