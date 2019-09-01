@@ -79,6 +79,12 @@ fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
                     throw NotImplementedError("Need to split graph for board: ${board.toSimpleString()}")
                 }
                 if (graph.vertexSet().any { graph.degreeOf(it) > 2 }) {
+                    /*
+                     * Read about undirected cycles here:
+                     * https://stackoverflow.com/questions/12367801/finding-all-cycles-in-undirected-graphs/18388696
+                     * https://www.codeproject.com/Articles/1158232/Enumerating-All-Cycles-in-an-Undirected-Graph
+                     * https://jgrapht.org/javadoc/org/jgrapht/alg/cycle/PatonCycleBase.html
+                     */
                     throw NotImplementedError("Need to find all cycles for board: ${board.toSimpleString()}")
                 }
                 graph.edgeSet().filter { it.type == EdgeType.WEAK }.flatMap { edge ->
