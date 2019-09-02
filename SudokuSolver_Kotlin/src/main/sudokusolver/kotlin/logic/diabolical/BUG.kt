@@ -23,7 +23,7 @@ import sudokusolver.kotlin.UnsolvedCell
  *     If that candidate exists three times in the cell's row
  *       Set the candidate as the value for the cell
  */
-fun bug(board: Board<Cell>): List<SetValue> =
+fun bug(board: Board<Cell>): SetValue? =
     board.cells
         .filterIsInstance<UnsolvedCell>()
         .singleOrNull { it.candidates.size != 2 }
@@ -31,6 +31,5 @@ fun bug(board: Board<Cell>): List<SetValue> =
         ?.let { cell ->
             val row = board.getRow(cell.row).filterIsInstance<UnsolvedCell>()
             val candidate = cell.candidates.single { candidate -> row.filter { candidate in it.candidates }.size == 3 }
-            listOf(SetValue(cell, candidate))
+            SetValue(cell, candidate)
         }
-        ?: emptyList()

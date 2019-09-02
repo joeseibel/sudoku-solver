@@ -34,7 +34,7 @@ internal class BUGKtTest {
         val expected = listOf(
             SetValue(3, 7, 2)
         )
-        assertLogicalSolution(expected, board, ::bug)
+        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
     }
 
     /*
@@ -66,7 +66,7 @@ internal class BUGKtTest {
         val expected = listOf(
             SetValue(4, 1, 6)
         )
-        assertLogicalSolution(expected, board, ::bug)
+        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
     }
 
     /*
@@ -98,7 +98,7 @@ internal class BUGKtTest {
         val expected = listOf(
             SetValue(5, 2, 8)
         )
-        assertLogicalSolution(expected, board, ::bug)
+        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
     }
 
     /*
@@ -130,7 +130,7 @@ internal class BUGKtTest {
         val expected = listOf(
             SetValue(7, 4, 4)
         )
-        assertLogicalSolution(expected, board, ::bug)
+        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
     }
 
     /*
@@ -162,7 +162,7 @@ internal class BUGKtTest {
         val expected = listOf(
             SetValue(1, 2, 7)
         )
-        assertLogicalSolution(expected, board, ::bug)
+        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
     }
 
     /*
@@ -194,7 +194,7 @@ internal class BUGKtTest {
         val expected = listOf(
             SetValue(4, 4, 8)
         )
-        assertLogicalSolution(expected, board, ::bug)
+        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
     }
 
     /*
@@ -226,7 +226,7 @@ internal class BUGKtTest {
         val expected = listOf(
             SetValue(7, 1, 2)
         )
-        assertLogicalSolution(expected, board, ::bug)
+        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
     }
 
     /*
@@ -258,6 +258,6 @@ internal class BUGKtTest {
         val expected = listOf(
             SetValue(0, 4, 4)
         )
-        assertLogicalSolution(expected, board, ::bug)
+        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
     }
 }

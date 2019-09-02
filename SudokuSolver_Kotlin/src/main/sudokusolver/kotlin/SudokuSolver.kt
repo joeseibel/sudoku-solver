@@ -109,7 +109,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { xCyclesRule1(board) }
                     .ifEmpty { xCyclesRule2(board) }
                     .ifEmpty { xCyclesRule3(board) }
-                    .ifEmpty { bug(board) }
+                    .ifEmpty { listOfNotNull(bug(board)) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
