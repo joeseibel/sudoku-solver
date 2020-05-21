@@ -33,8 +33,8 @@ import sudokusolver.kotlin.zipEveryPair
  *       Create an edge between the two cells
  *   For each connected component in the graph
  *     Traverse the connected component and assign alternating colors
- *       If the connected component contains at least two vertices that are in the same unit and have the same color
- *         Remove the candidate from the vertices of the connected component that have that color
+ *     If the connected component contains at least two vertices that are in the same unit and have the same color
+ *       Remove the candidate from the vertices of the connected component that have that color
  */
 fun simpleColoringRule2(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->
