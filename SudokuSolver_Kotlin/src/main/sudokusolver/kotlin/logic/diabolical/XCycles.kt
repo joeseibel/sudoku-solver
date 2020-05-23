@@ -66,7 +66,7 @@ import java.io.StringWriter
  * Note that the current implementation does not iterate through the cycles of the graph. It simply trims the graph of
  * vertices that can't be a part of an alternating cycle. This works because the test case for rule 1 doesn't contain
  * any trimmed graphs with multiple cycles. I'm waiting to encounter a test case in which iterating through the cycles
- * will be necessary. Such a test case will case a NotImplementedError to be thrown.
+ * will be necessary. Such a test case will cause a NotImplementedError to be thrown.
  */
 fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().mapNotNull { candidate ->
