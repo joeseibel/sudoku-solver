@@ -211,8 +211,7 @@ private fun createStrongLinks(board: Board<Cell>, candidate: SudokuNumber): Grap
         .buildAsUnmodifiable()
 
 private fun Graph<UnsolvedCell, XCyclesEdge>.addWeakLinks(): Graph<UnsolvedCell, XCyclesEdge> =
-    vertexSet()
-        .toList()
+    vertexSet().toList()
         .zipEveryPair()
         .filter { (a, b) -> a isInSameUnit b && !containsEdge(a, b) }
         .fold(
