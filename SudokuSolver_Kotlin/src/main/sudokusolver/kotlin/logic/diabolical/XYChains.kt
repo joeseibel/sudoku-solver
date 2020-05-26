@@ -4,11 +4,8 @@ import org.jgrapht.Graph
 import org.jgrapht.Graphs
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
-import org.jgrapht.io.ComponentAttributeProvider
-import org.jgrapht.io.ComponentNameProvider
-import org.jgrapht.io.DOTExporter
-import org.jgrapht.io.DefaultAttribute
-import org.jgrapht.io.IntegerComponentNameProvider
+import org.jgrapht.nio.DefaultAttribute
+import org.jgrapht.nio.dot.DOTExporter
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
@@ -95,16 +92,15 @@ class XYChainsEdge(val type: XYEdgeType)
 
 fun Graph<XYChainsVertex, XYChainsEdge>.toDOT(): String {
     val writer = StringWriter()
-    DOTExporter<XYChainsVertex, XYChainsEdge>(
-        IntegerComponentNameProvider(),
-        ComponentNameProvider { (cell, candidate) -> "[${cell.row},${cell.column}] : $candidate" },
-        null,
-        null,
-        ComponentAttributeProvider {
+    DOTExporter<XYChainsVertex, XYChainsEdge>().apply {
+        setVertexAttributeProvider { (cell, candidate) ->
+            mapOf("label" to DefaultAttribute.createAttribute("[${cell.row},${cell.column}] : $candidate"))
+        }
+        setEdgeAttributeProvider {
             it.takeIf { it.type == XYEdgeType.WEAK }
                 ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
         }
-    ).exportGraph(this, writer)
+    }.exportGraph(this, writer)
     return writer.toString()
 }
 

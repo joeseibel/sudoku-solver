@@ -6,11 +6,8 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector
 import org.jgrapht.graph.AsUnmodifiableGraph
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
-import org.jgrapht.io.ComponentAttributeProvider
-import org.jgrapht.io.ComponentNameProvider
-import org.jgrapht.io.DOTExporter
-import org.jgrapht.io.DefaultAttribute
-import org.jgrapht.io.IntegerComponentNameProvider
+import org.jgrapht.nio.DefaultAttribute
+import org.jgrapht.nio.dot.DOTExporter
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
@@ -187,17 +184,16 @@ class XCyclesEdge(val type: EdgeType)
 
 fun <V : Cell> Graph<V, XCyclesEdge>.toDOT(candidate: SudokuNumber): String {
     val writer = StringWriter()
-    DOTExporter<V, XCyclesEdge>(
-        IntegerComponentNameProvider(),
-        ComponentNameProvider { "[${it.row},${it.column}]" },
-        null,
-        null,
-        ComponentAttributeProvider {
+    DOTExporter<V, XCyclesEdge>().apply {
+        setGraphIdProvider { candidate.toString() }
+        setVertexAttributeProvider {
+            mapOf("label" to DefaultAttribute.createAttribute("[${it.row},${it.column}]"))
+        }
+        setEdgeAttributeProvider {
             it.takeIf { it.type == EdgeType.WEAK }
                 ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
-        },
-        ComponentNameProvider { candidate.toString() }
-    ).exportGraph(this, writer)
+        }
+    }.exportGraph(this, writer)
     return writer.toString()
 }
 
