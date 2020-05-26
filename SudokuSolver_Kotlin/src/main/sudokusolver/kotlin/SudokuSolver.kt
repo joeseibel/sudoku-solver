@@ -8,6 +8,7 @@ import sudokusolver.kotlin.logic.diabolical.bug
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule1
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule2
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule3
+import sudokusolver.kotlin.logic.diabolical.xyChains
 import sudokusolver.kotlin.logic.simple.boxLineReduction
 import sudokusolver.kotlin.logic.simple.hiddenPairs
 import sudokusolver.kotlin.logic.simple.hiddenQuads
@@ -110,6 +111,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { xCyclesRule2(board) }
                     .ifEmpty { xCyclesRule3(board) }
                     .ifEmpty { listOfNotNull(bug(board)) }
+                    .ifEmpty { xyChains(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
