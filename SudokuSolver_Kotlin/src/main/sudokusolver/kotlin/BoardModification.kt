@@ -66,7 +66,7 @@ data class RemoveCandidates(
 
     constructor(cell: UnsolvedCell, candidates: EnumSet<SudokuNumber>) : this(cell.row, cell.column, candidates) {
         candidates.forEach { candidate ->
-            require(candidate in cell.candidates) { "$candidate  is not a candidate for [$row, $column]" }
+            require(candidate in cell.candidates) { "$candidate is not a candidate for [$row, $column]" }
         }
     }
 
