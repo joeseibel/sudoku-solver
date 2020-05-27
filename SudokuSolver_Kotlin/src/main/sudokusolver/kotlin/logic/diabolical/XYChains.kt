@@ -116,8 +116,7 @@ private fun createStrongLinks(board: Board<Cell>): Graph<XYChainsVertex, XYChain
         .buildAsUnmodifiable()
 
 private fun Graph<XYChainsVertex, XYChainsEdge>.addWeakLinks(): Graph<XYChainsVertex, XYChainsEdge> =
-    vertexSet()
-        .toList()
+    vertexSet().toList()
         .zipEveryPair()
         .filter { (vertexA, vertexB) ->
             val (cellA, candidateA) = vertexA
