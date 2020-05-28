@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SetValue
+import sudokusolver.kotlin.Strength
+import sudokusolver.kotlin.StrengthEdge
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.logic.assertLogicalSolution
@@ -16,9 +18,9 @@ internal class XCyclesKtTest {
         val a = UnsolvedCell(0, 0)
         val b = UnsolvedCell(0, 3)
         val c = UnsolvedCell(2, 5)
-        val actual = GraphBuilder(SimpleGraph<UnsolvedCell, XCyclesEdge>(XCyclesEdge::class.java))
-            .addEdge(a, b, XCyclesEdge(EdgeType.STRONG))
-            .addEdge(b, c, XCyclesEdge(EdgeType.WEAK))
+        val actual = GraphBuilder(SimpleGraph<UnsolvedCell, StrengthEdge>(StrengthEdge::class.java))
+            .addEdge(a, b, StrengthEdge(Strength.STRONG))
+            .addEdge(b, c, StrengthEdge(Strength.WEAK))
             .buildAsUnmodifiable()
             .toDOT(SudokuNumber.ONE)
         val expected = """

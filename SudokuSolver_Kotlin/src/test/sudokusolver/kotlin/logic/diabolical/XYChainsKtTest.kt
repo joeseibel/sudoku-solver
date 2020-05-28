@@ -4,6 +4,8 @@ import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.Strength
+import sudokusolver.kotlin.StrengthEdge
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.logic.assertLogicalSolution
@@ -15,9 +17,9 @@ internal class XYChainsKtTest {
         val a = UnsolvedCell(0, 0) to SudokuNumber.TWO
         val b = UnsolvedCell(0, 0) to SudokuNumber.SIX
         val c = UnsolvedCell(0, 4) to SudokuNumber.TWO
-        val actual = GraphBuilder(SimpleGraph<XYChainsVertex, XYChainsEdge>(XYChainsEdge::class.java))
-            .addEdge(a, b, XYChainsEdge(XYEdgeType.STRONG))
-            .addEdge(a, c, XYChainsEdge(XYEdgeType.WEAK))
+        val actual = GraphBuilder(SimpleGraph<XYChainsVertex, StrengthEdge>(StrengthEdge::class.java))
+            .addEdge(a, b, StrengthEdge(Strength.STRONG))
+            .addEdge(a, c, StrengthEdge(Strength.WEAK))
             .buildAsUnmodifiable()
             .toDOT()
         val expected = """

@@ -9,6 +9,9 @@ import org.jgrapht.nio.dot.DOTExporter
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.STRENGTH_EDGE_ATTRIBUTE_PROVIDER
+import sudokusolver.kotlin.Strength
+import sudokusolver.kotlin.StrengthEdge
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.mergeToRemoveCandidates
@@ -74,48 +77,29 @@ fun xyChains(board: Board<Cell>): List<RemoveCandidates> {
 
 typealias XYChainsVertex = Pair<UnsolvedCell, SudokuNumber>
 
-enum class XYEdgeType {
-    STRONG {
-        override val opposite: XYEdgeType
-            get() = WEAK
-    },
-
-    WEAK {
-        override val opposite: XYEdgeType
-            get() = STRONG
-    };
-
-    abstract val opposite: XYEdgeType
-}
-
-class XYChainsEdge(val type: XYEdgeType)
-
-fun Graph<XYChainsVertex, XYChainsEdge>.toDOT(): String {
+fun Graph<XYChainsVertex, StrengthEdge>.toDOT(): String {
     val writer = StringWriter()
-    DOTExporter<XYChainsVertex, XYChainsEdge>().apply {
+    DOTExporter<XYChainsVertex, StrengthEdge>().apply {
         setVertexAttributeProvider { (cell, candidate) ->
             mapOf("label" to DefaultAttribute.createAttribute("[${cell.row},${cell.column}] : $candidate"))
         }
-        setEdgeAttributeProvider {
-            it.takeIf { it.type == XYEdgeType.WEAK }
-                ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
-        }
+        setEdgeAttributeProvider(STRENGTH_EDGE_ATTRIBUTE_PROVIDER)
     }.exportGraph(this, writer)
     return writer.toString()
 }
 
-private fun createStrongLinks(board: Board<Cell>): Graph<XYChainsVertex, XYChainsEdge> =
+private fun createStrongLinks(board: Board<Cell>): Graph<XYChainsVertex, StrengthEdge> =
     board.cells
         .filterIsInstance<UnsolvedCell>()
         .filter { it.candidates.size == 2 }
-        .fold(GraphBuilder(SimpleGraph<XYChainsVertex, XYChainsEdge>(XYChainsEdge::class.java))) { builder, cell ->
+        .fold(GraphBuilder(SimpleGraph<XYChainsVertex, StrengthEdge>(StrengthEdge::class.java))) { builder, cell ->
             val source = cell to cell.candidates.first()
             val target = cell to cell.candidates.last()
-            builder.addEdge(source, target, XYChainsEdge(XYEdgeType.STRONG))
+            builder.addEdge(source, target, StrengthEdge(Strength.STRONG))
         }
         .buildAsUnmodifiable()
 
-private fun Graph<XYChainsVertex, XYChainsEdge>.addWeakLinks(): Graph<XYChainsVertex, XYChainsEdge> =
+private fun Graph<XYChainsVertex, StrengthEdge>.addWeakLinks(): Graph<XYChainsVertex, StrengthEdge> =
     vertexSet().toList()
         .zipEveryPair()
         .filter { (vertexA, vertexB) ->
@@ -124,31 +108,31 @@ private fun Graph<XYChainsVertex, XYChainsEdge>.addWeakLinks(): Graph<XYChainsVe
             candidateA == candidateB && cellA isInSameUnit cellB
         }
         .fold(
-            GraphBuilder(SimpleGraph<XYChainsVertex, XYChainsEdge>(XYChainsEdge::class.java)).addGraph(this)
+            GraphBuilder(SimpleGraph<XYChainsVertex, StrengthEdge>(StrengthEdge::class.java)).addGraph(this)
         ) { builder, (vertexA, vertexB) ->
-            builder.addEdge(vertexA, vertexB, XYChainsEdge(XYEdgeType.WEAK))
+            builder.addEdge(vertexA, vertexB, StrengthEdge(Strength.WEAK))
         }
         .buildAsUnmodifiable()
 
 private fun alternatingPathExists(
-    graph: Graph<XYChainsVertex, XYChainsEdge>,
+    graph: Graph<XYChainsVertex, StrengthEdge>,
     start: XYChainsVertex,
     end: XYChainsVertex
 ): Boolean {
 
     fun alternatingPathExists(
         currentVertex: XYChainsVertex,
-        nextType: XYEdgeType,
+        nextType: Strength,
         visited: Set<XYChainsVertex>
     ): Boolean {
         val nextVertices = graph.edgesOf(currentVertex)
-            .filter { it.type == nextType }
+            .filter { it.strength == nextType }
             .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
             .let { it - visited }
-        return end in nextVertices && nextType == XYEdgeType.STRONG || nextVertices.any { nextVertex ->
+        return end in nextVertices && nextType == Strength.STRONG || nextVertices.any { nextVertex ->
             alternatingPathExists(nextVertex, nextType.opposite, visited + setOf(currentVertex))
         }
     }
 
-    return alternatingPathExists(start, XYEdgeType.STRONG, setOf(start))
+    return alternatingPathExists(start, Strength.STRONG, setOf(start))
 }
