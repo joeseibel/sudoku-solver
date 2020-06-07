@@ -100,7 +100,7 @@ data class SetValue(override val row: Int, override val column: Int, val value: 
  *      groupBy(keySelector = { (cell, _) -> cell }, valueTransform = { (_, candidate) -> candidate })
  *          .map { (cell, candidates) -> RemoveCandidates(cell, EnumSet.copyOf(candidates)) }
  */
-fun List<Pair<UnsolvedCell, SudokuNumber>>.mergeToRemoveCandidates(): List<RemoveCandidates> =
+fun List<LocatedCandidate>.mergeToRemoveCandidates(): List<RemoveCandidates> =
     groupingBy { (cell, _) -> cell }
         .fold(
             initialValueSelector = { _, _ -> EnumSet.noneOf(SudokuNumber::class.java) },

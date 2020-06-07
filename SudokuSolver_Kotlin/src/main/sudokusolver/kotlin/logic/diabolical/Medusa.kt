@@ -7,6 +7,7 @@ import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
+import sudokusolver.kotlin.LocatedCandidate
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.SudokuNumber
@@ -177,7 +178,7 @@ fun medusaRule4(board: Board<Cell>): List<RemoveCandidates> =
             .filter { it !in graph.vertexSet() }
             .filter { (cell, candidate) ->
 
-                fun canSeeColor(color: List<Pair<UnsolvedCell, SudokuNumber>>) =
+                fun canSeeColor(color: List<LocatedCandidate>) =
                     color.any { (coloredCell, coloredCandidate) ->
                         candidate == coloredCandidate && cell isInSameUnit coloredCell
                     }
@@ -217,13 +218,12 @@ fun medusaRule5(board: Board<Cell>): List<RemoveCandidates> =
             .filter { it !in graph.vertexSet() }
             .filter { (cell, candidate) ->
 
-                fun canSeeColor(color: List<Pair<UnsolvedCell, SudokuNumber>>) =
+                fun canSeeColor(color: List<LocatedCandidate>) =
                     color.any { (coloredCell, coloredCandidate) ->
                         candidate == coloredCandidate && cell isInSameUnit coloredCell
                     }
 
-                fun colorInCell(color: List<Pair<UnsolvedCell, SudokuNumber>>) =
-                    cell.candidates.any { cell to it in color }
+                fun colorInCell(color: List<LocatedCandidate>) = cell.candidates.any { cell to it in color }
 
                 canSeeColor(colorOne) && colorInCell(colorTwo) || canSeeColor(colorTwo) && colorInCell(colorOne)
             }
@@ -257,7 +257,7 @@ fun medusaRule6(board: Board<Cell>): List<SetValue> =
             .filter { cell -> cell.candidates.none { candidate -> cell to candidate in graph.vertexSet() } }
             .flatMap { cell ->
 
-                fun everyCandidateCanSeeColor(color: List<Pair<UnsolvedCell, SudokuNumber>>) =
+                fun everyCandidateCanSeeColor(color: List<LocatedCandidate>) =
                     cell.candidates.all { candidate ->
                         color.any { (coloredCell, coloredCandidate) ->
                             candidate == coloredCandidate && cell isInSameUnit coloredCell
@@ -275,8 +275,8 @@ fun medusaRule6(board: Board<Cell>): List<SetValue> =
             }
     }
 
-private fun createConnectedComponents(board: Board<Cell>): Set<Graph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>> {
-    val builder = GraphBuilder(SimpleGraph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>(DefaultEdge::class.java))
+private fun createConnectedComponents(board: Board<Cell>): Set<Graph<LocatedCandidate, DefaultEdge>> {
+    val builder = GraphBuilder(SimpleGraph<LocatedCandidate, DefaultEdge>(DefaultEdge::class.java))
     board.cells.filterIsInstance<UnsolvedCell>().filter { it.candidates.size == 2 }.forEach { cell ->
         builder.addEdge(cell to cell.candidates.first(), cell to cell.candidates.last())
     }

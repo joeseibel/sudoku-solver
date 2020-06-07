@@ -8,11 +8,11 @@ import org.jgrapht.nio.DefaultAttribute
 import org.jgrapht.nio.dot.DOTExporter
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
+import sudokusolver.kotlin.LocatedCandidate
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.STRENGTH_EDGE_ATTRIBUTE_PROVIDER
 import sudokusolver.kotlin.Strength
 import sudokusolver.kotlin.StrengthEdge
-import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.zipEveryPair
@@ -75,11 +75,9 @@ fun xyChains(board: Board<Cell>): List<RemoveCandidates> {
     }.mergeToRemoveCandidates()
 }
 
-typealias XYChainsVertex = Pair<UnsolvedCell, SudokuNumber>
-
-fun Graph<XYChainsVertex, StrengthEdge>.toDOT(): String {
+fun Graph<LocatedCandidate, StrengthEdge>.toDOT(): String {
     val writer = StringWriter()
-    DOTExporter<XYChainsVertex, StrengthEdge>().apply {
+    DOTExporter<LocatedCandidate, StrengthEdge>().apply {
         setVertexAttributeProvider { (cell, candidate) ->
             mapOf("label" to DefaultAttribute.createAttribute("[${cell.row},${cell.column}] : $candidate"))
         }
@@ -88,18 +86,18 @@ fun Graph<XYChainsVertex, StrengthEdge>.toDOT(): String {
     return writer.toString()
 }
 
-private fun createStrongLinks(board: Board<Cell>): Graph<XYChainsVertex, StrengthEdge> =
+private fun createStrongLinks(board: Board<Cell>): Graph<LocatedCandidate, StrengthEdge> =
     board.cells
         .filterIsInstance<UnsolvedCell>()
         .filter { it.candidates.size == 2 }
-        .fold(GraphBuilder(SimpleGraph<XYChainsVertex, StrengthEdge>(StrengthEdge::class.java))) { builder, cell ->
+        .fold(GraphBuilder(SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge::class.java))) { builder, cell ->
             val source = cell to cell.candidates.first()
             val target = cell to cell.candidates.last()
             builder.addEdge(source, target, StrengthEdge(Strength.STRONG))
         }
         .buildAsUnmodifiable()
 
-private fun Graph<XYChainsVertex, StrengthEdge>.addWeakLinks(): Graph<XYChainsVertex, StrengthEdge> =
+private fun Graph<LocatedCandidate, StrengthEdge>.addWeakLinks(): Graph<LocatedCandidate, StrengthEdge> =
     vertexSet().toList()
         .zipEveryPair()
         .filter { (vertexA, vertexB) ->
@@ -108,22 +106,23 @@ private fun Graph<XYChainsVertex, StrengthEdge>.addWeakLinks(): Graph<XYChainsVe
             candidateA == candidateB && cellA isInSameUnit cellB
         }
         .fold(
-            GraphBuilder(SimpleGraph<XYChainsVertex, StrengthEdge>(StrengthEdge::class.java)).addGraph(this)
+            GraphBuilder(SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge::class.java))
+                .addGraph(this)
         ) { builder, (vertexA, vertexB) ->
             builder.addEdge(vertexA, vertexB, StrengthEdge(Strength.WEAK))
         }
         .buildAsUnmodifiable()
 
 private fun alternatingPathExists(
-    graph: Graph<XYChainsVertex, StrengthEdge>,
-    start: XYChainsVertex,
-    end: XYChainsVertex
+    graph: Graph<LocatedCandidate, StrengthEdge>,
+    start: LocatedCandidate,
+    end: LocatedCandidate
 ): Boolean {
 
     fun alternatingPathExists(
-        currentVertex: XYChainsVertex,
+        currentVertex: LocatedCandidate,
         nextType: Strength,
-        visited: Set<XYChainsVertex>
+        visited: Set<LocatedCandidate>
     ): Boolean {
         val nextVertices = graph.edgesOf(currentVertex)
             .filter { it.strength == nextType }

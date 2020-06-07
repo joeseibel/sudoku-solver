@@ -2,8 +2,8 @@ package sudokusolver.kotlin.logic.tough
 
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
+import sudokusolver.kotlin.LocatedCandidate
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.enumIntersect
 import sudokusolver.kotlin.enumUnion
@@ -30,11 +30,7 @@ import sudokusolver.kotlin.zipEveryTriple
  */
 fun yWing(board: Board<Cell>): List<RemoveCandidates> {
 
-    fun tryHinge(
-        hinge: UnsolvedCell,
-        wingA: UnsolvedCell,
-        wingB: UnsolvedCell
-    ): List<Pair<UnsolvedCell, SudokuNumber>> {
+    fun tryHinge(hinge: UnsolvedCell, wingA: UnsolvedCell, wingB: UnsolvedCell): List<LocatedCandidate> {
         val wingCandidates = wingA.candidates enumIntersect wingB.candidates
         return if (hinge isInSameUnit wingA && hinge isInSameUnit wingB &&
             (hinge.candidates enumIntersect wingA.candidates).size == 1 &&
