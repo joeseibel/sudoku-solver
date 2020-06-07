@@ -5,12 +5,13 @@ import org.jgrapht.alg.connectivity.BiconnectivityInspector
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
-import org.jgrapht.traverse.BreadthFirstIterator
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
+import sudokusolver.kotlin.colorToLists
+import sudokusolver.kotlin.colorToMap
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.zipEveryPair
 
@@ -39,10 +40,7 @@ import sudokusolver.kotlin.zipEveryPair
 fun simpleColoringRule2(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->
         createConnectedComponents(board, candidate).mapNotNull { graph ->
-            val breadthFirst = BreadthFirstIterator(graph)
-            val colors = breadthFirst.asSequence().associateWith { cell ->
-                if (breadthFirst.getDepth(cell) % 2 == 0) VertexColor.COLOR_ONE else VertexColor.COLOR_TWO
-            }
+            val colors = graph.colorToMap()
             graph.vertexSet()
                 .toList()
                 .zipEveryPair()
@@ -75,9 +73,7 @@ fun simpleColoringRule2(board: Board<Cell>): List<RemoveCandidates> =
 fun simpleColoringRule4(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->
         createConnectedComponents(board, candidate).flatMap { graph ->
-            val breadthFirst = BreadthFirstIterator(graph)
-            val (colorOne, colorTwo) = breadthFirst.asSequence()
-                .partition { cell -> breadthFirst.getDepth(cell) % 2 == 0 }
+            val (colorOne, colorTwo) = graph.colorToLists()
             board.cells
                 .filterIsInstance<UnsolvedCell>()
                 .filter { cell ->
@@ -89,8 +85,6 @@ fun simpleColoringRule4(board: Board<Cell>): List<RemoveCandidates> =
                 .map { it to candidate }
         }
     }.mergeToRemoveCandidates()
-
-private enum class VertexColor { COLOR_ONE, COLOR_TWO }
 
 private fun createConnectedComponents(
     board: Board<Cell>,

@@ -5,13 +5,14 @@ import org.jgrapht.alg.connectivity.BiconnectivityInspector
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
-import org.jgrapht.traverse.BreadthFirstIterator
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
+import sudokusolver.kotlin.colorToLists
+import sudokusolver.kotlin.colorToMap
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.zipEveryPair
 
@@ -47,7 +48,7 @@ import sudokusolver.kotlin.zipEveryPair
  */
 fun medusaRule1(board: Board<Cell>): List<SetValue> =
     createConnectedComponents(board).mapNotNull { graph ->
-        val colors = colorToMap(graph)
+        val colors = graph.colorToMap()
         graph.vertexSet()
             .toList()
             .zipEveryPair()
@@ -87,7 +88,7 @@ fun medusaRule1(board: Board<Cell>): List<SetValue> =
  */
 fun medusaRule2(board: Board<Cell>): List<SetValue> =
     createConnectedComponents(board).mapNotNull { graph ->
-        val colors = colorToMap(graph)
+        val colors = graph.colorToMap()
         graph.vertexSet()
             .toList()
             .zipEveryPair()
@@ -127,7 +128,7 @@ fun medusaRule2(board: Board<Cell>): List<SetValue> =
  */
 fun medusaRule3(board: Board<Cell>): List<RemoveCandidates> =
     createConnectedComponents(board).mapNotNull { graph ->
-        val colors = colorToMap(graph)
+        val colors = graph.colorToMap()
         graph.vertexSet()
             .filter { (cell, _) -> cell.candidates.size > 2 }
             .zipEveryPair()
@@ -169,7 +170,7 @@ fun medusaRule3(board: Board<Cell>): List<RemoveCandidates> =
  */
 fun medusaRule4(board: Board<Cell>): List<RemoveCandidates> =
     createConnectedComponents(board).flatMap { graph ->
-        val (colorOne, colorTwo) = colorToLists(graph)
+        val (colorOne, colorTwo) = graph.colorToLists()
         board.cells
             .filterIsInstance<UnsolvedCell>()
             .flatMap { cell -> cell.candidates.map { candidate -> cell to candidate } }
@@ -209,7 +210,7 @@ fun medusaRule4(board: Board<Cell>): List<RemoveCandidates> =
  */
 fun medusaRule5(board: Board<Cell>): List<RemoveCandidates> =
     createConnectedComponents(board).flatMap { graph ->
-        val (colorOne, colorTwo) = colorToLists(graph)
+        val (colorOne, colorTwo) = graph.colorToLists()
         board.cells
             .filterIsInstance<UnsolvedCell>()
             .flatMap { cell -> cell.candidates.map { candidate -> cell to candidate } }
@@ -250,7 +251,7 @@ fun medusaRule5(board: Board<Cell>): List<RemoveCandidates> =
  */
 fun medusaRule6(board: Board<Cell>): List<SetValue> =
     createConnectedComponents(board).flatMap { graph ->
-        val (colorOne, colorTwo) = colorToLists(graph)
+        val (colorOne, colorTwo) = graph.colorToLists()
         board.cells
             .filterIsInstance<UnsolvedCell>()
             .filter { cell -> cell.candidates.none { candidate -> cell to candidate in graph.vertexSet() } }
@@ -274,20 +275,6 @@ fun medusaRule6(board: Board<Cell>): List<SetValue> =
             }
     }
 
-private enum class VertexColor {
-    COLOR_ONE {
-        override val opposite: VertexColor
-            get() = COLOR_TWO
-    },
-
-    COLOR_TWO {
-        override val opposite: VertexColor
-            get() = COLOR_ONE
-    };
-
-    abstract val opposite: VertexColor
-}
-
 private fun createConnectedComponents(board: Board<Cell>): Set<Graph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>> {
     val builder = GraphBuilder(SimpleGraph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>(DefaultEdge::class.java))
     board.cells.filterIsInstance<UnsolvedCell>().filter { it.candidates.size == 2 }.forEach { cell ->
@@ -301,20 +288,4 @@ private fun createConnectedComponents(board: Board<Cell>): Set<Graph<Pair<Unsolv
         }
     }
     return BiconnectivityInspector(builder.buildAsUnmodifiable()).connectedComponents
-}
-
-private fun colorToMap(
-    graph: Graph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>
-): Map<Pair<UnsolvedCell, SudokuNumber>, VertexColor> {
-    val breadthFirst = BreadthFirstIterator(graph)
-    return breadthFirst.asSequence().associateWith { cell ->
-        if (breadthFirst.getDepth(cell) % 2 == 0) VertexColor.COLOR_ONE else VertexColor.COLOR_TWO
-    }
-}
-
-private fun colorToLists(
-    graph: Graph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>
-): Pair<List<Pair<UnsolvedCell, SudokuNumber>>, List<Pair<UnsolvedCell, SudokuNumber>>> {
-    val breadthFirst = BreadthFirstIterator(graph)
-    return breadthFirst.asSequence().partition { breadthFirst.getDepth(it) % 2 == 0 }
 }
