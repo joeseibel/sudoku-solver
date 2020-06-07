@@ -1,0 +1,320 @@
+package sudokusolver.kotlin.logic.diabolical
+
+import org.jgrapht.Graph
+import org.jgrapht.alg.connectivity.BiconnectivityInspector
+import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.SimpleGraph
+import org.jgrapht.graph.builder.GraphBuilder
+import org.jgrapht.traverse.BreadthFirstIterator
+import sudokusolver.kotlin.Board
+import sudokusolver.kotlin.Cell
+import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.SetValue
+import sudokusolver.kotlin.SudokuNumber
+import sudokusolver.kotlin.UnsolvedCell
+import sudokusolver.kotlin.mergeToRemoveCandidates
+import sudokusolver.kotlin.zipEveryPair
+
+/*
+ * https://www.sudokuwiki.org/3D_Medusa
+ *
+ * A 3D Medusa is a graph type in which each vertex is a particular candidate in a cell and each edge is a strong link.
+ * A strong link is an edge in which if one vertex of the link is the solution, then the other vertex must not be the
+ * solution. A strong link also means that if one vertex of the link is not the solution, then the other vertex must be
+ * the solution. When a candidate is in only two cells of a unit, there is an edge between the candidate of those two
+ * cells. Additionally, when a cell contains only two candidates, there is an edge between the two candidates of that
+ * cell. Each medusa is colored with alternating colors such that for a given vertex with a given color, all adjacent
+ * vertices have the opposite color. The two colors represent the two possible solutions. Either the first color is the
+ * solution for the medusa or the second color is.
+ *
+ * Rule 1: Twice in a Cell
+ *
+ * If there are two vertices with the same color that are in the same cell, then that color cannot be the solution and
+ * the opposite color must be the solution. All vertices with the opposite color can be set as the solution.
+ *
+ * For each unsolved cell
+ *   If the cell has two candidates
+ *     Create an edge between the two candidates
+ * For each candidate
+ *   For each unit
+ *     If the candidate appears in two unsolved cells of the unit
+ *       Create an edge between the candidate in the first cell and the candidate in the second cell
+ * For each connected component in the graph
+ *   Traverse the connected component and assign alternating colors
+ *   If the connected component contains two vertices that are in the same cell and have the same color
+ *     For each vertex that has the opposite color
+ *       Set the vertex's candidate as the value for the vertex's cell
+ */
+fun medusaRule1(board: Board<Cell>): List<SetValue> =
+    createConnectedComponents(board).mapNotNull { graph ->
+        val colors = colorToMap(graph)
+        graph.vertexSet()
+            .toList()
+            .zipEveryPair()
+            .find { (a, b) ->
+                val (cellA, _) = a
+                val (cellB, _) = b
+                cellA == cellB && colors[a] == colors[b]
+            }
+            ?.let { (a, _) -> colors[a] }
+            ?.opposite
+            ?.let { colorToSet ->
+                graph.vertexSet()
+                    .filter { colors[it] == colorToSet }
+                    .map { (cell, candidate) -> SetValue(cell, candidate) }
+            }
+    }.flatten()
+
+/*
+ * Rule 2: Twice in a Unit
+ *
+ * If there are two vertices with the same color and the same candidate that are in the same unit, then that color
+ * cannot be the solution and the opposite color must be the solution. All vertices with the opposite color can be set
+ * as the solution.
+ *
+ * For each unsolved cell
+ *   If the cell has two candidates
+ *     Create an edge between the two candidates
+ * For each candidate
+ *   For each unit
+ *     If the candidate appears in two unsolved cells of the unit
+ *       Create an edge between the candidate in the first cell and the candidate in the second cell
+ * For each connected component in the graph
+ *   Traverse the connected component and assign alternating colors
+ *   If the connected component contains two vertices that have the same candidate and color and are in the same unit
+ *     For each vertex that has the opposite color
+ *       Set the vertex's candidate as the value for the vertex's cell
+ */
+fun medusaRule2(board: Board<Cell>): List<SetValue> =
+    createConnectedComponents(board).mapNotNull { graph ->
+        val colors = colorToMap(graph)
+        graph.vertexSet()
+            .toList()
+            .zipEveryPair()
+            .find { (a, b) ->
+                val (cellA, candidateA) = a
+                val (cellB, candidateB) = b
+                candidateA == candidateB && colors[a] == colors[b] && cellA isInSameUnit cellB
+            }
+            ?.let { (a, _) -> colors[a] }
+            ?.opposite
+            ?.let { colorToSet ->
+                graph.vertexSet()
+                    .filter { colors[it] == colorToSet }
+                    .map { (cell, candidate) -> SetValue(cell, candidate) }
+            }
+    }.flatten()
+
+/*
+ * Rule 3: Two colors in a cell
+ *
+ * If there are two differently colored candidates in a cell, then the solution must be one of the two candidates. All
+ * other candidates in the cell can be removed.
+ *
+ * For each unsolved cell
+ *   If the cell has two candidates
+ *     Create an edge between the two candidates
+ * For each candidate
+ *   For each unit
+ *     If the candidate appears in two unsolved cells of the unit
+ *       Create an edge between the candidate in the first cell and the candidate in the second cell
+ * For each connected component in the graph
+ *   Traverse the connected component and assign alternating colors
+ *   If the connected component contains two vertices that are in the same cell and have different colors
+ *     For each candidate in the cell
+ *       If the candidate is not in the connected component
+ *         Remove the candidate from the cell
+ */
+fun medusaRule3(board: Board<Cell>): List<RemoveCandidates> =
+    createConnectedComponents(board).mapNotNull { graph ->
+        val colors = colorToMap(graph)
+        graph.vertexSet()
+            .filter { (cell, _) -> cell.candidates.size > 2 }
+            .zipEveryPair()
+            .find { (a, b) ->
+                val (cellA, _) = a
+                val (cellB, _) = b
+                cellA == cellB && colors[a] != colors[b]
+            }
+            ?.let { (a, _) -> a }
+            ?.let { (cell, _) -> cell }
+            ?.let { cell ->
+                cell.candidates
+                    .map { cell to it }
+                    .filter { it !in graph.vertexSet() }
+            }
+    }.flatten().mergeToRemoveCandidates()
+
+/*
+ * Rule 4: Two colors 'elsewhere'
+ *
+ * Given a candidate, if there is an unsolved cell with that candidate and it is uncolored and the cell can see two
+ * other cells which both have that candidate and they are differently colored, then the candidate must be the solution
+ * to one of the other cells and it cannot be the solution to the first cell with the uncolored candidate. The uncolored
+ * candidate can be removed from the first cell.
+ *
+ * For each unsolved cell
+ *   If the cell has two candidates
+ *     Create an edge between the two candidates
+ * For each candidate
+ *   For each unit
+ *     If the candidate appears in two unsolved cells of the unit
+ *       Create an edge between the candidate in the first cell and the candidate in the second cell
+ * For each connected component in the graph
+ *   Traverse the connected component and assign alternating colors
+ *   For each unsolved cell
+ *     For each candidate of that cell that is not a vertex of the connected component
+ *       If the candidate can see a vertex of one color and can see a vertex of the other color
+ *         Remove the candidate from the cell
+ */
+fun medusaRule4(board: Board<Cell>): List<RemoveCandidates> =
+    createConnectedComponents(board).flatMap { graph ->
+        val (colorOne, colorTwo) = colorToLists(graph)
+        board.cells
+            .filterIsInstance<UnsolvedCell>()
+            .flatMap { cell -> cell.candidates.map { candidate -> cell to candidate } }
+            .filter { it !in graph.vertexSet() }
+            .filter { (cell, candidate) ->
+
+                fun canSeeColor(color: List<Pair<UnsolvedCell, SudokuNumber>>) =
+                    color.any { (coloredCell, coloredCandidate) ->
+                        candidate == coloredCandidate && cell isInSameUnit coloredCell
+                    }
+
+                canSeeColor(colorOne) && canSeeColor(colorTwo)
+            }
+    }.mergeToRemoveCandidates()
+
+/*
+ * Rule 5: Two colors Unit + Cell
+ *
+ * If there is an unsolved cell with an uncolored candidate, that candidate can see a colored candidate of the same
+ * number, and the unsolved cell contains a candidate colored with the opposite color, then either the candidate in the
+ * same unit is the solution for that cell or the candidate in the same cell is the solution. In either case, the
+ * uncolored candidate cannot be the solution and can be removed from the unsolved cell.
+ *
+ * For each unsolved cell
+ *   If the cell has two candidates
+ *     Create an edge between the two candidates
+ * For each candidate
+ *   For each unit
+ *     If the candidate appears in two unsolved cells of the unit
+ *       Create an edge between the candidate in the first cell and the candidate in the second cell
+ * For each connected component in the graph
+ *   Traverse the connected component and assign alternating colors
+ *   For each unsolved cell
+ *     For each candidate of that cell that is not a vertex of the connected component
+ *       If the candidate can see a vertex of one color and there is a vertex of the opposite color in the cell
+ *         Remove the candidate from the cell
+ */
+fun medusaRule5(board: Board<Cell>): List<RemoveCandidates> =
+    createConnectedComponents(board).flatMap { graph ->
+        val (colorOne, colorTwo) = colorToLists(graph)
+        board.cells
+            .filterIsInstance<UnsolvedCell>()
+            .flatMap { cell -> cell.candidates.map { candidate -> cell to candidate } }
+            .filter { it !in graph.vertexSet() }
+            .filter { (cell, candidate) ->
+
+                fun canSeeColor(color: List<Pair<UnsolvedCell, SudokuNumber>>) =
+                    color.any { (coloredCell, coloredCandidate) ->
+                        candidate == coloredCandidate && cell isInSameUnit coloredCell
+                    }
+
+                fun colorInCell(color: List<Pair<UnsolvedCell, SudokuNumber>>) =
+                    cell.candidates.any { cell to it in color }
+
+                canSeeColor(colorOne) && colorInCell(colorTwo) || canSeeColor(colorTwo) && colorInCell(colorOne)
+            }
+    }.mergeToRemoveCandidates()
+
+/*
+ * Rule 6: Cell Emptied by Color
+ *
+ * If there is an unsolved cell in which every candidate is uncolored and every candidate can see the same color, then
+ * that color cannot be the solution since it would lead to the cell being emptied of candidates and still have no
+ * solution. All vertices with the opposite color can be set as the solution.
+ *
+ * For each unsolved cell
+ *   If the cell has two candidates
+ *     Create an edge between the two candidates
+ * For each candidate
+ *   For each unit
+ *     If the candidate appears in two unsolved cells of the unit
+ *       Create an edge between the candidate in the first cell and the candidate in the second cell
+ * For each connected component in the graph
+ *   Traverse the connected component and assign alternating colors
+ *   If there is an unsolved cell with only uncolored candidates and each of those candidates can see the same color
+ *     For each vertex that has the opposite color
+ *       Set the vertex's candidate as the value for the vertex's cell
+ */
+fun medusaRule6(board: Board<Cell>): List<SetValue> =
+    createConnectedComponents(board).flatMap { graph ->
+        val (colorOne, colorTwo) = colorToLists(graph)
+        board.cells
+            .filterIsInstance<UnsolvedCell>()
+            .filter { cell -> cell.candidates.none { candidate -> cell to candidate in graph.vertexSet() } }
+            .flatMap { cell ->
+
+                fun everyCandidateCanSeeColor(color: List<Pair<UnsolvedCell, SudokuNumber>>) =
+                    cell.candidates.all { candidate ->
+                        color.any { (coloredCell, coloredCandidate) ->
+                            candidate == coloredCandidate && cell isInSameUnit coloredCell
+                        }
+                    }
+
+                val oppositeColor = when {
+                    everyCandidateCanSeeColor(colorOne) -> colorTwo
+                    everyCandidateCanSeeColor(colorTwo) -> colorOne
+                    else -> emptyList()
+                }
+                oppositeColor.map { (coloredCell, coloredCandidate) ->
+                    SetValue(coloredCell, coloredCandidate)
+                }
+            }
+    }
+
+private enum class VertexColor {
+    COLOR_ONE {
+        override val opposite: VertexColor
+            get() = COLOR_TWO
+    },
+
+    COLOR_TWO {
+        override val opposite: VertexColor
+            get() = COLOR_ONE
+    };
+
+    abstract val opposite: VertexColor
+}
+
+private fun createConnectedComponents(board: Board<Cell>): Set<Graph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>> {
+    val builder = GraphBuilder(SimpleGraph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>(DefaultEdge::class.java))
+    board.cells.filterIsInstance<UnsolvedCell>().filter { it.candidates.size == 2 }.forEach { cell ->
+        builder.addEdge(cell to cell.candidates.first(), cell to cell.candidates.last())
+    }
+    board.units.map { it.filterIsInstance<UnsolvedCell>() }.forEach { unit ->
+        SudokuNumber.values().forEach { candidate ->
+            unit.filter { candidate in it.candidates }
+                .takeIf { it.size == 2 }
+                ?.let { builder.addEdge(it.first() to candidate, it.last() to candidate) }
+        }
+    }
+    return BiconnectivityInspector(builder.buildAsUnmodifiable()).connectedComponents
+}
+
+private fun colorToMap(
+    graph: Graph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>
+): Map<Pair<UnsolvedCell, SudokuNumber>, VertexColor> {
+    val breadthFirst = BreadthFirstIterator(graph)
+    return breadthFirst.asSequence().associateWith { cell ->
+        if (breadthFirst.getDepth(cell) % 2 == 0) VertexColor.COLOR_ONE else VertexColor.COLOR_TWO
+    }
+}
+
+private fun colorToLists(
+    graph: Graph<Pair<UnsolvedCell, SudokuNumber>, DefaultEdge>
+): Pair<List<Pair<UnsolvedCell, SudokuNumber>>, List<Pair<UnsolvedCell, SudokuNumber>>> {
+    val breadthFirst = BreadthFirstIterator(graph)
+    return breadthFirst.asSequence().partition { breadthFirst.getDepth(it) % 2 == 0 }
+}

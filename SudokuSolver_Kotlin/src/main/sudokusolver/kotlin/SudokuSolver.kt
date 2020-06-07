@@ -5,6 +5,12 @@ import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
 import sudokusolver.kotlin.logic.bruteForce
 import sudokusolver.kotlin.logic.diabolical.bug
+import sudokusolver.kotlin.logic.diabolical.medusaRule1
+import sudokusolver.kotlin.logic.diabolical.medusaRule2
+import sudokusolver.kotlin.logic.diabolical.medusaRule3
+import sudokusolver.kotlin.logic.diabolical.medusaRule4
+import sudokusolver.kotlin.logic.diabolical.medusaRule5
+import sudokusolver.kotlin.logic.diabolical.medusaRule6
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule1
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule2
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule3
@@ -112,6 +118,12 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { xCyclesRule3(board) }
                     .ifEmpty { listOfNotNull(bug(board)) }
                     .ifEmpty { xyChains(board) }
+                    .ifEmpty { medusaRule1(board) }
+                    .ifEmpty { medusaRule2(board) }
+                    .ifEmpty { medusaRule3(board) }
+                    .ifEmpty { medusaRule4(board) }
+                    .ifEmpty { medusaRule5(board) }
+                    .ifEmpty { medusaRule6(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
