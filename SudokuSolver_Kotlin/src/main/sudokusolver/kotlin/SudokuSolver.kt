@@ -5,6 +5,7 @@ import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
 import sudokusolver.kotlin.logic.bruteForce
 import sudokusolver.kotlin.logic.diabolical.bug
+import sudokusolver.kotlin.logic.diabolical.jellyfish
 import sudokusolver.kotlin.logic.diabolical.medusaRule1
 import sudokusolver.kotlin.logic.diabolical.medusaRule2
 import sudokusolver.kotlin.logic.diabolical.medusaRule3
@@ -124,6 +125,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { medusaRule4(board) }
                     .ifEmpty { medusaRule5(board) }
                     .ifEmpty { medusaRule6(board) }
+                    .ifEmpty { jellyfish(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
