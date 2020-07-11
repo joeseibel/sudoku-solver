@@ -12,6 +12,11 @@ import sudokusolver.kotlin.logic.diabolical.medusaRule3
 import sudokusolver.kotlin.logic.diabolical.medusaRule4
 import sudokusolver.kotlin.logic.diabolical.medusaRule5
 import sudokusolver.kotlin.logic.diabolical.medusaRule6
+import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType1
+import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType2
+import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType3
+import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType3BWithTriplePseudoCells
+import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType4
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule1
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule2
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule3
@@ -126,6 +131,11 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { medusaRule5(board) }
                     .ifEmpty { medusaRule6(board) }
                     .ifEmpty { jellyfish(board) }
+                    .ifEmpty { uniqueRectanglesType1(board) }
+                    .ifEmpty { uniqueRectanglesType2(board) }
+                    .ifEmpty { uniqueRectanglesType3(board) }
+                    .ifEmpty { uniqueRectanglesType3BWithTriplePseudoCells(board) }
+                    .ifEmpty { uniqueRectanglesType4(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
