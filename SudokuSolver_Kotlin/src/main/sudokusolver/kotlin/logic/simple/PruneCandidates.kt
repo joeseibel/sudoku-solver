@@ -24,7 +24,7 @@ fun pruneCandidates(board: Board<Cell>): List<RemoveCandidates> =
         (sameRow + sameColumn + sameBlock)
             .filterIsInstance<SolvedCell>()
             .mapTo(EnumSet.noneOf(SudokuNumber::class.java)) { it.value }
-            .let { visibleValues -> cell.candidates enumIntersect visibleValues }
+            .let { visibleValues -> enumIntersect(cell.candidates, visibleValues) }
             .takeUnless { it.isEmpty() }
             ?.let { toRemove -> RemoveCandidates(cell, toRemove) }
     }

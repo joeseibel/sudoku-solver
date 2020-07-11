@@ -11,7 +11,6 @@ import sudokusolver.kotlin.enumMinus
 import sudokusolver.kotlin.enumUnion
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.zipEveryPair
-import java.util.EnumSet
 
 /*
  * https://www.sudokuwiki.org/Unique_Rectangles
@@ -101,7 +100,7 @@ fun uniqueRectanglesType3(board: Board<Cell>): List<RemoveCandidates> =
                             ?.let { pairCell ->
                                 unit.filter { it != pairCell && it != roofA && it != roofB }
                                     .flatMap { cell ->
-                                        (cell.candidates enumIntersect additionalCandidates).map { cell to it }
+                                        enumIntersect(cell.candidates, additionalCandidates).map { cell to it }
                                     }
                             }
                             ?: emptyList()
@@ -141,7 +140,7 @@ fun uniqueRectanglesType3BWithTriplePseudoCells(board: Board<Cell>): List<Remove
                             ?.let { tripleCandidates ->
                                 unit.filter { it != tripleA && it != tripleB }
                                     .flatMap { cell ->
-                                        (cell.candidates enumIntersect tripleCandidates).map { cell to it }
+                                        enumIntersect(cell.candidates, tripleCandidates).map { cell to it }
                                     }
                             }
                     }.flatten()
@@ -209,5 +208,5 @@ private fun createRectangles(board: Board<Cell>): List<Rectangle> =
         }
 
 private class Rectangle(val cells: List<UnsolvedCell>) {
-    val commonCandidates = cells.map { it.candidates }.reduce(EnumSet<SudokuNumber>::enumIntersect)
+    val commonCandidates = enumIntersect(*cells.map { it.candidates }.toTypedArray())
 }

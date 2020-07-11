@@ -30,7 +30,7 @@ fun nakedTriples(board: Board<Cell>): List<RemoveCandidates> =
                     unit.filterIsInstance<UnsolvedCell>()
                         .filter { it != a && it != b && it != c }
                         .flatMap { cell ->
-                            (cell.candidates enumIntersect unionOfCandidates).map { candidate -> cell to candidate }
+                            enumIntersect(cell.candidates, unionOfCandidates).map { candidate -> cell to candidate }
                         }
                 }
         }.flatten()

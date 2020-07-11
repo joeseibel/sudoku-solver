@@ -31,10 +31,10 @@ import sudokusolver.kotlin.zipEveryTriple
 fun yWing(board: Board<Cell>): List<RemoveCandidates> {
 
     fun tryHinge(hinge: UnsolvedCell, wingA: UnsolvedCell, wingB: UnsolvedCell): List<LocatedCandidate> {
-        val wingCandidates = wingA.candidates enumIntersect wingB.candidates
+        val wingCandidates = enumIntersect(wingA.candidates, wingB.candidates)
         return if (hinge isInSameUnit wingA && hinge isInSameUnit wingB &&
-            (hinge.candidates enumIntersect wingA.candidates).size == 1 &&
-            (hinge.candidates enumIntersect wingB.candidates).size == 1 &&
+            enumIntersect(hinge.candidates, wingA.candidates).size == 1 &&
+            enumIntersect(hinge.candidates, wingB.candidates).size == 1 &&
             wingCandidates.size == 1
         ) {
             val candidate = wingCandidates.single()

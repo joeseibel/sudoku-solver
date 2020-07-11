@@ -41,7 +41,7 @@ fun xyzWing(board: Board<Cell>): List<RemoveCandidates> =
                         enumUnion(hinge.candidates, wingA.candidates, wingB.candidates).size == 3
             }
             .mapNotNull { (wingA, wingB) ->
-                (wingA.candidates enumIntersect wingB.candidates).singleOrNull()
+                enumIntersect(wingA.candidates, wingB.candidates).singleOrNull()
                     ?.let { candidate ->
                         board.cells
                             .filterIsInstance<UnsolvedCell>()

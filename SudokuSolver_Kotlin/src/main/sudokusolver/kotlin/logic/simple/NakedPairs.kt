@@ -29,7 +29,7 @@ fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> =
                 unit.filterIsInstance<UnsolvedCell>()
                     .filter { it != a && it != b }
                     .flatMap { cell ->
-                        (cell.candidates enumIntersect a.candidates).map { candidate -> cell to candidate }
+                        enumIntersect(cell.candidates, a.candidates).map { candidate -> cell to candidate }
                     }
             }
     }.mergeToRemoveCandidates()

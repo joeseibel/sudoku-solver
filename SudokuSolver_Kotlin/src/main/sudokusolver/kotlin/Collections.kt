@@ -2,14 +2,15 @@ package sudokusolver.kotlin
 
 import java.util.EnumSet
 
-/*
- * I used to call this intersect and that really would be the more natural name for this function. However, the problem
- * with calling it intersect is that it is so easy to miss the import and then end up calling
- * kotlin.collections.intersect. By calling it enumIntersect, I am forced to use the correct import in order to call
- * this.
- */
-infix fun <T : Enum<T>> EnumSet<T>.enumIntersect(other: EnumSet<T>): EnumSet<T> =
-    EnumSet.copyOf(this).apply { retainAll(other) }
+inline fun <reified T : Enum<T>> enumIntersect(vararg sets: EnumSet<T>): EnumSet<T> =
+    when (sets.size) {
+        0 -> EnumSet.noneOf(T::class.java)
+        1 -> sets.single()
+
+        else -> EnumSet.allOf(T::class.java).also { intersection ->
+            sets.forEach { set -> intersection.retainAll(set) }
+        }
+    }
 
 inline fun <reified T : Enum<T>> enumUnion(vararg sets: EnumSet<T>): EnumSet<T> =
     when (sets.size) {
