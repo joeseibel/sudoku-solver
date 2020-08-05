@@ -28,7 +28,7 @@ import java.util.EnumSet
 sealed class Cell {
     abstract val row: Int
     abstract val column: Int
-    val block: BlockIndex by lazy { BlockIndex.fromCellIndices(row, column) }
+    val block: Int by lazy { getBlockIndex(row, column) }
 }
 
 data class SolvedCell(override val row: Int, override val column: Int, val value: SudokuNumber) : Cell() {

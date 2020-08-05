@@ -92,7 +92,7 @@ fun uniqueRectanglesType3(board: Board<Cell>): List<RemoveCandidates> =
                 val additionalCandidates = enumUnion(roofA.candidates, roofB.candidates) enumMinus
                         rectangle.commonCandidates
 
-                fun <T> getRemovals(getUnitIndex: (Cell) -> T, getUnit: (T) -> List<Cell>): List<LocatedCandidate> {
+                fun getRemovals(getUnitIndex: (Cell) -> Int, getUnit: (Int) -> List<Cell>): List<LocatedCandidate> {
                     val indexA = getUnitIndex(roofA)
                     val indexB = getUnitIndex(roofB)
                     return if (indexA == indexB) {
@@ -130,7 +130,7 @@ fun uniqueRectanglesType3BWithTriplePseudoCells(board: Board<Cell>): List<Remove
             val additionalCandidates = enumUnion(roofA.candidates, roofB.candidates) enumMinus
                     rectangle.commonCandidates
 
-            fun <T> getRemovals(getUnitIndex: (Cell) -> T, getUnit: (T) -> List<Cell>): List<LocatedCandidate> {
+            fun getRemovals(getUnitIndex: (Cell) -> Int, getUnit: (Int) -> List<Cell>): List<LocatedCandidate> {
                 val indexA = getUnitIndex(roofA)
                 val indexB = getUnitIndex(roofB)
                 return if (indexA == indexB) {
@@ -170,7 +170,7 @@ fun uniqueRectanglesType4(board: Board<Cell>): List<RemoveCandidates> =
             val (roofA, roofB) = roof
             val (commonCandidateA, commonCandidateB) = rectangle.commonCandidates.toList()
 
-            fun <T> getRemovals(getUnitIndex: (Cell) -> T, getUnit: (T) -> List<Cell>): List<LocatedCandidate> {
+            fun getRemovals(getUnitIndex: (Cell) -> Int, getUnit: (Int) -> List<Cell>): List<LocatedCandidate> {
                 val indexA = getUnitIndex(roofA)
                 val indexB = getUnitIndex(roofB)
                 return if (indexA == indexB) {

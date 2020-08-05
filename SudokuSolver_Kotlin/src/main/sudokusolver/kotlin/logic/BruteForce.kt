@@ -1,11 +1,11 @@
 package sudokusolver.kotlin.logic
 
-import sudokusolver.kotlin.BlockIndex
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UNIT_SIZE
 import sudokusolver.kotlin.enumMinus
 import sudokusolver.kotlin.enumUnion
+import sudokusolver.kotlin.getBlockIndex
 import sudokusolver.kotlin.toMutableBoard
 import java.util.EnumSet
 
@@ -56,7 +56,7 @@ fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
                     .filterNotNullTo(EnumSet.noneOf(SudokuNumber::class.java))
                 val columnInvalid = trialAndError.getColumn(columnIndex)
                     .filterNotNullTo(EnumSet.noneOf(SudokuNumber::class.java))
-                val blockInvalid = trialAndError.getBlock(BlockIndex.fromCellIndices(rowIndex, columnIndex))
+                val blockInvalid = trialAndError.getBlock(getBlockIndex(rowIndex, columnIndex))
                     .filterNotNullTo(EnumSet.noneOf(SudokuNumber::class.java))
                 val invalid = enumUnion(rowInvalid, columnInvalid, blockInvalid)
                 val valid = EnumSet.allOf(SudokuNumber::class.java) enumMinus invalid

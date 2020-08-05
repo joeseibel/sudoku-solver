@@ -16,10 +16,16 @@ abstract class AbstractBoard<out T> {
     fun getRow(rowIndex: Int): List<T> = rows[rowIndex]
     fun getColumn(columnIndex: Int): List<T> = rows.map { row -> row[columnIndex] }
 
-    fun getBlock(blockIndex: BlockIndex): List<T> =
-        rows.drop(blockIndex.row * UNIT_SIZE_SQUARE_ROOT).take(UNIT_SIZE_SQUARE_ROOT).flatMap { row ->
-            row.drop(blockIndex.column * UNIT_SIZE_SQUARE_ROOT).take(UNIT_SIZE_SQUARE_ROOT)
+    fun getBlock(blockIndex: Int): List<T> {
+        require(blockIndex in 0 until UNIT_SIZE) {
+            "blockIndex is $blockIndex, must be between 0 and ${UNIT_SIZE - 1}."
         }
+        val rowIndex = blockIndex / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT
+        val columnIndex = blockIndex % UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT
+        return rows.drop(rowIndex).take(UNIT_SIZE_SQUARE_ROOT).flatMap { row ->
+            row.drop(columnIndex).take(UNIT_SIZE_SQUARE_ROOT)
+        }
+    }
 
     override fun equals(other: Any?): Boolean = other is AbstractBoard<*> && rows == other.rows
     override fun hashCode(): Int = rows.hashCode()
@@ -62,9 +68,7 @@ class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     }
 
     override val columns: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } } }
-    override val blocks: List<List<T>> by lazy {
-        (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex.fromSingleIndex(index)) }
-    }
+    override val blocks: List<List<T>> by lazy { (0 until UNIT_SIZE).map(::getBlock) }
     override val units: List<List<T>> by lazy { rows + columns + blocks }
     override val cells: List<T> by lazy { rows.flatten() }
 
@@ -123,7 +127,7 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
         get() = (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } }
 
     override val blocks: List<List<T>>
-        get() = (0 until UNIT_SIZE).map { index -> getBlock(BlockIndex.fromSingleIndex(index)) }
+        get() = (0 until UNIT_SIZE).map(::getBlock)
 
     override val units: List<List<T>>
         get() = rows + columns + blocks
@@ -140,32 +144,6 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     fun toBoard(): Board<T> = Board(rows)
 }
 
-data class BlockIndex(val row: Int, val column: Int) {
-    init {
-        require(row in 0 until UNIT_SIZE_SQUARE_ROOT) {
-            "row is $row, must be between 0 and ${UNIT_SIZE_SQUARE_ROOT - 1}."
-        }
-        require(column in 0 until UNIT_SIZE_SQUARE_ROOT) {
-            "column is $column, must be between 0 and ${UNIT_SIZE_SQUARE_ROOT - 1}."
-        }
-    }
-
-    companion object {
-        fun fromCellIndices(cellRow: Int, cellColumn: Int): BlockIndex {
-            require(cellRow in 0 until UNIT_SIZE) {
-                "cellRow is $cellRow, must be between 0 and ${UNIT_SIZE - 1}."
-            }
-            require(cellColumn in 0 until UNIT_SIZE) {
-                "cellColumn is $cellColumn, must be between 0 and ${UNIT_SIZE - 1}."
-            }
-            return BlockIndex(cellRow / UNIT_SIZE_SQUARE_ROOT, cellColumn / UNIT_SIZE_SQUARE_ROOT)
-        }
-
-        fun fromSingleIndex(index: Int): BlockIndex {
-            require(index in 0 until UNIT_SIZE) { "index is $index, must be between 0 and ${UNIT_SIZE - 1}." }
-            return BlockIndex(index / UNIT_SIZE_SQUARE_ROOT, index % UNIT_SIZE_SQUARE_ROOT)
-        }
-    }
-}
+fun getBlockIndex(rowIndex: Int, columnIndex: Int): Int = rowIndex / 3 * 3 + columnIndex / 3
 
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)

@@ -91,7 +91,7 @@ fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
                     val source = graph.getEdgeSource(edge)
                     val target = graph.getEdgeTarget(edge)
 
-                    fun <T> removeFromUnit(getUnitIndex: (Cell) -> T, getUnit: (T) -> List<Cell>) =
+                    fun removeFromUnit(getUnitIndex: (Cell) -> Int, getUnit: (Int) -> List<Cell>) =
                         if (getUnitIndex(source) == getUnitIndex(target)) {
                             getUnit(getUnitIndex(source))
                                 .filterIsInstance<UnsolvedCell>()
