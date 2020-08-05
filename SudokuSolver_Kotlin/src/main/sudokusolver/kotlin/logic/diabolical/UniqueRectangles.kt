@@ -6,6 +6,7 @@ import sudokusolver.kotlin.LocatedCandidate
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
+import sudokusolver.kotlin.createRectangles
 import sudokusolver.kotlin.enumIntersect
 import sudokusolver.kotlin.enumMinus
 import sudokusolver.kotlin.enumUnion
@@ -189,24 +190,3 @@ fun uniqueRectanglesType4(board: Board<Cell>): List<RemoveCandidates> =
                     getRemovals(Cell::block, board::getBlock)
         }
     }.flatten().mergeToRemoveCandidates()
-
-private fun createRectangles(board: Board<Cell>): List<Rectangle> =
-    board.rows
-        .zipEveryPair()
-        .flatMap { (rowA, rowB) ->
-            (rowA zip rowB)
-                .mapNotNull { (cellA, cellB) ->
-                    if (cellA is UnsolvedCell && cellB is UnsolvedCell) cellA to cellB else null
-                }
-                .zipEveryPair()
-                .map { (columnA, columnB) ->
-                    Rectangle(listOf(columnA.first, columnA.second, columnB.first, columnB.second))
-                }
-        }
-        .filter { rectangle ->
-            rectangle.cells.map { it.block }.toSet().size == 2 && rectangle.commonCandidates.size == 2
-        }
-
-private class Rectangle(val cells: List<UnsolvedCell>) {
-    val commonCandidates = enumIntersect(*cells.map { it.candidates }.toTypedArray())
-}

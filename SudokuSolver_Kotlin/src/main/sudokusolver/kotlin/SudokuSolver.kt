@@ -6,6 +6,7 @@ import sudokusolver.kotlin.logic.SingleSolution
 import sudokusolver.kotlin.logic.bruteForce
 import sudokusolver.kotlin.logic.diabolical.bug
 import sudokusolver.kotlin.logic.diabolical.extendedUniqueRectangles
+import sudokusolver.kotlin.logic.diabolical.hiddenUniqueRectangles
 import sudokusolver.kotlin.logic.diabolical.jellyfish
 import sudokusolver.kotlin.logic.diabolical.medusaRule1
 import sudokusolver.kotlin.logic.diabolical.medusaRule2
@@ -138,6 +139,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { uniqueRectanglesType3BWithTriplePseudoCells(board) }
                     .ifEmpty { uniqueRectanglesType4(board) }
                     .ifEmpty { extendedUniqueRectangles(board) }
+                    .ifEmpty { hiddenUniqueRectangles(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
