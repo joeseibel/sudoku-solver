@@ -19,6 +19,7 @@ import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType2
 import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType3
 import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType3BWithTriplePseudoCells
 import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType4
+import sudokusolver.kotlin.logic.diabolical.wxyzWing
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule1
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule2
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule3
@@ -140,6 +141,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { uniqueRectanglesType4(board) }
                     .ifEmpty { extendedUniqueRectangles(board) }
                     .ifEmpty { hiddenUniqueRectangles(board) }
+                    .ifEmpty { wxyzWing(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
