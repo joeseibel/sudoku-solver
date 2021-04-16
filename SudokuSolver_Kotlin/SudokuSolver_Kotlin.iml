@@ -10,7 +10,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
     <orderEntry type="library" name="org.junit.jupiter:junit-jupiter:5.7.1" level="project" />
-    <orderEntry type="library" name="org.jgrapht:jgrapht-core:1.5.0" level="project" />
-    <orderEntry type="library" name="org.jgrapht:jgrapht-io:1.5.0" level="project" />
+    <orderEntry type="library" name="org.jgrapht:jgrapht-core:1.5.1" level="project" />
+    <orderEntry type="library" name="org.jgrapht:jgrapht-io:1.5.1" level="project" />
   </component>
 </module>
