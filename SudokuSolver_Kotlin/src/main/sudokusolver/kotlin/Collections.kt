@@ -22,6 +22,13 @@ inline fun <reified T : Enum<T>> enumUnion(vararg sets: EnumSet<T>): EnumSet<T> 
 infix fun <T : Enum<T>> EnumSet<T>.enumMinus(other: EnumSet<T>): EnumSet<T> =
     EnumSet.copyOf(this).apply { this -= other }
 
+inline fun <reified T : Enum<T>, reified R : Enum<R>> Iterable<Pair<T, R>>.enumUnzip(): Pair<EnumSet<T>, EnumSet<R>> =
+    fold(EnumSet.noneOf(T::class.java) to EnumSet.noneOf(R::class.java)) { sets, pair ->
+        sets.first += pair.first
+        sets.second += pair.second
+        sets
+    }
+
 fun <T> Array<T>.zipEveryPair(): List<Pair<T, T>> =
     mapIndexed { firstIndex, first -> drop(firstIndex + 1).map { second -> first to second } }.flatten()
 

@@ -4,6 +4,7 @@ import sudokusolver.kotlin.logic.MultipleSolutions
 import sudokusolver.kotlin.logic.NoSolutions
 import sudokusolver.kotlin.logic.SingleSolution
 import sudokusolver.kotlin.logic.bruteForce
+import sudokusolver.kotlin.logic.diabolical.alignedPairExclusion
 import sudokusolver.kotlin.logic.diabolical.bug
 import sudokusolver.kotlin.logic.diabolical.extendedUniqueRectangles
 import sudokusolver.kotlin.logic.diabolical.hiddenUniqueRectangles
@@ -142,6 +143,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { extendedUniqueRectangles(board) }
                     .ifEmpty { hiddenUniqueRectangles(board) }
                     .ifEmpty { wxyzWing(board) }
+                    .ifEmpty { alignedPairExclusion(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
