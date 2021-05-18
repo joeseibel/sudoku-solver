@@ -25,7 +25,7 @@ import java.io.StringWriter
  * includes multiple candidates. This results in a single XY-Chains graph per board whereas there can be up to nine
  * X-Cycles graphs per board, one for each candidate. Each vertex in an XY-Chains graph is a particular candidate in a
  * cell and the edges are either strong or weak links. A strong link connects two candidates of a single cell when they
- * are the only candidates of that cell. A weal link connects two vertices which have the same candidate, are in
+ * are the only candidates of that cell. A weak link connects two vertices which have the same candidate, are in
  * different cells, but are in the same unit. An XY-Chain is a chain between two vertices of the graph that have the
  * same candidate, the edges of the chain alternate between strong and weak links, and the last links on either end of
  * the chain are strong. If one vertex of a link is the solution, then the other vertex must not be the solution. If one
