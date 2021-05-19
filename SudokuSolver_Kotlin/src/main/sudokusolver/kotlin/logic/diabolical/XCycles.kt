@@ -37,7 +37,7 @@ import java.io.StringWriter
  *
  * If an X-Cycle has an even number of vertices and therefore continuously alternates between strong and weak, then the
  * graph is perfect and has no flaws. Each of the weak links can be treated as a strong link. The candidate can be
- * removed from any cell outside of the graph, but in the same unit as a weak link.
+ * removed from any other cell which is in the same unit as both vertices of a weak link.
  *
  * For each candidate
  *   For each unit
@@ -63,10 +63,10 @@ import java.io.StringWriter
  *               If the cell has the candidate and is not a vertex
  *                 Remove the candidate from the cell
  *
- * Note that the current implementation does not iterate through the cycles of the graph. It simply trims the graph of
+ * Note that the current implementation does not handle multiple cycles of the graph. It simply trims the graph of
  * vertices that can't be a part of an alternating cycle. This works because the test case for rule 1 doesn't contain
- * any trimmed graphs with multiple cycles. I'm waiting to encounter a test case in which iterating through the cycles
- * will be necessary. Such a test case will cause a NotImplementedError to be thrown.
+ * any trimmed graphs with multiple cycles. I'm waiting to encounter a test case in which handling multiple cycles will
+ * be necessary. Such a test case will cause a NotImplementedError to be thrown.
  */
 fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().mapNotNull { candidate ->
@@ -80,12 +80,10 @@ fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
                 }
                 if (graph.vertexSet().any { graph.degreeOf(it) > 2 }) {
                     /*
-                     * Read about undirected cycles here:
-                     * https://stackoverflow.com/questions/12367801/finding-all-cycles-in-undirected-graphs/18388696
-                     * https://www.codeproject.com/Articles/1158232/Enumerating-All-Cycles-in-an-Undirected-Graph
-                     * https://jgrapht.org/javadoc/org/jgrapht/alg/cycle/PatonCycleBase.html
+                     * See Grouped X-Cycles for how to handle multiple cycles. Specifically, look at the functions
+                     * groupedXCyclesRule1 and getWeakEdgesInAlternatingCycle.
                      */
-                    throw NotImplementedError("Need to find all cycles for board: ${board.toSimpleString()}")
+                    throw NotImplementedError("Need to handle multiple cycles for board: ${board.toSimpleString()}")
                 }
                 graph.edgeSet().filter { it.strength == Strength.WEAK }.flatMap { edge ->
                     val source = graph.getEdgeSource(edge)
@@ -95,7 +93,7 @@ fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
                         if (getUnitIndex(source) == getUnitIndex(target)) {
                             getUnit(getUnitIndex(source))
                                 .filterIsInstance<UnsolvedCell>()
-                                .filter { candidate in it.candidates && it !in graph.vertexSet() }
+                                .filter { candidate in it.candidates && it != source && it != target }
                                 .map { it to candidate }
                         } else {
                             emptyList()
