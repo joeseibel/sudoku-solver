@@ -122,9 +122,7 @@ internal class GroupedXCyclesKtTest {
             4{25}7{12}398{125}6
             {356}9{26}8{12}4{235}7{123}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            SetValue(4, 0, 2)
-        )
+        val expected = listOf(SetValue(4, 0, 2))
         assertLogicalSolution(expected, board, ::groupedXCyclesRule2)
     }
 
@@ -141,9 +139,7 @@ internal class GroupedXCyclesKtTest {
             92{18}{16}{168}3457
             4{1678}{178}2{18}53{168}9
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            SetValue(6, 8, 8)
-        )
+        val expected = listOf(SetValue(6, 8, 8))
         assertLogicalSolution(expected, board, ::groupedXCyclesRule2)
     }
 
@@ -160,9 +156,7 @@ internal class GroupedXCyclesKtTest {
             437{28}{268}91{68}5
             {28}513{68}79{2468}{2468}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(2, 3, 8)
-        )
+        val expected = listOf(RemoveCandidates(2, 3, 8))
         assertLogicalSolution(expected, board, ::groupedXCyclesRule3)
     }
 
@@ -179,9 +173,7 @@ internal class GroupedXCyclesKtTest {
             {3789}{27}{2389}{357}{1348}{1357}{2468}{12368}{12368}
             {38}5629{134}7{138}{1348}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(1, 6, 2)
-        )
+        val expected = listOf(RemoveCandidates(1, 6, 2))
         assertLogicalSolution(expected, board, ::groupedXCyclesRule3)
     }
 
@@ -218,9 +210,7 @@ internal class GroupedXCyclesKtTest {
             {3789}{27}{2389}{357}{1348}{1357}{246}{12368}{12368}
             {38}5629{134}7{138}{1348}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(7, 7, 8)
-        )
+        val expected = listOf(RemoveCandidates(7, 7, 8))
         assertLogicalSolution(expected, board, ::groupedXCyclesRule3)
     }
 

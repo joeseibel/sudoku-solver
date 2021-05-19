@@ -18,9 +18,7 @@ internal class ExtendedUniqueRectanglesKtTest {
             796{18}5{18}234
             428673591
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(2, 0, 1, 5)
-        )
+        val expected = listOf(RemoveCandidates(2, 0, 1, 5))
         assertLogicalSolution(expected, board, ::extendedUniqueRectangles)
     }
 
@@ -37,9 +35,7 @@ internal class ExtendedUniqueRectanglesKtTest {
             8562{13}{13}{49}{49}7
             397{56}4{56}128
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(4, 7, 4, 7)
-        )
+        val expected = listOf(RemoveCandidates(4, 7, 4, 7))
         assertLogicalSolution(expected, board, ::extendedUniqueRectangles)
     }
 
@@ -56,9 +52,7 @@ internal class ExtendedUniqueRectanglesKtTest {
             {139}{13}64782{39}5
             {23}485{123}9{37}6{137}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(3, 1, 3, 8)
-        )
+        val expected = listOf(RemoveCandidates(3, 1, 3, 8))
         assertLogicalSolution(expected, board, ::extendedUniqueRectangles)
     }
 }

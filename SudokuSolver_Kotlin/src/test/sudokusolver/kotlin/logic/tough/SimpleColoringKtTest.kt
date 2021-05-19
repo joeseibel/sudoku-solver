@@ -176,9 +176,7 @@ internal class SimpleColoringKtTest {
             9{367}{137}8{24}{24}{36}{1367}5
             5{4678}{78}193{246}{2467}{24}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(1, 7, 2, 4)
-        )
+        val expected = listOf(RemoveCandidates(1, 7, 2, 4))
         assertLogicalSolution(expected, board, ::simpleColoringRule4)
     }
 
@@ -195,9 +193,7 @@ internal class SimpleColoringKtTest {
             {24}{246}{46}385197
             178{46}29{456}3{456}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(1, 7, 6)
-        )
+        val expected = listOf(RemoveCandidates(1, 7, 6))
         assertLogicalSolution(expected, board, ::simpleColoringRule4)
     }
 

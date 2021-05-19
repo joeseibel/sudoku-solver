@@ -71,9 +71,7 @@ internal class XCyclesKtTest {
             {49}5{69}3712{469}8
             {139}{39}84265{19}7
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            SetValue(8, 0, 1)
-        )
+        val expected = listOf(SetValue(8, 0, 1))
         assertLogicalSolution(expected, board, ::xCyclesRule2)
     }
 
@@ -90,9 +88,7 @@ internal class XCyclesKtTest {
             68{12}9{124}573{124}
             4578{12}36{29}{129}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(2, 2, 1)
-        )
+        val expected = listOf(RemoveCandidates(2, 2, 1))
         assertLogicalSolution(expected, board, ::xCyclesRule3)
     }
 
@@ -109,9 +105,7 @@ internal class XCyclesKtTest {
             5{129}8476{12}{19}3
             {12}4{129}{138}5{13}{1278}{1789}6
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(8, 2, 1)
-        )
+        val expected = listOf(RemoveCandidates(8, 2, 1))
         assertLogicalSolution(expected, board, ::xCyclesRule3)
     }
 
@@ -128,9 +122,7 @@ internal class XCyclesKtTest {
             {145679}{145}8{46}{146}{57}3{246}{12569}
             {145679}{145}{15679}32{57}{1489}{46}{15689}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(4, 8, 2, 9)
-        )
+        val expected = listOf(RemoveCandidates(4, 8, 2, 9))
         assertLogicalSolution(expected, board, ::xCyclesRule3)
     }
 

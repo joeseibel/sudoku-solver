@@ -18,9 +18,7 @@ internal class UniqueRectanglesKtTest {
             {579}{379}{359}846{59}21
             {146}{14}82597{36}{346}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(3, 0, 2, 9)
-        )
+        val expected = listOf(RemoveCandidates(3, 0, 2, 9))
         assertLogicalSolution(expected, board, ::uniqueRectanglesType1)
     }
 
@@ -37,9 +35,7 @@ internal class UniqueRectanglesKtTest {
             732591648
             165748923
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(0, 6, 2, 5)
-        )
+        val expected = listOf(RemoveCandidates(0, 6, 2, 5))
         assertLogicalSolution(expected, board, ::uniqueRectanglesType1)
     }
 
@@ -56,9 +52,7 @@ internal class UniqueRectanglesKtTest {
             {37}{17}5698{13}24
             {389}{19}{389}452{13}76
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(3, 0, 7, 8)
-        )
+        val expected = listOf(RemoveCandidates(3, 0, 7, 8))
         assertLogicalSolution(expected, board, ::uniqueRectanglesType1)
     }
 
@@ -75,9 +69,7 @@ internal class UniqueRectanglesKtTest {
             8{59}6{245}{2459}{24}317
             2347{68}15{68}9
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(6, 4, 6, 8)
-        )
+        val expected = listOf(RemoveCandidates(6, 4, 6, 8))
         assertLogicalSolution(expected, board, ::uniqueRectanglesType1)
     }
 
@@ -203,9 +195,7 @@ internal class UniqueRectanglesKtTest {
             {247}6{247}{45}19{578}3{478}
             98{347}2{357}61{57}{47}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(1, 6, 8)
-        )
+        val expected = listOf(RemoveCandidates(1, 6, 8))
         assertLogicalSolution(expected, board, ::uniqueRectanglesType2)
     }
 
@@ -283,9 +273,7 @@ internal class UniqueRectanglesKtTest {
             {469}{489}{4689}{56}213{569}7
             {569}3{569}874{169}2{16}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(7, 0, 6, 9)
-        )
+        val expected = listOf(RemoveCandidates(7, 0, 6, 9))
         assertLogicalSolution(expected, board, ::uniqueRectanglesType3BWithTriplePseudoCells)
     }
 

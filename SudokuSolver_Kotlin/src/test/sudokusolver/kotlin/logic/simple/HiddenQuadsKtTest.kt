@@ -18,9 +18,7 @@ internal class HiddenQuadsKtTest {
             {4789}{689}{578}213{4576}{47}{67}
             13{246}75{46}{26}98
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(7, 6, 6)
-        )
+        val expected = listOf(RemoveCandidates(7, 6, 6))
         assertLogicalSolution(expected, board, ::hiddenQuads)
     }
 

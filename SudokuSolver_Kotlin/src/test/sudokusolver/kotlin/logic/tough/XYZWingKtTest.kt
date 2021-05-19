@@ -18,9 +18,7 @@ internal class XYZWingKtTest {
             7{1245}{146}{1456}{1245}3{156}89
             9{125}38{1257}{2567}{156}4{167}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(5, 6, 1)
-        )
+        val expected = listOf(RemoveCandidates(5, 6, 1))
         assertLogicalSolution(expected, board, ::xyzWing)
     }
 
@@ -37,9 +35,7 @@ internal class XYZWingKtTest {
             9{136}{1238}{1678}{12367}5{1678}{167}4
             4{16}{128}{1678}9{26}{15678}{1567}3
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(4, 8, 6)
-        )
+        val expected = listOf(RemoveCandidates(4, 8, 6))
         assertLogicalSolution(expected, board, ::xyzWing)
     }
 
@@ -56,9 +52,7 @@ internal class XYZWingKtTest {
             {24}53{68}{289}{689}{67}{467}1
             {24}78{356}{235}1{56}{3456}9
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(8, 4, 5)
-        )
+        val expected = listOf(RemoveCandidates(8, 4, 5))
         assertLogicalSolution(expected, board, ::xyzWing)
     }
 

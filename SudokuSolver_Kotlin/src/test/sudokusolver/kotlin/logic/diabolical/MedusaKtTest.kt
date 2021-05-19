@@ -156,9 +156,7 @@ internal class MedusaKtTest {
             {14}6{1248}{258}3{28}7{125}9
             {17}5{127}{269}{19}{26}384
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(2, 1, 8)
-        )
+        val expected = listOf(RemoveCandidates(2, 1, 8))
         assertLogicalSolution(expected, board, ::medusaRule3)
     }
 
@@ -175,9 +173,7 @@ internal class MedusaKtTest {
             5{38}6{239}{349}{349}{279}1{2789}
             21957{68}3{68}4
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(7, 8, 2, 9)
-        )
+        val expected = listOf(RemoveCandidates(7, 8, 2, 9))
         assertLogicalSolution(expected, board, ::medusaRule3)
     }
 
@@ -194,9 +190,7 @@ internal class MedusaKtTest {
             {389}17{234}{348}5{29}{49}6
             4{239}{2389}1{38}6{279}5{37}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(8, 6, 9)
-        )
+        val expected = listOf(RemoveCandidates(8, 6, 9))
         assertLogicalSolution(expected, board, ::medusaRule3)
     }
 
@@ -276,9 +270,7 @@ internal class MedusaKtTest {
             5{38}6{239}{349}{349}{279}1{78}
             21957{68}3{68}4
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(6, 8, 8)
-        )
+        val expected = listOf(RemoveCandidates(6, 8, 8))
         assertLogicalSolution(expected, board, ::medusaRule4)
     }
 
@@ -403,9 +395,7 @@ internal class MedusaKtTest {
             {289}{29}46375{289}1
             {189}{369}{13}{489}25{6789}{689}{467}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(5, 1, 2)
-        )
+        val expected = listOf(RemoveCandidates(5, 1, 2))
         assertLogicalSolution(expected, board, ::medusaRule5)
     }
 

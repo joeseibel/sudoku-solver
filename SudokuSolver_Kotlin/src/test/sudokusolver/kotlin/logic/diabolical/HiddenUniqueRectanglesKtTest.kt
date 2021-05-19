@@ -119,9 +119,7 @@ internal class HiddenUniqueRectanglesKtTest {
             293{57}48{57}61
             18{47}{257}63{24579}{2459}{27}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(8, 6, 7)
-        )
+        val expected = listOf(RemoveCandidates(8, 6, 7))
         assertLogicalSolution(expected, board, ::hiddenUniqueRectangles)
     }
 }

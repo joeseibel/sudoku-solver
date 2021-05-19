@@ -38,9 +38,7 @@ internal class AlignedPairExclusionKtTest {
             {48}{124}9736{248}5{12}
             36{1258}{2458}{258}{25}{2489}7{1289}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(7, 6, 8)
-        )
+        val expected = listOf(RemoveCandidates(7, 6, 8))
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
@@ -274,9 +272,7 @@ internal class AlignedPairExclusionKtTest {
             84{579}2{67}{567}{579}13
             {579}63{45}{47}1{2579}{2579}8
         """.trimIndent().replace("\n", "")
-        val expected = listOf(
-            RemoveCandidates(4, 4, 2)
-        )
+        val expected = listOf(RemoveCandidates(4, 4, 2))
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
