@@ -1,9 +1,7 @@
 package sudokusolver.kotlin.logic.diabolical
 
 import org.jgrapht.Graph
-import org.jgrapht.Graphs
 import org.jgrapht.alg.connectivity.ConnectivityInspector
-import org.jgrapht.graph.AsUnmodifiableGraph
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.nio.DefaultAttribute
@@ -17,8 +15,10 @@ import sudokusolver.kotlin.Strength
 import sudokusolver.kotlin.StrengthEdge
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
+import sudokusolver.kotlin.alternatingCycleExists
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.toSimpleString
+import sudokusolver.kotlin.trim
 import sudokusolver.kotlin.zipEveryPair
 import java.io.StringWriter
 
@@ -135,7 +135,7 @@ fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
     SudokuNumber.values().flatMap { candidate ->
         val graph = createStrongLinks(board, candidate).addWeakLinks()
         graph.vertexSet()
-            .filter { vertex -> alternatingPathExists(graph, vertex, Strength.STRONG) }
+            .filter { vertex -> alternatingCycleExists(graph, vertex, Strength.STRONG) }
             .map { SetValue(it, candidate) }
     }
 
@@ -165,7 +165,7 @@ fun xCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->
         val graph = createStrongLinks(board, candidate).addWeakLinks().additionalWeakLinks(board, candidate)
         graph.vertexSet()
-            .filter { vertex -> alternatingPathExists(graph, vertex, Strength.WEAK) }
+            .filter { vertex -> alternatingCycleExists(graph, vertex, Strength.WEAK) }
             .map { it to candidate }
     }.mergeToRemoveCandidates()
 
@@ -216,43 +216,3 @@ private fun Graph<UnsolvedCell, StrengthEdge>.additionalWeakLinks(
                 .fold(outerBuilder) { builder, vertex -> builder.addEdge(vertex, cell, StrengthEdge(Strength.WEAK)) }
         }
         .buildAsUnmodifiable()
-
-/*
- * Continuously trims the graph of vertices that cannot be part of a cycle for rule 1. The returned graph will either be
- * empty or only contain vertices with a degree of two or more and be connected by at least one strong link and one weak
- * link.
- */
-private fun <V> Graph<V, StrengthEdge>.trim(): Graph<V, StrengthEdge> {
-    val graph = GraphBuilder(SimpleGraph<V, StrengthEdge>(StrengthEdge::class.java)).addGraph(this).build()
-
-    tailrec fun trimHelper() {
-        val toRemove = graph.vertexSet().filter { vertex ->
-            graph.edgesOf(vertex).map { it.strength }.toSet().size != 2
-        }
-        if (toRemove.isNotEmpty()) {
-            graph.removeAllVertices(toRemove)
-            trimHelper()
-        }
-    }
-
-    trimHelper()
-    return AsUnmodifiableGraph(graph)
-}
-
-private fun <V> alternatingPathExists(graph: Graph<V, StrengthEdge>, vertex: V, adjacentEdgesType: Strength): Boolean =
-    graph.edgesOf(vertex).filter { it.strength == adjacentEdgesType }.zipEveryPair().any { (edgeA, edgeB) ->
-        val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
-        val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
-
-        fun alternatingPathExists(currentVertex: V, nextType: Strength, visited: Set<V>): Boolean {
-            val nextVertices = graph.edgesOf(currentVertex)
-                .filter { it.strength == nextType }
-                .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
-                .let { it - visited }
-            return end in nextVertices && adjacentEdgesType.opposite == nextType || nextVertices.any { nextVertex ->
-                alternatingPathExists(nextVertex, nextType.opposite, visited + setOf(currentVertex))
-            }
-        }
-
-        alternatingPathExists(start, adjacentEdgesType.opposite, setOf(vertex, start))
-    }

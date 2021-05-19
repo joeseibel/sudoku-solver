@@ -1,6 +1,10 @@
 package sudokusolver.kotlin
 
 import org.jgrapht.Graph
+import org.jgrapht.Graphs
+import org.jgrapht.graph.AsUnmodifiableGraph
+import org.jgrapht.graph.SimpleGraph
+import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.nio.Attribute
 import org.jgrapht.nio.DefaultAttribute
 import org.jgrapht.traverse.BreadthFirstIterator
@@ -51,3 +55,44 @@ val STRENGTH_EDGE_ATTRIBUTE_PROVIDER: (StrengthEdge) -> Map<String, Attribute>? 
     it.takeIf { it.strength == Strength.WEAK }
         ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
 }
+
+/*
+ * Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The returned graph will
+ * either be empty or only contain vertices with a degree of two or more and be connected by at least one strong link
+ * and one weak link.
+ */
+fun <V> Graph<V, StrengthEdge>.trim(): Graph<V, StrengthEdge> {
+    val graph = GraphBuilder(SimpleGraph<V, StrengthEdge>(StrengthEdge::class.java)).addGraph(this).build()
+
+    tailrec fun trimHelper() {
+        val toRemove = graph.vertexSet().filter { vertex ->
+            val edges = graph.edgesOf(vertex)
+            edges.none { it.strength == Strength.STRONG } || edges.none { it.strength == Strength.WEAK }
+        }
+        if (toRemove.isNotEmpty()) {
+            graph.removeAllVertices(toRemove)
+            trimHelper()
+        }
+    }
+
+    trimHelper()
+    return AsUnmodifiableGraph(graph)
+}
+
+fun <V> alternatingCycleExists(graph: Graph<V, StrengthEdge>, vertex: V, adjacentEdgesType: Strength): Boolean =
+    graph.edgesOf(vertex).filter { it.strength == adjacentEdgesType }.zipEveryPair().any { (edgeA, edgeB) ->
+        val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
+        val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
+
+        fun alternatingCycleExists(currentVertex: V, nextType: Strength, visited: Set<V>): Boolean {
+            val nextVertices = graph.edgesOf(currentVertex)
+                .filter { it.strength == nextType }
+                .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
+            return adjacentEdgesType.opposite == nextType && end in nextVertices ||
+                    (nextVertices - visited - end).any { nextVertex ->
+                        alternatingCycleExists(nextVertex, nextType.opposite, visited + setOf(nextVertex))
+                    }
+        }
+
+        alternatingCycleExists(start, adjacentEdgesType.opposite, setOf(vertex, start))
+    }

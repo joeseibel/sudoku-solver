@@ -25,6 +25,9 @@ import sudokusolver.kotlin.logic.diabolical.xCyclesRule1
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule2
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule3
 import sudokusolver.kotlin.logic.diabolical.xyChains
+import sudokusolver.kotlin.logic.extreme.groupedXCyclesRule1
+import sudokusolver.kotlin.logic.extreme.groupedXCyclesRule2
+import sudokusolver.kotlin.logic.extreme.groupedXCyclesRule3
 import sudokusolver.kotlin.logic.simple.boxLineReduction
 import sudokusolver.kotlin.logic.simple.hiddenPairs
 import sudokusolver.kotlin.logic.simple.hiddenQuads
@@ -106,6 +109,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                  * and no copying.
                  */
                 val board = mutableBoard.toBoard()
+                //Start of simple solutions.
                 val modifications = pruneCandidates(board)
                     .ifEmpty { nakedSingles(board) }
                     .ifEmpty { hiddenSingles(board) }
@@ -117,12 +121,14 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { hiddenQuads(board) }
                     .ifEmpty { pointingPairsPointingTriples(board) }
                     .ifEmpty { boxLineReduction(board) }
+                    //Start of tough solutions.
                     .ifEmpty { xWing(board) }
                     .ifEmpty { simpleColoringRule2(board) }
                     .ifEmpty { simpleColoringRule4(board) }
                     .ifEmpty { yWing(board) }
                     .ifEmpty { swordfish(board) }
                     .ifEmpty { xyzWing(board) }
+                    //Start of diabolical solutions.
                     .ifEmpty { xCyclesRule1(board) }
                     .ifEmpty { xCyclesRule2(board) }
                     .ifEmpty { xCyclesRule3(board) }
@@ -144,6 +150,10 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { hiddenUniqueRectangles(board) }
                     .ifEmpty { wxyzWing(board) }
                     .ifEmpty { alignedPairExclusion(board) }
+                    //Start of extreme solutions.
+                    .ifEmpty { groupedXCyclesRule1(board) }
+                    .ifEmpty { groupedXCyclesRule2(board) }
+                    .ifEmpty { groupedXCyclesRule3(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
