@@ -16,12 +16,6 @@ import sudokusolver.kotlin.UnsolvedCell
  * For the three candidates of the cell, two candidates will appear twice in the cell's row, twice in the cell's, and
  * twice in the cell's block, while one candidate will appear three times in the cell's row, three times in the cell's
  * column, and three times in the cell's block. This check is only performed against the cell's row.
- *
- * Find every unsolved cell with two candidates
- * If there is one cell and it has three candidates
- *   For each candidate of the cell
- *     If that candidate exists three times in the cell's row
- *       Set the candidate as the value for the cell
  */
 fun bug(board: Board<Cell>): SetValue? =
     board.cells

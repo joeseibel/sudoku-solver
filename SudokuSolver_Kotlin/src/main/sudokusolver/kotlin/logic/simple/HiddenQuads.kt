@@ -16,12 +16,6 @@ import java.util.EnumSet
  *
  * If four candidates exist across four cells in a unit, then those four candidates must be placed in those four cells.
  * All other candidates can be removed from those four cells.
- *
- * For each unit
- *   For each quad of candidates
- *     Find every unsolved cell that has any of the candidates
- *     If there are four cells and each candidate is found among the four cells
- *       Remove every other candidate from the four cells
  */
 fun hiddenQuads(board: Board<Cell>): List<RemoveCandidates> =
     board.units.flatMap { unit ->

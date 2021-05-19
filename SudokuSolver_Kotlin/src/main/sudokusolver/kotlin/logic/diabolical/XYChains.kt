@@ -32,23 +32,6 @@ import java.io.StringWriter
  * vertex of a strong link is not the solution, then the other vertex must be the solution. When there is a proper chain
  * in the graph it means that one of the two end points must be the solution. The candidate can be removed from any cell
  * of the board which is not an end point of the chain and that cell can see both end points.
- *
- * For each unsolved cell
- *   If the cell has two candidates
- *     Create a strong edge between the two candidates of the cell
- * For each pair of vertices
- *   If the vertices have the same candidate and they can see each other
- *     Create a weak edge between the pair of vertices
- * For each pair of vertices
- *   If the vertices have the same candidate
- *     If there is a chain between the two vertices
- *       If the chain starts and ends with strong edges
- *         If the other edges of the chain alternate between strong and weak
- *           For each unsolved cell
- *             If the cell has the same candidate as the end points of the chain
- *               If the cell is not either end point's cell
- *                 If the cell can see both end points
- *                   Remove the candidate from the cell
  */
 fun xyChains(board: Board<Cell>): List<RemoveCandidates> {
     val graph = createStrongLinks(board).addWeakLinks()

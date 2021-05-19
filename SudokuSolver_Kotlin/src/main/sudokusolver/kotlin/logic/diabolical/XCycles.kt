@@ -39,30 +39,6 @@ import java.io.StringWriter
  * graph is perfect and has no flaws. Each of the weak links can be treated as a strong link. The candidate can be
  * removed from any other cell which is in the same unit as both vertices of a weak link.
  *
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create a strong edge between the two cells
- *   For each pair of vertices
- *     If there is not an edge between the vertices and they can see each other
- *       Create a weak edge between the pair of vertices
- *   For each cycle in the graph
- *     If the cycle has an even number of vertices
- *       If the edges of the cycle alternate between strong and weak
- *         For each weak edge in the cycle
- *           If the edge connects two cells of the same row
- *             For each unsolved cell of that row
- *               If the cell has the candidate and is not a vertex
- *                 Remove the candidate from the cell
- *           If the edge connects two cells of the same column
- *             For each unsolved cell of that column
- *               If the cell has the candidate and is not a vertex
- *                 Remove the candidate from the cell
- *           If the edge connects two cells of the same block
- *             For each unsolved cell of that block
- *               If the cell has the candidate and is not a vertex
- *                 Remove the candidate from the cell
- *
  * Note that the current implementation does not handle multiple cycles of the graph. It simply trims the graph of
  * vertices that can't be a part of an alternating cycle. This works because the test case for rule 1 doesn't contain
  * any trimmed graphs with multiple cycles. I'm waiting to encounter a test case in which handling multiple cycles will
@@ -115,19 +91,6 @@ fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
  * interest implies that the candidate must be the solution for that vertex, thus causing the cycle to contradict
  * itself. However, considering the candidate to be the solution for that vertex does not cause any contradiction in the
  * cycle. Therefore, the candidate must be the solution for that vertex.
- *
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create a strong edge between the two cells
- *   For each pair of vertices
- *     If there is not an edge between the vertices and they can see each other
- *       Create a weak edge between the pair of vertices
- *   For each cycle in the graph
- *     If the cycle has an odd number of vertices
- *       If there is exactly one vertex connected by two strong edges
- *         If the other edges of the cycle alternate between strong and weak
- *           Set the candidate as the value for the vertex
  */
 fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
     SudokuNumber.values().flatMap { candidate ->
@@ -145,19 +108,6 @@ fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
  * for the vertex of interest implies that the candidate must be removed from that vertex, thus causing the cycle to
  * contradict itself. However, removing the candidate from that vertex does not cause any contradiction in the cycle.
  * Therefore, the candidate can be removed from the vertex.
- *
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create a strong edge between the two cells
- *     If the candidate appears in more than two unsolved cells of the unit
- *       For each pair of unsolved cells with the candidate in the unit
- *         Create a weak edge between the pair of cells
- *   For each cycle in the graph
- *     If the cycle has an odd number of vertices
- *       If there is exactly one vertex connected by two weak edges
- *         If the other edges of the cycle alternate between strong and weak
- *           Remove the candidate from the vertex
  */
 fun xCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->

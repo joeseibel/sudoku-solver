@@ -18,21 +18,6 @@ import sudokusolver.kotlin.zipEveryTriple
  * For a triple of columns, if a candidate appears in two or three cells for each column and the candidate appears in
  * exactly three rows across the three columns, forming a three by three grid, then the candidate must be placed in
  * three of the nine cells. The candidate can be removed from cells which are in the three rows, but different columns.
- *
- * For each triple of rows
- *   For each candidate
- *     If the candidate appears in two or three unsolved cells of each of the three rows
- *       If the candidate appears in three columns across the three rows
- *         Remove the candidate from cells of the first column which are not in the three rows
- *         Remove the candidate from cells of the second column which are not in the three rows
- *         Remove the candidate from cells of the third column which are not in the three rows
- * For each triple of columns
- *   For each candidate
- *     If the candidate appears in two or three unsolved cells of each of the three columns
- *       If the candidate appears in three rows across the three columns
- *         Remove the candidate from cells of the first row which are not in the three columns
- *         Remove the candidate from cells of the second row which are not in the three columns
- *         Remove the candidate from cells of the third row which are not in the three columns
  */
 fun swordfish(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->

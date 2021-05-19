@@ -17,18 +17,6 @@ import sudokusolver.kotlin.zipEveryPair
  * between the hinge and one wing and two candidates between the hinge and the other wing, and the common candidate is
  * the only one shared between the wings, then the common candidate must be the solution to one of the cells. The common
  * candidate can be removed from any cell which can see all three cells.
- *
- * For each unsolved cell with three candidates
- *   Consider the cell to be the hinge
- *   For each pair of unsolved cells with two candidates
- *     Consider the pair of cells to be wings
- *     If the hinge can see each wing
- *       If there are three candidates among the three cells
- *         If there is only one candidate shared among the wings
- *           For each unsolved cell in the board
- *             If the cell is not the hinge or a wing
- *               If the cell has the shared candidate and can see the hinge and each wing
- *                 Remove the candidate from the cell
  */
 fun xyzWing(board: Board<Cell>): List<RemoveCandidates> =
     board.cells.filterIsInstance<UnsolvedCell>().filter { it.candidates.size == 3 }.flatMap { hinge ->

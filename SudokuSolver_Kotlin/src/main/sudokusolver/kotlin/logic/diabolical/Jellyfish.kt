@@ -18,23 +18,6 @@ import sudokusolver.kotlin.zipEveryQuad
  * For a quad of columns, if a candidate appears in two, three, or four cells for each column and the candidate appears
  * in exactly four rows across the four columns, forming a four by four grid, then the candidate must be placed in four
  * of the sixteen cells. The candidate can be removed from cells which are in the four rows, but different columns
- *
- * For each quad of rows
- *   For each candidate
- *     If the candidate appears in two, three, or four unsolved cells of each of the four rows
- *       If the candidate appears in four columns across the four rows
- *         Remove the candidate from cells of the first column which are not in the four rows
- *         Remove the candidate from cells of the second column which are not in the four rows
- *         Remove the candidate from cells of the third column which are not in the four rows
- *         Remove the candidate from cells of the fourth column which are not in the four rows
- * For each quad of columns
- *   For each candidate
- *     If the candidate appears in two, three, or four unsolved cells of each of the four columns
- *       If the candidate appears in four rows across the four columns
- *         Remove the candidate from cells of the first row which are not in the four columns
- *         Remove the candidate from cells of the second row which are not in the four columns
- *         Remove the candidate from cells of the third row which are not in the four columns
- *         Remove the candidate from cells of the fourth row which are not in the four columns
  */
 fun jellyfish(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->

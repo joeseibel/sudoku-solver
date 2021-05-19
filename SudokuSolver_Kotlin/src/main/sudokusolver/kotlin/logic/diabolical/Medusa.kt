@@ -33,19 +33,6 @@ import sudokusolver.kotlin.zipEveryPair
  *
  * If there are two vertices with the same color that are in the same cell, then that color cannot be the solution and
  * the opposite color must be the solution. All vertices with the opposite color can be set as the solution.
- *
- * For each unsolved cell
- *   If the cell has two candidates
- *     Create an edge between the two candidates
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create an edge between the candidate in the first cell and the candidate in the second cell
- * For each connected component in the graph
- *   Traverse the connected component and assign alternating colors
- *   If the connected component contains two vertices that are in the same cell and have the same color
- *     For each vertex that has the opposite color
- *       Set the vertex's candidate as the value for the vertex's cell
  */
 fun medusaRule1(board: Board<Cell>): List<SetValue> =
     createConnectedComponents(board).mapNotNull { graph ->
@@ -73,19 +60,6 @@ fun medusaRule1(board: Board<Cell>): List<SetValue> =
  * If there are two vertices with the same color and the same candidate that are in the same unit, then that color
  * cannot be the solution and the opposite color must be the solution. All vertices with the opposite color can be set
  * as the solution.
- *
- * For each unsolved cell
- *   If the cell has two candidates
- *     Create an edge between the two candidates
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create an edge between the candidate in the first cell and the candidate in the second cell
- * For each connected component in the graph
- *   Traverse the connected component and assign alternating colors
- *   If the connected component contains two vertices that have the same candidate and color and are in the same unit
- *     For each vertex that has the opposite color
- *       Set the vertex's candidate as the value for the vertex's cell
  */
 fun medusaRule2(board: Board<Cell>): List<SetValue> =
     createConnectedComponents(board).mapNotNull { graph ->
@@ -112,20 +86,6 @@ fun medusaRule2(board: Board<Cell>): List<SetValue> =
  *
  * If there are two differently colored candidates in a cell, then the solution must be one of the two candidates. All
  * other candidates in the cell can be removed.
- *
- * For each unsolved cell
- *   If the cell has two candidates
- *     Create an edge between the two candidates
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create an edge between the candidate in the first cell and the candidate in the second cell
- * For each connected component in the graph
- *   Traverse the connected component and assign alternating colors
- *   If the connected component contains two vertices that are in the same cell and have different colors
- *     For each candidate in the cell
- *       If the candidate is not in the connected component
- *         Remove the candidate from the cell
  */
 fun medusaRule3(board: Board<Cell>): List<RemoveCandidates> =
     createConnectedComponents(board).mapNotNull { graph ->
@@ -154,20 +114,6 @@ fun medusaRule3(board: Board<Cell>): List<RemoveCandidates> =
  * other cells which both have that candidate and they are differently colored, then the candidate must be the solution
  * to one of the other cells and it cannot be the solution to the first cell with the uncolored candidate. The uncolored
  * candidate can be removed from the first cell.
- *
- * For each unsolved cell
- *   If the cell has two candidates
- *     Create an edge between the two candidates
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create an edge between the candidate in the first cell and the candidate in the second cell
- * For each connected component in the graph
- *   Traverse the connected component and assign alternating colors
- *   For each unsolved cell
- *     For each candidate of that cell that is not a vertex of the connected component
- *       If the candidate can see a vertex of one color and can see a vertex of the other color
- *         Remove the candidate from the cell
  */
 fun medusaRule4(board: Board<Cell>): List<RemoveCandidates> =
     createConnectedComponents(board).flatMap { graph ->
@@ -194,20 +140,6 @@ fun medusaRule4(board: Board<Cell>): List<RemoveCandidates> =
  * number, and the unsolved cell contains a candidate colored with the opposite color, then either the candidate in the
  * same unit is the solution for that cell or the candidate in the same cell is the solution. In either case, the
  * uncolored candidate cannot be the solution and can be removed from the unsolved cell.
- *
- * For each unsolved cell
- *   If the cell has two candidates
- *     Create an edge between the two candidates
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create an edge between the candidate in the first cell and the candidate in the second cell
- * For each connected component in the graph
- *   Traverse the connected component and assign alternating colors
- *   For each unsolved cell
- *     For each candidate of that cell that is not a vertex of the connected component
- *       If the candidate can see a vertex of one color and there is a vertex of the opposite color in the cell
- *         Remove the candidate from the cell
  */
 fun medusaRule5(board: Board<Cell>): List<RemoveCandidates> =
     createConnectedComponents(board).flatMap { graph ->
@@ -235,19 +167,6 @@ fun medusaRule5(board: Board<Cell>): List<RemoveCandidates> =
  * If there is an unsolved cell in which every candidate is uncolored and every candidate can see the same color, then
  * that color cannot be the solution since it would lead to the cell being emptied of candidates and still have no
  * solution. All vertices with the opposite color can be set as the solution.
- *
- * For each unsolved cell
- *   If the cell has two candidates
- *     Create an edge between the two candidates
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create an edge between the candidate in the first cell and the candidate in the second cell
- * For each connected component in the graph
- *   Traverse the connected component and assign alternating colors
- *   If there is an unsolved cell with only uncolored candidates and each of those candidates can see the same color
- *     For each vertex that has the opposite color
- *       Set the vertex's candidate as the value for the vertex's cell
  */
 fun medusaRule6(board: Board<Cell>): List<SetValue> =
     createConnectedComponents(board).flatMap { graph ->

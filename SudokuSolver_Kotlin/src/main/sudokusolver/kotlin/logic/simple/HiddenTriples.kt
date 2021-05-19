@@ -16,12 +16,6 @@ import java.util.EnumSet
  *
  * If three candidates exist across three cells in a unit, then those three candidates must be placed in those three
  * cells. All other candidates can be removed from those three cells.
- *
- * For each unit
- *   For each triple of candidates
- *     Find every unsolved cell that has any of the candidates
- *     If there are three cells and each candidate is found among the three cells
- *       Remove every other candidate from the three cells
  */
 fun hiddenTriples(board: Board<Cell>): List<RemoveCandidates> =
     board.units.flatMap { unit ->

@@ -15,13 +15,6 @@ import sudokusolver.kotlin.mergeToRemoveCandidates
  *
  * For a given block, if a candidate appears in only one column, then the candidate for that column must be placed in
  * that block. The candidate can be removed from cells which are in the same column, but different blocks.
- *
- * For each block
- *   For each candidate
- *     If the candidate appears in unsolved cells of the same row
- *       Remove the candidate from cells of the row which are outside of the block
- *     If the candidate appears in unsolved cells of the same column
- *       Remove the candidate from cells of the column which are outside of the block
  */
 fun pointingPairsPointingTriples(board: Board<Cell>): List<RemoveCandidates> =
     board.blocks.flatMap { block ->

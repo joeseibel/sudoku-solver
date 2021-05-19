@@ -13,11 +13,6 @@ import sudokusolver.kotlin.zipEveryPair
  *
  * If a pair of unsolved cells in a unit has the same two candidates, then those two candidates must be placed in those
  * two cells. The two candidates can be removed from every other cell in the unit.
- *
- * For each unit
- *   For each pair of unsolved cells
- *     If the cells have the same candidates and they are two in number
- *       Remove the candidates from every other cell in the unit
  */
 fun nakedPairs(board: Board<Cell>): List<RemoveCandidates> =
     board.units.flatMap { unit ->

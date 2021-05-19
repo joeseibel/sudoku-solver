@@ -27,15 +27,6 @@ import sudokusolver.kotlin.zipEveryPair
  *
  * If there are two or more vertices with the same color that are in the same unit, then that color cannot be the
  * solution. All candidates with that color in that chain can be removed.
- *
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create an edge between the two cells
- *   For each connected component in the graph
- *     Traverse the connected component and assign alternating colors
- *     If the connected component contains at least two vertices that are in the same unit and have the same color
- *       Remove the candidate from the vertices of the connected component that have that color
  */
 fun simpleColoringRule2(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->
@@ -58,17 +49,6 @@ fun simpleColoringRule2(board: Board<Cell>): List<RemoveCandidates> =
  * If an unsolved cell with a given candidate is outside of the chain and it is in the same units as two differently
  * colored vertices, then one of those two vertices must be the solution for the candidate. The candidate can be removed
  * from the cell outside of the chain.
- *
- * For each candidate
- *   For each unit
- *     If the candidate appears in two unsolved cells of the unit
- *       Create an edge between the two cells
- *   For each connected component in the graph
- *     Traverse the connected component and assign alternating colors
- *     For each unsolved cell with the candidate
- *       If the cell is not a vertex of the connected component
- *         If the cell is in the same unit as a vertex of one color and in the same unit as a vertex of the other color
- *           Remove the candidate from the cell
  */
 fun simpleColoringRule4(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->

@@ -14,12 +14,6 @@ import sudokusolver.kotlin.zipEveryQuad
  *
  * If a unit has four unsolved cells with a total of four candidates among them, then those four candidates must be
  * placed in those four cells. The four candidates can be removed from every other cell in the unit.
- *
- * For each unit
- *   For each quad of unsolved cells
- *     Get the union of candidates between the four cells
- *     If the union has four candidates
- *       Remove the candidates from every other cell in the unit
  */
 fun nakedQuads(board: Board<Cell>): List<RemoveCandidates> =
     board.units.flatMap { unit ->

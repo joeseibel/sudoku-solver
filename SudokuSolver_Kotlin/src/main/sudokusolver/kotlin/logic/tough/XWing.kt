@@ -18,21 +18,6 @@ import sudokusolver.kotlin.zipEveryPair
  * For a pair of columns, if a candidate appears in only two rows of both columns and the rows are the same, forming a
  * rectangle, then the candidate must be placed in opposite corners of the rectangle. The candidate can be removed from
  * cells which are in the two rows, but different columns.
- *
- * For each pair of rows
- *   For each candidate
- *     If the candidate appears in two unsolved cells of the first row and two unsolved cells of the second row
- *       If the first discovered cell for each row has the same column
- *         If the second discovered cell for each row has the same column
- *           Remove the candidate from cells of the first column which are not in the two rows
- *           Remove the candidate from cells of the second column which are not in the two rows
- * For each pair of columns
- *   For each candidate
- *     If the candidate appears in two unsolved cells of the first column and two unsolved cells of the second column
- *       If the first discovered cell for each column has the same row
- *         If the second discovered cell for each column has the same row
- *           Remove the candidate from cells of the first row which are not in the two columns
- *           Remove the candidate from cells of the second row which are not in the two columns
  */
 fun xWing(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->
