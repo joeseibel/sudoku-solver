@@ -6,19 +6,6 @@ import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class MedusaKtTest {
-    /*
-     * 0 9 3 | 8 2 4 | 5 6 0
-     * 0 8 5 | 6 3 0 | 9 0 2
-     * 2 1 6 | 0 7 5 | 4 0 8
-     * ------+-------+------
-     * 3 2 1 | 7 6 9 | 8 4 5
-     * 0 0 0 | 2 5 8 | 3 0 0
-     * 5 7 8 | 0 4 0 | 2 9 6
-     * ------+-------+------
-     * 8 5 0 | 0 1 6 | 7 2 3
-     * 0 4 7 | 0 8 2 | 6 5 0
-     * 0 0 2 | 5 9 7 | 1 8 0
-     */
     @Test
     fun medusaRule1Test1() {
         val board = """
@@ -47,19 +34,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule1)
     }
 
-    /*
-     * 0 0 0 | 9 0 8 | 4 3 0
-     * 0 0 4 | 7 0 2 | 6 8 0
-     * 0 8 1 | 0 5 4 | 0 0 2
-     * ------+-------+------
-     * 0 0 5 | 0 0 3 | 1 2 9
-     * 0 0 0 | 5 2 0 | 3 0 8
-     * 0 0 0 | 0 9 0 | 5 6 0
-     * ------+-------+------
-     * 0 0 0 | 0 7 9 | 8 1 0
-     * 0 1 7 | 0 0 5 | 0 0 6
-     * 4 0 0 | 1 0 6 | 0 5 0
-     */
     @Test
     fun medusaRule1Test2() {
         val board = """
@@ -111,19 +85,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule1)
     }
 
-    /*
-     * 3 0 0 | 0 5 2 | 0 0 0
-     * 2 5 0 | 3 0 0 | 0 1 0
-     * 0 0 4 | 6 0 7 | 5 2 3
-     * ------+-------+------
-     * 0 9 3 | 2 0 0 | 8 0 5
-     * 5 7 0 | 0 0 0 | 0 3 0
-     * 4 0 8 | 0 3 5 | 0 6 0
-     * ------+-------+------
-     * 0 0 5 | 4 0 8 | 3 0 0
-     * 0 3 0 | 5 0 6 | 0 8 4
-     * 8 4 0 | 0 2 3 | 0 5 6
-     */
     @Test
     fun medusaRule2Test1() {
         val board = """
@@ -149,19 +110,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule2)
     }
 
-    /*
-     * 7 4 8 | 1 5 6 | 0 0 0
-     * 3 5 9 | 2 8 4 | 0 1 0
-     * 6 1 2 | 3 7 9 | 4 5 8
-     * ------+-------+------
-     * 0 8 6 | 0 0 3 | 2 7 5
-     * 4 7 0 | 5 0 2 | 0 0 9
-     * 2 0 5 | 7 0 8 | 1 4 0
-     * ------+-------+------
-     * 5 0 7 | 0 0 1 | 0 3 0
-     * 0 0 4 | 6 3 7 | 5 0 1
-     * 0 0 0 | 0 2 5 | 0 0 0
-     */
     @Test
     fun medusaRule2Test2() {
         val board = """
@@ -195,19 +143,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule2)
     }
 
-    /*
-     * 2 9 0 | 0 0 0 | 8 3 0
-     * 0 0 0 | 0 2 0 | 9 7 0
-     * 0 0 0 | 1 0 9 | 4 0 2
-     * ------+-------+------
-     * 8 4 5 | 7 6 1 | 2 9 3
-     * 6 0 0 | 0 0 0 | 5 4 7
-     * 0 0 9 | 0 4 5 | 0 0 8
-     * ------+-------+------
-     * 9 0 3 | 4 0 7 | 0 0 0
-     * 0 6 0 | 0 3 0 | 7 0 9
-     * 0 5 0 | 0 0 0 | 3 8 4
-     */
     @Test
     fun medusaRule3Test1() {
         val board = """
@@ -227,19 +162,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule3)
     }
 
-    /*
-     * 9 0 8 | 0 2 0 | 0 7 6
-     * 6 0 0 | 0 0 7 | 1 0 0
-     * 1 7 0 | 0 0 0 | 0 2 0
-     * ------+-------+------
-     * 0 0 5 | 4 0 0 | 0 9 1
-     * 3 9 1 | 7 8 2 | 0 0 5
-     * 4 6 0 | 0 0 5 | 8 3 0
-     * ------+-------+------
-     * 0 4 0 | 0 0 0 | 0 5 0
-     * 5 0 6 | 0 0 0 | 0 1 0
-     * 2 1 9 | 5 7 0 | 3 0 4
-     */
     @Test
     fun medusaRule3Test2() {
         val board = """
@@ -259,19 +181,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule3)
     }
 
-    /*
-     * 0 0 0 | 9 0 8 | 4 3 0
-     * 0 0 4 | 7 0 2 | 6 8 0
-     * 0 8 1 | 0 5 4 | 0 0 2
-     * ------+-------+------
-     * 0 0 5 | 0 0 3 | 1 2 9
-     * 0 0 0 | 5 2 0 | 3 0 8
-     * 0 0 0 | 0 9 0 | 5 6 0
-     * ------+-------+------
-     * 0 0 0 | 0 7 9 | 8 1 0
-     * 0 1 7 | 0 0 5 | 0 0 6
-     * 4 0 0 | 1 0 6 | 0 5 0
-     */
     @Test
     fun medusaRule3Test3() {
         val board = """
@@ -291,19 +200,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule3)
     }
 
-    /*
-     * 1 0 0 | 0 5 6 | 0 0 3
-     * 0 4 3 | 0 9 0 | 0 0 0
-     * 8 0 0 | 0 4 3 | 0 0 2
-     * ------+-------+------
-     * 0 3 0 | 5 6 0 | 2 1 0
-     * 9 5 0 | 4 2 1 | 0 3 7
-     * 0 2 1 | 0 3 0 | 0 0 0
-     * ------+-------+------
-     * 3 1 7 | 9 8 0 | 0 0 5
-     * 0 0 0 | 3 1 0 | 9 7 0
-     * 0 0 0 | 6 7 0 | 3 0 1
-     */
     @Test
     fun medusaRule4Test1() {
         val board = """
@@ -324,19 +220,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule4)
     }
 
-    /*
-     * 1 0 0 | 0 5 6 | 0 0 3
-     * 0 4 3 | 0 9 0 | 0 0 0
-     * 8 0 0 | 0 4 3 | 0 0 2
-     * ------+-------+------
-     * 0 3 0 | 5 6 0 | 2 1 0
-     * 9 5 0 | 4 2 1 | 0 3 7
-     * 0 2 1 | 0 3 0 | 0 0 0
-     * ------+-------+------
-     * 3 1 7 | 9 8 0 | 0 0 5
-     * 0 0 0 | 3 1 0 | 9 7 0
-     * 0 0 0 | 6 7 0 | 3 0 1
-     */
     @Test
     fun medusaRule4Test2() {
         val board = """
@@ -360,19 +243,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule4)
     }
 
-    /*
-     * 9 0 8 | 0 2 0 | 0 7 6
-     * 6 0 0 | 0 0 7 | 1 0 0
-     * 1 7 0 | 0 0 0 | 0 2 0
-     * ------+-------+------
-     * 0 0 5 | 4 0 0 | 0 9 1
-     * 3 9 1 | 7 8 2 | 0 0 5
-     * 4 6 0 | 0 0 5 | 8 3 0
-     * ------+-------+------
-     * 0 4 0 | 0 0 0 | 0 5 0
-     * 5 0 6 | 0 0 0 | 0 1 0
-     * 2 1 9 | 5 7 0 | 3 0 4
-     */
     @Test
     fun medusaRule4Test3() {
         val board = """
@@ -393,19 +263,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule4)
     }
 
-    /*
-     * 9 0 8 | 0 2 0 | 0 7 6
-     * 6 0 0 | 0 0 7 | 1 0 0
-     * 1 7 0 | 0 0 0 | 0 2 0
-     * ------+-------+------
-     * 0 0 5 | 4 0 0 | 0 9 1
-     * 3 9 1 | 7 8 2 | 0 0 5
-     * 4 6 0 | 0 0 5 | 8 3 0
-     * ------+-------+------
-     * 0 4 0 | 0 0 0 | 0 5 0
-     * 5 0 6 | 0 0 0 | 0 1 0
-     * 2 1 9 | 5 7 0 | 3 0 4
-     */
     @Test
     fun medusaRule4Test4() {
         val board = """
@@ -425,19 +282,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule4)
     }
 
-    /*
-     * 9 2 3 | 4 0 7 | 0 1 5
-     * 8 7 6 | 0 5 0 | 9 2 4
-     * 5 0 0 | 2 0 0 | 0 3 0
-     * ------+-------+------
-     * 7 6 9 | 0 2 0 | 1 4 0
-     * 4 3 2 | 0 0 0 | 0 5 9
-     * 1 8 5 | 0 0 4 | 2 6 0
-     * ------+-------+------
-     * 0 9 8 | 0 4 2 | 0 7 1
-     * 2 0 7 | 0 3 0 | 4 8 6
-     * 0 0 0 | 7 0 8 | 0 9 2
-     */
     @Test
     fun medusaRule5Test1() {
         val board = """
@@ -460,19 +304,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule5)
     }
 
-    /*
-     * 3 0 0 | 0 5 2 | 0 0 0
-     * 2 5 0 | 3 0 0 | 0 1 0
-     * 0 0 4 | 6 0 7 | 5 2 3
-     * ------+-------+------
-     * 0 9 3 | 2 0 0 | 8 0 5
-     * 5 7 0 | 0 0 0 | 0 3 0
-     * 4 0 8 | 0 3 5 | 0 6 0
-     * ------+-------+------
-     * 0 0 5 | 4 0 8 | 3 0 0
-     * 0 3 0 | 5 0 6 | 0 8 4
-     * 8 4 0 | 0 2 3 | 0 5 6
-     */
     @Test
     fun medusaRule5Test2() {
         val board = """
@@ -493,19 +324,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule5)
     }
 
-    /*
-     * 9 0 8 | 0 2 0 | 0 7 6
-     * 6 0 0 | 0 0 7 | 1 0 0
-     * 1 7 0 | 0 0 0 | 0 2 0
-     * ------+-------+------
-     * 0 0 5 | 4 0 0 | 0 9 1
-     * 3 9 1 | 7 8 2 | 0 0 5
-     * 4 6 0 | 0 0 5 | 8 3 0
-     * ------+-------+------
-     * 0 4 0 | 0 0 0 | 0 5 0
-     * 5 0 6 | 0 0 0 | 0 1 0
-     * 2 1 9 | 5 7 0 | 3 0 4
-     */
     @Test
     fun medusaRule5Test3() {
         val board = """
@@ -526,19 +344,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule5)
     }
 
-    /*
-     * 9 0 8 | 0 2 0 | 0 7 6
-     * 6 0 0 | 0 0 7 | 1 0 0
-     * 1 7 0 | 0 0 0 | 0 2 0
-     * ------+-------+------
-     * 0 0 5 | 4 0 0 | 0 9 1
-     * 3 9 1 | 7 8 2 | 0 0 5
-     * 4 6 0 | 0 0 5 | 8 3 0
-     * ------+-------+------
-     * 0 4 0 | 0 0 0 | 0 5 0
-     * 5 0 6 | 0 0 0 | 0 1 0
-     * 2 1 9 | 5 7 0 | 3 0 4
-     */
     @Test
     fun medusaRule5Test4() {
         val board = """
@@ -559,19 +364,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule5)
     }
 
-    /*
-     * 0 1 9 | 0 4 0 | 7 5 0
-     * 0 5 0 | 0 0 0 | 0 0 0
-     * 0 3 6 | 0 5 2 | 0 8 9
-     * ------+-------+------
-     * 0 8 5 | 4 2 0 | 0 7 3
-     * 0 9 7 | 0 0 6 | 0 1 5
-     * 3 0 0 | 0 0 5 | 0 0 8
-     * ------+-------+------
-     * 0 0 0 | 5 0 0 | 8 9 0
-     * 5 0 8 | 9 1 4 | 0 0 0
-     * 9 0 3 | 2 0 0 | 5 0 1
-     */
     @Test
     fun medusaRule5Test5() {
         val board = """
@@ -598,19 +390,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule5)
     }
 
-    /*
-     * 7 4 8 | 1 5 6 | 0 0 0
-     * 3 5 9 | 2 8 4 | 0 1 0
-     * 6 1 2 | 3 7 9 | 4 5 8
-     * ------+-------+------
-     * 0 8 6 | 0 0 3 | 2 7 5
-     * 4 7 0 | 5 0 2 | 0 0 9
-     * 0 0 5 | 7 0 8 | 1 4 0
-     * ------+-------+------
-     * 5 0 7 | 0 0 1 | 0 3 0
-     * 0 0 4 | 6 3 7 | 5 0 1
-     * 0 0 0 | 0 2 5 | 0 0 0
-     */
     @Test
     fun medusaRule5Test6() {
         val board = """
@@ -630,19 +409,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule5)
     }
 
-    /*
-     * 9 8 6 | 7 2 1 | 3 4 5
-     * 3 0 4 | 9 5 6 | 0 0 7
-     * 0 0 7 | 0 3 0 | 9 6 0
-     * ------+-------+------
-     * 0 7 3 | 0 6 5 | 0 0 9
-     * 6 9 0 | 0 1 7 | 0 0 3
-     * 1 0 0 | 3 9 0 | 2 7 6
-     * ------+-------+------
-     * 0 0 0 | 6 7 9 | 0 3 0
-     * 0 6 9 | 1 4 3 | 7 0 0
-     * 7 3 1 | 5 8 2 | 6 9 4
-     */
     @Test
     fun medusaRule6Test1() {
         val board = """
@@ -668,19 +434,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule6)
     }
 
-    /*
-     * 9 0 8 | 0 2 0 | 0 7 6
-     * 6 0 0 | 0 0 7 | 1 0 0
-     * 1 7 0 | 0 0 0 | 0 2 0
-     * ------+-------+------
-     * 0 0 5 | 4 0 0 | 0 9 1
-     * 3 9 1 | 7 8 2 | 0 0 5
-     * 4 6 0 | 0 0 5 | 8 3 0
-     * ------+-------+------
-     * 0 4 0 | 0 0 0 | 0 5 0
-     * 5 0 6 | 0 0 0 | 0 1 0
-     * 2 1 9 | 5 7 0 | 3 0 4
-     */
     @Test
     fun medusaRule6Test2() {
         val board = """
@@ -724,19 +477,6 @@ internal class MedusaKtTest {
         assertLogicalSolution(expected, board, ::medusaRule6)
     }
 
-    /*
-     * 2 0 0 | 3 5 0 | 0 8 0
-     * 5 0 0 | 0 8 1 | 0 0 3
-     * 8 3 6 | 0 4 0 | 0 1 0
-     * ------+-------+------
-     * 4 0 0 | 8 3 0 | 0 0 2
-     * 6 0 2 | 0 1 4 | 3 0 0
-     * 9 0 3 | 0 7 2 | 0 0 1
-     * ------+-------+------
-     * 3 2 5 | 4 6 8 | 1 9 7
-     * 7 6 8 | 1 9 3 | 0 0 4
-     * 1 9 4 | 7 2 5 | 0 3 0
-     */
     @Test
     fun medusaRule6Test3() {
         val board = """

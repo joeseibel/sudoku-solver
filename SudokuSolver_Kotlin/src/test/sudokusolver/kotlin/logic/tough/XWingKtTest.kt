@@ -5,19 +5,6 @@ import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class XWingKtTest {
-    /*
-     * 1 0 0 | 0 0 0 | 5 6 9
-     * 4 9 2 | 0 5 6 | 1 0 8
-     * 0 5 6 | 1 0 9 | 2 4 0
-     * ------+-------+------
-     * 0 0 9 | 6 4 0 | 8 0 1
-     * 0 6 4 | 0 1 0 | 0 0 0
-     * 2 1 8 | 0 3 5 | 6 0 4
-     * ------+-------+------
-     * 0 4 0 | 5 0 0 | 0 1 6
-     * 9 0 5 | 0 6 1 | 4 0 2
-     * 6 2 1 | 0 0 0 | 0 0 5
-     */
     @Test
     fun testXWing1() {
         val board = """
@@ -42,19 +29,6 @@ internal class XWingKtTest {
         assertLogicalSolution(expected, board, ::xWing)
     }
 
-    /*
-     * 0 0 0 | 0 0 0 | 0 9 4
-     * 7 6 0 | 9 1 0 | 0 5 0
-     * 0 9 0 | 0 0 2 | 0 8 1
-     * ------+-------+------
-     * 0 7 0 | 0 5 0 | 0 1 0
-     * 0 0 0 | 7 0 9 | 0 0 0
-     * 0 8 0 | 0 3 1 | 0 6 7
-     * ------+-------+------
-     * 2 4 0 | 1 0 0 | 0 7 0
-     * 0 1 0 | 0 9 0 | 0 4 5
-     * 9 0 0 | 0 0 0 | 1 0 0
-     */
     @Test
     fun testXWing2() {
         val board = """
@@ -79,19 +53,6 @@ internal class XWingKtTest {
         assertLogicalSolution(expected, board, ::xWing)
     }
 
-    /*
-     * 0 0 3 | 9 1 0 | 7 0 0
-     * 0 0 0 | 0 2 3 | 4 9 1
-     * 1 0 9 | 0 4 7 | 0 0 6
-     * ------+-------+------
-     * 0 6 1 | 7 0 0 | 0 0 0
-     * 0 0 2 | 1 0 9 | 6 0 0
-     * 0 0 0 | 0 6 2 | 0 1 0
-     * ------+-------+------
-     * 7 9 0 | 0 8 0 | 1 2 3
-     * 3 1 8 | 2 9 0 | 5 0 0
-     * 0 0 5 | 3 7 1 | 9 0 0
-     */
     @Test
     fun testXWing3() {
         val board = """
@@ -115,19 +76,6 @@ internal class XWingKtTest {
         assertLogicalSolution(expected, board, ::xWing)
     }
 
-    /*
-     * 0 1 0 | 0 3 7 | 0 4 0
-     * 0 0 0 | 0 2 5 | 0 1 0
-     * 6 0 0 | 4 1 8 | 0 2 9
-     * ------+-------+------
-     * 0 7 3 | 1 4 9 | 6 8 0
-     * 1 0 0 | 8 7 0 | 0 9 3
-     * 0 0 9 | 3 5 0 | 0 7 0
-     * ------+-------+------
-     * 3 9 0 | 2 6 4 | 0 5 8
-     * 0 4 6 | 5 8 1 | 9 3 0
-     * 0 0 0 | 7 9 3 | 0 6 0
-     */
     @Test
     fun testXWing4() {
         val board = """

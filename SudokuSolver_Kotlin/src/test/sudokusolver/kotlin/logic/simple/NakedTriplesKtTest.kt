@@ -5,19 +5,6 @@ import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class NakedTriplesKtTest {
-    /*
-     * 0 7 0 | 4 0 8 | 0 2 9
-     * 0 0 2 | 0 0 0 | 0 0 4
-     * 8 5 4 | 0 2 0 | 0 0 7
-     * ------+-------+------
-     * 0 0 8 | 3 7 4 | 2 0 0
-     * 0 2 0 | 0 0 0 | 0 0 0
-     * 0 0 3 | 2 6 1 | 7 0 0
-     * ------+-------+------
-     * 0 0 0 | 0 9 3 | 6 1 2
-     * 2 0 0 | 0 0 0 | 4 0 3
-     * 1 3 0 | 6 4 2 | 0 7 0
-     */
     @Test
     fun testNakedTriples1() {
         val board = """
@@ -40,19 +27,6 @@ internal class NakedTriplesKtTest {
         assertLogicalSolution(expected, board, ::nakedTriples)
     }
 
-    /*
-     * 2 9 4 | 5 1 3 | 0 0 6
-     * 6 0 0 | 8 4 2 | 3 1 9
-     * 3 0 0 | 6 9 7 | 2 5 4
-     * ------+-------+------
-     * 0 0 0 | 0 5 6 | 0 0 0
-     * 0 4 0 | 0 8 0 | 0 6 0
-     * 0 0 0 | 4 7 0 | 0 0 0
-     * ------+-------+------
-     * 7 3 0 | 1 6 4 | 0 0 5
-     * 9 0 0 | 7 3 5 | 0 0 1
-     * 4 0 0 | 9 2 8 | 6 3 7
-     */
     @Test
     fun testNakedTriples2() {
         val board = """

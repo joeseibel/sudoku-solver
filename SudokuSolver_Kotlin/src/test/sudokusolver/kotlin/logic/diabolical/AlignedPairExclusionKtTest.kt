@@ -5,19 +5,6 @@ import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class AlignedPairExclusionKtTest {
-    /*
-     * 0 9 7 | 1 0 3 | 0 4 0
-     * 0 3 0 | 0 4 0 | 7 0 0
-     * 0 0 0 | 6 7 0 | 0 0 3
-     * ------+-------+------
-     * 2 7 3 | 9 1 4 | 5 8 6
-     * 9 8 6 | 0 0 7 | 1 0 4
-     * 1 5 4 | 0 6 8 | 0 0 7
-     * ------+-------+------
-     * 7 0 0 | 0 9 1 | 0 0 0
-     * 0 0 9 | 7 3 6 | 0 5 0
-     * 3 6 0 | 0 0 0 | 0 7 0
-     */
     @Test
     fun alignedPairExclusionTest1() {
         val board = """
@@ -38,19 +25,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 0 9 7 | 1 0 3 | 0 4 0
-     * 0 3 0 | 0 4 0 | 7 0 0
-     * 0 0 0 | 6 7 0 | 0 0 3
-     * ------+-------+------
-     * 2 7 3 | 9 1 4 | 5 8 6
-     * 9 8 6 | 0 0 7 | 1 0 4
-     * 1 5 4 | 0 6 8 | 0 0 7
-     * ------+-------+------
-     * 7 0 0 | 0 9 1 | 0 0 0
-     * 0 0 9 | 7 3 6 | 0 5 0
-     * 3 6 0 | 0 0 0 | 0 7 0
-     */
     @Test
     fun alignedPairExclusionTest2() {
         val board = """
@@ -70,19 +44,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 0 0 0 | 0 2 3 | 0 0 0
-     * 6 2 0 | 5 9 8 | 0 0 4
-     * 0 0 0 | 7 0 6 | 5 2 0
-     * ------+-------+------
-     * 5 9 8 | 0 6 2 | 0 4 0
-     * 2 0 1 | 0 7 5 | 8 0 6
-     * 0 7 6 | 8 0 0 | 0 5 2
-     * ------+-------+------
-     * 0 6 2 | 0 0 7 | 0 0 0
-     * 8 0 0 | 6 3 4 | 2 0 9
-     * 0 0 0 | 2 0 0 | 0 0 0
-     */
     @Test
     fun alignedPairExclusionTest3() {
         val board = """
@@ -103,19 +64,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 0 0 0 | 0 2 3 | 0 0 0
-     * 6 2 0 | 5 9 8 | 0 0 4
-     * 0 0 0 | 7 0 6 | 5 2 0
-     * ------+-------+------
-     * 5 9 8 | 0 6 2 | 0 4 0
-     * 2 0 1 | 0 7 5 | 8 0 6
-     * 0 7 6 | 8 0 0 | 0 5 2
-     * ------+-------+------
-     * 0 6 2 | 0 0 7 | 0 0 0
-     * 8 0 0 | 6 3 4 | 2 0 9
-     * 0 0 0 | 2 0 0 | 0 0 0
-     */
     @Test
     fun alignedPairExclusionTest4() {
         val board = """
@@ -136,19 +84,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 0 0 0 | 0 0 0 | 3 7 0
-     * 7 0 6 | 0 0 3 | 0 0 0
-     * 3 0 0 | 1 7 2 | 0 0 9
-     * ------+-------+------
-     * 9 6 7 | 2 3 8 | 5 0 0
-     * 5 3 1 | 4 9 6 | 7 2 8
-     * 8 2 4 | 5 1 7 | 9 3 6
-     * ------+-------+------
-     * 6 0 0 | 3 0 5 | 0 0 0
-     * 0 0 0 | 0 0 0 | 4 0 3
-     * 0 8 3 | 0 0 0 | 0 0 0
-     */
     @Test
     fun alignedPairExclusionTest5() {
         val board = """
@@ -169,19 +104,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 0 2 4 | 0 5 3 | 6 0 0
-     * 0 0 5 | 0 4 0 | 0 0 2
-     * 9 0 0 | 6 0 2 | 0 0 5
-     * ------+-------+------
-     * 7 0 0 | 5 0 1 | 0 3 0
-     * 0 0 0 | 3 6 7 | 5 0 0
-     * 3 5 0 | 0 0 4 | 0 0 1
-     * ------+-------+------
-     * 2 0 0 | 0 3 5 | 0 0 9
-     * 5 0 0 | 0 1 0 | 0 0 3
-     * 0 0 3 | 2 0 0 | 8 5 0
-     */
     @Test
     fun alignedPairExclusionTest6() {
         val board = """
@@ -205,19 +127,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 4 5 0 | 9 0 0 | 0 0 0
-     * 0 0 6 | 8 0 0 | 9 0 0
-     * 0 8 0 | 0 2 0 | 0 3 0
-     * ------+-------+------
-     * 0 0 0 | 5 0 0 | 0 0 0
-     * 6 4 0 | 0 0 0 | 0 7 5
-     * 5 0 1 | 0 7 8 | 0 0 0
-     * ------+-------+------
-     * 3 7 5 | 0 8 0 | 1 4 9
-     * 0 0 2 | 0 0 0 | 6 0 7
-     * 0 6 4 | 7 0 1 | 0 2 3
-     */
     @Test
     fun alignedPairExclusionTest7() {
         val board = """
@@ -241,19 +150,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 4 5 0 | 9 0 0 | 0 0 0
-     * 0 0 6 | 8 0 0 | 9 0 0
-     * 0 8 0 | 0 2 0 | 0 3 0
-     * ------+-------+------
-     * 0 0 0 | 5 0 0 | 0 0 0
-     * 6 4 0 | 0 0 0 | 0 7 5
-     * 5 0 1 | 0 7 8 | 0 0 0
-     * ------+-------+------
-     * 3 7 5 | 0 8 0 | 1 4 9
-     * 0 0 2 | 0 0 0 | 6 0 7
-     * 0 6 4 | 7 0 1 | 0 2 3
-     */
     @Test
     fun alignedPairExclusionTest8() {
         val board = """
@@ -276,19 +172,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 9 0 0 | 0 0 0 | 1 0 6
-     * 0 0 2 | 5 9 0 | 0 0 0
-     * 3 0 8 | 0 4 0 | 0 9 0
-     * ------+-------+------
-     * 0 8 0 | 0 0 0 | 0 7 0
-     * 5 7 0 | 2 0 4 | 0 6 9
-     * 0 9 0 | 0 7 0 | 0 4 0
-     * ------+-------+------
-     * 8 0 9 | 0 5 0 | 6 0 3
-     * 0 0 0 | 0 3 8 | 9 0 0
-     * 1 3 5 | 0 0 0 | 0 0 0
-     */
     @Test
     fun alignedPairExclusionTest9() {
         val board = """
@@ -314,19 +197,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 9 0 0 | 0 0 0 | 1 0 6
-     * 0 0 2 | 5 9 0 | 0 0 0
-     * 3 0 8 | 0 4 0 | 0 9 0
-     * ------+-------+------
-     * 4 8 0 | 0 0 0 | 0 7 0
-     * 5 7 0 | 2 0 4 | 0 6 9
-     * 2 9 0 | 0 7 0 | 0 4 0
-     * ------+-------+------
-     * 8 0 9 | 0 5 0 | 6 0 3
-     * 0 0 0 | 0 3 8 | 9 0 0
-     * 1 3 5 | 0 0 0 | 0 0 0
-     */
     @Test
     fun alignedPairExclusionTest10() {
         val board = """
@@ -349,19 +219,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 9 0 0 | 0 0 0 | 1 0 6
-     * 0 0 2 | 5 9 0 | 0 0 0
-     * 3 0 8 | 0 4 0 | 0 9 0
-     * ------+-------+------
-     * 4 8 0 | 0 0 0 | 0 7 0
-     * 5 7 0 | 2 0 4 | 0 6 9
-     * 2 9 0 | 0 7 0 | 0 4 0
-     * ------+-------+------
-     * 8 0 9 | 0 5 0 | 6 0 3
-     * 0 0 0 | 0 3 8 | 9 0 0
-     * 1 3 5 | 0 0 0 | 0 0 0
-     */
     @Test
     fun alignedPairExclusionTest11() {
         val board = """
@@ -383,19 +240,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 0 7 2 | 0 8 0 | 6 4 0
-     * 0 9 6 | 7 0 0 | 8 0 0
-     * 0 0 8 | 6 0 0 | 0 0 1
-     * ------+-------+------
-     * 0 0 0 | 3 0 0 | 0 8 4
-     * 6 8 1 | 0 0 0 | 0 0 0
-     * 0 0 4 | 0 5 8 | 0 6 0
-     * ------+-------+------
-     * 2 1 0 | 8 3 9 | 4 0 6
-     * 8 4 0 | 2 0 0 | 0 1 3
-     * 0 6 3 | 0 0 1 | 0 0 8
-     */
     @Test
     fun alignedPairExclusionTest12() {
         val board = """
@@ -417,19 +261,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 0 7 2 | 0 8 0 | 6 4 0
-     * 0 9 6 | 7 0 0 | 8 0 0
-     * 0 0 8 | 6 0 0 | 0 0 1
-     * ------+-------+------
-     * 0 0 0 | 3 0 0 | 0 8 4
-     * 6 8 1 | 0 0 0 | 0 0 0
-     * 0 0 4 | 0 5 8 | 0 6 0
-     * ------+-------+------
-     * 2 1 0 | 8 3 9 | 4 0 6
-     * 8 4 0 | 2 0 0 | 0 1 3
-     * 0 6 3 | 0 0 1 | 0 0 8
-     */
     @Test
     fun alignedPairExclusionTest13() {
         val board = """
@@ -449,19 +280,6 @@ internal class AlignedPairExclusionKtTest {
         assertLogicalSolution(expected, board, ::alignedPairExclusion)
     }
 
-    /*
-     * 1 8 5 | 0 2 6 | 3 7 0
-     * 0 6 0 | 0 0 0 | 0 0 0
-     * 0 9 7 | 0 0 8 | 1 0 0
-     * ------+-------+------
-     * 0 1 0 | 0 5 2 | 0 9 0
-     * 0 0 0 | 0 6 0 | 0 0 0
-     * 0 3 0 | 1 7 9 | 0 4 0
-     * ------+-------+------
-     * 0 4 1 | 6 0 0 | 9 5 0
-     * 0 0 0 | 0 0 0 | 0 0 0
-     * 0 5 6 | 2 9 0 | 7 0 0
-     */
     @Test
     fun alignedPairExclusionTest14() {
         val board = """

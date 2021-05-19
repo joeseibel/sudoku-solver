@@ -36,19 +36,6 @@ internal class XYChainsKtTest {
         assertEquals(expected, actual)
     }
 
-    /*
-     * 0 8 0 | 1 0 3 | 0 7 0
-     * 0 9 0 | 5 0 6 | 0 0 0
-     * 0 0 1 | 4 0 8 | 0 2 0
-     * ------+-------+------
-     * 5 7 8 | 2 4 1 | 6 3 9
-     * 1 4 3 | 6 5 9 | 7 8 2
-     * 9 2 6 | 8 3 7 | 4 5 1
-     * ------+-------+------
-     * 0 3 7 | 9 0 5 | 2 0 0
-     * 0 0 0 | 3 0 4 | 0 9 7
-     * 4 1 9 | 7 8 2 | 0 6 0
-     */
     @Test
     fun testXYChains1() {
         val board = """
@@ -72,19 +59,6 @@ internal class XYChainsKtTest {
         assertLogicalSolution(expected, board, ::xyChains)
     }
 
-    /*
-     * 0 9 2 | 0 0 0 | 3 7 6
-     * 0 1 0 | 0 3 0 | 5 0 0
-     * 3 0 0 | 0 0 0 | 1 9 0
-     * ------+-------+------
-     * 9 3 0 | 8 5 0 | 7 0 1
-     * 0 0 0 | 3 0 4 | 0 0 0
-     * 2 0 0 | 0 9 7 | 0 0 3
-     * ------+-------+------
-     * 6 8 9 | 0 0 3 | 4 1 0
-     * 5 2 3 | 0 4 0 | 0 6 0
-     * 1 4 7 | 0 0 0 | 2 3 0
-     */
     @Test
     fun testXYChains2() {
         val board = """
@@ -110,19 +84,6 @@ internal class XYChainsKtTest {
         assertLogicalSolution(expected, board, ::xyChains)
     }
 
-    /*
-     * 9 3 1 | 6 7 2 | 4 5 8
-     * 6 7 2 | 8 5 4 | 1 9 3
-     * 0 4 0 | 9 1 3 | 7 6 2
-     * ------+-------+------
-     * 0 0 0 | 5 0 7 | 0 0 0
-     * 3 0 0 | 0 0 8 | 0 0 7
-     * 0 0 7 | 0 0 6 | 0 0 0
-     * ------+-------+------
-     * 4 8 6 | 3 2 1 | 0 7 0
-     * 1 5 3 | 7 8 9 | 2 4 6
-     * 7 2 9 | 4 6 5 | 8 3 1
-     */
     @Test
     fun testXYChains3() {
         val board = """
@@ -143,19 +104,6 @@ internal class XYChainsKtTest {
         assertLogicalSolution(expected, board, ::xyChains)
     }
 
-    /*
-     * 0 9 3 | 8 0 7 | 1 6 0
-     * 2 8 6 | 5 9 1 | 4 3 7
-     * 0 7 0 | 6 0 0 | 8 9 0
-     * ------+-------+------
-     * 0 0 0 | 2 0 5 | 0 8 0
-     * 0 0 5 | 4 6 0 | 2 7 0
-     * 0 6 2 | 1 0 9 | 5 4 3
-     * ------+-------+------
-     * 3 2 0 | 9 0 0 | 0 5 0
-     * 0 5 8 | 3 0 6 | 0 2 0
-     * 6 4 9 | 7 5 2 | 3 1 8
-     */
     @Test
     fun testXYChains4() {
         val board = """
@@ -196,19 +144,6 @@ internal class XYChainsKtTest {
         assertLogicalSolution(expected, board, ::xyChains)
     }
 
-    /*
-     * 9 0 3 | 0 0 1 | 0 0 0
-     * 8 0 0 | 0 0 0 | 0 0 0
-     * 7 5 1 | 0 0 9 | 0 6 0
-     * ------+-------+------
-     * 1 8 7 | 0 0 0 | 2 9 4
-     * 0 0 0 | 7 9 2 | 1 8 6
-     * 2 0 0 | 1 4 8 | 5 7 3
-     * ------+-------+------
-     * 6 7 0 | 9 1 3 | 0 0 0
-     * 0 0 2 | 6 8 4 | 0 0 0
-     * 4 1 0 | 2 5 7 | 6 3 0
-     */
     @Test
     fun testXYChains5() {
         val board = """

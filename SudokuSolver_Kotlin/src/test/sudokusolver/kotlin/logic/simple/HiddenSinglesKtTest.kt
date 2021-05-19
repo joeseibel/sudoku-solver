@@ -5,19 +5,6 @@ import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class HiddenSinglesKtTest {
-    /*
-     * 2 0 0 | 0 7 0 | 0 3 8
-     * 0 0 0 | 0 0 6 | 0 7 0
-     * 3 0 0 | 0 4 0 | 6 0 0
-     * ------+-------+------
-     * 0 0 8 | 0 2 0 | 7 0 0
-     * 1 0 0 | 0 0 0 | 0 0 6
-     * 0 0 7 | 0 3 0 | 4 0 0
-     * ------+-------+------
-     * 0 0 4 | 0 8 0 | 0 0 9
-     * 0 6 0 | 4 0 0 | 0 0 0
-     * 9 1 0 | 0 6 0 | 0 0 2
-     */
     @Test
     fun testHiddenSingles() {
         val board = """

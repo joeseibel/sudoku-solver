@@ -5,19 +5,6 @@ import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class WXYZWingKtTest {
-    /*
-     * 0 0 0 | 0 2 4 | 7 3 0
-     * 5 4 0 | 3 7 0 | 2 6 0
-     * 2 3 7 | 0 0 0 | 0 0 4
-     * ------+-------+------
-     * 7 0 0 | 0 3 0 | 8 4 0
-     * 0 0 3 | 4 8 1 | 0 0 0
-     * 0 8 4 | 0 6 0 | 0 0 3
-     * ------+-------+------
-     * 3 0 0 | 0 0 0 | 0 5 9
-     * 0 7 0 | 0 9 3 | 0 0 2
-     * 0 0 6 | 2 0 0 | 3 0 0
-     */
     @Test
     fun wxyzWingTest1() {
         val board = """
@@ -38,19 +25,6 @@ internal class WXYZWingKtTest {
         assertLogicalSolution(expected, board, ::wxyzWing)
     }
 
-    /*
-     * 0 0 0 | 0 2 4 | 7 3 0
-     * 5 4 0 | 3 7 0 | 2 6 0
-     * 2 3 7 | 0 0 0 | 0 0 4
-     * ------+-------+------
-     * 7 0 0 | 0 3 0 | 8 4 0
-     * 0 0 3 | 4 8 1 | 0 0 0
-     * 0 8 4 | 0 6 0 | 0 0 3
-     * ------+-------+------
-     * 3 0 0 | 0 0 0 | 0 5 9
-     * 0 7 0 | 0 9 3 | 0 0 2
-     * 0 0 6 | 2 0 0 | 3 0 0
-     */
     @Test
     fun wxyzWingTest2() {
         val board = """
@@ -70,19 +44,6 @@ internal class WXYZWingKtTest {
         assertLogicalSolution(expected, board, ::wxyzWing)
     }
 
-    /*
-     * 0 6 0 | 0 2 4 | 7 3 5
-     * 5 4 0 | 3 7 0 | 2 6 0
-     * 2 3 7 | 0 5 0 | 0 0 4
-     * ------+-------+------
-     * 7 0 0 | 0 3 0 | 8 4 6
-     * 6 0 3 | 4 8 1 | 0 0 7
-     * 9 8 4 | 0 6 0 | 0 0 3
-     * ------+-------+------
-     * 3 0 0 | 0 0 0 | 0 5 9
-     * 0 7 5 | 0 9 3 | 0 0 2
-     * 0 9 6 | 2 0 5 | 3 7 0
-     */
     @Test
     fun wxyzWingTest3() {
         val board = """
@@ -104,19 +65,6 @@ internal class WXYZWingKtTest {
         assertLogicalSolution(expected, board, ::wxyzWing)
     }
 
-    /*
-     * 8 4 2 | 0 0 3 | 7 1 9
-     * 0 0 3 | 1 0 4 | 0 0 0
-     * 5 0 1 | 0 0 0 | 0 3 4
-     * ------+-------+------
-     * 0 3 8 | 0 1 0 | 4 7 5
-     * 0 2 0 | 3 0 7 | 1 6 8
-     * 1 0 7 | 0 0 0 | 2 9 3
-     * ------+-------+------
-     * 3 0 6 | 0 0 0 | 9 0 1
-     * 0 0 0 | 9 3 1 | 0 0 0
-     * 2 1 9 | 8 0 0 | 3 0 7
-     */
     @Test
     fun wxyzWingTest4() {
         val board = """
@@ -139,19 +87,6 @@ internal class WXYZWingKtTest {
         assertLogicalSolution(expected, board, ::wxyzWing)
     }
 
-    /*
-     * 8 4 2 | 0 0 3 | 7 1 9
-     * 0 0 3 | 1 0 4 | 0 0 0
-     * 5 0 1 | 0 0 0 | 0 3 4
-     * ------+-------+------
-     * 0 3 8 | 0 1 0 | 4 7 5
-     * 0 2 0 | 3 0 7 | 1 6 8
-     * 1 0 7 | 0 0 0 | 2 9 3
-     * ------+-------+------
-     * 3 0 6 | 0 0 0 | 9 0 1
-     * 0 0 0 | 9 3 1 | 0 0 0
-     * 2 1 9 | 8 0 0 | 3 0 7
-     */
     @Test
     fun wxyzWingTest5() {
         val board = """
@@ -171,19 +106,6 @@ internal class WXYZWingKtTest {
         assertLogicalSolution(expected, board, ::wxyzWing)
     }
 
-    /*
-     * 0 0 0 | 0 0 0 | 8 0 9
-     * 0 0 8 | 0 0 5 | 0 0 0
-     * 0 6 0 | 1 0 0 | 7 0 2
-     * ------+-------+------
-     * 0 0 0 | 0 0 3 | 0 0 4
-     * 0 7 0 | 0 4 0 | 0 8 0
-     * 1 4 0 | 2 0 0 | 6 0 0
-     * ------+-------+------
-     * 3 0 4 | 0 0 6 | 0 1 0
-     * 0 2 0 | 5 0 0 | 4 0 0
-     * 6 0 0 | 0 0 0 | 0 0 0
-     */
     @Test
     fun wxyzWingTest6() {
         val board = """
@@ -205,19 +127,6 @@ internal class WXYZWingKtTest {
         assertLogicalSolution(expected, board, ::wxyzWing)
     }
 
-    /*
-     * 9 6 0 | 0 0 1 | 3 7 0
-     * 0 0 2 | 0 9 7 | 8 6 0
-     * 0 5 7 | 6 4 0 | 0 0 0
-     * ------+-------+------
-     * 0 2 0 | 0 5 0 | 7 0 0
-     * 7 0 0 | 1 0 6 | 5 0 2
-     * 5 0 0 | 0 7 0 | 4 3 0
-     * ------+-------+------
-     * 0 7 0 | 0 6 0 | 9 5 0
-     * 0 3 5 | 0 1 0 | 6 0 7
-     * 6 0 9 | 7 0 5 | 0 4 0
-     */
     @Test
     fun wxyzWingTest7() {
         val board = """
@@ -240,19 +149,6 @@ internal class WXYZWingKtTest {
         assertLogicalSolution(expected, board, ::wxyzWing)
     }
 
-    /*
-     * 9 6 0 | 0 0 1 | 3 7 0
-     * 0 0 2 | 0 9 7 | 8 6 0
-     * 0 5 7 | 6 4 0 | 0 0 0
-     * ------+-------+------
-     * 0 2 0 | 0 5 0 | 7 0 0
-     * 7 0 0 | 1 0 6 | 5 0 2
-     * 5 0 0 | 0 7 0 | 4 3 0
-     * ------+-------+------
-     * 0 7 0 | 0 6 0 | 9 5 0
-     * 0 3 5 | 0 1 0 | 6 0 7
-     * 6 0 9 | 7 0 5 | 0 4 0
-     */
     @Test
     fun wxyzWingTest8() {
         val board = """

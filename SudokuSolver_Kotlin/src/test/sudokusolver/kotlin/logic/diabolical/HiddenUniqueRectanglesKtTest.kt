@@ -5,19 +5,6 @@ import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class HiddenUniqueRectanglesKtTest {
-    /*
-     * 1 0 9 | 5 7 0 | 3 0 0
-     * 0 7 0 | 3 9 0 | 0 1 0
-     * 0 0 3 | 0 1 0 | 5 9 7
-     * ------+-------+------
-     * 0 8 0 | 7 4 3 | 0 0 0
-     * 4 9 2 | 0 5 0 | 7 8 3
-     * 7 3 0 | 2 8 9 | 0 4 0
-     * ------+-------+------
-     * 3 1 7 | 0 2 0 | 4 0 0
-     * 2 6 0 | 0 3 0 | 0 7 0
-     * 9 5 0 | 0 6 7 | 2 3 1
-     */
     @Test
     fun hiddenUniqueRectanglesType1Test1() {
         val board = """
@@ -38,19 +25,6 @@ internal class HiddenUniqueRectanglesKtTest {
         assertLogicalSolution(expected, board, ::hiddenUniqueRectangles)
     }
 
-    /*
-     * 5 1 8 | 4 7 2 | 6 3 9
-     * 3 0 6 | 8 5 9 | 0 0 4
-     * 4 0 9 | 3 1 6 | 0 0 0
-     * ------+-------+------
-     * 9 4 5 | 6 2 0 | 3 0 0
-     * 8 6 1 | 0 3 4 | 0 0 5
-     * 7 3 2 | 0 8 5 | 0 0 6
-     * ------+-------+------
-     * 6 5 0 | 0 9 0 | 8 0 3
-     * 2 9 3 | 0 4 8 | 0 6 1
-     * 1 8 0 | 0 6 3 | 0 0 0
-     */
     @Test
     fun hiddenUniqueRectanglesType1Test2() {
         val board = """
@@ -72,19 +46,6 @@ internal class HiddenUniqueRectanglesKtTest {
         assertLogicalSolution(expected, board, ::hiddenUniqueRectangles)
     }
 
-    /*
-     * 5 0 0 | 2 9 1 | 8 3 6
-     * 0 3 0 | 4 7 5 | 0 1 0
-     * 0 0 9 | 3 8 6 | 4 5 7
-     * ------+-------+------
-     * 0 5 0 | 1 4 3 | 0 0 0
-     * 4 0 0 | 7 5 9 | 0 0 1
-     * 0 0 0 | 8 6 2 | 0 4 5
-     * ------+-------+------
-     * 3 0 0 | 0 2 0 | 1 7 0
-     * 0 8 0 | 9 3 7 | 0 2 4
-     * 7 0 2 | 0 1 0 | 0 0 3
-     */
     @Test
     fun hiddenUniqueRectanglesType2Test1() {
         val board = """
@@ -105,19 +66,6 @@ internal class HiddenUniqueRectanglesKtTest {
         assertLogicalSolution(expected, board, ::hiddenUniqueRectangles)
     }
 
-    /*
-     * 5 1 8 | 4 7 2 | 6 3 9
-     * 3 0 6 | 8 5 9 | 0 0 4
-     * 4 0 9 | 3 1 6 | 0 0 0
-     * ------+-------+------
-     * 9 4 5 | 6 2 0 | 3 0 0
-     * 8 6 1 | 0 3 4 | 0 0 5
-     * 7 3 2 | 0 8 5 | 0 0 6
-     * ------+-------+------
-     * 6 5 0 | 0 9 0 | 8 0 3
-     * 2 9 3 | 0 4 8 | 0 6 1
-     * 1 8 0 | 0 6 3 | 0 0 0
-     */
     @Test
     fun hiddenUniqueRectanglesType2Test2() {
         val board = """
@@ -138,19 +86,6 @@ internal class HiddenUniqueRectanglesKtTest {
         assertLogicalSolution(expected, board, ::hiddenUniqueRectangles)
     }
 
-    /*
-     * 0 2 0 | 5 8 0 | 0 3 0
-     * 3 5 0 | 0 0 0 | 0 8 4
-     * 0 8 6 | 7 0 0 | 0 2 0
-     * ------+-------+------
-     * 0 4 8 | 0 9 0 | 1 5 6
-     * 5 0 0 | 6 0 8 | 0 4 0
-     * 9 6 3 | 0 5 0 | 2 7 8
-     * ------+-------+------
-     * 0 9 0 | 0 6 5 | 8 1 0
-     * 6 0 0 | 8 0 0 | 0 9 2
-     * 8 3 0 | 0 0 0 | 0 6 0
-     */
     @Test
     fun hiddenUniqueRectanglesType2BTest1() {
         val board = """
@@ -171,19 +106,6 @@ internal class HiddenUniqueRectanglesKtTest {
         assertLogicalSolution(expected, board, ::hiddenUniqueRectangles)
     }
 
-    /*
-     * 5 1 8 | 4 7 2 | 6 3 9
-     * 3 0 6 | 8 5 9 | 0 0 4
-     * 4 0 9 | 3 1 6 | 0 0 0
-     * ------+-------+------
-     * 9 4 5 | 6 2 0 | 3 0 0
-     * 8 6 1 | 0 3 4 | 0 0 5
-     * 7 3 2 | 0 8 5 | 0 0 6
-     * ------+-------+------
-     * 6 5 0 | 0 9 0 | 8 0 3
-     * 2 9 3 | 0 4 8 | 0 6 1
-     * 1 8 0 | 0 6 3 | 0 0 0
-     */
     @Test
     fun hiddenUniqueRectanglesType2BTest2() {
         val board = """

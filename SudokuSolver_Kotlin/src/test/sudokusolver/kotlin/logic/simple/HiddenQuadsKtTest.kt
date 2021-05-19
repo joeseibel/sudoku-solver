@@ -5,19 +5,6 @@ import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class HiddenQuadsKtTest {
-    /*
-     * 6 5 0 | 0 8 7 | 0 2 4
-     * 0 0 0 | 6 4 9 | 0 5 0
-     * 0 4 0 | 0 2 5 | 0 0 0
-     * ------+-------+------
-     * 5 7 0 | 4 3 8 | 0 6 1
-     * 0 0 0 | 5 0 1 | 0 0 0
-     * 3 1 0 | 9 0 2 | 0 8 5
-     * ------+-------+------
-     * 0 0 0 | 8 9 0 | 0 1 0
-     * 0 0 0 | 2 1 3 | 0 0 0
-     * 1 3 0 | 7 5 0 | 0 9 8
-     */
     @Test
     fun testHiddenQuads1() {
         val board = """
@@ -37,19 +24,6 @@ internal class HiddenQuadsKtTest {
         assertLogicalSolution(expected, board, ::hiddenQuads)
     }
 
-    /*
-     * 9 0 1 | 5 0 0 | 0 4 6
-     * 4 2 5 | 0 9 0 | 0 8 1
-     * 8 6 0 | 0 1 0 | 0 2 0
-     * ------+-------+------
-     * 5 0 2 | 0 0 0 | 0 0 0
-     * 0 1 9 | 0 0 0 | 4 6 0
-     * 6 0 0 | 0 0 0 | 0 0 2
-     * ------+-------+------
-     * 1 9 6 | 0 4 0 | 2 5 3
-     * 2 0 0 | 0 6 0 | 8 1 7
-     * 0 0 0 | 0 0 1 | 6 9 4
-     */
     @Test
     fun testHiddenQuads2() {
         val board = """
