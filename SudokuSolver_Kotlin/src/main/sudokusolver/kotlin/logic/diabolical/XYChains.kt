@@ -127,9 +127,8 @@ private fun alternatingPathExists(
         val nextVertices = graph.edgesOf(currentVertex)
             .filter { it.strength == nextType }
             .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
-            .let { it - visited }
-        return end in nextVertices && nextType == Strength.STRONG || nextVertices.any { nextVertex ->
-            alternatingPathExists(nextVertex, nextType.opposite, visited + setOf(currentVertex))
+        return nextType == Strength.STRONG && end in nextVertices || (nextVertices - visited - end).any { nextVertex ->
+            alternatingPathExists(nextVertex, nextType.opposite, visited + setOf(nextVertex))
         }
     }
 
