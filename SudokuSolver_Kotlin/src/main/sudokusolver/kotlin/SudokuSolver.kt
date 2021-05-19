@@ -77,11 +77,11 @@ fun main(args: Array<String>) {
     }
 }
 
-private sealed class SolveResult
-private object InvalidNoSolutions : SolveResult()
-private object InvalidMultipleSolutions : SolveResult()
-private class Solution(val board: Board<SudokuNumber>) : SolveResult()
-private class UnableToSolve(val board: Board<Cell>) : SolveResult()
+private sealed interface SolveResult
+private object InvalidNoSolutions : SolveResult
+private object InvalidMultipleSolutions : SolveResult
+private class Solution(val board: Board<SudokuNumber>) : SolveResult
+private class UnableToSolve(val board: Board<Cell>) : SolveResult
 
 private fun solve(input: Board<SudokuNumber?>): SolveResult {
     when (val bruteForceSolution = bruteForce(input)) {

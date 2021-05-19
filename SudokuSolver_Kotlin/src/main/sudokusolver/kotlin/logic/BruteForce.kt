@@ -9,10 +9,10 @@ import sudokusolver.kotlin.getBlockIndex
 import sudokusolver.kotlin.toMutableBoard
 import java.util.EnumSet
 
-sealed class BruteForceSolution
-object NoSolutions : BruteForceSolution()
-object MultipleSolutions : BruteForceSolution()
-data class SingleSolution(val solution: Board<SudokuNumber>) : BruteForceSolution()
+sealed interface BruteForceSolution
+object NoSolutions : BruteForceSolution
+object MultipleSolutions : BruteForceSolution
+data class SingleSolution(val solution: Board<SudokuNumber>) : BruteForceSolution
 
 /*
  * Recursively tries every number for each unsolved cell looking for a solution.

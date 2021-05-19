@@ -43,9 +43,9 @@ import java.util.EnumSet
  * advantage of simplifying the tests and having simpler debugging. The reason that I rejected this approach was to make
  * it easier to add parallelism to the logic functions at some point in the future.
  */
-sealed class BoardModification : Comparable<BoardModification> {
-    abstract val row: Int
-    abstract val column: Int
+sealed interface BoardModification : Comparable<BoardModification> {
+    val row: Int
+    val column: Int
 
     override fun compareTo(other: BoardModification): Int {
         val rowCompare = row.compareTo(other.row)
@@ -57,7 +57,7 @@ data class RemoveCandidates(
     override val row: Int,
     override val column: Int,
     val candidates: EnumSet<SudokuNumber>
-) : BoardModification() {
+) : BoardModification {
     init {
         require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
         require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
@@ -77,7 +77,7 @@ data class RemoveCandidates(
     )
 }
 
-data class SetValue(override val row: Int, override val column: Int, val value: SudokuNumber) : BoardModification() {
+data class SetValue(override val row: Int, override val column: Int, val value: SudokuNumber) : BoardModification {
     init {
         require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
         require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
