@@ -21,9 +21,9 @@ import java.util.EnumSet
  * where it is in the board. The proof of this benefit is by looking at the diff between logic functions without indices
  * in the Cell and those same functions with indices in the Cell.
  *
- * PruneCandidates: https://github.com/joeseibel/sudoku-solver/commit/d6432b3c881f4884066f66624d5791f5d26e40ee?diff=split#diff-af09b93439eb4275b4b08e09c8a2a2aa
- * NakedSingles: https://github.com/joeseibel/sudoku-solver/commit/d6432b3c881f4884066f66624d5791f5d26e40ee?diff=split#diff-020facf91c5915c049435df05f0db046
- * HiddenSingles: https://github.com/joeseibel/sudoku-solver/commit/d6432b3c881f4884066f66624d5791f5d26e40ee?diff=split#diff-9f151d570c7938966353c69f31b35766
+ * PruneCandidates: https://github.com/joeseibel/sudoku-solver/commit/d6432b3c881f4884066f66624d5791f5d26e40ee#diff-a74cfdcefbbae82b7a77a891128246f6f9fe0e443419ba7e019b7762191ac06c
+ * NakedSingles: https://github.com/joeseibel/sudoku-solver/commit/d6432b3c881f4884066f66624d5791f5d26e40ee#diff-e19a4c430b58e8ab605eda104111fe9e849197301311796f01c609204429560c
+ * HiddenSingles: https://github.com/joeseibel/sudoku-solver/commit/d6432b3c881f4884066f66624d5791f5d26e40ee#diff-9246c6cae9f040c632a117726cc1678c801b55fe03985cad55c692ddbe27886f
  */
 sealed class Cell {
     abstract val row: Int
