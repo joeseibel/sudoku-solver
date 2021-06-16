@@ -2,6 +2,7 @@ package sudokusolver.kotlin.logic.diabolical
 
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class UniqueRectanglesKtTest {
@@ -440,5 +441,45 @@ internal class UniqueRectanglesKtTest {
             RemoveCandidates(7, 6, 2)
         )
         assertLogicalSolution(expected, board, ::uniqueRectanglesType4)
+    }
+
+    @Test
+    fun uniqueRectanglesType5Test1() {
+        val board = """
+            7{589}{3589}4{259}6{28}{238}1
+            {49}2{369}8{179}{17}{467}{367}5
+            1{4568}{568}3{257}{27}{24678}9{2467}
+            3{169}4{279}{127}5{2678}{2678}{267}
+            {289}7{56}{29}3{28}{456}1{46}
+            {28}{15}{125}6{1247}{12478}3{257}9
+            {249}3{1279}5{2467}{247}{19}{267}8
+            5{189}{12789}{27}{2678}3{19}4{267}
+            6{48}{278}1{2478}9{257}{257}3
+        """.trimIndent().replace("\n", "")
+        val expected = listOf(
+            SetValue(4, 5, 8),
+            SetValue(5, 0, 8)
+        )
+        assertLogicalSolution(expected, board, ::uniqueRectanglesType5)
+    }
+
+    @Test
+    fun uniqueRectanglesType5Test2() {
+        val board = """
+            {267}{1267}895{167}3{167}4
+            {567}94{17}3{167}{28}{1567}{28}
+            {567}{367}{13}824{17}{1567}9
+            {246}5{12}3{147}{17}{678}9{78}
+            387269541
+            {469}{16}{19}5{147}8{67}23
+            1{47}5{467}8293{67}
+            {279}{237}{239}{167}{17}548{267}
+            8{247}6{47}93{127}{17}5
+        """.trimIndent().replace("\n", "")
+        val expected = listOf(
+            SetValue(6, 1, 4),
+            SetValue(8, 3, 4)
+        )
+        assertLogicalSolution(expected, board, ::uniqueRectanglesType5)
     }
 }

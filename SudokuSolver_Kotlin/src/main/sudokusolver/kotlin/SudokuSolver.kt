@@ -20,6 +20,7 @@ import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType2
 import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType3
 import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType3BWithTriplePseudoCells
 import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType4
+import sudokusolver.kotlin.logic.diabolical.uniqueRectanglesType5
 import sudokusolver.kotlin.logic.diabolical.wxyzWing
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule1
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule2
@@ -148,6 +149,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { uniqueRectanglesType3(board) }
                     .ifEmpty { uniqueRectanglesType3BWithTriplePseudoCells(board) }
                     .ifEmpty { uniqueRectanglesType4(board) }
+                    .ifEmpty { uniqueRectanglesType5(board) }
                     .ifEmpty { extendedUniqueRectangles(board) }
                     .ifEmpty { hiddenUniqueRectangles(board) }
                     .ifEmpty { wxyzWing(board) }

@@ -4,6 +4,7 @@ import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.LocatedCandidate
 import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.createRectangles
@@ -190,3 +191,36 @@ fun uniqueRectanglesType4(board: Board<Cell>): List<RemoveCandidates> =
                     getRemovals(Cell::block, board::getBlock)
         }
     }.flatten().mergeToRemoveCandidates()
+
+/*
+ * Type 5
+ *
+ * If a rectangle has two floor cells in diagonally opposite corners of the rectangle and one of the common candidates
+ * only appears in the rectangle for the rows and columns that the rectangle exists in, thus forming strong links for
+ * the candidate along the four edges of the rectangle, then this is a potential Deadly Pattern. If the non-strong
+ * link candidate were to be set as the solution to one of the floor cells, then the strong link candidate would have to
+ * be the solution for the roof cells and the non-strong link candidate would need to be set as the solution to the
+ * other floor cell, leading to the Deadly Pattern. The non-strong link candidate cannot be the solution to either floor
+ * cell. Since each floor cell only contains two candidates, this means that the strong link candidate must be the
+ * solution for the floor cells.
+ */
+fun uniqueRectanglesType5(board: Board<Cell>): List<SetValue> =
+    createRectangles(board).mapNotNull { rectangle ->
+        rectangle.cells
+            .filter { it.candidates.size == 2 }
+            .takeIf { floor -> floor.size == 2 }
+            ?.takeIf { (floorA, floorB) -> floorA.row != floorB.row && floorA.column != floorB.column }
+            ?.let { floor ->
+                rectangle.commonCandidates
+                    .firstOrNull { candidate ->
+
+                        fun hasStrongLink(unit: List<Cell>) =
+                            unit.filterIsInstance<UnsolvedCell>().filter { candidate in it.candidates }.size == 2
+
+                        floor.all {
+                            hasStrongLink(board.getRow(it.row)) && hasStrongLink(board.getColumn(it.column))
+                        }
+                    }
+                    ?.let { strongLinkCandidate -> floor.map { SetValue(it, strongLinkCandidate) } }
+            }
+    }.flatten()
