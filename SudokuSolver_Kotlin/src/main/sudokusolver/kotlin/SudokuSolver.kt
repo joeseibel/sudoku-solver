@@ -27,6 +27,7 @@ import sudokusolver.kotlin.logic.diabolical.xCyclesRule2
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule3
 import sudokusolver.kotlin.logic.diabolical.xyChains
 import sudokusolver.kotlin.logic.extreme.emptyRectangles
+import sudokusolver.kotlin.logic.extreme.finnedSwordfish
 import sudokusolver.kotlin.logic.extreme.finnedXWing
 import sudokusolver.kotlin.logic.extreme.groupedXCyclesRule1
 import sudokusolver.kotlin.logic.extreme.groupedXCyclesRule2
@@ -160,6 +161,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { groupedXCyclesRule3(board) }
                     .ifEmpty { emptyRectangles(board) }
                     .ifEmpty { finnedXWing(board) }
+                    .ifEmpty { finnedSwordfish(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
