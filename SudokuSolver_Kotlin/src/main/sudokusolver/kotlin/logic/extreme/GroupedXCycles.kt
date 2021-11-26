@@ -29,8 +29,8 @@ import java.io.StringWriter
  *
  * Grouped X-Cycles are an extension of X-Cycles in which a vertex can be a cell or a group of cells. Just like
  * X-Cycles, a Grouped X-Cycles graph is for a single candidate. A group is a set of cells with the candidate which
- * share two units. This means that a group exists in the same block and the same row or it exists in the same block and
- * the same column.
+ * share two units. This means that a group exists in the same block and the same row, or it exists in the same block
+ * and the same column.
  *
  * Similar to X-Cycles, the edges of a Grouped X-Cycles graph are either strong or weak. Unlike X-Cycles, the edges can
  * connect two cells, a cell and a group, or two groups. A strong link connects two vertices in a unit when they are the
@@ -39,12 +39,12 @@ import java.io.StringWriter
  *
  * Since a vertex can be a cell or a group of cells, it is possible for vertices to overlap and even for edges to
  * overlap. For example, consider a unit which has three cells with a candidate, two of which form a group and one which
- * is outside of the group. In this case there would be four vertices: three vertices for the cells and one for the
- * group. Two of the cell vertices overlap with the cells of the group. This example would also have one strong link and
- * three weak links. The strong link would connect the group to the cell outside of the group. This is a strong link
- * because when we discount the cells that overlap with the group, there are only two vertices in the unit. The weak
- * links connect all of the individual cells. They are weak because there are more than two cell vertices in the unit
- * when we discount the group.
+ * is outside the group. In this case there would be four vertices: three vertices for the cells and one for the group.
+ * Two of the cell vertices overlap with the cells of the group. This example would also have one strong link and three
+ * weak links. The strong link would connect the group to the cell outside the group. This is a strong link because when
+ * we discount the cells that overlap with the group, there are only two vertices in the unit. The weak links connect
+ * all the individual cells. They are weak because there are more than two cell vertices in the unit when we discount
+ * the group.
  *
  * A Grouped X-Cycle is a cycle in the graph in which the edges alternate between strong and weak links. If one vertex
  * of a link contains the solution, then the other vertex must not contain the solution. If one cell of a strong link

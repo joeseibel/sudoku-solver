@@ -16,24 +16,22 @@ import sudokusolver.kotlin.mergeToRemoveCandidates
  * This solution starts with looking for empty rectangles in blocks. An empty rectangle is a collection of four cells,
  * all contained within a single block, arranged in a rectangle, and none of them contain a particular candidate. The
  * cells can either be solved cells or unsolved cells without the candidate. For the other cells which are in the block,
- * but are outside of the rectangle, at least two of them must contain the candidate and those cells must be in at least
+ * but are outside the rectangle, at least two of them must contain the candidate and those cells must be in at least
  * two different rows and two different columns.
  *
  * This creates a situation in which two lines can be drawn through the block; one line along a row and the other along
- * a column. The two lines must not pass through any of the empty rectangle cells and all of the cells with the
- * candidate must have a line pass through it. A valid block is one in which there is only one option for the placement
- * of these lines. This is why the cells with the candidate must be in at least two different rows and two different
- * columns. The cell in which these lines intersect is then used to find removals outside of the block. The empty
- * rectangle itself is used to find a valid intersection point, but then the rectangle is disregarded for the remainder
- * of the solution.
+ * a column. The two lines must not pass through any of the empty rectangle cells and all the cells with the candidate
+ * must have a line pass through it. A valid block is one in which there is only one option for the placement of these
+ * lines. This is why the cells with the candidate must be in at least two different rows and two different columns. The
+ * cell in which these lines intersect is then used to find removals outside the block. The empty rectangle itself is
+ * used to find a valid intersection point, but then the rectangle is disregarded for the remainder of the solution.
  *
- * Removals are looked for in cells which are outside of the block, but which can see the intersection. If the
- * intersection can see one end of a strong link which is outside of the intersection's block and there is another cell
- * with the candidate outside of the intersection's block, but it can see the intersection and the other end of the
- * strong link, then there is a contradiction. If the candidate were to be set as the solution to the other cell, then
- * the strong link and this newly set solution would remove the candidate from every cell within the intersection's
- * block, thus invalidating that block. This means that the candidate cannot be the solution to that cell and can be
- * removed.
+ * Removals are looked for in cells which are outside the block, but which can see the intersection. If the intersection
+ * can see one end of a strong link which is outside the intersection's block and there is another cell with the
+ * candidate outside the intersection's block, but it can see the intersection and the other end of the strong link,
+ * then there is a contradiction. If the candidate were to be set as the solution to the other cell, then the strong
+ * link and this newly set solution would remove the candidate from every cell within the intersection's block, thus
+ * invalidating that block. This means that the candidate cannot be the solution to that cell and can be removed.
  */
 fun emptyRectangles(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->
@@ -103,7 +101,7 @@ private fun getIntersections(board: Board<Cell>, candidate: SudokuNumber): List<
  * the natural and expected behavior when the cell is a SolvedCell and the candidate is the solution to that cell? Would
  * someone reasonably expect the expression "SudokuNumber.ONE in SolvedCell(value = SudokuNumber.ONE, ...)" to return
  * true and be surprised when it actually returns false? It is true that a name like hasCandidate would be more clear,
- * but since this is a private function and it is easy to see where it is used, I decided to choose brevity over
+ * but since this is a private function, and it is easy to see where it is used, I decided to choose brevity over
  * clarity.
  *
  * These questions are not all that interesting here in Kotlin, but will prove to be more interesting in other

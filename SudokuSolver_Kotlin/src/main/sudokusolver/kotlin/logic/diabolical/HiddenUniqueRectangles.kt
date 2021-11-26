@@ -33,7 +33,7 @@ fun hiddenUniqueRectangles(board: Board<Cell>): List<RemoveCandidates> =
  * Type 1
  *
  * If a rectangle has one floor cell, then consider the roof cell on the opposite corner of the rectangle. If one of the
- * common candidates appears twice in that cell's row and twice in that cell's column, which implies that that the other
+ * common candidates appears twice in that cell's row and twice in that cell's column, which implies that the other
  * occurrences in that row and column are in the two other corners of the rectangle, then setting the other common
  * candidate as the value to that cell would lead to the Deadly Pattern. Therefore, the other common candidate cannot be
  * the solution to that cell. The other common candidate can be removed from the roof cell which is opposite of the one

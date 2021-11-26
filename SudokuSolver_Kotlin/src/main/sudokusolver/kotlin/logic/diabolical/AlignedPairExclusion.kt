@@ -20,7 +20,7 @@ import java.util.EnumSet
  * n unsolved cells, all of which can see each other, and there are n + 1 candidates across all n cells. In the simplest
  * case, any unsolved cell with two candidates is an ALS; there is one cell and two candidates. A pair of cells is an
  * ALS if they can see each other and the union of candidates has a size of three. If there are three cells that see
- * each other and there are four candidates across those three cells, than those three cells are an ALS.
+ * each other and there are four candidates across those three cells, then those three cells are an ALS.
  *
  * Aligned Pair Exclusion considers a pair of unsolved cells, which may or may not see each other, and checks for
  * solution combinations for that pair which would cause problems for that pair or for Almost Locks Sets which are
@@ -39,7 +39,7 @@ import java.util.EnumSet
  * the same candidates as the ALS, then the solution combination would empty the ALS. This is a very obvious case, but
  * it gets a little more complicated when an ALS has more than one cell and more than two candidates. The link at the
  * start of this comment has some examples with ALSs that have two cells and three cells. It is helpful to walk through
- * these examples to see how a solution combination which is a subset of the candidates of an an ALS is invalid.
+ * these examples to see how a solution combination which is a subset of the candidates of an ALS is invalid.
  */
 fun alignedPairExclusion(board: Board<Cell>): List<RemoveCandidates> =
     board.cells.filterIsInstance<UnsolvedCell>().zipEveryPair().flatMap { (cellA, cellB) ->

@@ -46,9 +46,9 @@ fun simpleColoringRule2(board: Board<Cell>): List<RemoveCandidates> =
 /*
  * Rule 4: Two colors 'elsewhere'
  *
- * If an unsolved cell with a given candidate is outside of the chain and it is in the same units as two differently
+ * If an unsolved cell with a given candidate is outside the chain, and it is in the same units as two differently
  * colored vertices, then one of those two vertices must be the solution for the candidate. The candidate can be removed
- * from the cell outside of the chain.
+ * from the cell outside the chain.
  */
 fun simpleColoringRule4(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.values().flatMap { candidate ->

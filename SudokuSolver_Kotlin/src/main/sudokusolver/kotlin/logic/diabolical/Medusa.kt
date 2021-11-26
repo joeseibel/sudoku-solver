@@ -21,7 +21,7 @@ import sudokusolver.kotlin.zipEveryPair
  * https://www.sudokuwiki.org/3D_Medusa
  *
  * A 3D Medusa is a graph type in which each vertex is a particular candidate in a cell and each edge is a strong link.
- * A strong link is an edge in which if one vertex of the link is the solution, then the other vertex must not be the
+ * A strong link is an edge such that if one vertex of the link is the solution, then the other vertex must not be the
  * solution. A strong link also means that if one vertex of the link is not the solution, then the other vertex must be
  * the solution. When a candidate is in only two cells of a unit, there is an edge between the candidate of those two
  * cells. Additionally, when a cell contains only two candidates, there is an edge between the two candidates of that
@@ -110,9 +110,9 @@ fun medusaRule3(board: Board<Cell>): List<RemoveCandidates> =
 /*
  * Rule 4: Two colors 'elsewhere'
  *
- * Given a candidate, if there is an unsolved cell with that candidate and it is uncolored and the cell can see two
- * other cells which both have that candidate and they are differently colored, then the candidate must be the solution
- * to one of the other cells and it cannot be the solution to the first cell with the uncolored candidate. The uncolored
+ * Given a candidate, if there is an unsolved cell with that candidate, it is uncolored, and the cell can see two other
+ * cells which both have that candidate, and they are differently colored, then the candidate must be the solution to
+ * one of the other cells, and it cannot be the solution to the first cell with the uncolored candidate. The uncolored
  * candidate can be removed from the first cell.
  */
 fun medusaRule4(board: Board<Cell>): List<RemoveCandidates> =

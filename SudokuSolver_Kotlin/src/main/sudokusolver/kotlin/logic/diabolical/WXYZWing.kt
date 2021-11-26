@@ -17,8 +17,8 @@ import sudokusolver.kotlin.zipEveryQuad
  * quad with the candidate can see every other cell of the quad with the candidate. A non-restricted candidate is one in
  * which at least one cell of the quad with the candidate cannot see every other cell of the quad with the candidate. If
  * a quad contains exactly one non-restricted candidate, then that candidate must be the solution to one of the cells of
- * the quad. The non-restricted candidate can be removed from any cell outside of the quad that can see every cell of
- * the quad with the candidate.
+ * the quad. The non-restricted candidate can be removed from any cell outside the quad that can see every cell of the
+ * quad with the candidate.
  */
 fun wxyzWing(board: Board<Cell>): List<RemoveCandidates> =
     board.cells

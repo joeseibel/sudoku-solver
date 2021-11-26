@@ -100,7 +100,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                 }
                 /*
                  * Why do I convert the MutableBoard to an immutable Board just to pass the immutable one to the logic
-                 * functions? I wanted the logic functions to have the guarantee the the board will not change while
+                 * functions? I wanted the logic functions to have the guarantee that the board will not change while
                  * they are running. Even if I have the logic functions take an AbstractBoard, that would be no
                  * guarantee. That would simply prevent the logic function from mutating the board without casting it.
                  * The only way to have mutability here and true immutability in the logic functions is to copy the

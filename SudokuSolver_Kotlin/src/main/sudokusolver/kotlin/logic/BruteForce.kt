@@ -27,8 +27,8 @@ data class SingleSolution(val solution: Board<SudokuNumber>) : BruteForceSolutio
  * IllegalStateException is thrown.
  *
  * The second reason for implementing brute force is to check for the number of solutions for a board before trying the
- * logical solutions. If a board cannot be solve or if it has multiple solutions, then I don't bother with the logical
- * solutions. The logical solutions are written assuming the they are operating on a board with only one solution.
+ * logical solutions. If a board cannot be solved or if it has multiple solutions, then I don't bother with the logical
+ * solutions. The logical solutions are written assuming that they are operating on a board with only one solution.
  */
 fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
     if (board.cells.count { it == null } == 0) {
