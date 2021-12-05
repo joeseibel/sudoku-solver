@@ -37,7 +37,7 @@ internal class XCyclesKtTest {
     }
 
     @Test
-    fun testXCyclesRule1() {
+    fun rule1() {
         val board = """
             {59}241{35}{58}67{389}
             {59}6{38}{238}7{258}41{389}
@@ -59,7 +59,7 @@ internal class XCyclesKtTest {
     }
 
     @Test
-    fun testXCyclesRule2() {
+    fun rule2() {
         val board = """
             8{19}4537{169}{126}{12}
             {79}23614{79}85
@@ -76,7 +76,7 @@ internal class XCyclesKtTest {
     }
 
     @Test
-    fun testXCyclesRule3Test1() {
+    fun rule3Test1() {
         val board = """
             {158}762{35}{89}4{589}{1389}
             {58}941{35}7{2358}6{238}
@@ -93,7 +93,7 @@ internal class XCyclesKtTest {
     }
 
     @Test
-    fun testXCyclesRule3Test2() {
+    fun rule3Test2() {
         val board = """
             {2478}{23}{247}{357}1{357}96{28}
             {127}{1239}{1279}68{37}45{12}
@@ -110,7 +110,7 @@ internal class XCyclesKtTest {
     }
 
     @Test
-    fun testXCyclesRule3Test3() {
+    fun rule3Test3() {
         val board = """
             {12456}{145}{1256}978{24}{2346}{236}
             {27}83{46}{46}159{27}
@@ -127,7 +127,7 @@ internal class XCyclesKtTest {
     }
 
     @Test
-    fun testXCyclesRule3Test4() {
+    fun rule3Test4() {
         val board = """
             {23678}{23489}{24689}{168}5{69}{12378}{13467}{23467}
             {67}{48}12{48}39{67}5

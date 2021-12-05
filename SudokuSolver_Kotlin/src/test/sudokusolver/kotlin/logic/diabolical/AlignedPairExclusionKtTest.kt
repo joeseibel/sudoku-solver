@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class AlignedPairExclusionKtTest {
     @Test
-    fun alignedPairExclusionTest1() {
+    fun test1() {
         val board = """
             {568}971{258}3{268}4{258}
             {568}3{128}{258}4{259}7{1269}{2589}
@@ -26,7 +26,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest2() {
+    fun test2() {
         val board = """
             {56}971{258}3{268}4{25}
             {568}3{128}{258}4{259}7{1269}{2589}
@@ -43,7 +43,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest3() {
+    fun test3() {
         val board = """
             {17}{1458}{457}{14}23{69}{69}{78}
             62{37}598{137}{137}4
@@ -63,7 +63,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest4() {
+    fun test4() {
         val board = """
             {17}{1458}{457}{14}23{69}{69}{78}
             62{37}598{137}{137}4
@@ -83,7 +83,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest5() {
+    fun test5() {
         val board = """
             {124}{159}{2589}{689}{568}{49}37{15}
             7{1459}6{89}{458}3{128}{458}{1245}
@@ -103,7 +103,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest6() {
+    fun test6() {
         val board = """
             {18}24{19}536{1789}{78}
             {168}{13678}5{1789}4{89}{139}{189}2
@@ -126,7 +126,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest7() {
+    fun test7() {
         val board = """
             45{37}9{136}{367}{278}{168}{1268}
             {127}{123}68{134}{3457}9{15}{14}
@@ -149,7 +149,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest8() {
+    fun test8() {
         val board = """
             45{37}9{136}{367}{278}{168}{1268}
             {27}{123}68{134}{3457}9{15}{14}
@@ -171,7 +171,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest9() {
+    fun test9() {
         val board = """
             9{45}{47}{378}{28}{237}1{235}6
             {67}{16}259{1367}{478}{38}{478}
@@ -196,7 +196,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest10() {
+    fun test10() {
         val board = """
             9{45}{47}{378}{28}{237}1{235}6
             {67}{16}259{1367}{478}{38}{478}
@@ -218,7 +218,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest11() {
+    fun test11() {
         val board = """
             9{45}{47}{378}{28}{237}1{235}6
             {67}{16}259{1367}{478}{38}{478}
@@ -239,7 +239,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest12() {
+    fun test12() {
         val board = """
             {135}72{159}8{35}64{59}
             {1345}967{124}{2345}8{235}{25}
@@ -260,7 +260,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest13() {
+    fun test13() {
         val board = """
             {135}72{159}8{35}64{59}
             {1345}967{12}{2345}8{235}{25}
@@ -277,7 +277,7 @@ internal class AlignedPairExclusionKtTest {
     }
 
     @Test
-    fun alignedPairExclusionTest14() {
+    fun test14() {
         val board = """
             185{49}2637{49}
             {234}6{234}{3579}{134}{1357}{2458}{28}{2589}

@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class WXYZWingKtTest {
     @Test
-    fun wxyzWingTest1() {
+    fun test1() {
         val board = """
             {1689}{169}{189}{1589}2473{158}
             54{189}37{89}26{18}
@@ -26,7 +26,7 @@ internal class WXYZWingKtTest {
     }
 
     @Test
-    fun wxyzWingTest2() {
+    fun test2() {
         val board = """
             {1689}{169}{189}{1589}2473{158}
             54{189}37{89}26{18}
@@ -43,7 +43,7 @@ internal class WXYZWingKtTest {
     }
 
     @Test
-    fun wxyzWingTest3() {
+    fun test3() {
         val board = """
             {18}6{89}{189}24735
             54{189}37{89}26{18}
@@ -64,7 +64,7 @@ internal class WXYZWingKtTest {
     }
 
     @Test
-    fun wxyzWingTest4() {
+    fun test4() {
         val board = """
             842{56}{56}3719
             {67}{679}31{789}4{568}{258}{26}
@@ -86,7 +86,7 @@ internal class WXYZWingKtTest {
     }
 
     @Test
-    fun wxyzWingTest5() {
+    fun test5() {
         val board = """
             842{56}{56}3719
             {67}{679}31{789}4{568}{258}{26}
@@ -103,7 +103,7 @@ internal class WXYZWingKtTest {
     }
 
     @Test
-    fun wxyzWingTest6() {
+    fun test6() {
         val board = """
             {2457}{135}{1257}{3467}{2367}{247}8{3456}9
             {2479}{39}8{34679}{23679}5{13}{346}{136}
@@ -124,7 +124,7 @@ internal class WXYZWingKtTest {
     }
 
     @Test
-    fun wxyzWingTest7() {
+    fun test7() {
         val board = """
             96{48}{258}{28}137{45}
             {134}{14}2{35}9786{45}
@@ -146,7 +146,7 @@ internal class WXYZWingKtTest {
     }
 
     @Test
-    fun wxyzWingTest8() {
+    fun test8() {
         val board = """
             96{48}{258}{28}137{45}
             {134}{14}2{35}9786{45}

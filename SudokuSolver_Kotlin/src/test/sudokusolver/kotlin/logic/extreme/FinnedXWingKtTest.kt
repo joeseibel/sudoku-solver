@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class FinnedXWingKtTest {
     @Test
-    fun testFinnedXWingTest1() {
+    fun test1() {
         val board = """
             754{126}{269}8{12}3{1269}
             836{14}{279}{12479}{57}{279}{12579}
@@ -23,7 +23,7 @@ internal class FinnedXWingKtTest {
     }
 
     @Test
-    fun testFinnedXWingTest2() {
+    fun test2() {
         val board = """
             9{156}{1256}{25}4{1567}38{267}
             7{136}4{23}8{136}95{26}
@@ -40,7 +40,7 @@ internal class FinnedXWingKtTest {
     }
 
     @Test
-    fun testFinnedXWingTest3() {
+    fun test3() {
         val board = """
             9{156}{1256}{25}4{1567}38{267}
             7{136}4{23}8{136}95{26}
@@ -57,7 +57,7 @@ internal class FinnedXWingKtTest {
     }
 
     @Test
-    fun testSashimiFinnedXWing() {
+    fun testSashimi() {
         val board = """
             3{467}{67}{46}12598
             {249}{245}1{49}8{459}763

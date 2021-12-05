@@ -39,7 +39,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule1Test1() {
+    fun rule1Test1() {
         val board = """
             185{49}2637{49}
             {234}6{234}{3579}{134}{1357}{2458}{28}{2589}
@@ -61,7 +61,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule1Test2() {
+    fun rule1Test2() {
         val board = """
             3{279}1{89}{258}4{259}6{257}
             8{279}4{69}{256}{59}{2359}1{2357}
@@ -87,7 +87,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule1Test3() {
+    fun rule1Test3() {
         val board = """
             3{279}1{89}{258}4{259}6{257}
             8{279}4{69}{256}{59}{2359}1{2357}
@@ -110,7 +110,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule2Test1() {
+    fun rule2Test1() {
         val board = """
             {123}8{249}5{12}7{234}6{12349}
             7{36}{25}94{126}{235}{1235}8
@@ -127,7 +127,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule2Test2() {
+    fun rule2Test2() {
         val board = """
             2{168}4{16}{36}79{38}5
             {168}9{178}5{136}2{167}4{38}
@@ -144,7 +144,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule3Test1() {
+    fun rule3Test1() {
         val board = """
             {128}{124}37{89}65{2489}{49}
             7{248}{48}5{2389}{38}6{2489}1
@@ -161,7 +161,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule3Test2() {
+    fun rule3Test2() {
         val board = """
             185{49}2637{49}
             {234}6{234}{3579}{134}{1357}{2458}{28}{59}
@@ -178,7 +178,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule3Test3() {
+    fun rule3Test3() {
         val board = """
             185{49}2637{49}
             {234}6{23}{3579}{134}{1357}{458}{28}{59}
@@ -198,7 +198,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule3Test4() {
+    fun rule3Test4() {
         val board = """
             185{49}2637{49}
             {234}6{23}{3579}{134}{1357}{458}{28}{59}
@@ -215,7 +215,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule3Test5() {
+    fun rule3Test5() {
         val board = """
             1{278}5{37}{238}946{278}
             3496{28}{278}{2578}1{2578}
@@ -236,7 +236,7 @@ internal class GroupedXCyclesKtTest {
     }
 
     @Test
-    fun testGroupedXCyclesRule3Test6() {
+    fun rule3Test6() {
         val board = """
             62{489}{48}53{489}71
             31{489}{478}{24789}{249}{2489}{56}{56}

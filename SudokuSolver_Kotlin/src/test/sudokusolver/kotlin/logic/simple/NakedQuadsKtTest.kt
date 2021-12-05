@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class NakedQuadsKtTest {
     @Test
-    fun testNakedQuads() {
+    fun test() {
         val board = """
             {15}{1245}{2457}{45}3{19}{79}86
             {1568}{1568}{35678}{56}2{19}{79}4{13}

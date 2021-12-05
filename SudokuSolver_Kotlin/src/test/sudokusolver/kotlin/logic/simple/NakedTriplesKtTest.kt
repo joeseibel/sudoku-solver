@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class NakedTriplesKtTest {
     @Test
-    fun testNakedTriples1() {
+    fun test1() {
         val board = """
             {36}7{16}4{135}8{135}29
             {369}{169}2{1579}{135}{5679}{1358}{3568}4
@@ -28,7 +28,7 @@ internal class NakedTriplesKtTest {
     }
 
     @Test
-    fun testNakedTriples2() {
+    fun test2() {
         val board = """
             294513{78}{78}6
             6{57}{57}842319

@@ -7,7 +7,7 @@ import sudokusolver.kotlin.parseSimpleCells
 
 internal class PruneCandidatesKtTest {
     @Test
-    fun testPruneCandidates() {
+    fun test() {
         val board = "000105000140000670080002400063070010900000003010090520007200080026000035000409000"
         val expected = listOf(
             RemoveCandidates(0, 0, 1, 4, 5, 8, 9),

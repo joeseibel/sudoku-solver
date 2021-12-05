@@ -37,7 +37,7 @@ internal class XYChainsKtTest {
     }
 
     @Test
-    fun testXYChains1() {
+    fun test1() {
         val board = """
             {26}8{245}1{29}3{59}7{456}
             {37}9{24}5{27}6{18}{14}{348}
@@ -60,7 +60,7 @@ internal class XYChainsKtTest {
     }
 
     @Test
-    fun testXYChains2() {
+    fun test2() {
         val board = """
             {48}92{145}{18}{158}376
             {478}1{68}{24679}3{2689}5{28}{248}
@@ -85,7 +85,7 @@ internal class XYChainsKtTest {
     }
 
     @Test
-    fun testXYChains3() {
+    fun test3() {
         val board = """
             931672458
             672854193
@@ -105,7 +105,7 @@ internal class XYChainsKtTest {
     }
 
     @Test
-    fun testXYChains4() {
+    fun test4() {
         val board = """
             {45}938{24}716{25}
             286591437
@@ -145,7 +145,7 @@ internal class XYChainsKtTest {
     }
 
     @Test
-    fun testXYChains5() {
+    fun test5() {
         val board = """
             9{246}3{458}{267}1{478}{245}{2578}
             8{246}{46}{345}{2367}{56}{3479}{1245}{12579}

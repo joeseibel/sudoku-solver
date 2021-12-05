@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class SwordfishKtTest {
     @Test
-    fun testSwordfish1() {
+    fun test1() {
         val board = """
             52941{68}7{68}3
             {478}{148}6{59}{789}3{18}{14589}2
@@ -29,7 +29,7 @@ internal class SwordfishKtTest {
     }
 
     @Test
-    fun testSwordfish2() {
+    fun test2() {
         val board = """
             926{3458}{48}{3578}1{57}{578}
             537{689}1{689}42{89}
@@ -53,7 +53,7 @@ internal class SwordfishKtTest {
     }
 
     @Test
-    fun testSwordfish3() {
+    fun test3() {
         val board = """
             {157}2{1578}{17}43{1578}69
             {1457}{145}38962{45}{1457}
@@ -82,7 +82,7 @@ internal class SwordfishKtTest {
     }
 
     @Test
-    fun testSwordfish4() {
+    fun test4() {
         val board = """
             1673{259}{259}{289}4{589}
             8{23}{239}{245}{12459}6{1279}{2579}{159}
@@ -111,7 +111,7 @@ internal class SwordfishKtTest {
     }
 
     @Test
-    fun testSwordfish5() {
+    fun test5() {
         val board = """
             3{26789}{12678}{1689}4{1269}{126}5{16}
             {12}{269}{1256}{1569}37{126}48

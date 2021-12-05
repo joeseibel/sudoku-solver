@@ -7,7 +7,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class UniqueRectanglesKtTest {
     @Test
-    fun uniqueRectanglesType1Test1() {
+    fun type1Test1() {
         val board = """
             {79}{79}6324815
             85{23}691{24}7{34}
@@ -24,7 +24,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType1Test2() {
+    fun type1Test2() {
         val board = """
             {589}{15}{169}{69}3{25}{24578}{1578}{12457}
             37418{25}{25}69
@@ -41,7 +41,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType1Test3() {
+    fun type1Test3() {
         val board = """
             {4569}8{469}72{59}{456}13
             {345679}{45679}{234679}8{46}1{456}{49}{27}
@@ -58,7 +58,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType1Test4() {
+    fun type1Test4() {
         val board = """
             12{58}{568}{568}7943
             96{35}{345}1{34}872
@@ -75,7 +75,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType2Test1() {
+    fun type2Test1() {
         val board = """
             42{157}9{157}{157}386
             {135}6{135}2{1358}{158}794
@@ -95,7 +95,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType2Test2() {
+    fun type2Test2() {
         val board = """
             {145}7{146}9{156}3{456}82
             {13458}{35689}{13469}{1568}2{168}{345679}{3579}{347}
@@ -118,7 +118,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType2Test3() {
+    fun type2Test3() {
         val board = """
             {589}{15}{169}{69}3{25}{478}{1578}{12457}
             37418{25}{25}69
@@ -140,7 +140,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType2Test4() {
+    fun type2Test4() {
         val board = """
             319856{47}{47}2
             245973{16}{16}8
@@ -164,7 +164,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType2Test5() {
+    fun type2Test5() {
         val board = """
             654728{19}{139}{39}
             321964{58}7{58}
@@ -184,7 +184,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType2BTest() {
+    fun type2BTest() {
         val board = """
             {27}4186539{27}
             {278}9{257}{13}4{13}{578}6{278}
@@ -201,7 +201,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType2CTest() {
+    fun type2CTest() {
         val board = """
             8{247}9{234}{146}{26}{37}5{1367}
             53{16}8{146}7{269}{1246}{29}
@@ -221,7 +221,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType3Test() {
+    fun type3Test() {
         val board = """
             {69}{69}{128}5{12}347{18}
             5{37}{12}8{127}4{139}6{39}
@@ -241,7 +241,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType3BTest() {
+    fun type3BTest() {
         val board = """
             419{78}2{37}{3578}{35}6
             {25}6{25}1{378}9{3478}{34}{347}
@@ -262,7 +262,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType3BWithTriplePseudoCellsTest1() {
+    fun type3BWithTriplePseudoCellsTest1() {
         val board = """
             7529{36}8{16}4{136}
             3{48}{48}21{56}{79}{79}{56}
@@ -279,7 +279,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType3BWithTriplePseudoCellsTest2() {
+    fun type3BWithTriplePseudoCellsTest2() {
         val board = """
             654728{19}{139}{39}
             321964{58}7{58}
@@ -300,7 +300,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType4Test1() {
+    fun type4Test1() {
         val board = """
             {79}{79}6324815
             85{23}691{24}7{34}
@@ -320,7 +320,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType4Test2() {
+    fun type4Test2() {
         val board = """
             {4569}8{469}72{59}{456}13
             {345679}{45679}{234679}8{46}1{456}{49}{27}
@@ -340,7 +340,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType4Test3() {
+    fun type4Test3() {
         val board = """
             12{58}{568}{568}7943
             96{35}{345}1{34}872
@@ -360,7 +360,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType4Test4() {
+    fun type4Test4() {
         val board = """
             31{789}2{789}{89}645
             {26789}{78}5{3679}4{689}1{28}{37}
@@ -382,7 +382,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType4Test5() {
+    fun type4Test5() {
         val board = """
             173924{58}{58}6
             249865317
@@ -404,7 +404,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType4BTest1() {
+    fun type4BTest1() {
         val board = """
             748359126
             {359}{59}172684{39}
@@ -424,7 +424,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType4BTest2() {
+    fun type4BTest2() {
         val board = """
             173924{58}{58}6
             249865317
@@ -444,7 +444,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType5Test1() {
+    fun type5Test1() {
         val board = """
             7{589}{3589}4{259}6{28}{238}1
             {49}2{369}8{179}{17}{467}{367}5
@@ -464,7 +464,7 @@ internal class UniqueRectanglesKtTest {
     }
 
     @Test
-    fun uniqueRectanglesType5Test2() {
+    fun type5Test2() {
         val board = """
             {267}{1267}895{167}3{167}4
             {567}94{17}3{167}{28}{1567}{28}

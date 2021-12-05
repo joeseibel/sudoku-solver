@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class HiddenSinglesKtTest {
     @Test
-    fun testHiddenSingles() {
+    fun test() {
         val board = """
             2{459}{1569}{159}7{159}{159}38
             {458}{4589}{159}{123589}{159}6{1259}7{145}

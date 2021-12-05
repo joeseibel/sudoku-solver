@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class XWingKtTest {
     @Test
-    fun testXWing1() {
+    fun test1() {
         val board = """
             1{378}{37}{23478}{278}{23478}569
             492{37}561{37}8
@@ -30,7 +30,7 @@ internal class XWingKtTest {
     }
 
     @Test
-    fun testXWing2() {
+    fun test2() {
         val board = """
             {1358}{235}{12358}{3568}{678}{35678}{67}94
             76{48}91{48}{23}5{23}
@@ -54,7 +54,7 @@ internal class XWingKtTest {
     }
 
     @Test
-    fun testXWing3() {
+    fun test3() {
         val board = """
             {24568}{2458}391{568}7{58}{258}
             {568}{578}{67}{568}23491
@@ -77,7 +77,7 @@ internal class XWingKtTest {
     }
 
     @Test
-    fun testXWing4() {
+    fun test4() {
         val board = """
             {2589}1{258}{69}37{58}4{56}
             {4789}{38}{478}{69}25{378}1{67}

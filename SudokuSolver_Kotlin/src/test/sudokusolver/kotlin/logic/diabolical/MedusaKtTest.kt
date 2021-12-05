@@ -7,7 +7,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class MedusaKtTest {
     @Test
-    fun medusaRule1Test1() {
+    fun rule1Test1() {
         val board = """
             {17}9382456{17}
             {147}856{39}{13}{49}{137}2
@@ -35,7 +35,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule1Test2() {
+    fun rule1Test2() {
         val board = """
             {567}{267}{26}9{16}843{15}
             {59}{359}47{13}268{15}
@@ -86,7 +86,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule2Test1() {
+    fun rule2Test1() {
         val board = """
             3{168}{1679}{189}52{46}{479}{789}
             25{679}3{489}{49}{67}1{789}
@@ -111,7 +111,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule2Test2() {
+    fun rule2Test2() {
         val board = """
             748156{39}{29}{23}
             359284{67}1{67}
@@ -144,7 +144,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule3Test1() {
+    fun rule3Test1() {
         val board = """
             29{1467}{56}{57}{46}83{156}
             {145}{18}{1468}{3568}2{3468}97{156}
@@ -161,7 +161,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule3Test2() {
+    fun rule3Test2() {
         val board = """
             9{35}8{13}2{134}{45}76
             6{25}{24}{389}{359}71{48}{389}
@@ -178,7 +178,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule3Test3() {
+    fun rule3Test3() {
         val board = """
             {2567}{2567}{26}9{16}843{15}
             {359}{359}47{13}268{15}
@@ -195,7 +195,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule4Test1() {
+    fun rule4Test1() {
         val board = """
             1{79}{29}{278}56{478}{489}3
             {256}43{1278}9{78}{1578}{568}{68}
@@ -215,7 +215,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule4Test2() {
+    fun rule4Test2() {
         val board = """
             1{79}{29}{278}56{478}{489}3
             {25}43{1278}9{78}{1578}{568}{68}
@@ -238,7 +238,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule4Test3() {
+    fun rule4Test3() {
         val board = """
             9{35}8{13}2{134}{45}76
             6{235}{234}{389}{359}71{48}{389}
@@ -258,7 +258,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule4Test4() {
+    fun rule4Test4() {
         val board = """
             9{35}8{13}2{134}{45}76
             6{25}{24}{389}{359}71{48}{389}
@@ -275,7 +275,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule5Test1() {
+    fun rule5Test1() {
         val board = """
             9234{68}7{68}15
             876{13}5{13}924
@@ -297,7 +297,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule5Test2() {
+    fun rule5Test2() {
         val board = """
             3{168}{1679}{189}52{4679}{479}{789}
             25{679}3{489}{49}{67}1{789}
@@ -317,7 +317,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule5Test3() {
+    fun rule5Test3() {
         val board = """
             9{35}8{13}2{134}{45}76
             6{235}{234}{389}{3459}71{48}{389}
@@ -337,7 +337,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule5Test4() {
+    fun rule5Test4() {
         val board = """
             9{35}8{13}2{134}{45}76
             6{25}{24}{389}{359}71{48}{389}
@@ -357,7 +357,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule5Test5() {
+    fun rule5Test5() {
         val board = """
             {28}19{36}4{38}75{26}
             {78}5{24}{68}{79}{19}{13}{236}{246}
@@ -383,7 +383,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule5Test6() {
+    fun rule5Test6() {
         val board = """
             748156{39}{29}{23}
             359284{67}1{67}
@@ -400,7 +400,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule6Test1() {
+    fun rule6Test1() {
         val board = """
             986721345
             3{12}4956{18}{128}7
@@ -425,7 +425,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule6Test2() {
+    fun rule6Test2() {
         val board = """
             9{35}8{13}2{134}{45}76
             6{25}{24}{389}{359}71{48}{389}
@@ -468,7 +468,7 @@ internal class MedusaKtTest {
     }
 
     @Test
-    fun medusaRule6Test3() {
+    fun rule6Test3() {
         val board = """
             2{147}{179}35{679}{4679}8{69}
             5{47}{79}{269}81{24679}{2467}3

@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class HiddenQuadsKtTest {
     @Test
-    fun testHiddenQuads1() {
+    fun test1() {
         val board = """
             65{139}{13}87{19}24
             {278}{28}{1378}649{18}5{37}
@@ -23,7 +23,7 @@ internal class HiddenQuadsKtTest {
     }
 
     @Test
-    fun testHiddenQuads2() {
+    fun test2() {
         val board = """
             9{37}15{28}{28}{37}46
             425{367}9{367}{37}81

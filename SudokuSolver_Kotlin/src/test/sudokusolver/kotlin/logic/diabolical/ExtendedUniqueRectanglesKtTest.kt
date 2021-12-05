@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class ExtendedUniqueRectanglesKtTest {
     @Test
-    fun extendedUniqueRectanglesTest1() {
+    fun test1() {
         val board = """
             9{16}7{18}243{68}5
             842365917
@@ -23,7 +23,7 @@ internal class ExtendedUniqueRectanglesKtTest {
     }
 
     @Test
-    fun extendedUniqueRectanglesTest2() {
+    fun test2() {
         val board = """
             {45}6382{145}{79}{79}{145}
             7{48}{58}{1345}{135}92{14}6
@@ -40,7 +40,7 @@ internal class ExtendedUniqueRectanglesKtTest {
     }
 
     @Test
-    fun extendedUniqueRectanglesTest3() {
+    fun test3() {
         val board = """
             {367}9{347}8{46}152{37}
             851{37}926{37}4

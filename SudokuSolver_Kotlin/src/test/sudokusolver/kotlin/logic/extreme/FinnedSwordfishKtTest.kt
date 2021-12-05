@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class FinnedSwordfishKtTest {
     @Test
-    fun testFinnedSwordfish1() {
+    fun test1() {
         val board = """
             6{379}5418{379}{37}2
             8{349}{349}{3569}72{3459}{3456}1
@@ -23,7 +23,7 @@ internal class FinnedSwordfishKtTest {
     }
     
     @Test
-    fun testFinnedSwordfish2() {
+    fun test2() {
         val board = """
             2{349}{3489}{1359}{1358}{1389}6{19}7
             {189}7{89}6{128}4{1259}3{1259}
@@ -40,7 +40,7 @@ internal class FinnedSwordfishKtTest {
     }
     
     @Test
-    fun testFinnedSwordfish3() {
+    fun test3() {
         val board = """
             42{36}{17}{678}{18}{1367}95
             {3589}{357}{3569}{1257}4{157}{12367}{267}{2378}
@@ -60,7 +60,7 @@ internal class FinnedSwordfishKtTest {
     }
     
     @Test
-    fun testFinnedSwordfish4() {
+    fun test4() {
         val board = """
             42{36}{17}{678}{18}{1367}95
             {3589}{357}{3569}{1257}4{15}{12367}{267}{2378}
@@ -77,7 +77,7 @@ internal class FinnedSwordfishKtTest {
     }
     
     @Test
-    fun testFinnedSwordfish5() {
+    fun test5() {
         val board = """
             {2456}{2567}3{245}8{259}1{456}{79}
             {124568}9{1468}{2345}{1345}7{348}{4568}{3568}
@@ -94,7 +94,7 @@ internal class FinnedSwordfishKtTest {
     }
 
     @Test
-    fun testFinnedSwordfish6() {
+    fun test6() {
         val board = """
             {256}7348{25}1{56}9
             {26}9{16}{235}{135}74{568}{568}

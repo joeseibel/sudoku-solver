@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class BUGKtTest {
     @Test
-    fun testBug1() {
+    fun test1() {
         val board = """
             174832596
             593461278
@@ -23,7 +23,7 @@ internal class BUGKtTest {
     }
 
     @Test
-    fun testBug2() {
+    fun test2() {
         val board = """
             821{39}{59}{35}746
             736{28}{48}{24}915
@@ -40,7 +40,7 @@ internal class BUGKtTest {
     }
 
     @Test
-    fun testBug3() {
+    fun test3() {
         val board = """
             289476531
             751238496
@@ -57,7 +57,7 @@ internal class BUGKtTest {
     }
 
     @Test
-    fun testBug4() {
+    fun test4() {
         val board = """
             142895763
             {57}{89}62{47}3{49}1{58}
@@ -74,7 +74,7 @@ internal class BUGKtTest {
     }
 
     @Test
-    fun testBug5() {
+    fun test5() {
         val board = """
             4{38}{39}56{89}127
             {67}{27}{267}413859
@@ -91,7 +91,7 @@ internal class BUGKtTest {
     }
 
     @Test
-    fun testBug6() {
+    fun test6() {
         val board = """
             8915{24}7{34}6{23}
             425631789
@@ -108,7 +108,7 @@ internal class BUGKtTest {
     }
 
     @Test
-    fun testBug7() {
+    fun test7() {
         val board = """
             {48}{58}9{45}12376
             {57}{67}389{56}412
@@ -125,7 +125,7 @@ internal class BUGKtTest {
     }
 
     @Test
-    fun testBug8() {
+    fun test8() {
         val board = """
             916{47}{347}852{34}
             7451{36}2{36}98

@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class SimpleColoringKtTest {
     @Test
-    fun testSimpleColoringRule2Test1() {
+    fun rule2Test1() {
         val board = """
             {145}{15}7{25}836{149}{1249}
             {145}397{25}68{14}{124}
@@ -33,7 +33,7 @@ internal class SimpleColoringKtTest {
     }
 
     @Test
-    fun testSimpleColoringRule2Test2() {
+    fun rule2Test2() {
         val board = """
             2{79}{38}{38}41{79}56
             4{379}56{78}2{789}1{37}
@@ -59,7 +59,7 @@ internal class SimpleColoringKtTest {
     }
 
     @Test
-    fun testSimpleColoringRule2Test3() {
+    fun rule2Test3() {
         val board = """
             4{279}{259}8{279}6{25}13
             {257}86{27}134{25}9
@@ -82,7 +82,7 @@ internal class SimpleColoringKtTest {
     }
 
     @Test
-    fun testSimpleColoringRule2Test4() {
+    fun rule2Test4() {
         val board = """
             289{16}{46}{14}375
             364{57}9{57}812
@@ -103,7 +103,7 @@ internal class SimpleColoringKtTest {
     }
 
     @Test
-    fun testSimpleColoringRule4Test1() {
+    fun rule4Test1() {
         val board = """
             {145}{15}7{25}836{149}{1249}
             {145}397{25}68{14}{124}
@@ -123,7 +123,7 @@ internal class SimpleColoringKtTest {
     }
 
     @Test
-    fun testSimpleColoringRule4Test2() {
+    fun rule4Test2() {
         val board = """
             2{3579}{3578}{378}41{789}{35}6
             4{3579}{3578}6{3578}2{789}1{378}
@@ -143,7 +143,7 @@ internal class SimpleColoringKtTest {
     }
 
     @Test
-    fun testSimpleColoringRule4Test3() {
+    fun rule4Test3() {
         val board = """
             12845{37}{37}96
             {37}46{37}91285
@@ -164,7 +164,7 @@ internal class SimpleColoringKtTest {
     }
 
     @Test
-    fun testSimpleColoringRule4Test4() {
+    fun rule4Test4() {
         val board = """
             4{378}{2378}956{23}{238}1
             6{35}9{24}18{2345}{234}7
@@ -181,7 +181,7 @@ internal class SimpleColoringKtTest {
     }
 
     @Test
-    fun testSimpleColoringRule4Test5() {
+    fun rule4Test5() {
         val board = """
             89{67}2{67}4351
             {457}12{56}{5679}3{469}{467}8
@@ -198,7 +198,7 @@ internal class SimpleColoringKtTest {
     }
 
     @Test
-    fun testSimpleColoringRule4Test6() {
+    fun rule4Test6() {
         val board = """
             {38}62945{78}{1378}{178}
             154378692

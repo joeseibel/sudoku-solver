@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class BoxLineReductionKtTest {
     @Test
-    fun testBoxLineReduction1() {
+    fun test1() {
         val board = """
             {45}16{245}{2459}78{49}3
             {345}928{3456}{3456}{147}{47}{1457}
@@ -27,7 +27,7 @@ internal class BoxLineReductionKtTest {
     }
 
     @Test
-    fun testBoxLineReduction2() {
+    fun test2() {
         val board = """
             {68}2{68}943715
             9{13}4{1578}{127}{157}6{23}{28}

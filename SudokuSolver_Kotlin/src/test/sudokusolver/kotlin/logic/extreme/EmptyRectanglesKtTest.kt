@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class EmptyRectanglesKtTest {
     @Test
-    fun testEmptyRectanglesTest1() {
+    fun test1() {
         val board = """
             4{256}{567}1{269}3{67}{678}{789}
             {36}8{13}5{69}742{1369}
@@ -23,7 +23,7 @@ internal class EmptyRectanglesKtTest {
     }
     
     @Test
-    fun testEmptyRectanglesTest2() {
+    fun test2() {
         val board = """
             75{148}96{148}32{18}
             {3468}{36}{13469}7{48}2{689}5{1689}
@@ -43,7 +43,7 @@ internal class EmptyRectanglesKtTest {
     }
 
     @Test
-    fun testEmptyRectanglesTest3() {
+    fun test3() {
         val board = """
             9{37}15{28}{28}{37}46
             425{367}9{367}{37}81
@@ -60,7 +60,7 @@ internal class EmptyRectanglesKtTest {
     }
     
     @Test
-    fun testEmptyRectanglesTest4() {
+    fun test4() {
         val board = """
             695{237}1{278}{2347}{23478}{2378}
             {137}8{137}4{237}96{237}5
@@ -82,7 +82,7 @@ internal class EmptyRectanglesKtTest {
     }
     
     @Test
-    fun testEmptyRectanglesTest5() {
+    fun test5() {
         val board = """
             695{23}1{278}{2347}{23478}{238}
             {137}8{137}4{237}96{237}5

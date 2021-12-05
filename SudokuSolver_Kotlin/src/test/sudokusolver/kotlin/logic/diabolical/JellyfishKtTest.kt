@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class JellyfishKtTest {
     @Test
-    fun jellyfishTest1() {
+    fun test1() {
         val board = """
             {249}{469}17538{2469}{269}
             {23489}5{23489}{12}{14}{246}{236}{2469}7
@@ -32,7 +32,7 @@ internal class JellyfishKtTest {
     }
 
     @Test
-    fun jellyfishTest2() {
+    fun test2() {
         val board = """
             {234568}{2368}{368}{46789}{178}{4689}{178}{58}{4578}
             {4568}7{68}{468}3{1468}92{1458}
@@ -71,7 +71,7 @@ internal class JellyfishKtTest {
     }
 
     @Test
-    fun jellyfishTest3() {
+    fun test3() {
         val board = """
             {123}5{123}749{126}8{126}
             {124}89{56}{256}3{47}{257}{1245}
@@ -98,7 +98,7 @@ internal class JellyfishKtTest {
     }
 
     @Test
-    fun jellyfishTest4() {
+    fun test4() {
         val board = """
             {245689}{259}{69}{13456789}{3689}{456789}{19}{15679}{79}
             {4569}17{4569}2{4569}8{569}3
@@ -138,7 +138,7 @@ internal class JellyfishKtTest {
     }
 
     @Test
-    fun jellyfishTest5() {
+    fun test5() {
         val board = """
             {3589}4{589}{289}7{268}{2569}1{2359}
             {1789}{19}235{168}{4679}{469}{79}
@@ -160,7 +160,7 @@ internal class JellyfishKtTest {
     }
 
     @Test
-    fun jellyfishTest6() {
+    fun test6() {
         val board = """
             {245}{24567}{456}{18}{59}{18}{23457}{4567}{3679}
             8{567}3{59}24{57}1{679}
@@ -190,7 +190,7 @@ internal class JellyfishKtTest {
     }
 
     @Test
-    fun jellyfishTest7() {
+    fun test7() {
         val board = """
             14{2358}{2568}{38}{256}{2358}97
             97{2358}{258}{348}{245}{2358}16
@@ -214,7 +214,7 @@ internal class JellyfishKtTest {
     }
 
     @Test
-    fun jellyfishTest8() {
+    fun test8() {
         val board = """
             {1245678}{145689}{2678}{15789}{1578}{89}{348}{23478}{278}
             {1578}{158}3{1578}246{78}9
@@ -254,7 +254,7 @@ internal class JellyfishKtTest {
     }
 
     @Test
-    fun jellyfishTest9() {
+    fun test9() {
         val board = """
             {234567}{3457}{27}{156789}{16789}{178}{678}{34678}{2467}
             {24567}{457}9{5678}{678}31{24678}{2467}

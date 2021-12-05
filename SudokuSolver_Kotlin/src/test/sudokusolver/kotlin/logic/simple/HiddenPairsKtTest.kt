@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class HiddenPairsKtTest {
     @Test
-    fun testHiddenPairs1() {
+    fun test1() {
         val board = """
             {1258}{1238}{23}{129}{12359}{59}{4589}{2345679}{345679}
             9{1238}46{1235}7{58}{235}{35}
@@ -26,7 +26,7 @@ internal class HiddenPairsKtTest {
     }
 
     @Test
-    fun testHiddenPairs2() {
+    fun test2() {
         val board = """
             72{56}4{19}8{1569}3{169}
             {569}8{356}{135}{129}{25}{1569}47

@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class PointingPairsPointingTriplesKtTest {
     @Test
-    fun testPointingPairsPointingTriples1() {
+    fun test1() {
         val board = """
             {2458}179{245}36{48}{248}
             {23456}{2345}{36}{1257}8{57}{139}{149}{12349}
@@ -33,7 +33,7 @@ internal class PointingPairsPointingTriplesKtTest {
     }
 
     @Test
-    fun testPointingPairsPointingTriples2() {
+    fun test2() {
         val board = """
             {789}32{478}{4578}61{4589}{78}
             41{5689}{2378}{3578}{2357}{23679}{23589}{23678}
@@ -65,7 +65,7 @@ internal class PointingPairsPointingTriplesKtTest {
     }
 
     @Test
-    fun testPointingPairsPointingTriples3() {
+    fun test3() {
         val board = """
             93{147}{47}5{18}{24678}{1246}{1267}
             2{147}{147}63{18}{478}95

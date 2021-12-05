@@ -6,7 +6,7 @@ import sudokusolver.kotlin.logic.assertLogicalSolution
 
 internal class HiddenUniqueRectanglesKtTest {
     @Test
-    fun hiddenUniqueRectanglesType1Test1() {
+    fun type1Test1() {
         val board = """
             1{24}957{2468}3{26}{2468}
             {568}7{56}39{24}{68}1{24}
@@ -26,7 +26,7 @@ internal class HiddenUniqueRectanglesKtTest {
     }
 
     @Test
-    fun hiddenUniqueRectanglesType1Test2() {
+    fun type1Test2() {
         val board = """
             518472639
             3{27}6859{127}{127}4
@@ -47,7 +47,7 @@ internal class HiddenUniqueRectanglesKtTest {
     }
 
     @Test
-    fun hiddenUniqueRectanglesType2Test1() {
+    fun type2Test1() {
         val board = """
             5{47}{47}291836
             {68}3{68}475{29}1{29}
@@ -67,7 +67,7 @@ internal class HiddenUniqueRectanglesKtTest {
     }
 
     @Test
-    fun hiddenUniqueRectanglesType2Test2() {
+    fun type2Test2() {
         val board = """
             518472639
             3{27}6859{127}{127}4
@@ -87,7 +87,7 @@ internal class HiddenUniqueRectanglesKtTest {
     }
 
     @Test
-    fun hiddenUniqueRectanglesType2BTest1() {
+    fun type2BTest1() {
         val board = """
             {147}2{479}58{469}{679}3{179}
             35{79}{129}{12}{1269}{679}84
@@ -107,7 +107,7 @@ internal class HiddenUniqueRectanglesKtTest {
     }
 
     @Test
-    fun hiddenUniqueRectanglesType2BTest2() {
+    fun type2BTest2() {
         val board = """
             518472639
             3{27}6859{127}{127}4
