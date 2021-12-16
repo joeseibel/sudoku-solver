@@ -26,6 +26,9 @@ import sudokusolver.kotlin.logic.diabolical.xCyclesRule1
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule2
 import sudokusolver.kotlin.logic.diabolical.xCyclesRule3
 import sudokusolver.kotlin.logic.diabolical.xyChains
+import sudokusolver.kotlin.logic.extreme.alternatingInferenceChainsRule1
+import sudokusolver.kotlin.logic.extreme.alternatingInferenceChainsRule2
+import sudokusolver.kotlin.logic.extreme.alternatingInferenceChainsRule3
 import sudokusolver.kotlin.logic.extreme.emptyRectangles
 import sudokusolver.kotlin.logic.extreme.finnedSwordfish
 import sudokusolver.kotlin.logic.extreme.finnedXWing
@@ -162,6 +165,9 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { emptyRectangles(board) }
                     .ifEmpty { finnedXWing(board) }
                     .ifEmpty { finnedSwordfish(board) }
+                    .ifEmpty { alternatingInferenceChainsRule1(board) }
+                    .ifEmpty { alternatingInferenceChainsRule2(board) }
+                    .ifEmpty { alternatingInferenceChainsRule3(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
