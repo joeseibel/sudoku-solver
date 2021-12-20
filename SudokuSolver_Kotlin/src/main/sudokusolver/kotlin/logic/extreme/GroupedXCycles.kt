@@ -2,7 +2,6 @@ package sudokusolver.kotlin.logic.extreme
 
 import org.jgrapht.Graph
 import org.jgrapht.Graphs
-import org.jgrapht.alg.connectivity.ConnectivityInspector
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.nio.DefaultAttribute
@@ -19,7 +18,6 @@ import sudokusolver.kotlin.UNIT_SIZE_SQUARE_ROOT
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.alternatingCycleExists
 import sudokusolver.kotlin.mergeToRemoveCandidates
-import sudokusolver.kotlin.toSimpleString
 import sudokusolver.kotlin.trim
 import sudokusolver.kotlin.zipEveryPair
 import java.io.StringWriter
@@ -60,29 +58,25 @@ import java.io.StringWriter
  * the vertices.
  */
 fun groupedXCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().mapNotNull { candidate ->
-        buildGraph(board, candidate).trim().takeIf { it.vertexSet().isNotEmpty() }?.let { graph ->
-            if (!ConnectivityInspector(graph).isConnected) {
-                throw NotImplementedError("Need to split graph for board: ${board.toSimpleString()}")
-            }
-            getWeakEdgesInAlternatingCycle(graph).flatMap { edge ->
-                val source = graph.getEdgeSource(edge)
-                val target = graph.getEdgeTarget(edge)
+    SudokuNumber.values().map { candidate ->
+        val graph = buildGraph(board, candidate).trim()
+        getWeakEdgesInAlternatingCycle(graph).flatMap { edge ->
+            val source = graph.getEdgeSource(edge)
+            val target = graph.getEdgeTarget(edge)
 
-                fun removeFromUnit(sourceUnitIndex: Int?, targetUnitIndex: Int?, getUnit: (Int) -> List<Cell>) =
-                    sourceUnitIndex?.takeIf { it == targetUnitIndex }
-                        ?.let(getUnit)
-                        ?.filterIsInstance<UnsolvedCell>()
-                        ?.filter { candidate in it.candidates }
-                        ?.let { it - source.cells - target.cells }
-                        ?.map { it to candidate }
-                        ?: emptyList()
+            fun removeFromUnit(sourceUnitIndex: Int?, targetUnitIndex: Int?, getUnit: (Int) -> List<Cell>) =
+                sourceUnitIndex?.takeIf { it == targetUnitIndex }
+                    ?.let(getUnit)
+                    ?.filterIsInstance<UnsolvedCell>()
+                    ?.filter { candidate in it.candidates }
+                    ?.let { it - source.cells - target.cells }
+                    ?.map { it to candidate }
+                    ?: emptyList()
 
-                val rowRemovals = removeFromUnit(source.row, target.row, board::getRow)
-                val columnRemovals = removeFromUnit(source.column, target.column, board::getColumn)
-                val blockRemovals = removeFromUnit(source.block, target.block, board::getBlock)
-                rowRemovals + columnRemovals + blockRemovals
-            }
+            val rowRemovals = removeFromUnit(source.row, target.row, board::getRow)
+            val columnRemovals = removeFromUnit(source.column, target.column, board::getColumn)
+            val blockRemovals = removeFromUnit(source.block, target.block, board::getBlock)
+            rowRemovals + columnRemovals + blockRemovals
         }
     }.flatten().mergeToRemoveCandidates()
 
