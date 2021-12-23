@@ -35,6 +35,7 @@ import sudokusolver.kotlin.logic.extreme.finnedXWing
 import sudokusolver.kotlin.logic.extreme.groupedXCyclesRule1
 import sudokusolver.kotlin.logic.extreme.groupedXCyclesRule2
 import sudokusolver.kotlin.logic.extreme.groupedXCyclesRule3
+import sudokusolver.kotlin.logic.extreme.sueDeCoq
 import sudokusolver.kotlin.logic.simple.boxLineReduction
 import sudokusolver.kotlin.logic.simple.hiddenPairs
 import sudokusolver.kotlin.logic.simple.hiddenQuads
@@ -168,6 +169,7 @@ private fun solve(input: Board<SudokuNumber?>): SolveResult {
                     .ifEmpty { alternatingInferenceChainsRule1(board) }
                     .ifEmpty { alternatingInferenceChainsRule2(board) }
                     .ifEmpty { alternatingInferenceChainsRule3(board) }
+                    .ifEmpty { sueDeCoq(board) }
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
