@@ -1,7 +1,6 @@
 package sudokusolver.kotlin.logic.extreme
 
 import org.jgrapht.Graph
-import org.jgrapht.Graphs
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.nio.DefaultAttribute
@@ -17,6 +16,7 @@ import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UNIT_SIZE_SQUARE_ROOT
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.alternatingCycleExists
+import sudokusolver.kotlin.getWeakEdgesInAlternatingCycle
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.trim
 import sudokusolver.kotlin.zipEveryPair
@@ -49,6 +49,9 @@ import java.io.StringWriter
  * does not contain the solution, then the other vertex must contain the solution. If a vertex is a group, containing
  * the solution means that one of the cells of the group is the solution. If a vertex is a cell, containing the solution
  * means that the cell is the solution.
+ *
+ * Note that this implementation of Grouped X-Cycles can handle cases in which the chain is not strictly alternating
+ * between strong and weak links. It is tolerant of cases in which a strong link takes the place of a weak link.
  *
  * Rule 1:
  *
@@ -190,56 +193,6 @@ private fun buildGraph(board: Board<Cell>, candidate: SudokuNumber): Graph<Node,
     connectGroupsToGroups(groups, board::getBlock, Group::block)
 
     return builder.buildAsUnmodifiable()
-}
-
-private fun getWeakEdgesInAlternatingCycle(graph: Graph<Node, StrengthEdge>): Set<StrengthEdge> {
-    val weakEdgesInAlternatingCycle = mutableSetOf<StrengthEdge>()
-    graph.edgeSet().filter { it.strength == Strength.WEAK }.forEach { edge ->
-        if (edge !in weakEdgesInAlternatingCycle) {
-            weakEdgesInAlternatingCycle += getAlternatingCycleWeakEdges(graph, edge)
-        }
-    }
-    return weakEdgesInAlternatingCycle
-}
-
-private fun getAlternatingCycleWeakEdges(
-    graph: Graph<Node, StrengthEdge>,
-    startEdge: StrengthEdge
-): List<StrengthEdge> {
-    require(startEdge.strength == Strength.WEAK) { "startEdge must be weak." }
-    val start = graph.getEdgeSource(startEdge)
-    val end = graph.getEdgeTarget(startEdge)
-
-    fun getAlternatingCycleWeakEdges(
-        currentVertex: Node,
-        nextType: Strength,
-        visited: Set<Node>,
-        weakEdges: List<StrengthEdge>
-    ): List<StrengthEdge> {
-        val nextEdgesAndVertices = graph.edgesOf(currentVertex)
-            .filter { it.strength == nextType }
-            .map { it to Graphs.getOppositeVertex(graph, it, currentVertex) }
-        return if (nextType == Strength.STRONG && nextEdgesAndVertices.any { (_, nextVertex) -> nextVertex == end }) {
-            weakEdges
-        } else {
-            nextEdgesAndVertices.asSequence()
-                .filter { (_, nextVertex) -> nextVertex != end && nextVertex !in visited }
-                .map { (nextEdge, nextVertex) ->
-                    getAlternatingCycleWeakEdges(
-                        nextVertex,
-                        nextType.opposite,
-                        visited + setOf(nextVertex),
-                        if (nextEdge.strength == Strength.WEAK) weakEdges + nextEdge else weakEdges
-                    )
-                }
-                .firstOrNull { it.isNotEmpty() }
-                ?: emptyList()
-        }
-    }
-
-    return getAlternatingCycleWeakEdges(start, Strength.STRONG, setOf(start), listOf(startEdge)).also { weakEdges ->
-        assert(weakEdges.all { it.strength == Strength.WEAK }) { "There are strong edges in the return value." }
-    }
 }
 
 interface Node {

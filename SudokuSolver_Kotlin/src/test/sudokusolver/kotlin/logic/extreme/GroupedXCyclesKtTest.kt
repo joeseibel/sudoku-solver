@@ -139,7 +139,10 @@ internal class GroupedXCyclesKtTest {
             92{18}{16}{168}3457
             4{1678}{178}2{18}53{168}9
         """.trimIndent().replace("\n", "")
-        val expected = listOf(SetValue(6, 8, 8))
+        val expected = listOf(
+            SetValue(0, 7, 8),
+            SetValue(6, 8, 8)
+        )
         assertLogicalSolution(expected, board, ::groupedXCyclesRule2)
     }
 

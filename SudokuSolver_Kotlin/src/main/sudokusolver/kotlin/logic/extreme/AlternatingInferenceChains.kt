@@ -2,7 +2,6 @@ package sudokusolver.kotlin.logic.extreme
 
 import org.jgrapht.Graph
 import org.jgrapht.Graphs
-import org.jgrapht.graph.AsUnmodifiableGraph
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
 import sudokusolver.kotlin.Board
@@ -14,9 +13,10 @@ import sudokusolver.kotlin.Strength
 import sudokusolver.kotlin.StrengthEdge
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
-import sudokusolver.kotlin.alternatingCycleExists
 import sudokusolver.kotlin.enumMinus
+import sudokusolver.kotlin.getWeakEdgesInAlternatingCycle
 import sudokusolver.kotlin.mergeToRemoveCandidates
+import sudokusolver.kotlin.trim
 import sudokusolver.kotlin.zipEveryPair
 import java.util.EnumSet
 
@@ -50,7 +50,7 @@ import java.util.EnumSet
  * strong link. Therefore, valid chains alternate between links that must be strong and links that can be weak.
  */
 fun alternatingInferenceChainsRule1(board: Board<Cell>): List<RemoveCandidates> {
-    val graph = buildGraph(board).trimAIC()
+    val graph = buildGraph(board).trim()
     return getWeakEdgesInAlternatingCycle(graph).flatMap { edge ->
         val (sourceCell, sourceCandidate) = graph.getEdgeSource(edge)
         val (targetCell, targetCandidate) = graph.getEdgeTarget(edge)
@@ -89,7 +89,7 @@ fun alternatingInferenceChainsRule1(board: Board<Cell>): List<RemoveCandidates> 
 fun alternatingInferenceChainsRule2(board: Board<Cell>): List<SetValue> {
     val graph = buildGraph(board)
     return graph.vertexSet()
-        .filter { alternatingCycleExists(graph, it, Strength.STRONG) }
+        .filter { alternatingCycleExistsAIC(graph, it, Strength.STRONG) }
         .map { (cell, candidate) -> SetValue(cell, candidate) }
 }
 
@@ -104,7 +104,7 @@ fun alternatingInferenceChainsRule2(board: Board<Cell>): List<SetValue> {
  */
 fun alternatingInferenceChainsRule3(board: Board<Cell>): List<RemoveCandidates> {
     val graph = buildGraph(board)
-    return graph.vertexSet().filter { alternatingCycleExists(graph, it, Strength.WEAK) }.mergeToRemoveCandidates()
+    return graph.vertexSet().filter { alternatingCycleExistsAIC(graph, it, Strength.WEAK) }.mergeToRemoveCandidates()
 }
 
 private fun buildGraph(board: Board<Cell>): Graph<LocatedCandidate, StrengthEdge> {
@@ -132,82 +132,28 @@ private fun buildGraph(board: Board<Cell>): Graph<LocatedCandidate, StrengthEdge
     return builder.buildAsUnmodifiable()
 }
 
-/*
- * Continuously trims the graph of vertices that cannot be part of a cycle for rule 1. This is mostly similar to the
- * sudokusolver.kotlin.trim function which can be found in Graphs.kt. However, this version allows for cycles in which a
- * strong link takes the place of a weak link. The returned graph will either be empty or only contain vertices with a
- * degree of two or more and be connected by at least one strong link.
- */
-private fun Graph<LocatedCandidate, StrengthEdge>.trimAIC(): Graph<LocatedCandidate, StrengthEdge> {
-    val graph = GraphBuilder(SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge::class.java))
-        .addGraph(this)
-        .build()
-
-    tailrec fun trimHelper() {
-        val toRemove = graph.vertexSet().filter { vertex ->
-            val edges = graph.edgesOf(vertex)
-            edges.size < 2 || edges.none { it.strength == Strength.STRONG }
-        }
-        if (toRemove.isNotEmpty()) {
-            graph.removeAllVertices(toRemove)
-            trimHelper()
-        }
-    }
-
-    trimHelper()
-    return AsUnmodifiableGraph(graph)
-}
-
-private fun getWeakEdgesInAlternatingCycle(graph: Graph<LocatedCandidate, StrengthEdge>): Set<StrengthEdge> {
-    val weakEdgesInAlternatingCycle = mutableSetOf<StrengthEdge>()
-    graph.edgeSet().filter { it.strength == Strength.WEAK }.forEach { edge ->
-        if (edge !in weakEdgesInAlternatingCycle) {
-            weakEdgesInAlternatingCycle += getAlternatingCycleWeakEdges(graph, edge)
-        }
-    }
-    return weakEdgesInAlternatingCycle
-}
-
-/*
- * This function is very similar to getAlternatingCycleWeakEdges found in GroupedXCycles.kt. However, this version
- * allows for cycles in which a strong link takes the place of a weak link.
- */
-private fun getAlternatingCycleWeakEdges(
+private fun alternatingCycleExistsAIC(
     graph: Graph<LocatedCandidate, StrengthEdge>,
-    startEdge: StrengthEdge
-): List<StrengthEdge> {
-    require(startEdge.strength == Strength.WEAK) { "startEdge must be weak." }
-    val start = graph.getEdgeSource(startEdge)
-    val end = graph.getEdgeTarget(startEdge)
+    vertex: LocatedCandidate,
+    adjacentEdgesType: Strength
+): Boolean =
+    graph.edgesOf(vertex).filter { it.strength == adjacentEdgesType }.zipEveryPair().any { (edgeA, edgeB) ->
+        val start = Graphs.getOppositeVertex(graph, edgeA, vertex)
+        val end = Graphs.getOppositeVertex(graph, edgeB, vertex)
 
-    fun getAlternatingCycleWeakEdges(
-        currentVertex: LocatedCandidate,
-        nextType: Strength,
-        visited: Set<LocatedCandidate>,
-        weakEdges: List<StrengthEdge>
-    ): List<StrengthEdge> {
-        val nextEdgesAndVertices = graph.edgesOf(currentVertex)
-            .filter { it.strength == Strength.STRONG || it.strength == nextType }
-            .map { it to Graphs.getOppositeVertex(graph, it, currentVertex) }
-        return if (nextType == Strength.STRONG && nextEdgesAndVertices.any { (_, nextVertex) -> nextVertex == end }) {
-            weakEdges
-        } else {
-            nextEdgesAndVertices.asSequence()
-                .filter { (_, nextVertex) -> nextVertex != end && nextVertex !in visited }
-                .map { (nextEdge, nextVertex) ->
-                    getAlternatingCycleWeakEdges(
-                        nextVertex,
-                        nextType.opposite,
-                        visited + setOf(nextVertex),
-                        if (nextEdge.strength == Strength.WEAK) weakEdges + nextEdge else weakEdges
-                    )
-                }
-                .firstOrNull { it.isNotEmpty() }
-                ?: emptyList()
+        fun alternatingCycleExists(
+            currentVertex: LocatedCandidate,
+            nextType: Strength,
+            visited: Set<LocatedCandidate>
+        ): Boolean {
+            val nextVertices = graph.edgesOf(currentVertex)
+                .filter { it.strength == nextType }
+                .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
+            return adjacentEdgesType.opposite == nextType && end in nextVertices ||
+                    (nextVertices - visited - end).any { nextVertex ->
+                        alternatingCycleExists(nextVertex, nextType.opposite, visited + setOf(nextVertex))
+                    }
         }
-    }
 
-    return getAlternatingCycleWeakEdges(start, Strength.STRONG, setOf(start), listOf(startEdge)).also { weakEdges ->
-        assert(weakEdges.all { it.strength == Strength.WEAK }) { "There are strong edges in the return value." }
+        alternatingCycleExists(start, adjacentEdgesType.opposite, setOf(vertex, start))
     }
-}
