@@ -13,7 +13,9 @@ import sudokusolver.kotlin.Strength
 import sudokusolver.kotlin.StrengthEdge
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
+import sudokusolver.kotlin.candidate
 import sudokusolver.kotlin.enumMinus
+import sudokusolver.kotlin.enumUnion
 import sudokusolver.kotlin.getWeakEdgesInAlternatingCycle
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.trim
@@ -34,6 +36,10 @@ import java.util.EnumSet
  * then the other vertex must be the solution. Alternating Inference Chains are very similar to X-Cycles and Grouped
  * X-Cycles.
  *
+ * Note that this implementation of Alternating Inference Chains can handle cases in which the chain is not strictly
+ * alternating between strong and weak links. It is tolerant of cases in which a strong link takes the place of a weak
+ * link.
+ *
  * Rule 1:
  *
  * If an Alternating Inference Chain has an even number of vertices and therefore continuously alternates between strong
@@ -41,13 +47,6 @@ import java.util.EnumSet
  * If a weak link connects a common candidate across two different cells, then that candidate can be removed from any
  * other cell which is in the same unit as the two vertices. If a weak link connects two candidates of the same cell,
  * then all other candidates can be removed from that cell.
- *
- * Note that this implementation of rule 1 can handle cases in which the chain is not strictly alternating between
- * strong and weak links. It is tolerant of cases in which a strong link takes the place of a weak link. In this way,
- * this implementation of rule 1 is different from the rule 1 implementation of X-Cycles and Grouped X-Cycles. This was
- * done because all the examples that I found contain weak links that are actually strong links. Note that even though
- * a strong link can take the place of a weak link, the opposite is not true. A weak link cannot take the place of a
- * strong link. Therefore, valid chains alternate between links that must be strong and links that can be weak.
  */
 fun alternatingInferenceChainsRule1(board: Board<Cell>): List<RemoveCandidates> {
     val graph = buildGraph(board).trim()
@@ -85,9 +84,12 @@ fun alternatingInferenceChainsRule1(board: Board<Cell>): List<RemoveCandidates> 
  * candidate from the cell of interest implies that the candidate must be the solution for that cell, thus causing the
  * cycle to contradict itself. However, considering the candidate to be the solution for that cell does not cause any
  * contradiction in the cycle. Therefore, the candidate must be the solution for that cell.
+ *
+ * Note that this implementation of rule 2 does not allow for a candidate to be revisited in the chain. A candidate can
+ * appear multiple times in a chain, but only if all the occurrences are consecutive.
  */
 fun alternatingInferenceChainsRule2(board: Board<Cell>): List<SetValue> {
-    val graph = buildGraph(board)
+    val graph = buildGraph(board).trim()
     return graph.vertexSet()
         .filter { alternatingCycleExistsAIC(graph, it, Strength.STRONG) }
         .map { (cell, candidate) -> SetValue(cell, candidate) }
@@ -101,6 +103,9 @@ fun alternatingInferenceChainsRule2(board: Board<Cell>): List<SetValue> {
  * candidate to be the solution for the cell of interest implies that the candidate must be removed from that cell, thus
  * causing the cycle to contradict itself. However, removing the candidate from that cell does not cause any
  * contradiction in the cycle. Therefore, the candidate can be removed from the cell.
+ *
+ * Note that this implementation of rule 3 does not allow for a candidate to be revisited in the chain. A candidate can
+ * appear multiple times in a chain, but only if all the occurrences are consecutive.
  */
 fun alternatingInferenceChainsRule3(board: Board<Cell>): List<RemoveCandidates> {
     val graph = buildGraph(board)
@@ -144,16 +149,29 @@ private fun alternatingCycleExistsAIC(
         fun alternatingCycleExists(
             currentVertex: LocatedCandidate,
             nextType: Strength,
-            visited: Set<LocatedCandidate>
+            visited: Set<LocatedCandidate>,
+            visitedCandidates: EnumSet<SudokuNumber>
         ): Boolean {
             val nextVertices = graph.edgesOf(currentVertex)
-                .filter { it.strength == nextType }
+                .filter { it.strength.isCompatibleWith(nextType) }
                 .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
+                .filter { it.candidate == currentVertex.candidate || it.candidate !in visitedCandidates }
             return adjacentEdgesType.opposite == nextType && end in nextVertices ||
                     (nextVertices - visited - end).any { nextVertex ->
-                        alternatingCycleExists(nextVertex, nextType.opposite, visited + setOf(nextVertex))
+                        val nextVisited = visited + setOf(nextVertex)
+                        val nextVisitedCandidates = if (currentVertex.candidate == nextVertex.candidate) {
+                            visitedCandidates
+                        } else {
+                            enumUnion(visitedCandidates, EnumSet.of(nextVertex.candidate))
+                        }
+                        alternatingCycleExists(nextVertex, nextType.opposite, nextVisited, nextVisitedCandidates)
                     }
         }
 
-        alternatingCycleExists(start, adjacentEdgesType.opposite, setOf(vertex, start))
+        alternatingCycleExists(
+            start,
+            adjacentEdgesType.opposite,
+            setOf(vertex, start),
+            EnumSet.of(vertex.candidate, start.candidate) enumMinus EnumSet.of(end.candidate)
+        )
     }

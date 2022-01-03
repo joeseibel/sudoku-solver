@@ -59,6 +59,9 @@ data class UnsolvedCell(
 
 typealias LocatedCandidate = Pair<UnsolvedCell, SudokuNumber>
 
+val LocatedCandidate.candidate: SudokuNumber
+    get() = second
+
 fun Board<Cell>.toSimpleString(): String =
     cells.joinToString("") { cell ->
         when (cell) {
