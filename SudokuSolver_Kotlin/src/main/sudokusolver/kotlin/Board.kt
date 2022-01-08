@@ -35,18 +35,18 @@ abstract class AbstractBoard<out T> {
             rows.subList(fromIndex, toIndex).joinToString("\n") { row ->
                 fun joinCells(fromIndex: Int, toIndex: Int) = row.subList(fromIndex, toIndex).joinToString(" ")
 
-                val first = joinCells(0, 3)
-                val second = joinCells(3, 6)
-                val third = joinCells(6, 9)
+                val first = joinCells(0, UNIT_SIZE_SQUARE_ROOT)
+                val second = joinCells(UNIT_SIZE_SQUARE_ROOT, UNIT_SIZE_SQUARE_ROOT * 2)
+                val third = joinCells(UNIT_SIZE_SQUARE_ROOT * 2, UNIT_SIZE)
                 "$first | $second | $third"
             }
 
         return """
-            |${joinRows(0, 3)}
+            |${joinRows(0, UNIT_SIZE_SQUARE_ROOT)}
             |------+-------+------
-            |${joinRows(3, 6)}
+            |${joinRows(UNIT_SIZE_SQUARE_ROOT, UNIT_SIZE_SQUARE_ROOT * 2)}
             |------+-------+------
-            |${joinRows(6, 9)}
+            |${joinRows(UNIT_SIZE_SQUARE_ROOT * 2, UNIT_SIZE)}
         """.trimMargin()
     }
 
