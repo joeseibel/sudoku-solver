@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jgrapht.graph.UnmodifiableUndirectedGraph;
+import org.jgrapht.graph.AsUnmodifiableGraph;
 
 import sudokusolver.Cell;
 import sudokusolver.Puzzle;
@@ -13,8 +13,8 @@ import sudokusolver.SudokuEdge;
 import sudokusolver.SudokuNumber;
 
 public class XCycles {
-	public static boolean xCycles(Puzzle puzzle, Map<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> chains) {
-		for (Entry<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> entry : chains.entrySet()) {
+	public static boolean xCycles(Puzzle puzzle, Map<SudokuNumber, AsUnmodifiableGraph<Cell, SudokuEdge>> chains) {
+		for (Entry<SudokuNumber, AsUnmodifiableGraph<Cell, SudokuEdge>> entry : chains.entrySet()) {
 			if (xCyclesNiceLoopsRule2(puzzle, entry.getValue(), entry.getKey()) || xCyclesNiceLoopsRule3(puzzle, entry.getValue(), entry.getKey())) {
 				return true;
 			}
@@ -22,7 +22,7 @@ public class XCycles {
 		return false;
 	}
 	
-	private static boolean xCyclesNiceLoopsRule2(Puzzle puzzle, UnmodifiableUndirectedGraph<Cell, SudokuEdge> graph, SudokuNumber possibleNumber) {
+	private static boolean xCyclesNiceLoopsRule2(Puzzle puzzle, AsUnmodifiableGraph<Cell, SudokuEdge> graph, SudokuNumber possibleNumber) {
 		for (Cell vertex : graph.vertexSet()) {
 			ArrayList<SudokuEdge> strongLinks = new ArrayList<>();
 			for (SudokuEdge edge : graph.edgesOf(vertex)) {
@@ -47,7 +47,7 @@ public class XCycles {
 		return false;
 	}
 	
-	private static boolean xCyclesNiceLoopsRule3(Puzzle puzzle, UnmodifiableUndirectedGraph<Cell, SudokuEdge> graph, SudokuNumber possibleNumber) {
+	private static boolean xCyclesNiceLoopsRule3(Puzzle puzzle, AsUnmodifiableGraph<Cell, SudokuEdge> graph, SudokuNumber possibleNumber) {
 		for (Cell vertex : graph.vertexSet()) {
 			SudokuEdge[] edges = graph.edgesOf(vertex).toArray(new SudokuEdge[0]);
 			for (int i = 0; i < edges.length - 1; i++) {

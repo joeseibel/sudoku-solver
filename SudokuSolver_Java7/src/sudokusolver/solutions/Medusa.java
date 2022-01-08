@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.jgrapht.UndirectedGraph;
+import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
@@ -40,7 +40,7 @@ public class Medusa {
 			}
 		}
 		if (!graph.vertexSet().isEmpty()) {
-			for (UndirectedGraph<PossibleNumberInCell, DefaultEdge> subgraph : Common.getConnectedSubgraphs(graph, DefaultEdge.class)) {
+			for (Graph<PossibleNumberInCell, DefaultEdge> subgraph : Common.getConnectedSubgraphs(graph, DefaultEdge.class)) {
 				HashMap<PossibleNumberInCell, VertexColor> vertexColors = new HashMap<>();
 				PossibleNumberInCell firstVertex = subgraph.vertexSet().iterator().next();
 				vertexColors.put(firstVertex, VertexColor.BLACK);

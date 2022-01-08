@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
+import org.jgrapht.graph.AsUnmodifiableGraph;
 import org.jgrapht.graph.SimpleGraph;
-import org.jgrapht.graph.UnmodifiableUndirectedGraph;
 
 import sudokusolver.solutions.AlternatingInferenceChains;
 import sudokusolver.solutions.GroupedXCycles;
@@ -232,10 +232,10 @@ public class SudokuSolver {
 		}
 	}
 	
-	private static Map<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> unmodifiableView(HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> chains) {
-		HashMap<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> unmodifiableChains = new HashMap<>();
+	private static Map<SudokuNumber, AsUnmodifiableGraph<Cell, SudokuEdge>> unmodifiableView(HashMap<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> chains) {
+		HashMap<SudokuNumber, AsUnmodifiableGraph<Cell, SudokuEdge>> unmodifiableChains = new HashMap<>();
 		for (Entry<SudokuNumber, SimpleGraph<Cell, SudokuEdge>> entry : chains.entrySet()) {
-			unmodifiableChains.put(entry.getKey(), new UnmodifiableUndirectedGraph<>(entry.getValue()));
+			unmodifiableChains.put(entry.getKey(), new AsUnmodifiableGraph<>(entry.getValue()));
 		}
 		return Collections.unmodifiableMap(unmodifiableChains);
 	}

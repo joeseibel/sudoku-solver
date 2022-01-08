@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
+import org.jgrapht.graph.AsUnmodifiableGraph;
 import org.jgrapht.graph.SimpleGraph;
-import org.jgrapht.graph.UnmodifiableUndirectedGraph;
 
 import sudokusolver.Cell;
 import sudokusolver.CellOrGroup;
@@ -20,8 +20,8 @@ import sudokusolver.SudokuEdge;
 import sudokusolver.SudokuNumber;
 
 public class GroupedXCycles {
-	public static boolean groupedXCycles(Puzzle puzzle, Map<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> chains) {
-		for (Entry<SudokuNumber, UnmodifiableUndirectedGraph<Cell, SudokuEdge>> entry : chains.entrySet()) {
+	public static boolean groupedXCycles(Puzzle puzzle, Map<SudokuNumber, AsUnmodifiableGraph<Cell, SudokuEdge>> chains) {
+		for (Entry<SudokuNumber, AsUnmodifiableGraph<Cell, SudokuEdge>> entry : chains.entrySet()) {
 			SimpleGraph<CellOrGroup, SudokuEdge> graph = copyGraph(entry.getValue());
 			addGroupsToGraph(puzzle, entry.getKey(), graph);
 			if (groupedXCyclesNiceLoopsRule3(puzzle, graph, entry.getKey())) {
@@ -31,7 +31,7 @@ public class GroupedXCycles {
 		return false;
 	}
 	
-	private static SimpleGraph<CellOrGroup, SudokuEdge> copyGraph(UnmodifiableUndirectedGraph<Cell, SudokuEdge> graph) {
+	private static SimpleGraph<CellOrGroup, SudokuEdge> copyGraph(AsUnmodifiableGraph<Cell, SudokuEdge> graph) {
 		SimpleGraph<CellOrGroup, SudokuEdge> copy = new SimpleGraph<>(SudokuEdge.class);
 		for (Cell cell : graph.vertexSet()) {
 			copy.addVertex(cell);
