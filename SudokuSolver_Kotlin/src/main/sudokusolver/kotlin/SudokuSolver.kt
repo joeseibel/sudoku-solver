@@ -118,60 +118,7 @@ fun solve(input: Board<SudokuNumber?>): SolveResult {
                  * functions. With Rust, we could have mutability here, guaranteed immutability in the logic functions,
                  * and no copying.
                  */
-                val board = mutableBoard.toBoard()
-                //Start of simple solutions.
-                val modifications = pruneCandidates(board)
-                    .ifEmpty { nakedSingles(board) }
-                    .ifEmpty { hiddenSingles(board) }
-                    .ifEmpty { nakedPairs(board) }
-                    .ifEmpty { nakedTriples(board) }
-                    .ifEmpty { hiddenPairs(board) }
-                    .ifEmpty { hiddenTriples(board) }
-                    .ifEmpty { nakedQuads(board) }
-                    .ifEmpty { hiddenQuads(board) }
-                    .ifEmpty { pointingPairsPointingTriples(board) }
-                    .ifEmpty { boxLineReduction(board) }
-                    //Start of tough solutions.
-                    .ifEmpty { xWing(board) }
-                    .ifEmpty { simpleColoringRule2(board) }
-                    .ifEmpty { simpleColoringRule4(board) }
-                    .ifEmpty { yWing(board) }
-                    .ifEmpty { swordfish(board) }
-                    .ifEmpty { xyzWing(board) }
-                    //Start of diabolical solutions.
-                    .ifEmpty { xCyclesRule1(board) }
-                    .ifEmpty { xCyclesRule2(board) }
-                    .ifEmpty { xCyclesRule3(board) }
-                    .ifEmpty { listOfNotNull(bug(board)) }
-                    .ifEmpty { xyChains(board) }
-                    .ifEmpty { medusaRule1(board) }
-                    .ifEmpty { medusaRule2(board) }
-                    .ifEmpty { medusaRule3(board) }
-                    .ifEmpty { medusaRule4(board) }
-                    .ifEmpty { medusaRule5(board) }
-                    .ifEmpty { medusaRule6(board) }
-                    .ifEmpty { jellyfish(board) }
-                    .ifEmpty { uniqueRectanglesType1(board) }
-                    .ifEmpty { uniqueRectanglesType2(board) }
-                    .ifEmpty { uniqueRectanglesType3(board) }
-                    .ifEmpty { uniqueRectanglesType3BWithTriplePseudoCells(board) }
-                    .ifEmpty { uniqueRectanglesType4(board) }
-                    .ifEmpty { uniqueRectanglesType5(board) }
-                    .ifEmpty { extendedUniqueRectangles(board) }
-                    .ifEmpty { hiddenUniqueRectangles(board) }
-                    .ifEmpty { wxyzWing(board) }
-                    .ifEmpty { alignedPairExclusion(board) }
-                    //Start of extreme solutions.
-                    .ifEmpty { groupedXCyclesRule1(board) }
-                    .ifEmpty { groupedXCyclesRule2(board) }
-                    .ifEmpty { groupedXCyclesRule3(board) }
-                    .ifEmpty { emptyRectangles(board) }
-                    .ifEmpty { finnedXWing(board) }
-                    .ifEmpty { finnedSwordfish(board) }
-                    .ifEmpty { alternatingInferenceChainsRule1(board) }
-                    .ifEmpty { alternatingInferenceChainsRule2(board) }
-                    .ifEmpty { alternatingInferenceChainsRule3(board) }
-                    .ifEmpty { sueDeCoq(board) }
+                val modifications = performNextSolution(mutableBoard.toBoard())
                 modifications.forEach { modification ->
                     val row = modification.row
                     val column = modification.column
@@ -206,3 +153,58 @@ fun solve(input: Board<SudokuNumber?>): SolveResult {
         }
     }
 }
+
+private fun performNextSolution(board: Board<Cell>): List<BoardModification> =
+    //Start of simple solutions.
+    pruneCandidates(board)
+        .ifEmpty { nakedSingles(board) }
+        .ifEmpty { hiddenSingles(board) }
+        .ifEmpty { nakedPairs(board) }
+        .ifEmpty { nakedTriples(board) }
+        .ifEmpty { hiddenPairs(board) }
+        .ifEmpty { hiddenTriples(board) }
+        .ifEmpty { nakedQuads(board) }
+        .ifEmpty { hiddenQuads(board) }
+        .ifEmpty { pointingPairsPointingTriples(board) }
+        .ifEmpty { boxLineReduction(board) }
+        //Start of tough solutions.
+        .ifEmpty { xWing(board) }
+        .ifEmpty { simpleColoringRule2(board) }
+        .ifEmpty { simpleColoringRule4(board) }
+        .ifEmpty { yWing(board) }
+        .ifEmpty { swordfish(board) }
+        .ifEmpty { xyzWing(board) }
+        //Start of diabolical solutions.
+        .ifEmpty { xCyclesRule1(board) }
+        .ifEmpty { xCyclesRule2(board) }
+        .ifEmpty { xCyclesRule3(board) }
+        .ifEmpty { listOfNotNull(bug(board)) }
+        .ifEmpty { xyChains(board) }
+        .ifEmpty { medusaRule1(board) }
+        .ifEmpty { medusaRule2(board) }
+        .ifEmpty { medusaRule3(board) }
+        .ifEmpty { medusaRule4(board) }
+        .ifEmpty { medusaRule5(board) }
+        .ifEmpty { medusaRule6(board) }
+        .ifEmpty { jellyfish(board) }
+        .ifEmpty { uniqueRectanglesType1(board) }
+        .ifEmpty { uniqueRectanglesType2(board) }
+        .ifEmpty { uniqueRectanglesType3(board) }
+        .ifEmpty { uniqueRectanglesType3BWithTriplePseudoCells(board) }
+        .ifEmpty { uniqueRectanglesType4(board) }
+        .ifEmpty { uniqueRectanglesType5(board) }
+        .ifEmpty { extendedUniqueRectangles(board) }
+        .ifEmpty { hiddenUniqueRectangles(board) }
+        .ifEmpty { wxyzWing(board) }
+        .ifEmpty { alignedPairExclusion(board) }
+        //Start of extreme solutions.
+        .ifEmpty { groupedXCyclesRule1(board) }
+        .ifEmpty { groupedXCyclesRule2(board) }
+        .ifEmpty { groupedXCyclesRule3(board) }
+        .ifEmpty { emptyRectangles(board) }
+        .ifEmpty { finnedXWing(board) }
+        .ifEmpty { finnedSwordfish(board) }
+        .ifEmpty { alternatingInferenceChainsRule1(board) }
+        .ifEmpty { alternatingInferenceChainsRule2(board) }
+        .ifEmpty { alternatingInferenceChainsRule3(board) }
+        .ifEmpty { sueDeCoq(board) }
