@@ -31,7 +31,7 @@ data class SingleSolution(val solution: Board<SudokuNumber>) : BruteForceSolutio
  * solutions. The logical solutions are written assuming that they are operating on a board with only one solution.
  */
 fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
-    if (board.cells.none { it == null }) {
+    if (null !in board.cells) {
         val filledBoard = board.mapCells { it!! }
         return if (isSolved(filledBoard)) SingleSolution(filledBoard) else NoSolutions
     }
