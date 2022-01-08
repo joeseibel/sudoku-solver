@@ -67,18 +67,7 @@ fun main(args: Array<String>) {
                     InvalidNoSolutions -> "No Solutions"
                     InvalidMultipleSolutions -> "Multiple Solutions"
                     is Solution -> solution.board
-
-                    is UnableToSolve -> {
-                        """
-                            |Unable to solve:
-                            |${solution.board.toString().lines().joinToString("\n")}
-                            |
-                            |Simple String: ${solution.board.toSimpleString()}
-                            |
-                            |With Candidates:
-                            |${solution.board.toStringWithCandidates()}
-                        """.trimMargin()
-                    }
+                    is UnableToSolve -> solution.message
                 }
             )
         }
@@ -89,7 +78,20 @@ sealed interface SolveResult
 object InvalidNoSolutions : SolveResult
 object InvalidMultipleSolutions : SolveResult
 data class Solution(val board: Board<SudokuNumber>) : SolveResult
-data class UnableToSolve(val board: Board<Cell>) : SolveResult
+
+data class UnableToSolve(val board: Board<Cell>) : SolveResult {
+    val message: String by lazy {
+        """
+            |Unable to solve:
+            |${board}
+            |
+            |Simple String: ${board.toSimpleString()}
+            |
+            |With Candidates:
+            |${board.toStringWithCandidates()}
+        """.trimMargin()
+    }
+}
 
 fun solve(input: Board<SudokuNumber?>): SolveResult {
     when (val bruteForceSolution = bruteForce(input)) {
