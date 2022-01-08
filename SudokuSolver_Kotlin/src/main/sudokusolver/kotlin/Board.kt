@@ -144,6 +144,7 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     fun toBoard(): Board<T> = Board(rows)
 }
 
-fun getBlockIndex(rowIndex: Int, columnIndex: Int): Int = rowIndex / 3 * 3 + columnIndex / 3
+fun getBlockIndex(rowIndex: Int, columnIndex: Int): Int =
+    rowIndex / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT + columnIndex / UNIT_SIZE_SQUARE_ROOT
 
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)
