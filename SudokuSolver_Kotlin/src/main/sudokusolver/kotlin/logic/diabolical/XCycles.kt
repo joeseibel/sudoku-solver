@@ -1,7 +1,6 @@
 package sudokusolver.kotlin.logic.diabolical
 
 import org.jgrapht.Graph
-import org.jgrapht.alg.connectivity.ConnectivityInspector
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.jgrapht.nio.DefaultAttribute
@@ -16,8 +15,8 @@ import sudokusolver.kotlin.StrengthEdge
 import sudokusolver.kotlin.SudokuNumber
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.alternatingCycleExists
+import sudokusolver.kotlin.getWeakEdgesInAlternatingCycle
 import sudokusolver.kotlin.mergeToRemoveCandidates
-import sudokusolver.kotlin.toSimpleString
 import sudokusolver.kotlin.trim
 import sudokusolver.kotlin.zipEveryPair
 import java.io.StringWriter
@@ -33,55 +32,38 @@ import java.io.StringWriter
  * between strong and weak links. If one cell of a link is the solution, then the other cell must not be the solution.
  * If one cell of a strong link is not the solution, then the other cell must be the solution.
  *
+ * Note that this implementation of X-Cycles can handle cases in which the chain is not strictly alternating between
+ * strong and weak links. It is tolerant of cases in which a strong link takes the place of a weak link.
+ *
  * Rule 1:
  *
  * If an X-Cycle has an even number of vertices and therefore continuously alternates between strong and weak, then the
  * graph is perfect and has no flaws. Each of the weak links can be treated as a strong link. The candidate can be
  * removed from any other cell which is in the same unit as both vertices of a weak link.
- *
- * Note that the current implementation does not handle multiple cycles of the graph. It simply trims the graph of
- * vertices that can't be a part of an alternating cycle. This works because the test case for rule 1 doesn't contain
- * any trimmed graphs with multiple cycles. I'm waiting to encounter a test case in which handling multiple cycles will
- * be necessary. Such a test case will cause a NotImplementedError to be thrown.
  */
 fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().mapNotNull { candidate ->
-        createStrongLinks(board, candidate)
-            .addWeakLinks()
-            .trim()
-            .takeIf { it.vertexSet().isNotEmpty() }
-            ?.let { graph ->
-                if (!ConnectivityInspector(graph).isConnected) {
-                    throw NotImplementedError("Need to split graph for board: ${board.toSimpleString()}")
-                }
-                if (graph.vertexSet().any { graph.degreeOf(it) > 2 }) {
-                    /*
-                     * See Grouped X-Cycles for how to handle multiple cycles. Specifically, look at the functions
-                     * groupedXCyclesRule1 and getWeakEdgesInAlternatingCycle.
-                     */
-                    throw NotImplementedError("Need to handle multiple cycles for board: ${board.toSimpleString()}")
-                }
-                graph.edgeSet().filter { it.strength == Strength.WEAK }.flatMap { edge ->
-                    val source = graph.getEdgeSource(edge)
-                    val target = graph.getEdgeTarget(edge)
+    SudokuNumber.values().flatMap { candidate ->
+        val graph = createStrongLinks(board, candidate).addWeakLinks().trim()
+        getWeakEdgesInAlternatingCycle(graph).flatMap { edge ->
+            val source = graph.getEdgeSource(edge)
+            val target = graph.getEdgeTarget(edge)
 
-                    fun removeFromUnit(getUnitIndex: (Cell) -> Int, getUnit: (Int) -> List<Cell>) =
-                        if (getUnitIndex(source) == getUnitIndex(target)) {
-                            getUnit(getUnitIndex(source))
-                                .filterIsInstance<UnsolvedCell>()
-                                .filter { candidate in it.candidates && it != source && it != target }
-                                .map { it to candidate }
-                        } else {
-                            emptyList()
-                        }
-
-                    val rowRemovals = removeFromUnit(Cell::row, board::getRow)
-                    val columnRemovals = removeFromUnit(Cell::column, board::getColumn)
-                    val blockRemovals = removeFromUnit(Cell::block, board::getBlock)
-                    rowRemovals + columnRemovals + blockRemovals
+            fun removeFromUnit(getUnitIndex: (Cell) -> Int, getUnit: (Int) -> List<Cell>) =
+                if (getUnitIndex(source) == getUnitIndex(target)) {
+                    getUnit(getUnitIndex(source))
+                        .filterIsInstance<UnsolvedCell>()
+                        .filter { candidate in it.candidates && it != source && it != target }
+                        .map { it to candidate }
+                } else {
+                    emptyList()
                 }
-            }
-    }.flatten().mergeToRemoveCandidates()
+
+            val rowRemovals = removeFromUnit(Cell::row, board::getRow)
+            val columnRemovals = removeFromUnit(Cell::column, board::getColumn)
+            val blockRemovals = removeFromUnit(Cell::block, board::getBlock)
+            rowRemovals + columnRemovals + blockRemovals
+        }
+    }.mergeToRemoveCandidates()
 
 /*
  * Rule 2:

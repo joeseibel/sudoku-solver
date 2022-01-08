@@ -32,6 +32,9 @@ import java.io.StringWriter
  * vertex of a strong link is not the solution, then the other vertex must be the solution. When there is a proper chain
  * in the graph it means that one of the two end points must be the solution. The candidate can be removed from any cell
  * of the board which is not an end point of the chain and that cell can see both end points.
+ *
+ * Note that this implementation of XY-Chains can handle cases in which the chain is not strictly alternating between
+ * strong and weak links. It is tolerant of cases in which a strong link takes the place of a weak link.
  */
 fun xyChains(board: Board<Cell>): List<RemoveCandidates> {
     val graph = createStrongLinks(board).addWeakLinks()
@@ -108,7 +111,7 @@ private fun alternatingPathExists(
         visited: Set<LocatedCandidate>
     ): Boolean {
         val nextVertices = graph.edgesOf(currentVertex)
-            .filter { it.strength == nextType }
+            .filter { it.strength.isCompatibleWith(nextType) }
             .map { Graphs.getOppositeVertex(graph, it, currentVertex) }
         return nextType == Strength.STRONG && end in nextVertices || (nextVertices - visited - end).any { nextVertex ->
             alternatingPathExists(nextVertex, nextType.opposite, visited + setOf(nextVertex))

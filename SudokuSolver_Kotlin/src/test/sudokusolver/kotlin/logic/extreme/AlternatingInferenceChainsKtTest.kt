@@ -87,6 +87,14 @@ internal class AlternatingInferenceChainsKtTest {
         """.trimIndent().replace("\n", "")
         val expected = listOf(
             SetValue(0, 4, 7),
+            SetValue(1, 2, 1),
+            SetValue(1, 4, 6),
+            SetValue(1, 6, 4),
+            SetValue(2, 0, 4),
+            SetValue(4, 1, 4),
+            SetValue(5, 5, 4),
+            SetValue(7, 3, 1),
+            SetValue(7, 4, 4),
             SetValue(8, 8, 4)
         )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
@@ -105,7 +113,11 @@ internal class AlternatingInferenceChainsKtTest {
             {146}{34}{16}{35}7{15}892
             {15}278{13}9{35}46
         """.trimIndent().replace("\n", "")
-        val expected = listOf(SetValue(0, 1, 5))
+        val expected = listOf(
+            SetValue(0, 1, 5),
+            SetValue(1, 5, 8),
+            SetValue(6, 0, 8)
+        )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
     }
 
@@ -122,7 +134,23 @@ internal class AlternatingInferenceChainsKtTest {
             {124}95{168}3{28}{468}7{14}
             {12}{37}6{1789}{279}4{58}{359}{13}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(SetValue(8, 6, 8))
+        val expected = listOf(
+            SetValue(0, 3, 7),
+            SetValue(0, 6, 2),
+            SetValue(0, 7, 3),
+            SetValue(0, 8, 4),
+            SetValue(2, 3, 4),
+            SetValue(2, 4, 9),
+            SetValue(2, 6, 7),
+            SetValue(4, 6, 5),
+            SetValue(4, 7, 2),
+            SetValue(6, 1, 3),
+            SetValue(6, 7, 9),
+            SetValue(7, 8, 1),
+            SetValue(8, 6, 8),
+            SetValue(8, 7, 5),
+            SetValue(8, 8, 3)
+        )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
     }
     
@@ -139,7 +167,18 @@ internal class AlternatingInferenceChainsKtTest {
             261975843
             578{34}1{34}{29}{269}{269}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(SetValue(8, 5, 4))
+        val expected = listOf(
+            SetValue(1, 4, 4),
+            SetValue(2, 0, 8),
+            SetValue(3, 4, 5),
+            SetValue(3, 7, 8),
+            SetValue(4, 4, 8),
+            SetValue(4, 6, 4),
+            SetValue(4, 8, 9),
+            SetValue(5, 3, 4),
+            SetValue(8, 5, 4),
+            SetValue(8, 6, 9)
+        )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
     }
     
@@ -158,6 +197,8 @@ internal class AlternatingInferenceChainsKtTest {
         """.trimIndent().replace("\n", "")
         val expected = listOf(
             SetValue(2, 7, 5),
+            SetValue(6, 1, 6),
+            SetValue(6, 5, 5),
             SetValue(7, 6, 5)
         )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
@@ -193,7 +234,53 @@ internal class AlternatingInferenceChainsKtTest {
             19{357}{35}{357}8426
             {2348}{23458}{2345}{356}{1456}{15}{19}7{189}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(SetValue(4, 3, 8))
+        val expected = listOf(
+            SetValue(4, 3, 8),
+            SetValue(8, 3, 6)
+        )
+        assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
+    }
+
+    @Test
+    fun rule2Test8() {
+        val board = """
+            79{36}21{36}584
+            {356}284{357}{367}{139}{1369}{16}
+            14{356}{56}897{236}{26}
+            {2369}5{1367}8{379}{367}4{12369}{1267}
+            {369}{67}4{156}{3579}2{139}{1369}8
+            {2369}8{1367}{16}{379}4{1239}5{1267}
+            {56}{67}{567}921843
+            439768{12}{12}5
+            812345679
+        """.trimIndent().replace("\n", "")
+        val expected = listOf(
+            SetValue(1, 4, 5),
+            SetValue(1, 5, 7),
+            SetValue(2, 2, 5),
+            SetValue(4, 3, 5),
+            SetValue(6, 0, 5)
+        )
+        assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
+    }
+
+    @Test
+    fun rule2Test9() {
+        val board = """
+            {23468}1{234}{568}{689}{25}{79}{48}{479}
+            7{28}94{18}{12}365
+            {468}{458}{45}7{689}32{148}{149}
+            56{237}1{23}489{27}
+            9{34}1{358}{2358}76{45}{24}
+            {24}{247}89{25}6{17}{145}3
+            {48}{4578}62{147}9{15}3{18}
+            19{357}{35}{357}8426
+            {2348}{23458}{2345}{356}{1456}{15}{159}7{189}
+        """.trimIndent().replace("\n", "")
+        val expected = listOf(
+            SetValue(4, 3, 8),
+            SetValue(6, 6, 5)
+        )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
     }
 
@@ -210,7 +297,52 @@ internal class AlternatingInferenceChainsKtTest {
             {456}973{12}{56}{145}8{24}
             {568}1{25}{678}4{567}9{357}{23}
         """.trimIndent().replace("\n", "")
-        val expected = listOf(RemoveCandidates(8, 3, 7))
+        val expected = listOf(
+            RemoveCandidates(2, 5, 9),
+            RemoveCandidates(8, 3, 7)
+        )
+        assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule3)
+    }
+
+    @Test
+    fun rule3Test2() {
+        val board = """
+            {4589}{458}613{479}{57}2{789}
+            {89}31{79}5264{789}
+            72{459}{69}8{469}3{59}1
+            26{49}5718{39}{34}
+            {159}{57}84632{179}{79}
+            {14}{47}3298{147}65
+            3{458}{245}{789}{12}{579}{1457}{157}6
+            {456}973{12}{56}{145}8{24}
+            {568}1{25}{678}4{567}9{357}{23}
+        """.trimIndent().replace("\n", "")
+        val expected = listOf(
+            RemoveCandidates(0, 1, 5),
+            RemoveCandidates(8, 3, 7)
+        )
+        assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule3)
+    }
+
+    @Test
+    fun rule3Test3() {
+        val board = """
+            {23468}1{234}{568}{689}{25}{379}{348}{479}
+            7{238}94{18}{12}{13}65
+            {468}{458}{45}7{1689}32{148}{1489}
+            56{237}1{23}489{27}
+            9{234}1{358}{2358}76{45}{24}
+            {24}{247}89{25}6{157}{145}3
+            {348}{4578}62{1457}9{135}{1358}{18}
+            19{357}{35}{357}8426
+            {2348}{23458}{2345}{356}{1456}{15}{1359}7{189}
+        """.trimIndent().replace("\n", "")
+        val expected = listOf(
+            RemoveCandidates(0, 6, 3),
+            RemoveCandidates(4, 1, 2),
+            RemoveCandidates(6, 7, 1),
+            RemoveCandidates(8, 6, 3)
+        )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule3)
     }
 }

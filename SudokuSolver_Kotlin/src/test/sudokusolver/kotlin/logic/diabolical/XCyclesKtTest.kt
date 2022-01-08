@@ -105,7 +105,10 @@ internal class XCyclesKtTest {
             5{129}8476{12}{19}3
             {12}4{129}{138}5{13}{1278}{1789}6
         """.trimIndent().replace("\n", "")
-        val expected = listOf(RemoveCandidates(8, 2, 1))
+        val expected = listOf(
+            RemoveCandidates(5, 7, 1),
+            RemoveCandidates(8, 2, 1)
+        )
         assertLogicalSolution(expected, board, ::xCyclesRule3)
     }
 
