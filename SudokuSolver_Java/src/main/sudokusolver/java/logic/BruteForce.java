@@ -24,6 +24,20 @@ public class BruteForce {
      * the logical solutions. If a board cannot be solved or if it has multiple solutions, then I don't bother with the
      * logical solutions. The logical solutions are written assuming that they are operating on a board with only one
      * solution.
+     *
+     * Motivation for throwing exceptions:
+     *
+     * In the Kotlin version, bruteForce returns a sealed interface with subtypes for the single solution case, the no
+     * solution case, and the multiple solution case. This made sense in Kotlin in order to take advantage of sealed
+     * interfaces and the when statement. I did not use exceptions for Kotlin because Kotlin does not have checked
+     * exceptions, and I wanted the callers of bruteForce to be required to handle these exceptional cases.
+     *
+     * For this Java version, I decided to use checked exceptions primarily because this approach is much more common in
+     * Java. Also, at the time of this writing, the current version of Java is 17. Java now has sealed types, but these
+     * are only really useful when paired with pattern matching in switch expressions. Pattern matching is a preview
+     * feature in 17, but I decided to not use preview features when writing the Java version of the solver. Even after
+     * pattern matching becomes a full feature, I will probably keep the exceptions because throwing checked exceptions
+     * is very common when writing Java programs and Java libraries.
      */
     public static Board<SudokuNumber> bruteForce(
             Board<Optional<SudokuNumber>> board
