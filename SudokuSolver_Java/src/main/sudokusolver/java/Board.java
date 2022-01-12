@@ -53,6 +53,13 @@ public record Board<T>(List<List<T>> rows) {
         return IntStream.range(0, UNIT_SIZE).mapToObj(this::getBlock).toList();
     }
 
+    public List<List<T>> getUnits() {
+        var units = new ArrayList<>(rows);
+        units.addAll(getColumns());
+        units.addAll(getBlocks());
+        return units;
+    }
+
     public List<T> getCells() {
         return rows.stream().flatMap(Collection::stream).toList();
     }

@@ -3,6 +3,7 @@ package sudokusolver.java;
 import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
+import sudokusolver.java.logic.simple.HiddenSingles;
 import sudokusolver.java.logic.simple.NakedSingles;
 import sudokusolver.java.logic.simple.PruneCandidates;
 
@@ -89,6 +90,9 @@ public class SudokuSolver {
         List<? extends BoardModification> modifications = PruneCandidates.pruneCandidates(board);
         if (modifications.isEmpty()) {
             modifications = NakedSingles.nakedSingles(board);
+        }
+        if (modifications.isEmpty()) {
+            modifications = HiddenSingles.hiddenSingles(board);
         }
         return modifications;
     }
