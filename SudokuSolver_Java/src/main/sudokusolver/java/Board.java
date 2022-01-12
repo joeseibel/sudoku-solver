@@ -7,6 +7,23 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/*
+ * For the Java implementation, I decided to have a single Board class whereas in Kotlin, I had three classes:
+ * AbstractBoard, Board, and MutableBoard. This difference is reflective of general collections API differences between
+ * Kotlin and Java.
+ *
+ * In Kotlin, there are separate interfaces for List and MutableList. The List interface does not even contain methods
+ * such as set or add. This makes it very clear, especially for parameter and return types, whether a list is expected
+ * to be mutable. In the Kotlin version of Board, I decided to reflect that so that it is very clear when we are dealing
+ * with board that is expected to be mutated.
+ *
+ * I could have done a similar thing here is Java, but I decided to be more consistent with the Java collections APIs.
+ * In Java, there is no interface distinction between mutable and immutable lists. While it is possible to create an
+ * unmodifiable list in Java, that enforcement is only at runtime and not on the interface itself. When working with
+ * Java lists, it is the programmer's responsibility to be clear about when a list should be mutated and when it
+ * shouldn't. In that same spirit, I have decided to have a single Board class that supports mutability. It is my
+ * responsibility to ensure that I only mutate a board at appropriate places.
+ */
 public record Board<T>(List<List<T>> rows) {
     public static final int UNIT_SIZE_SQUARE_ROOT = 3;
     public static final int UNIT_SIZE = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
@@ -79,6 +96,42 @@ public record Board<T>(List<List<T>> rows) {
                 joinRows(UNIT_SIZE_SQUARE_ROOT, UNIT_SIZE_SQUARE_ROOT * 2) + "\n" +
                 "------+-------+------\n" +
                 joinRows(UNIT_SIZE_SQUARE_ROOT * 2, UNIT_SIZE);
+    }
+
+    public static String toSimpleString(Board<Cell> board) {
+        return board.rows
+                .stream()
+                .map(row -> row.stream()
+                        .map(cell -> {
+                            if (cell instanceof SolvedCell solvedCell) {
+                                return solvedCell.value().toString();
+                            } else {
+                                return "0";
+                            }
+                        })
+                        .collect(Collectors.joining()))
+                .collect(Collectors.joining());
+    }
+
+    public static String toStringWithCandidates(Board<Cell> board) {
+        return board.rows
+                .stream()
+                .map(row -> row.stream()
+                        .map(cell -> {
+                            if (cell instanceof SolvedCell solvedCell) {
+                                return solvedCell.value().toString();
+                            } else if (cell instanceof UnsolvedCell unsolvedCell) {
+                                var candidates = unsolvedCell.candidates()
+                                        .stream()
+                                        .map(Object::toString)
+                                        .collect(Collectors.joining());
+                                return '{' + candidates + '}';
+                            } else {
+                                throw new IllegalStateException("Unexpected cell: " + cell);
+                            }
+                        })
+                        .collect(Collectors.joining()))
+                .collect(Collectors.joining("\n"));
     }
 
     private String joinRows(int fromIndex, int toIndex) {
