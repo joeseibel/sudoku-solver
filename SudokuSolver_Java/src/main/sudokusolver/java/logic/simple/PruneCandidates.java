@@ -1,6 +1,11 @@
 package sudokusolver.java.logic.simple;
 
-import sudokusolver.java.*;
+import sudokusolver.java.Board;
+import sudokusolver.java.Cell;
+import sudokusolver.java.RemoveCandidates;
+import sudokusolver.java.SolvedCell;
+import sudokusolver.java.SudokuNumber;
+import sudokusolver.java.UnsolvedCell;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

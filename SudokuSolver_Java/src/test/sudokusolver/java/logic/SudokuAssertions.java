@@ -1,7 +1,13 @@
 package sudokusolver.java.logic;
 
 import org.junit.jupiter.api.Assertions;
-import sudokusolver.java.*;
+import sudokusolver.java.Board;
+import sudokusolver.java.BoardModification;
+import sudokusolver.java.Cell;
+import sudokusolver.java.RemoveCandidates;
+import sudokusolver.java.SetValue;
+import sudokusolver.java.SolvedCell;
+import sudokusolver.java.SudokuNumber;
 
 import java.util.List;
 import java.util.Optional;
