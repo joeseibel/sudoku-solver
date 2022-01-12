@@ -3,6 +3,7 @@ package sudokusolver.java;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
 public class BoardFactory {
@@ -76,12 +77,12 @@ public class BoardFactory {
     }
 
     public static Board<Cell> parseCellsWithCandidates(String withCandidates) {
-        var cells = new ArrayList<EnumSet<SudokuNumber>>();
+        var cellBuilders = new ArrayList<BiFunction<Integer, Integer, Cell>>();
         var index = 0;
         while (index < withCandidates.length()) {
             var ch = withCandidates.charAt(index);
             if (ch >= '1' && ch <= '9') {
-                cells.add(EnumSet.of(SudokuNumber.valueOf(ch)));
+                cellBuilders.add((row, column) -> new SolvedCell(row, column, SudokuNumber.valueOf(ch)));
                 index++;
             } else if (ch == '{') {
                 index++;
@@ -106,7 +107,7 @@ public class BoardFactory {
                 for (int i = 0; i < charsInBrace.length(); i++) {
                     candidates.add(SudokuNumber.valueOf(charsInBrace.charAt(i)));
                 }
-                cells.add(candidates);
+                cellBuilders.add((row, column) -> new UnsolvedCell(row, column, candidates));
                 index = closingBrace + 1;
             } else if (ch == '}') {
                 throw new IllegalArgumentException("Unmatched '}'.");
@@ -114,19 +115,13 @@ public class BoardFactory {
                 throw new IllegalArgumentException("Invalid character: '" + ch + "'.");
             }
         }
-        if (cells.size() != Board.UNIT_SIZE_SQUARED) {
-            throw new IllegalArgumentException("Found " + cells.size() + " cells, required " + Board.UNIT_SIZE_SQUARED);
+        if (cellBuilders.size() != Board.UNIT_SIZE_SQUARED) {
+            var message = "Found " + cellBuilders.size() + " cells, required " + Board.UNIT_SIZE_SQUARED;
+            throw new IllegalArgumentException(message);
         }
         var board = IntStream.range(0, Board.UNIT_SIZE)
                 .mapToObj(row -> IntStream.range(0, Board.UNIT_SIZE)
-                        .<Cell>mapToObj(column -> {
-                            var cell = cells.get(row * Board.UNIT_SIZE + column);
-                            if (cell.size() == 1) {
-                                return new SolvedCell(row, column, cell.iterator().next());
-                            } else {
-                                return new UnsolvedCell(row, column, cell);
-                            }
-                        })
+                        .mapToObj(column -> cellBuilders.get(row * Board.UNIT_SIZE + column).apply(row, column))
                         .toList())
                 .toList();
         return new Board<>(board);

@@ -3,6 +3,7 @@ package sudokusolver.java;
 import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
+import sudokusolver.java.logic.simple.NakedSingles;
 import sudokusolver.java.logic.simple.PruneCandidates;
 
 import java.util.List;
@@ -85,6 +86,10 @@ public class SudokuSolver {
 
     private static List<? extends BoardModification> performNextSolution(Board<Cell> board) {
         //Start of simple solutions.
-        return PruneCandidates.pruneCandidates(board);
+        List<? extends BoardModification> modifications = PruneCandidates.pruneCandidates(board);
+        if (modifications.isEmpty()) {
+            modifications = NakedSingles.nakedSingles(board);
+        }
+        return modifications;
     }
 }

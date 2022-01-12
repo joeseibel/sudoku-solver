@@ -2,6 +2,7 @@ package sudokusolver.java.logic;
 
 import org.junit.jupiter.api.Assertions;
 import sudokusolver.java.Board;
+import sudokusolver.java.BoardFactory;
 import sudokusolver.java.BoardModification;
 import sudokusolver.java.Cell;
 import sudokusolver.java.RemoveCandidates;
@@ -14,6 +15,14 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class SudokuAssertions {
+    public static <T extends BoardModification> void assertLogicalSolution(
+            List<T> expected,
+            String withCandidates,
+            Function<Board<Cell>, List<T>> logicFunction
+    ) {
+        assertLogicalSolution(expected, BoardFactory.parseCellsWithCandidates(withCandidates), logicFunction);
+    }
+
     public static <T extends BoardModification> void assertLogicalSolution(
             List<T> expected,
             Board<Cell> board,
