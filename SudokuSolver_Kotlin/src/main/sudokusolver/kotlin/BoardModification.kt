@@ -87,7 +87,7 @@ data class SetValue(override val row: Int, override val column: Int, val value: 
         require(value in cell.candidates) { "$value is not a candidate for [$row, $column]" }
     }
 
-    constructor(row: Int, column: Int, value: Int) : this(row, column, value.let { SudokuNumber.values()[it - 1] })
+    constructor(row: Int, column: Int, value: Int) : this(row, column, SudokuNumber.values()[value - 1])
 }
 
 /*
