@@ -4,6 +4,7 @@ import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
 import sudokusolver.java.logic.simple.HiddenSingles;
+import sudokusolver.java.logic.simple.NakedPairs;
 import sudokusolver.java.logic.simple.NakedSingles;
 import sudokusolver.java.logic.simple.PruneCandidates;
 
@@ -93,6 +94,9 @@ public class SudokuSolver {
         }
         if (modifications.isEmpty()) {
             modifications = HiddenSingles.hiddenSingles(board);
+        }
+        if (modifications.isEmpty()) {
+            modifications = NakedPairs.nakedPairs(board);
         }
         return modifications;
     }
