@@ -11,8 +11,8 @@ public record Pair<A, B>(A first, B second) {
         return Collectors.collectingAndThen(
                 Collectors.toList(),
                 list -> IntStream.range(0, list.size() - 1)
-                        .mapToObj(i -> IntStream.range(i + 1, list.size())
-                                .mapToObj(j -> new Pair<>(list.get(i), list.get(j))))
+                        .mapToObj(first -> IntStream.range(first + 1, list.size())
+                                .mapToObj(second -> new Pair<>(list.get(first), list.get(second))))
                         .flatMap(Function.identity())
         );
     }

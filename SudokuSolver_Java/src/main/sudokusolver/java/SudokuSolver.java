@@ -6,6 +6,7 @@ import sudokusolver.java.logic.NoSolutionsException;
 import sudokusolver.java.logic.simple.HiddenSingles;
 import sudokusolver.java.logic.simple.NakedPairs;
 import sudokusolver.java.logic.simple.NakedSingles;
+import sudokusolver.java.logic.simple.NakedTriples;
 import sudokusolver.java.logic.simple.PruneCandidates;
 
 import java.util.Collections;
@@ -95,7 +96,8 @@ public class SudokuSolver {
                 PruneCandidates::pruneCandidates,
                 NakedSingles::nakedSingles,
                 HiddenSingles::hiddenSingles,
-                NakedPairs::nakedPairs
+                NakedPairs::nakedPairs,
+                NakedTriples::nakedTriples
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
