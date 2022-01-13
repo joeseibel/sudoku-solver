@@ -8,8 +8,11 @@ import sudokusolver.java.logic.simple.NakedPairs;
 import sudokusolver.java.logic.simple.NakedSingles;
 import sudokusolver.java.logic.simple.PruneCandidates;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class SudokuSolver {
     public static void main(String[] args) {
@@ -87,17 +90,16 @@ public class SudokuSolver {
     }
 
     private static List<? extends BoardModification> performNextSolution(Board<Cell> board) {
-        //Start of simple solutions.
-        List<? extends BoardModification> modifications = PruneCandidates.pruneCandidates(board);
-        if (modifications.isEmpty()) {
-            modifications = NakedSingles.nakedSingles(board);
-        }
-        if (modifications.isEmpty()) {
-            modifications = HiddenSingles.hiddenSingles(board);
-        }
-        if (modifications.isEmpty()) {
-            modifications = NakedPairs.nakedPairs(board);
-        }
-        return modifications;
+        Stream<Function<Board<Cell>, List<? extends BoardModification>>> solutions = Stream.of(
+                //Start of simple solutions.
+                PruneCandidates::pruneCandidates,
+                NakedSingles::nakedSingles,
+                HiddenSingles::hiddenSingles,
+                NakedPairs::nakedPairs
+        );
+        return solutions.map(solution -> solution.apply(board))
+                .filter(modifications -> !modifications.isEmpty())
+                .findFirst()
+                .orElse(Collections.emptyList());
     }
 }
