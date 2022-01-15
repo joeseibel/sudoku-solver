@@ -3,6 +3,7 @@ package sudokusolver.kotlin.logic.extreme
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.Strength
@@ -36,6 +37,55 @@ internal class GroupedXCyclesKtTest {
             
         """.trimIndent()
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun testGroupTooSmall() {
+        assertEquals(
+            "Group can only be constructed with 2 or 3 cells, but cells.size is 0.",
+            assertThrows<IllegalArgumentException> { RowGroup(emptySet()) }.message
+        )
+    }
+
+    @Test
+    fun testGroupTooLarge() {
+        val cells = setOf(
+            UnsolvedCell(0, 0),
+            UnsolvedCell(0, 1),
+            UnsolvedCell(0, 2),
+            UnsolvedCell(0, 3)
+        )
+        assertEquals(
+            "Group can only be constructed with 2 or 3 cells, but cells.size is 4.",
+            assertThrows<IllegalArgumentException> { RowGroup(cells) }.message
+        )
+    }
+
+    @Test
+    fun testGroupNotInSameBlock() {
+        val cells = setOf(UnsolvedCell(0, 0), UnsolvedCell(0, 3))
+        assertEquals(
+            "Group cells must be in the same block.",
+            assertThrows<IllegalArgumentException> { RowGroup(cells) }.message
+        )
+    }
+
+    @Test
+    fun testRowGroupNotInSameRow() {
+        val cells = setOf(UnsolvedCell(0, 0), UnsolvedCell(1, 1))
+        assertEquals(
+            "RowGroup cells must be in the same row.",
+            assertThrows<IllegalArgumentException> { RowGroup(cells) }.message
+        )
+    }
+
+    @Test
+    fun testColumnGroupNotInSameColumn() {
+        val cells = setOf(UnsolvedCell(0, 0), UnsolvedCell(1, 1))
+        assertEquals(
+            "ColumnGroup cells must be in the same column.",
+            assertThrows<IllegalArgumentException> { ColumnGroup(cells) }.message
+        )
     }
 
     @Test

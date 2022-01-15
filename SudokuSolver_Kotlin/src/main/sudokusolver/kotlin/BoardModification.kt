@@ -53,20 +53,24 @@ sealed interface BoardModification : Comparable<BoardModification> {
     }
 }
 
+private fun BoardModification.validateRowAndColumn() {
+    require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
+    require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
+}
+
 data class RemoveCandidates(
     override val row: Int,
     override val column: Int,
     val candidates: EnumSet<SudokuNumber>
 ) : BoardModification {
     init {
-        require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
-        require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
+        validateRowAndColumn()
         require(candidates.isNotEmpty()) { "candidates must not be empty." }
     }
 
     constructor(cell: UnsolvedCell, candidates: EnumSet<SudokuNumber>) : this(cell.row, cell.column, candidates) {
         candidates.forEach { candidate ->
-            require(candidate in cell.candidates) { "$candidate is not a candidate for [$row, $column]" }
+            require(candidate in cell.candidates) { "$candidate is not a candidate for [$row, $column]." }
         }
     }
 
@@ -79,12 +83,11 @@ data class RemoveCandidates(
 
 data class SetValue(override val row: Int, override val column: Int, val value: SudokuNumber) : BoardModification {
     init {
-        require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
-        require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
+        validateRowAndColumn()
     }
 
     constructor(cell: UnsolvedCell, value: SudokuNumber) : this(cell.row, cell.column, value) {
-        require(value in cell.candidates) { "$value is not a candidate for [$row, $column]" }
+        require(value in cell.candidates) { "$value is not a candidate for [$row, $column]." }
     }
 
     constructor(row: Int, column: Int, value: Int) : this(row, column, SudokuNumber.values()[value - 1])

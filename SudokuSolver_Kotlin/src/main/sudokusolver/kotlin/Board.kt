@@ -67,7 +67,10 @@ class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
         requireSize(rows)
     }
 
-    override val columns: List<List<T>> by lazy { (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } } }
+    override val columns: List<List<T>> by lazy {
+        (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } }
+    }
+
     override val blocks: List<List<T>> by lazy { (0 until UNIT_SIZE).map(::getBlock) }
     override val units: List<List<T>> by lazy { rows + columns + blocks }
     override val cells: List<T> by lazy { rows.flatten() }

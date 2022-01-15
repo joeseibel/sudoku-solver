@@ -74,12 +74,12 @@ fun main(args: Array<String>) {
     }
 }
 
-sealed interface SolveResult
-object InvalidNoSolutions : SolveResult
-object InvalidMultipleSolutions : SolveResult
-data class Solution(val board: Board<SudokuNumber>) : SolveResult
+private sealed interface SolveResult
+private object InvalidNoSolutions : SolveResult
+private object InvalidMultipleSolutions : SolveResult
+private data class Solution(val board: Board<SudokuNumber>) : SolveResult
 
-data class UnableToSolve(val board: Board<Cell>) : SolveResult {
+private data class UnableToSolve(val board: Board<Cell>) : SolveResult {
     val message: String by lazy {
         """
             |Unable to solve:
@@ -93,7 +93,7 @@ data class UnableToSolve(val board: Board<Cell>) : SolveResult {
     }
 }
 
-fun solve(input: Board<SudokuNumber?>): SolveResult {
+private fun solve(input: Board<SudokuNumber?>): SolveResult {
     when (val bruteForceSolution = bruteForce(input)) {
         NoSolutions -> return InvalidNoSolutions
         MultipleSolutions -> return InvalidMultipleSolutions
