@@ -44,7 +44,7 @@ public class SudokuSolver {
         }
     }
 
-    public static Board<SudokuNumber> solve(
+    private static Board<SudokuNumber> solve(
             Board<Optional<SudokuNumber>> input
     ) throws NoSolutionsException, MultipleSolutionsException, UnableToSolveException {
         var bruteForceSolution = BruteForce.bruteForce(input);
