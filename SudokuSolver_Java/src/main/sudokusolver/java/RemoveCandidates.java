@@ -6,14 +6,7 @@ import java.util.stream.Collectors;
 
 public record RemoveCandidates(int row, int column, EnumSet<SudokuNumber> candidates) implements BoardModification {
     public RemoveCandidates {
-        if (row < 0 || row >= Board.UNIT_SIZE) {
-            var message = "row is " + row + ", must be between 0 and " + (Board.UNIT_SIZE - 1) + '.';
-            throw new IllegalArgumentException(message);
-        }
-        if (column < 0 || column >= Board.UNIT_SIZE) {
-            var message = "column is " + column + ", must be between 0 and " + (Board.UNIT_SIZE - 1) + '.';
-            throw new IllegalArgumentException(message);
-        }
+        SudokuUtil.validateRowAndColumn(row, column);
         if (candidates.isEmpty()) {
             throw new IllegalArgumentException("candidates must not be empty.");
         }
@@ -23,7 +16,8 @@ public record RemoveCandidates(int row, int column, EnumSet<SudokuNumber> candid
         this(cell.row(), cell.column(), candidates);
         candidates.forEach(candidate -> {
             if (!cell.candidates().contains(candidate)) {
-                throw new IllegalArgumentException(candidate + " is not a candidate for [" + row + ", " + column + ']');
+                var message = candidate + " is not a candidate for [" + row + ", " + column + "].";
+                throw new IllegalArgumentException(message);
             }
         });
     }

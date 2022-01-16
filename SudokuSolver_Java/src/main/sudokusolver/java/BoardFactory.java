@@ -116,7 +116,7 @@ public class BoardFactory {
             }
         }
         if (cellBuilders.size() != Board.UNIT_SIZE_SQUARED) {
-            var message = "Found " + cellBuilders.size() + " cells, required " + Board.UNIT_SIZE_SQUARED;
+            var message = "Found " + cellBuilders.size() + " cells, required " + Board.UNIT_SIZE_SQUARED + '.';
             throw new IllegalArgumentException(message);
         }
         var board = IntStream.range(0, Board.UNIT_SIZE)
