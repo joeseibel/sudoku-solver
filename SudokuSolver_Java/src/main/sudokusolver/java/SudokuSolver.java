@@ -3,6 +3,7 @@ package sudokusolver.java;
 import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
+import sudokusolver.java.logic.simple.HiddenPairs;
 import sudokusolver.java.logic.simple.HiddenSingles;
 import sudokusolver.java.logic.simple.NakedPairs;
 import sudokusolver.java.logic.simple.NakedSingles;
@@ -97,7 +98,8 @@ public class SudokuSolver {
                 NakedSingles::nakedSingles,
                 HiddenSingles::hiddenSingles,
                 NakedPairs::nakedPairs,
-                NakedTriples::nakedTriples
+                NakedTriples::nakedTriples,
+                HiddenPairs::hiddenPairs
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
