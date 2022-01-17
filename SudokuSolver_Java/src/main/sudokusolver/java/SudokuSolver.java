@@ -7,6 +7,7 @@ import sudokusolver.java.logic.simple.HiddenPairs;
 import sudokusolver.java.logic.simple.HiddenSingles;
 import sudokusolver.java.logic.simple.HiddenTriples;
 import sudokusolver.java.logic.simple.NakedPairs;
+import sudokusolver.java.logic.simple.NakedQuads;
 import sudokusolver.java.logic.simple.NakedSingles;
 import sudokusolver.java.logic.simple.NakedTriples;
 import sudokusolver.java.logic.simple.PruneCandidates;
@@ -101,7 +102,8 @@ public class SudokuSolver {
                 NakedPairs::nakedPairs,
                 NakedTriples::nakedTriples,
                 HiddenPairs::hiddenPairs,
-                HiddenTriples::hiddenTriples
+                HiddenTriples::hiddenTriples,
+                NakedQuads::nakedQuads
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
