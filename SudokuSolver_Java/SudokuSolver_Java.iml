@@ -25,6 +25,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="github.stefanbirkner.system.lambda" level="project" />
   </component>
 </module>

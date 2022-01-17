@@ -1,33 +1,9 @@
 package sudokusolver.kotlin
 
-import com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOut
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 internal class SudokuSolverKtTest {
-    @Test
-    fun testUsageError() {
-        assertEquals("usage: SudokuSolverKt board\n", tapSystemOut { main(emptyArray()) })
-    }
-
-    @Test
-    fun testWrongLength() {
-        assertEquals(
-            "board must be 81 numbers with blanks expressed as 0\n",
-            tapSystemOut { main(arrayOf("")) }
-        )
-    }
-
-    @Test
-    fun testWrongCharacter() {
-        assertEquals(
-            "board must be 81 numbers with blanks expressed as 0\n",
-            tapSystemOut {
-                main(arrayOf("a10040560230615080000800100050020008600781005900060020006008000080473056045090010"))
-            }
-        )
-    }
-
     @Test
     fun testSolution() {
         val board = "010040560230615080000800100050020008600781005900060020006008000080473056045090010"
@@ -43,9 +19,8 @@ internal class SudokuSolverKtTest {
             7 9 6 | 1 5 8 | 2 3 4
             1 8 2 | 4 7 3 | 9 5 6
             3 4 5 | 2 9 6 | 8 1 7
-        
         """.trimIndent()
-        assertEquals(expected, tapSystemOut { main(arrayOf(board)) })
+        assertEquals(expected, (solve(parseOptionalBoard(board)) as Solution).board.toString())
     }
 
     @Test
@@ -77,20 +52,19 @@ internal class SudokuSolverKtTest {
             47{23}{139}8{159}{259}6{39}
             {2389}16{39}4{59}{25}{58}7
             {38}{39}52761{48}{349}
-        
         """.trimIndent()
-        assertEquals(expected, tapSystemOut { main(arrayOf(board)) })
+        assertEquals(expected, (solve(parseOptionalBoard(board)) as UnableToSolve).message)
     }
 
     @Test
     fun testNoSolutions() {
         val board = "710040560230615080000800100050020008600781005900060020006008000080473056045090010"
-        assertEquals("No Solutions\n", tapSystemOut { main(arrayOf(board)) })
+        assertEquals(InvalidNoSolutions, solve(parseOptionalBoard(board)))
     }
 
     @Test
     fun testMultipleSolutions() {
         val board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010"
-        assertEquals("Multiple Solutions\n", tapSystemOut { main(arrayOf(board)) })
+        assertEquals(InvalidMultipleSolutions, solve(parseOptionalBoard(board)))
     }
 }

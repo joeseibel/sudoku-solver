@@ -1,39 +1,15 @@
 package sudokusolver.java;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import sudokusolver.java.logic.MultipleSolutionsException;
+import sudokusolver.java.logic.NoSolutionsException;
 
 class SudokuSolverTest {
     @Test
-    public void testUsageError() {
-        Assertions.assertEquals(
-                "usage: java sudokusolver.java.SudokuSolver board\n",
-                Assertions.assertDoesNotThrow(() -> SystemLambda.tapSystemOut(() -> SudokuSolver.main(new String[0])))
-        );
-    }
-
-    @Test
-    public void testWrongLength() {
-        var args = new String[]{""};
-        Assertions.assertEquals(
-                "board must be 81 numbers with blanks expressed as 0\n",
-                Assertions.assertDoesNotThrow(() -> SystemLambda.tapSystemOut(() -> SudokuSolver.main(args)))
-        );
-    }
-
-    @Test
-    public void testWrongCharacter() {
-        var args = new String[]{"a10040560230615080000800100050020008600781005900060020006008000080473056045090010"};
-        Assertions.assertEquals(
-                "board must be 81 numbers with blanks expressed as 0\n",
-                Assertions.assertDoesNotThrow(() -> SystemLambda.tapSystemOut(() -> SudokuSolver.main(args)))
-        );
-    }
-
-    @Test
     public void testSolution() {
-        var args = new String[]{"010040560230615080000800100050020008600781005900060020006008000080473056045090010"};
+        var board = "010040560230615080000800100050020008600781005900060020006008000080473056045090010";
+        var parsedBoard = BoardFactory.parseOptionalBoard(board);
         var expected = """
                 8 1 7 | 9 4 2 | 5 6 3
                 2 3 4 | 6 1 5 | 7 8 9
@@ -45,18 +21,18 @@ class SudokuSolverTest {
                 ------+-------+------
                 7 9 6 | 1 5 8 | 2 3 4
                 1 8 2 | 4 7 3 | 9 5 6
-                3 4 5 | 2 9 6 | 8 1 7
-                """;
+                3 4 5 | 2 9 6 | 8 1 7""";
         Assertions.assertEquals(
                 expected,
-                Assertions.assertDoesNotThrow(() -> SystemLambda.tapSystemOut(() -> SudokuSolver.main(args)))
+                Assertions.assertDoesNotThrow(() -> SudokuSolver.solve(parsedBoard)).toString()
         );
     }
 
     // TODO: Uncomment after implementing Alternating Inference Chains.
 //    @Test
 //    public void testUnableToSolve() {
-//        var args = new String[]{"004007830000050470720030695080700300649513728007008010470080060016040007005276100"};
+//        var board = "004007830000050470720030695080700300649513728007008010470080060016040007005276100";
+//        var parsedBoard = BoardFactory.parseOptionalBoard(board);
 //        var expected = """
 //                Unable to solve:
 //                0 0 4 | 0 0 7 | 8 3 0
@@ -86,25 +62,24 @@ class SudokuSolverTest {
 //                """;
 //        Assertions.assertEquals(
 //                expected,
-//                Assertions.assertDoesNotThrow(() -> SystemLambda.tapSystemOut(() -> SudokuSolver.main(args)))
+//                Assertions.assertThrows(
+//                        UnableToSolveException.class,
+//                        () -> SudokuSolver.solve(parsedBoard)
+//                ).getMessage()
 //        );
 //    }
 
     @Test
     public void testNoSolutions() {
-        var args = new String[]{"710040560230615080000800100050020008600781005900060020006008000080473056045090010"};
-        Assertions.assertEquals(
-                "No Solutions\n",
-                Assertions.assertDoesNotThrow(() -> SystemLambda.tapSystemOut(() -> SudokuSolver.main(args)))
-        );
+        var board = "710040560230615080000800100050020008600781005900060020006008000080473056045090010";
+        var parsedBoard = BoardFactory.parseOptionalBoard(board);
+        Assertions.assertThrows(NoSolutionsException.class, () -> SudokuSolver.solve(parsedBoard));
     }
 
     @Test
     public void testMultipleSolutions() {
-        var args = new String[]{"000000560230615080000800100050020008600781005900060020006008000080473056045090010"};
-        Assertions.assertEquals(
-                "Multiple Solutions\n",
-                Assertions.assertDoesNotThrow(() -> SystemLambda.tapSystemOut(() -> SudokuSolver.main(args)))
-        );
+        var board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
+        var parsedBoard = BoardFactory.parseOptionalBoard(board);
+        Assertions.assertThrows(MultipleSolutionsException.class, () -> SudokuSolver.solve(parsedBoard));
     }
 }
