@@ -4,6 +4,7 @@ import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
 import sudokusolver.java.logic.simple.HiddenPairs;
+import sudokusolver.java.logic.simple.HiddenQuads;
 import sudokusolver.java.logic.simple.HiddenSingles;
 import sudokusolver.java.logic.simple.HiddenTriples;
 import sudokusolver.java.logic.simple.NakedPairs;
@@ -103,7 +104,8 @@ public class SudokuSolver {
                 NakedTriples::nakedTriples,
                 HiddenPairs::hiddenPairs,
                 HiddenTriples::hiddenTriples,
-                NakedQuads::nakedQuads
+                NakedQuads::nakedQuads,
+                HiddenQuads::hiddenQuads
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
