@@ -25,8 +25,8 @@ enum class VertexColor {
 
 fun <V, E> Graph<V, E>.colorToMap(): Map<V, VertexColor> {
     val breadthFirst = BreadthFirstIterator(this)
-    return breadthFirst.asSequence().associateWith { cell ->
-        if (breadthFirst.getDepth(cell) % 2 == 0) VertexColor.COLOR_ONE else VertexColor.COLOR_TWO
+    return breadthFirst.asSequence().associateWith { vertex ->
+        if (breadthFirst.getDepth(vertex) % 2 == 0) VertexColor.COLOR_ONE else VertexColor.COLOR_TWO
     }
 }
 
