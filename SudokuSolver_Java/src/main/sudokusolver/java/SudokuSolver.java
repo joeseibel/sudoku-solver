@@ -14,6 +14,7 @@ import sudokusolver.java.logic.simple.NakedSingles;
 import sudokusolver.java.logic.simple.NakedTriples;
 import sudokusolver.java.logic.simple.PointingPairsPointingTriples;
 import sudokusolver.java.logic.simple.PruneCandidates;
+import sudokusolver.java.logic.tough.SimpleColoring;
 import sudokusolver.java.logic.tough.XWing;
 
 import java.util.Collections;
@@ -112,7 +113,9 @@ public class SudokuSolver {
                 PointingPairsPointingTriples::pointingPairsPointingTriples,
                 BoxLineReduction::boxLineReduction,
                 //Start of tough solutions.
-                XWing::xWing
+                XWing::xWing,
+                SimpleColoring::simpleColoringRule2,
+                SimpleColoring::simpleColoringRule4
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())

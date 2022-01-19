@@ -14,6 +14,10 @@ public record UnsolvedCell(int row, int column, EnumSet<SudokuNumber> candidates
         this(row, column, EnumSet.allOf(SudokuNumber.class));
     }
 
+    public boolean isInSameUnit(UnsolvedCell other) {
+        return row == other.row || column == other.column || block() == other.block();
+    }
+
     @Override
     public String toString() {
         return "0";
