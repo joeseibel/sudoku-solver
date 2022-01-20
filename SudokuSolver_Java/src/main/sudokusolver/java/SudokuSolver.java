@@ -16,6 +16,7 @@ import sudokusolver.java.logic.simple.PointingPairsPointingTriples;
 import sudokusolver.java.logic.simple.PruneCandidates;
 import sudokusolver.java.logic.tough.SimpleColoring;
 import sudokusolver.java.logic.tough.XWing;
+import sudokusolver.java.logic.tough.YWing;
 
 import java.util.Collections;
 import java.util.List;
@@ -115,7 +116,8 @@ public class SudokuSolver {
                 //Start of tough solutions.
                 XWing::xWing,
                 SimpleColoring::simpleColoringRule2,
-                SimpleColoring::simpleColoringRule4
+                SimpleColoring::simpleColoringRule4,
+                YWing::yWing
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
