@@ -43,11 +43,9 @@ fun yWing(board: Board<Cell>): List<RemoveCandidates> {
 
     return board.cells
         .filterIsInstance<UnsolvedCell>()
+        .filter { it.candidates.size == 2 }
         .zipEveryTriple()
-        .filter { (a, b, c) ->
-            a.candidates.size == 2 && b.candidates.size == 2 && c.candidates.size == 2 &&
-                    enumUnion(a.candidates, b.candidates, c.candidates).size == 3
-        }
+        .filter { (a, b, c) -> enumUnion(a.candidates, b.candidates, c.candidates).size == 3 }
         .flatMap { (a, b, c) -> tryHinge(a, b, c) + tryHinge(b, a, c) + tryHinge(c, a, b) }
         .mergeToRemoveCandidates()
 }
