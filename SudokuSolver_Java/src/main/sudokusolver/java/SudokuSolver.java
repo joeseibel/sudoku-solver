@@ -15,6 +15,7 @@ import sudokusolver.java.logic.simple.NakedTriples;
 import sudokusolver.java.logic.simple.PointingPairsPointingTriples;
 import sudokusolver.java.logic.simple.PruneCandidates;
 import sudokusolver.java.logic.tough.SimpleColoring;
+import sudokusolver.java.logic.tough.Swordfish;
 import sudokusolver.java.logic.tough.XWing;
 import sudokusolver.java.logic.tough.YWing;
 
@@ -117,7 +118,8 @@ public class SudokuSolver {
                 XWing::xWing,
                 SimpleColoring::simpleColoringRule2,
                 SimpleColoring::simpleColoringRule4,
-                YWing::yWing
+                YWing::yWing,
+                Swordfish::swordfish
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
