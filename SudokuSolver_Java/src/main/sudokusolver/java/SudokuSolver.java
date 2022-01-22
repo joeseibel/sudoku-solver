@@ -17,6 +17,7 @@ import sudokusolver.java.logic.simple.PruneCandidates;
 import sudokusolver.java.logic.tough.SimpleColoring;
 import sudokusolver.java.logic.tough.Swordfish;
 import sudokusolver.java.logic.tough.XWing;
+import sudokusolver.java.logic.tough.XYZWing;
 import sudokusolver.java.logic.tough.YWing;
 
 import java.util.Collections;
@@ -119,7 +120,8 @@ public class SudokuSolver {
                 SimpleColoring::simpleColoringRule2,
                 SimpleColoring::simpleColoringRule4,
                 YWing::yWing,
-                Swordfish::swordfish
+                Swordfish::swordfish,
+                XYZWing::xyzWing
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
