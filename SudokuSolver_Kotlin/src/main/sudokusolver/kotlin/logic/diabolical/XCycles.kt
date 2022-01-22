@@ -102,7 +102,7 @@ fun xCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
 fun <V : Cell> Graph<V, StrengthEdge>.toDOT(candidate: SudokuNumber): String {
     val writer = StringWriter()
     DOTExporter<V, StrengthEdge>().apply {
-        setGraphIdProvider { candidate.toString() }
+        setGraphIdProvider(candidate::toString)
         setVertexAttributeProvider {
             mapOf("label" to DefaultAttribute.createAttribute("[${it.row},${it.column}]"))
         }
