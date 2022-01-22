@@ -49,7 +49,7 @@ enum class Strength {
         override val opposite: Strength
             get() = STRONG
 
-        override fun isCompatibleWith(requiredType: Strength): Boolean = this == requiredType
+        override fun isCompatibleWith(requiredType: Strength): Boolean = requiredType == WEAK
     };
 
     abstract val opposite: Strength
