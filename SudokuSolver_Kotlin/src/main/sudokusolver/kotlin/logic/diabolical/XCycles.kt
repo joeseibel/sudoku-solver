@@ -99,9 +99,9 @@ fun xCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
             .map { it to candidate }
     }.mergeToRemoveCandidates()
 
-fun <V : Cell> Graph<V, StrengthEdge>.toDOT(candidate: SudokuNumber): String {
+fun Graph<UnsolvedCell, StrengthEdge>.toDOT(candidate: SudokuNumber): String {
     val writer = StringWriter()
-    DOTExporter<V, StrengthEdge>().apply {
+    DOTExporter<UnsolvedCell, StrengthEdge>().apply {
         setGraphIdProvider(candidate::toString)
         setVertexAttributeProvider {
             mapOf("label" to DefaultAttribute.createAttribute("[${it.row},${it.column}]"))
