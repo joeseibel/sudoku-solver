@@ -87,7 +87,8 @@ public class SimpleColoring {
             Board<Cell> board,
             SudokuNumber candidate
     ) {
-        var graph = board.getUnits()
+        var builder = new GraphBuilder<>(new SimpleGraph<UnsolvedCell, DefaultEdge>(DefaultEdge.class));
+        board.getUnits()
                 .stream()
                 .map(unit -> unit.stream()
                         .filter(UnsolvedCell.class::isInstance)
@@ -95,10 +96,7 @@ public class SimpleColoring {
                         .filter(cell -> cell.candidates().contains(candidate))
                         .toList())
                 .filter(withCandidate -> withCandidate.size() == 2)
-                .collect(() -> new GraphBuilder<>(new SimpleGraph<UnsolvedCell, DefaultEdge>(DefaultEdge.class)),
-                        (builder, withCandidate) -> builder.addEdge(withCandidate.get(0), withCandidate.get(1)),
-                        (builderA, builderB) -> builderA.addGraph(builderB.build()))
-                .build();
-        return new BiconnectivityInspector<>(graph).getConnectedComponents();
+                .forEach(withCandidate -> builder.addEdge(withCandidate.get(0), withCandidate.get(1)));
+        return new BiconnectivityInspector<>(builder.build()).getConnectedComponents();
     }
 }
