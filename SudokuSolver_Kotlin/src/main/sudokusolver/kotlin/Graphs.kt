@@ -136,7 +136,7 @@ private fun <V> getAlternatingCycleWeakEdges(
     }
 
     return getAlternatingCycleWeakEdges(start, Strength.STRONG, setOf(start), listOf(startEdge)).also { weakEdges ->
-        assert(weakEdges.all { it.strength == Strength.WEAK }) { "There are strong edges in the return value." }
+        assert(weakEdges.none { it.strength == Strength.STRONG }) { "There are strong edges in the return value." }
     }
 }
 
