@@ -26,5 +26,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="org.jgrapht:jgrapht-core" level="project" />
+    <orderEntry type="library" name="org.jgrapht:jgrapht-io" level="project" />
   </component>
 </module>

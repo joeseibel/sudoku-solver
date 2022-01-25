@@ -3,6 +3,7 @@ package sudokusolver.java;
 import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
+import sudokusolver.java.logic.diabolical.XCycles;
 import sudokusolver.java.logic.simple.BoxLineReduction;
 import sudokusolver.java.logic.simple.HiddenPairs;
 import sudokusolver.java.logic.simple.HiddenQuads;
@@ -121,7 +122,11 @@ public class SudokuSolver {
                 SimpleColoring::simpleColoringRule4,
                 YWing::yWing,
                 Swordfish::swordfish,
-                XYZWing::xyzWing
+                XYZWing::xyzWing,
+                //Start of diabolical solutions.
+                XCycles::xCyclesRule1,
+                XCycles::xCyclesRule2,
+                XCycles::xCyclesRule3
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
