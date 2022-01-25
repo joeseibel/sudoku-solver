@@ -1,10 +1,10 @@
 package sudokusolver.java.logic.tough;
 
 import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
-import org.jgrapht.graph.builder.GraphBuilder;
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
 import sudokusolver.java.LocatedCandidate;
@@ -87,7 +87,7 @@ public class SimpleColoring {
             Board<Cell> board,
             SudokuNumber candidate
     ) {
-        var builder = new GraphBuilder<>(new SimpleGraph<UnsolvedCell, DefaultEdge>(DefaultEdge.class));
+        var graph = new SimpleGraph<UnsolvedCell, DefaultEdge>(DefaultEdge.class);
         board.getUnits()
                 .stream()
                 .map(unit -> unit.stream()
@@ -96,7 +96,11 @@ public class SimpleColoring {
                         .filter(cell -> cell.candidates().contains(candidate))
                         .toList())
                 .filter(withCandidate -> withCandidate.size() == 2)
-                .forEach(withCandidate -> builder.addEdge(withCandidate.get(0), withCandidate.get(1)));
-        return new BiconnectivityInspector<>(builder.build()).getConnectedComponents();
+                .forEach(withCandidate -> {
+                    var a = withCandidate.get(0);
+                    var b = withCandidate.get(1);
+                    Graphs.addEdgeWithVertices(graph, a, b);
+                });
+        return new BiconnectivityInspector<>(graph).getConnectedComponents();
     }
 }
