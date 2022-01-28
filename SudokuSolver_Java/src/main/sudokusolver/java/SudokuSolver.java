@@ -3,6 +3,7 @@ package sudokusolver.java;
 import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
+import sudokusolver.java.logic.diabolical.BUG;
 import sudokusolver.java.logic.diabolical.XCycles;
 import sudokusolver.java.logic.simple.BoxLineReduction;
 import sudokusolver.java.logic.simple.HiddenPairs;
@@ -126,7 +127,8 @@ public class SudokuSolver {
                 //Start of diabolical solutions.
                 XCycles::xCyclesRule1,
                 XCycles::xCyclesRule2,
-                XCycles::xCyclesRule3
+                XCycles::xCyclesRule3,
+                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList)
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
