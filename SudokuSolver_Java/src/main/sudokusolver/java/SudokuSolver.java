@@ -4,6 +4,7 @@ import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
 import sudokusolver.java.logic.diabolical.BUG;
+import sudokusolver.java.logic.diabolical.Medusa;
 import sudokusolver.java.logic.diabolical.XCycles;
 import sudokusolver.java.logic.diabolical.XYChains;
 import sudokusolver.java.logic.simple.BoxLineReduction;
@@ -130,7 +131,13 @@ public class SudokuSolver {
                 XCycles::xCyclesRule2,
                 XCycles::xCyclesRule3,
                 b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList),
-                XYChains::xyChains
+                XYChains::xyChains,
+                Medusa::medusaRule1,
+                Medusa::medusaRule2,
+                Medusa::medusaRule3,
+                Medusa::medusaRule4,
+                Medusa::medusaRule5,
+                Medusa::medusaRule6
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())

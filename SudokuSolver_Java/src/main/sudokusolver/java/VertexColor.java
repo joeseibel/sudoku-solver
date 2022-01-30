@@ -9,8 +9,21 @@ import java.util.List;
 import java.util.Map;
 
 public enum VertexColor {
-    COLOR_ONE,
-    COLOR_TWO;
+    COLOR_ONE {
+        @Override
+        public VertexColor getOpposite() {
+            return COLOR_TWO;
+        }
+    },
+
+    COLOR_TWO {
+        @Override
+        public VertexColor getOpposite() {
+            return COLOR_ONE;
+        }
+    };
+
+    public abstract VertexColor getOpposite();
 
     public static <V, E> Map<V, VertexColor> colorToMap(Graph<V, E> graph) {
         var result = new HashMap<V, VertexColor>();
