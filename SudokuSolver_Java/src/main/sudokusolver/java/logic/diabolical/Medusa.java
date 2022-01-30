@@ -159,6 +159,16 @@ public class Medusa {
                 .collect(LocatedCandidate.mergeToRemoveCandidates());
     }
 
+    private static boolean canSeeColor(LocatedCandidate removal, List<LocatedCandidate> color) {
+        var cell = removal.cell();
+        var candidate = removal.candidate();
+        return color.stream().anyMatch(vertex -> {
+            var coloredCell = vertex.cell();
+            var coloredCandidate = vertex.candidate();
+            return candidate == coloredCandidate && cell.isInSameUnit(coloredCell);
+        });
+    }
+
     /*
      * Rule 5: Two colors Unit + Cell
      *
@@ -183,16 +193,6 @@ public class Medusa {
                                     canSeeColor(removal, colorTwo) && colorInCell(removal, colorOne));
                 })
                 .collect(LocatedCandidate.mergeToRemoveCandidates());
-    }
-
-    private static boolean canSeeColor(LocatedCandidate removal, List<LocatedCandidate> color) {
-        var cell = removal.cell();
-        var candidate = removal.candidate();
-        return color.stream().anyMatch(vertex -> {
-            var coloredCell = vertex.cell();
-            var coloredCandidate = vertex.candidate();
-            return candidate == coloredCandidate && cell.isInSameUnit(coloredCell);
-        });
     }
 
     private static boolean colorInCell(LocatedCandidate removal, List<LocatedCandidate> color) {
