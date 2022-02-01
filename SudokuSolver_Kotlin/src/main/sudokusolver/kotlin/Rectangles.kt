@@ -18,5 +18,5 @@ fun createRectangles(board: Board<Cell>): List<Rectangle> =
                 }
         }
         .filter { rectangle ->
-            rectangle.cells.map { it.block }.toSet().size == 2 && rectangle.commonCandidates.size == 2
+            rectangle.commonCandidates.size == 2 && rectangle.cells.map { it.block }.toSet().size == 2
         }
