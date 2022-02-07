@@ -23,9 +23,9 @@ import java.util.EnumSet
  * Pattern. The common candidates can be removed from the cell leaving only the additional candidates remaining.
  */
 fun extendedUniqueRectangles(board: Board<Cell>): List<RemoveCandidates> =
-    (getRemovals(board.rows) { it.column } + getRemovals(board.columns) { it.row }).mergeToRemoveCandidates()
+    (getRemovals(board.rows) + getRemovals(board.columns)).mergeToRemoveCandidates()
 
-private inline fun getRemovals(units: List<List<Cell>>, getOtherUnitIndex: (Cell) -> Int): List<LocatedCandidate> =
+private fun getRemovals(units: List<List<Cell>>): List<LocatedCandidate> =
     units.zipEveryPair()
         .flatMap { (unitA, unitB) ->
             (unitA zip unitB)
@@ -37,9 +37,7 @@ private inline fun getRemovals(units: List<List<Cell>>, getOtherUnitIndex: (Cell
         .map { (otherA, otherB, otherC) ->
             listOf(otherA.first, otherB.first, otherC.first) to listOf(otherA.second, otherB.second, otherC.second)
         }
-        .filter { (unitA, unitB) ->
-            unitA.map(getOtherUnitIndex).toSet().size == 3 && (unitA + unitB).map { it.block }.toSet().size == 3
-        }
+        .filter { (unitA, unitB) -> (unitA + unitB).map { it.block }.toSet().size == 3 }
         .flatMap { (unitA, unitB) ->
             val unitACandidates = enumUnion(*unitA.map { it.candidates }.toTypedArray())
             val unitBCandidates = enumUnion(*unitB.map { it.candidates }.toTypedArray())
