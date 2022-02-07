@@ -6,6 +6,7 @@ import sudokusolver.java.logic.NoSolutionsException;
 import sudokusolver.java.logic.diabolical.BUG;
 import sudokusolver.java.logic.diabolical.Jellyfish;
 import sudokusolver.java.logic.diabolical.Medusa;
+import sudokusolver.java.logic.diabolical.UniqueRectangles;
 import sudokusolver.java.logic.diabolical.XCycles;
 import sudokusolver.java.logic.diabolical.XYChains;
 import sudokusolver.java.logic.simple.BoxLineReduction;
@@ -139,7 +140,13 @@ public class SudokuSolver {
                 Medusa::medusaRule4,
                 Medusa::medusaRule5,
                 Medusa::medusaRule6,
-                Jellyfish::jellyfish
+                Jellyfish::jellyfish,
+                UniqueRectangles::uniqueRectanglesType1,
+                UniqueRectangles::uniqueRectanglesType2,
+                UniqueRectangles::uniqueRectanglesType3,
+                UniqueRectangles::uniqueRectanglesType3BWithTriplePseudoCells,
+                UniqueRectangles::uniqueRectanglesType4,
+                UniqueRectangles::uniqueRectanglesType5
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
