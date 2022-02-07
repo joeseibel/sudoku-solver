@@ -1,7 +1,17 @@
 package sudokusolver.kotlin
 
+import java.util.EnumSet
+
 class Rectangle(val cells: List<UnsolvedCell>) {
-    val commonCandidates = enumIntersect(*cells.map { it.candidates }.toTypedArray())
+    val commonCandidates: EnumSet<SudokuNumber> = enumIntersect(*cells.map { it.candidates }.toTypedArray())
+
+    val floor: List<UnsolvedCell> by lazy {
+        cells.filter { it.candidates.size == 2 }
+    }
+
+    val roof: List<UnsolvedCell> by lazy {
+        cells.filter { it.candidates.size > 2 }
+    }
 }
 
 fun createRectangles(board: Board<Cell>): List<Rectangle> =

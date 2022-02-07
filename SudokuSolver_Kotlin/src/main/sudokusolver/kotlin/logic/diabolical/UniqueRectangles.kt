@@ -38,9 +38,7 @@ import sudokusolver.kotlin.zipEveryPair
  */
 fun uniqueRectanglesType1(board: Board<Cell>): List<RemoveCandidates> =
     createRectangles(board).mapNotNull { rectangle ->
-        rectangle.cells
-            .singleOrNull { it.candidates.size > 2 }
-            ?.let { roof -> rectangle.commonCandidates.map { roof to it } }
+        rectangle.roof.singleOrNull()?.let { roof -> rectangle.commonCandidates.map { roof to it } }
     }.flatten().mergeToRemoveCandidates()
 
 /*
@@ -53,8 +51,7 @@ fun uniqueRectanglesType1(board: Board<Cell>): List<RemoveCandidates> =
  */
 fun uniqueRectanglesType2(board: Board<Cell>): List<RemoveCandidates> =
     createRectangles(board).mapNotNull { rectangle ->
-        rectangle.cells
-            .filter { it.candidates.size > 2 }
+        rectangle.roof
             .takeIf { it.size == 2 }
             ?.takeIf { (roofA, roofB) -> roofA.candidates.size == 3 && roofA.candidates == roofB.candidates }
             ?.let { (roofA, roofB) ->
@@ -83,8 +80,7 @@ fun uniqueRectanglesType2(board: Board<Cell>): List<RemoveCandidates> =
  */
 fun uniqueRectanglesType3(board: Board<Cell>): List<RemoveCandidates> =
     createRectangles(board).mapNotNull { rectangle ->
-        rectangle.cells
-            .filter { it.candidates.size > 2 }
+        rectangle.roof
             .takeIf { it.size == 2 }
             ?.takeIf { (roofA, roofB) ->
                 roofA.candidates.size == 3 && roofB.candidates.size == 3 && roofA.candidates != roofB.candidates
@@ -127,7 +123,7 @@ fun uniqueRectanglesType3(board: Board<Cell>): List<RemoveCandidates> =
  */
 fun uniqueRectanglesType3BWithTriplePseudoCells(board: Board<Cell>): List<RemoveCandidates> =
     createRectangles(board).mapNotNull { rectangle ->
-        rectangle.cells.filter { it.candidates.size > 2 }.takeIf { it.size == 2 }?.let { (roofA, roofB) ->
+        rectangle.roof.takeIf { it.size == 2 }?.let { (roofA, roofB) ->
             val additionalCandidates = enumUnion(roofA.candidates, roofB.candidates) enumMinus
                     rectangle.commonCandidates
 
@@ -167,7 +163,7 @@ fun uniqueRectanglesType3BWithTriplePseudoCells(board: Board<Cell>): List<Remove
  */
 fun uniqueRectanglesType4(board: Board<Cell>): List<RemoveCandidates> =
     createRectangles(board).mapNotNull { rectangle ->
-        rectangle.cells.filter { it.candidates.size > 2 }.takeIf { it.size == 2 }?.let { roof ->
+        rectangle.roof.takeIf { it.size == 2 }?.let { roof ->
             val (roofA, roofB) = roof
             val (commonCandidateA, commonCandidateB) = rectangle.commonCandidates.toList()
 
@@ -206,8 +202,7 @@ fun uniqueRectanglesType4(board: Board<Cell>): List<RemoveCandidates> =
  */
 fun uniqueRectanglesType5(board: Board<Cell>): List<SetValue> =
     createRectangles(board).mapNotNull { rectangle ->
-        rectangle.cells
-            .filter { it.candidates.size == 2 }
+        rectangle.floor
             .takeIf { floor -> floor.size == 2 }
             ?.takeIf { (floorA, floorB) -> floorA.row != floorB.row && floorA.column != floorB.column }
             ?.let { floor ->
