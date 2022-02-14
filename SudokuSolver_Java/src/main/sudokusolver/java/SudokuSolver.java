@@ -9,6 +9,7 @@ import sudokusolver.java.logic.diabolical.HiddenUniqueRectangles;
 import sudokusolver.java.logic.diabolical.Jellyfish;
 import sudokusolver.java.logic.diabolical.Medusa;
 import sudokusolver.java.logic.diabolical.UniqueRectangles;
+import sudokusolver.java.logic.diabolical.WXYZWing;
 import sudokusolver.java.logic.diabolical.XCycles;
 import sudokusolver.java.logic.diabolical.XYChains;
 import sudokusolver.java.logic.simple.BoxLineReduction;
@@ -150,7 +151,8 @@ public class SudokuSolver {
                 UniqueRectangles::uniqueRectanglesType4,
                 UniqueRectangles::uniqueRectanglesType5,
                 ExtendedUniqueRectangles::extendedUniqueRectangles,
-                HiddenUniqueRectangles::hiddenUniqueRectangles
+                HiddenUniqueRectangles::hiddenUniqueRectangles,
+                WXYZWing::wxyzWing
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
