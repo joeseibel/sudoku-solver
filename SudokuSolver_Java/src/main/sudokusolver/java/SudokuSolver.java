@@ -4,6 +4,7 @@ import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
 import sudokusolver.java.logic.diabolical.BUG;
+import sudokusolver.java.logic.diabolical.ExtendedUniqueRectangles;
 import sudokusolver.java.logic.diabolical.Jellyfish;
 import sudokusolver.java.logic.diabolical.Medusa;
 import sudokusolver.java.logic.diabolical.UniqueRectangles;
@@ -146,7 +147,8 @@ public class SudokuSolver {
                 UniqueRectangles::uniqueRectanglesType3,
                 UniqueRectangles::uniqueRectanglesType3BWithTriplePseudoCells,
                 UniqueRectangles::uniqueRectanglesType4,
-                UniqueRectangles::uniqueRectanglesType5
+                UniqueRectangles::uniqueRectanglesType5,
+                ExtendedUniqueRectangles::extendedUniqueRectangles
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
