@@ -3,6 +3,7 @@ package sudokusolver.java;
 import sudokusolver.java.logic.BruteForce;
 import sudokusolver.java.logic.MultipleSolutionsException;
 import sudokusolver.java.logic.NoSolutionsException;
+import sudokusolver.java.logic.diabolical.AlignedPairExclusion;
 import sudokusolver.java.logic.diabolical.BUG;
 import sudokusolver.java.logic.diabolical.ExtendedUniqueRectangles;
 import sudokusolver.java.logic.diabolical.HiddenUniqueRectangles;
@@ -152,7 +153,8 @@ public class SudokuSolver {
                 UniqueRectangles::uniqueRectanglesType5,
                 ExtendedUniqueRectangles::extendedUniqueRectangles,
                 HiddenUniqueRectangles::hiddenUniqueRectangles,
-                WXYZWing::wxyzWing
+                WXYZWing::wxyzWing,
+                AlignedPairExclusion::alignedPairExclusion
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
