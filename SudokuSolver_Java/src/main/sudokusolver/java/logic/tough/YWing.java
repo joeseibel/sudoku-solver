@@ -9,6 +9,7 @@ import sudokusolver.java.UnsolvedCell;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 /*
@@ -40,13 +41,11 @@ public class YWing {
                     var a = triple.first();
                     var b = triple.second();
                     var c = triple.third();
-                    return Stream.concat(
+                    return Stream.of(
                             tryHinge(board, a, b, c),
-                            Stream.concat(
-                                    tryHinge(board, b, a, c),
-                                    tryHinge(board, c, a, b)
-                            )
-                    );
+                            tryHinge(board, b, a, c),
+                            tryHinge(board, c, a, b)
+                    ).flatMap(Function.identity());
                 })
                 .collect(LocatedCandidate.mergeToRemoveCandidates());
     }

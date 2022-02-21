@@ -139,7 +139,8 @@ public class UniqueRectangles {
                                         Cell::block,
                                         board::getBlock
                                 );
-                                return Stream.concat(rowRemovals, Stream.concat(columnRemovals, blockRemovals));
+                                return Stream.of(rowRemovals, columnRemovals, blockRemovals)
+                                        .flatMap(Function.identity());
                             } else {
                                 return Stream.<LocatedCandidate>empty();
                             }
@@ -220,7 +221,7 @@ public class UniqueRectangles {
                                     Cell::block,
                                     board::getBlock
                             );
-                            return Stream.concat(rowRemovals, Stream.concat(columnRemovals, blockRemovals));
+                            return Stream.of(rowRemovals, columnRemovals, blockRemovals).flatMap(Function.identity());
                         })
                         .orElseGet(Stream::empty))
                 .collect(LocatedCandidate.mergeToRemoveCandidates());
@@ -302,7 +303,7 @@ public class UniqueRectangles {
                                     Cell::block,
                                     board::getBlock
                             );
-                            return Stream.concat(rowRemovals, Stream.concat(columnRemovals, blockRemovals));
+                            return Stream.of(rowRemovals, columnRemovals, blockRemovals).flatMap(Function.identity());
                         })
                         .orElseGet(Stream::empty))
                 .collect(LocatedCandidate.mergeToRemoveCandidates());

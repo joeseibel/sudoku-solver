@@ -76,7 +76,7 @@ public class XCycles {
                                 Cell::block,
                                 board::getBlock
                         );
-                        return Stream.concat(rowRemovals, Stream.concat(columnRemovals, blockRemovals));
+                        return Stream.of(rowRemovals, columnRemovals, blockRemovals).flatMap(Function.identity());
                     });
                 })
                 .collect(LocatedCandidate.mergeToRemoveCandidates());
