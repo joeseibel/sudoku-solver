@@ -13,6 +13,7 @@ import sudokusolver.java.logic.diabolical.UniqueRectangles;
 import sudokusolver.java.logic.diabolical.WXYZWing;
 import sudokusolver.java.logic.diabolical.XCycles;
 import sudokusolver.java.logic.diabolical.XYChains;
+import sudokusolver.java.logic.extreme.GroupedXCycles;
 import sudokusolver.java.logic.simple.BoxLineReduction;
 import sudokusolver.java.logic.simple.HiddenPairs;
 import sudokusolver.java.logic.simple.HiddenQuads;
@@ -154,7 +155,11 @@ public class SudokuSolver {
                 ExtendedUniqueRectangles::extendedUniqueRectangles,
                 HiddenUniqueRectangles::hiddenUniqueRectangles,
                 WXYZWing::wxyzWing,
-                AlignedPairExclusion::alignedPairExclusion
+                AlignedPairExclusion::alignedPairExclusion,
+                //Start of extreme solutions.
+                GroupedXCycles::groupedXCyclesRule1,
+                GroupedXCycles::groupedXCyclesRule2,
+                GroupedXCycles::groupedXCyclesRule3
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
