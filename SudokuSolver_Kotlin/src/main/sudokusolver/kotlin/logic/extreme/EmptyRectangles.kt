@@ -83,7 +83,6 @@ private fun getIntersections(board: Board<Cell>, candidate: SudokuNumber): List<
             ) {
                 row to column
             } else {
-                SolvedCell(0, 0, value = SudokuNumber.ONE)
                 null
             }
         }
