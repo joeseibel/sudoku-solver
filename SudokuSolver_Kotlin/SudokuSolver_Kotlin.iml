@@ -9,8 +9,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
-    <orderEntry type="library" name="org.junit.jupiter:junit-jupiter:5.8.2" level="project" />
-    <orderEntry type="library" name="org.jgrapht:jgrapht-core:1.5.1" level="project" />
-    <orderEntry type="library" name="org.jgrapht:jgrapht-io:1.5.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter" level="project" />
+    <orderEntry type="library" name="org.jgrapht:jgrapht-core" level="project" />
+    <orderEntry type="library" name="org.jgrapht:jgrapht-io" level="project" />
   </component>
 </module>
