@@ -21,7 +21,7 @@ internal class EmptyRectanglesKtTest {
         val expected = listOf(RemoveCandidates(3, 8, 6))
         assertLogicalSolution(expected, board, ::emptyRectangles)
     }
-    
+
     @Test
     fun test2() {
         val board = """
@@ -58,7 +58,7 @@ internal class EmptyRectanglesKtTest {
         val expected = listOf(RemoveCandidates(8, 4, 3))
         assertLogicalSolution(expected, board, ::emptyRectangles)
     }
-    
+
     @Test
     fun test4() {
         val board = """
@@ -80,7 +80,7 @@ internal class EmptyRectanglesKtTest {
         )
         assertLogicalSolution(expected, board, ::emptyRectangles)
     }
-    
+
     @Test
     fun test5() {
         val board = """
