@@ -67,25 +67,20 @@ private fun getIntersections(board: Board<Cell>, candidate: SudokuNumber): List<
         val rowInBlock = row % UNIT_SIZE_SQUARE_ROOT
         val rectangleRow1 = if (rowInBlock == 0) row + 1 else row - rowInBlock
         val rectangleRow2 = if (rowInBlock == 2) row - 1 else row - rowInBlock + 2
-        (0 until UNIT_SIZE).mapNotNull { column ->
+        (0 until UNIT_SIZE).filter { column ->
             val columnInBlock = column % UNIT_SIZE_SQUARE_ROOT
             val rectangleColumn1 = if (columnInBlock == 0) column + 1 else column - columnInBlock
             val rectangleColumn2 = if (columnInBlock == 2) column - 1 else column - columnInBlock + 2
             //Check that the rectangle is empty.
-            if (candidate !in board[rectangleRow1, rectangleColumn1] &&
-                candidate !in board[rectangleRow1, rectangleColumn2] &&
-                candidate !in board[rectangleRow2, rectangleColumn1] &&
-                candidate !in board[rectangleRow2, rectangleColumn2] &&
-                //Check that at least one cell in the same block and row as the intersection has the candidate.
-                (candidate in board[row, rectangleColumn1] || candidate in board[row, rectangleColumn2]) &&
-                //Check that at least one cell in the same block and column as the intersection has the candidate.
-                (candidate in board[rectangleRow1, column] || candidate in board[rectangleRow2, column])
-            ) {
-                row to column
-            } else {
-                null
-            }
-        }
+            candidate !in board[rectangleRow1, rectangleColumn1] &&
+                    candidate !in board[rectangleRow1, rectangleColumn2] &&
+                    candidate !in board[rectangleRow2, rectangleColumn1] &&
+                    candidate !in board[rectangleRow2, rectangleColumn2] &&
+                    //Check that at least one cell in the same block and row as the intersection has the candidate.
+                    (candidate in board[row, rectangleColumn1] || candidate in board[row, rectangleColumn2]) &&
+                    //Check that at least one cell in the same block and column as the intersection has the candidate.
+                    (candidate in board[rectangleRow1, column] || candidate in board[rectangleRow2, column])
+        }.map { column -> row to column }
     }
 
 /*
