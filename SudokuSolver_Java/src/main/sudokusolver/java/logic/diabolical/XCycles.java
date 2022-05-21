@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Stream;
 
 /*
@@ -86,11 +88,11 @@ public class XCycles {
             SudokuNumber candidate,
             UnsolvedCell source,
             UnsolvedCell target,
-            Function<Cell, Integer> getUnitIndex,
-            Function<Integer, List<Cell>> getUnit
+            ToIntFunction<Cell> getUnitIndex,
+            IntFunction<List<Cell>> getUnit
     ) {
-        if (getUnitIndex.apply(source).equals(getUnitIndex.apply(target))) {
-            return getUnit.apply(getUnitIndex.apply(source))
+        if (getUnitIndex.applyAsInt(source) == getUnitIndex.applyAsInt(target)) {
+            return getUnit.apply(getUnitIndex.applyAsInt(source))
                     .stream()
                     .filter(UnsolvedCell.class::isInstance)
                     .map(UnsolvedCell.class::cast)

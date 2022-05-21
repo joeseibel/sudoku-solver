@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -146,12 +148,12 @@ public class GroupedXCycles {
             Node source,
             Node target,
             Predicate<Node> hasUnitIndex,
-            Function<Node, Integer> getUnitIndex,
-            Function<Integer, List<Cell>> getUnit
+            ToIntFunction<Node> getUnitIndex,
+            IntFunction<List<Cell>> getUnit
     ) {
         if (hasUnitIndex.test(source) && hasUnitIndex.test(target)) {
-            var sourceUnitIndex = getUnitIndex.apply(source);
-            if (sourceUnitIndex.equals(getUnitIndex.apply(target))) {
+            var sourceUnitIndex = getUnitIndex.applyAsInt(source);
+            if (sourceUnitIndex == getUnitIndex.applyAsInt(target)) {
                 return getUnit.apply(sourceUnitIndex)
                         .stream()
                         .filter(UnsolvedCell.class::isInstance)
@@ -284,11 +286,11 @@ public class GroupedXCycles {
             SudokuNumber candidate,
             GraphBuilder<Node, StrengthEdge, ?> builder,
             List<? extends Group> groups,
-            Function<Integer, List<Cell>> getUnit,
-            Function<Group, Integer> getUnitIndex
+            IntFunction<List<Cell>> getUnit,
+            ToIntFunction<Group> getUnitIndex
     ) {
         groups.forEach(group -> {
-            var otherCellsInUnit = getUnit.apply(getUnitIndex.apply(group))
+            var otherCellsInUnit = getUnit.apply(getUnitIndex.applyAsInt(group))
                     .stream()
                     .filter(UnsolvedCell.class::isInstance)
                     .map(UnsolvedCell.class::cast)
@@ -303,22 +305,22 @@ public class GroupedXCycles {
             SudokuNumber candidate,
             GraphBuilder<Node, StrengthEdge, ?> builder,
             List<? extends Group> groups,
-            Function<Integer, List<Cell>> getUnit,
-            Function<Group, Integer> getUnitIndex
+            IntFunction<List<Cell>> getUnit,
+            ToIntFunction<Group> getUnitIndex
     ) {
         groups.stream()
                 .collect(Pair.zipEveryPair())
                 .filter(pair -> {
                     var a = pair.first();
                     var b = pair.second();
-                    var commonCells = new HashSet<>(a.getCells());
+                    var commonCells = new HashSet<UnsolvedCell>(a.getCells());
                     commonCells.retainAll(b.getCells());
-                    return getUnitIndex.apply(a).equals(getUnitIndex.apply(b)) && commonCells.isEmpty();
+                    return getUnitIndex.applyAsInt(a) == getUnitIndex.applyAsInt(b) && commonCells.isEmpty();
                 })
                 .forEach(pair -> {
                     var a = pair.first();
                     var b = pair.second();
-                    var otherCellsInUnit = getUnit.apply(getUnitIndex.apply(a))
+                    var otherCellsInUnit = getUnit.apply(getUnitIndex.applyAsInt(a))
                             .stream()
                             .filter(UnsolvedCell.class::isInstance)
                             .map(UnsolvedCell.class::cast)

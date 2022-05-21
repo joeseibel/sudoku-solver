@@ -9,8 +9,8 @@ import sudokusolver.java.UnsolvedCell;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.IntFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Stream;
 
 /*
@@ -47,17 +47,18 @@ public class PointingPairsPointingTriples {
     private static Stream<LocatedCandidate> pointingPairsPointingTriples(
             List<Cell> block,
             SudokuNumber candidate,
-            Function<Integer, List<Cell>> getUnit,
-            Function<Cell, Integer> getUnitIndex
+            IntFunction<List<Cell>> getUnit,
+            ToIntFunction<Cell> getUnitIndex
     ) {
         var unitIndices = block.stream()
                 .filter(UnsolvedCell.class::isInstance)
                 .map(UnsolvedCell.class::cast)
                 .filter(cell -> cell.candidates().contains(candidate))
-                .map(getUnitIndex)
-                .collect(Collectors.toSet());
-        if (unitIndices.size() == 1) {
-            return getUnit.apply(unitIndices.iterator().next())
+                .mapToInt(getUnitIndex)
+                .distinct()
+                .toArray();
+        if (unitIndices.length == 1) {
+            return getUnit.apply(unitIndices[0])
                     .stream()
                     .filter(UnsolvedCell.class::isInstance)
                     .map(UnsolvedCell.class::cast)

@@ -11,7 +11,8 @@ import sudokusolver.java.UnsolvedCell;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -132,15 +133,15 @@ public class HiddenUniqueRectangles {
             UnsolvedCell roofB,
             SudokuNumber candidateA,
             SudokuNumber candidateB,
-            Function<Cell, Integer> getUnitIndex,
-            Function<Integer, List<Cell>> getUnit
+            ToIntFunction<Cell> getUnitIndex,
+            IntFunction<List<Cell>> getUnit
     ) {
-        var unitA = getUnit.apply(getUnitIndex.apply(roofA))
+        var unitA = getUnit.apply(getUnitIndex.applyAsInt(roofA))
                 .stream()
                 .filter(UnsolvedCell.class::isInstance)
                 .map(UnsolvedCell.class::cast)
                 .toList();
-        var unitB = getUnit.apply(getUnitIndex.apply(roofB))
+        var unitB = getUnit.apply(getUnitIndex.applyAsInt(roofB))
                 .stream()
                 .filter(UnsolvedCell.class::isInstance)
                 .map(UnsolvedCell.class::cast)

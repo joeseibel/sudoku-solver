@@ -9,7 +9,7 @@ import sudokusolver.java.UnsolvedCell;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,10 +47,10 @@ public class BoxLineReduction {
             Board<Cell> board,
             SudokuNumber candidate,
             List<List<Cell>> units,
-            Function<Cell, Integer> getUnitIndex
+            ToIntFunction<Cell> getUnitIndex
     ) {
         return units.stream().flatMap(unit -> {
-            var unitIndex = getUnitIndex.apply(unit.get(0));
+            var unitIndex = getUnitIndex.applyAsInt(unit.get(0));
             var blockIndices = unit.stream()
                     .filter(UnsolvedCell.class::isInstance)
                     .map(UnsolvedCell.class::cast)
@@ -62,7 +62,8 @@ public class BoxLineReduction {
                         .stream()
                         .filter(UnsolvedCell.class::isInstance)
                         .map(UnsolvedCell.class::cast)
-                        .filter(cell -> !getUnitIndex.apply(cell).equals(unitIndex) && cell.candidates().contains(candidate))
+                        .filter(cell -> getUnitIndex.applyAsInt(cell) != unitIndex &&
+                                cell.candidates().contains(candidate))
                         .map(cell -> new LocatedCandidate(cell, candidate));
             } else {
                 return Stream.empty();

@@ -14,6 +14,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Stream;
 
 /*
@@ -153,12 +155,12 @@ public class UniqueRectangles {
             UnsolvedCell roofA,
             UnsolvedCell roofB,
             EnumSet<SudokuNumber> additionalCandidates,
-            Function<Cell, Integer> getUnitIndex,
-            Function<Integer, List<Cell>> getUnit
+            ToIntFunction<Cell> getUnitIndex,
+            IntFunction<List<Cell>> getUnit
     ) {
-        var indexA = getUnitIndex.apply(roofA);
-        var indexB = getUnitIndex.apply(roofB);
-        if (indexA.equals(indexB)) {
+        var indexA = getUnitIndex.applyAsInt(roofA);
+        var indexB = getUnitIndex.applyAsInt(roofB);
+        if (indexA == indexB) {
             var unit = getUnit.apply(indexA)
                     .stream()
                     .filter(UnsolvedCell.class::isInstance)
@@ -231,12 +233,12 @@ public class UniqueRectangles {
             UnsolvedCell roofA,
             UnsolvedCell roofB,
             EnumSet<SudokuNumber> additionalCandidates,
-            Function<Cell, Integer> getUnitIndex,
-            Function<Integer, List<Cell>> getUnit
+            ToIntFunction<Cell> getUnitIndex,
+            IntFunction<List<Cell>> getUnit
     ) {
-        var indexA = getUnitIndex.apply(roofA);
-        var indexB = getUnitIndex.apply(roofB);
-        if (indexA.equals(indexB)) {
+        var indexA = getUnitIndex.applyAsInt(roofA);
+        var indexB = getUnitIndex.applyAsInt(roofB);
+        if (indexA == indexB) {
             var unit = getUnit.apply(indexA)
                     .stream()
                     .filter(UnsolvedCell.class::isInstance)
@@ -312,14 +314,14 @@ public class UniqueRectangles {
     private static Stream<LocatedCandidate> getRemovalsType4(
             List<UnsolvedCell> roof,
             SudokuNumber[] commonCandidates,
-            Function<Cell, Integer> getUnitIndex,
-            Function<Integer, List<Cell>> getUnit
+            ToIntFunction<Cell> getUnitIndex,
+            IntFunction<List<Cell>> getUnit
     ) {
         var roofA = roof.get(0);
         var roofB = roof.get(1);
-        var indexA = getUnitIndex.apply(roofA);
-        var indexB = getUnitIndex.apply(roofB);
-        if (indexA.equals(indexB)) {
+        var indexA = getUnitIndex.applyAsInt(roofA);
+        var indexB = getUnitIndex.applyAsInt(roofB);
+        if (indexA == indexB) {
             var unit = getUnit.apply(indexA)
                     .stream()
                     .filter(UnsolvedCell.class::isInstance)

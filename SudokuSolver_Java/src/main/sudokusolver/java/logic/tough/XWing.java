@@ -10,7 +10,8 @@ import sudokusolver.java.UnsolvedCell;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Stream;
 
 /*
@@ -48,8 +49,8 @@ public class XWing {
     private static Stream<LocatedCandidate> xWing(
             SudokuNumber candidate,
             List<List<Cell>> units,
-            Function<Integer, List<Cell>> getOtherUnit,
-            Function<Cell, Integer> getOtherUnitIndex
+            IntFunction<List<Cell>> getOtherUnit,
+            ToIntFunction<Cell> getOtherUnitIndex
     ) {
         return units.stream().collect(Pair.zipEveryPair()).flatMap(pair -> {
             var unitA = pair.first();
@@ -65,13 +66,13 @@ public class XWing {
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             if (aWithCandidate.size() == 2 && bWithCandidate.size() == 2 &&
-                    getOtherUnitIndex.apply(aWithCandidate.get(0))
-                            .equals(getOtherUnitIndex.apply(bWithCandidate.get(0))) &&
-                    getOtherUnitIndex.apply(aWithCandidate.get(1))
-                            .equals(getOtherUnitIndex.apply(bWithCandidate.get(1)))
+                    getOtherUnitIndex.applyAsInt(aWithCandidate.get(0)) ==
+                            getOtherUnitIndex.applyAsInt(bWithCandidate.get(0)) &&
+                    getOtherUnitIndex.applyAsInt(aWithCandidate.get(1)) ==
+                            getOtherUnitIndex.applyAsInt(bWithCandidate.get(1))
             ) {
-                var otherUnitA = getOtherUnit.apply(getOtherUnitIndex.apply(aWithCandidate.get(0)));
-                var otherUnitB = getOtherUnit.apply(getOtherUnitIndex.apply(aWithCandidate.get(1)));
+                var otherUnitA = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.get(0)));
+                var otherUnitB = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.get(1)));
                 return Stream.concat(otherUnitA.stream(), otherUnitB.stream())
                         .filter(UnsolvedCell.class::isInstance)
                         .map(UnsolvedCell.class::cast)

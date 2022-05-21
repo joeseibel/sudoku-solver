@@ -11,7 +11,8 @@ import sudokusolver.java.UnsolvedCell;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,8 +51,8 @@ public class Jellyfish {
     private static Stream<LocatedCandidate> jellyfish(
             SudokuNumber candidate,
             List<List<Cell>> units,
-            Function<Integer, List<Cell>> getOtherUnit,
-            Function<Cell, Integer> getOtherUnitIndex
+            IntFunction<List<Cell>> getOtherUnit,
+            ToIntFunction<Cell> getOtherUnitIndex
     ) {
         return units.stream().collect(Quad.zipEveryQuad()).flatMap(quad -> {
             var unitA = quad.first();
@@ -89,7 +90,7 @@ public class Jellyfish {
                 withCandidate.addAll(cWithCandidate);
                 withCandidate.addAll(dWithCandidate);
                 var otherUnitIndices = withCandidate.stream()
-                        .map(getOtherUnitIndex)
+                        .map(getOtherUnitIndex::applyAsInt)
                         .collect(Collectors.toSet());
                 if (otherUnitIndices.size() == 4) {
                     return otherUnitIndices.stream()
