@@ -13,6 +13,7 @@ import sudokusolver.java.logic.diabolical.UniqueRectangles;
 import sudokusolver.java.logic.diabolical.WXYZWing;
 import sudokusolver.java.logic.diabolical.XCycles;
 import sudokusolver.java.logic.diabolical.XYChains;
+import sudokusolver.java.logic.extreme.EmptyRectangles;
 import sudokusolver.java.logic.extreme.GroupedXCycles;
 import sudokusolver.java.logic.simple.BoxLineReduction;
 import sudokusolver.java.logic.simple.HiddenPairs;
@@ -159,7 +160,8 @@ public class SudokuSolver {
                 //Start of extreme solutions.
                 GroupedXCycles::groupedXCyclesRule1,
                 GroupedXCycles::groupedXCyclesRule2,
-                GroupedXCycles::groupedXCyclesRule3
+                GroupedXCycles::groupedXCyclesRule3,
+                EmptyRectangles::emptyRectangles
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
