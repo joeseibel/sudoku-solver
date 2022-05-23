@@ -21,7 +21,7 @@ internal class FinnedSwordfishKtTest {
         val expected = listOf(RemoveCandidates(6, 3, 3))
         assertLogicalSolution(expected, board, ::finnedSwordfish)
     }
-    
+
     @Test
     fun test2() {
         val board = """
@@ -38,7 +38,7 @@ internal class FinnedSwordfishKtTest {
         val expected = listOf(RemoveCandidates(7, 0, 3))
         assertLogicalSolution(expected, board, ::finnedSwordfish)
     }
-    
+
     @Test
     fun test3() {
         val board = """
@@ -58,7 +58,7 @@ internal class FinnedSwordfishKtTest {
         )
         assertLogicalSolution(expected, board, ::finnedSwordfish)
     }
-    
+
     @Test
     fun test4() {
         val board = """
@@ -75,7 +75,7 @@ internal class FinnedSwordfishKtTest {
         val expected = listOf(RemoveCandidates(7, 5, 7))
         assertLogicalSolution(expected, board, ::finnedSwordfish)
     }
-    
+
     @Test
     fun test5() {
         val board = """
