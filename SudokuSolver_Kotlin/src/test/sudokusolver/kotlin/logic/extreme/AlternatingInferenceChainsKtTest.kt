@@ -31,7 +31,7 @@ internal class AlternatingInferenceChainsKtTest {
         )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule1)
     }
-    
+
     @Test
     fun rule1Test2() {
         val board = """
@@ -153,7 +153,7 @@ internal class AlternatingInferenceChainsKtTest {
         )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
     }
-    
+
     @Test
     fun rule2Test4() {
         val board = """
@@ -181,7 +181,7 @@ internal class AlternatingInferenceChainsKtTest {
         )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
     }
-    
+
     @Test
     fun rule2Test5() {
         val board = """
@@ -203,7 +203,7 @@ internal class AlternatingInferenceChainsKtTest {
         )
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
     }
-    
+
     @Test
     fun rule2Test6() {
         val board = """
@@ -220,7 +220,7 @@ internal class AlternatingInferenceChainsKtTest {
         val expected = listOf(SetValue(8, 7, 9))
         assertLogicalSolution(expected, board, ::alternatingInferenceChainsRule2)
     }
-    
+
     @Test
     fun rule2Test7() {
         val board = """
