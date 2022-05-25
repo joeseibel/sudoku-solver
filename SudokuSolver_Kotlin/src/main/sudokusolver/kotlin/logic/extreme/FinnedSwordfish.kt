@@ -81,12 +81,7 @@ fun finnedSwordfish(board: Board<Cell>): List<RemoveCandidates> =
             }.flatten()
         }
 
-        val rowRemovals = finnedSwordfish(
-            board.rows,
-            Cell::row,
-            Cell::column,
-            board::getColumn
-        ) { finnedUnitIndex, otherUnitIndex -> board[finnedUnitIndex, otherUnitIndex] }
+        val rowRemovals = finnedSwordfish(board.rows, Cell::row, Cell::column, board::getColumn, board::get)
 
         val columnRemovals = finnedSwordfish(
             board.columns,
