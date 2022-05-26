@@ -13,6 +13,7 @@ import sudokusolver.java.logic.diabolical.UniqueRectangles;
 import sudokusolver.java.logic.diabolical.WXYZWing;
 import sudokusolver.java.logic.diabolical.XCycles;
 import sudokusolver.java.logic.diabolical.XYChains;
+import sudokusolver.java.logic.extreme.AlternatingInferenceChains;
 import sudokusolver.java.logic.extreme.EmptyRectangles;
 import sudokusolver.java.logic.extreme.FinnedSwordfish;
 import sudokusolver.java.logic.extreme.FinnedXWing;
@@ -165,7 +166,10 @@ public class SudokuSolver {
                 GroupedXCycles::groupedXCyclesRule3,
                 EmptyRectangles::emptyRectangles,
                 FinnedXWing::finnedXWing,
-                FinnedSwordfish::finnedSwordfish
+                FinnedSwordfish::finnedSwordfish,
+                AlternatingInferenceChains::alternatingInferenceChainsRule1,
+                AlternatingInferenceChains::alternatingInferenceChainsRule2,
+                AlternatingInferenceChains::alternatingInferenceChainsRule3
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
