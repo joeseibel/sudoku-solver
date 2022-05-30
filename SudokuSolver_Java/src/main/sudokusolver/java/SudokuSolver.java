@@ -18,6 +18,7 @@ import sudokusolver.java.logic.extreme.EmptyRectangles;
 import sudokusolver.java.logic.extreme.FinnedSwordfish;
 import sudokusolver.java.logic.extreme.FinnedXWing;
 import sudokusolver.java.logic.extreme.GroupedXCycles;
+import sudokusolver.java.logic.extreme.SueDeCoq;
 import sudokusolver.java.logic.simple.BoxLineReduction;
 import sudokusolver.java.logic.simple.HiddenPairs;
 import sudokusolver.java.logic.simple.HiddenQuads;
@@ -169,7 +170,8 @@ public class SudokuSolver {
                 FinnedSwordfish::finnedSwordfish,
                 AlternatingInferenceChains::alternatingInferenceChainsRule1,
                 AlternatingInferenceChains::alternatingInferenceChainsRule2,
-                AlternatingInferenceChains::alternatingInferenceChainsRule3
+                AlternatingInferenceChains::alternatingInferenceChainsRule3,
+                SueDeCoq::sueDeCoq
         );
         return solutions.map(solution -> solution.apply(board))
                 .filter(modifications -> !modifications.isEmpty())
