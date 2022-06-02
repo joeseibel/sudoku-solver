@@ -10,6 +10,8 @@ import sudokusolver.javanostreams.SetValue;
 import sudokusolver.javanostreams.SolvedCell;
 import sudokusolver.javanostreams.SudokuNumber;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -41,7 +43,8 @@ public class SudokuAssertions {
         } catch (NoSolutionsException | MultipleSolutionsException e) {
             throw new RuntimeException(e);
         }
-        var actual = logicFunction.apply(board).stream().sorted().toList();
+        var actual = new ArrayList<>(logicFunction.apply(board));
+        Collections.sort(actual);
         actual.forEach(modification -> {
             var row = modification.row();
             var column = modification.column();
