@@ -4,8 +4,8 @@ import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.SudokuNumber;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 public class BruteForce {
     /*
@@ -42,7 +42,14 @@ public class BruteForce {
     public static Board<SudokuNumber> bruteForce(
             Board<Optional<SudokuNumber>> board
     ) throws NoSolutionsException, MultipleSolutionsException {
-        if (board.getCells().stream().noneMatch(Optional::isEmpty)) {
+        var filled = true;
+        for (var cell : board.getCells()) {
+            if (cell.isEmpty()) {
+                filled = false;
+                break;
+            }
+        }
+        if (filled) {
             var filledBoard = board.mapCells(Optional::get);
             if (isSolved(filledBoard)) {
                 return filledBoard;
@@ -66,12 +73,10 @@ public class BruteForce {
             return moveToNextCell(trialAndError, rowIndex, columnIndex);
         } else {
             var valid = EnumSet.allOf(SudokuNumber.class);
-            trialAndError.getRow(rowIndex).stream().flatMap(Optional::stream).forEach(valid::remove);
-            trialAndError.getColumn(columnIndex).stream().flatMap(Optional::stream).forEach(valid::remove);
+            trialAndError.getRow(rowIndex).forEach(cell -> cell.ifPresent(valid::remove));
+            trialAndError.getColumn(columnIndex).forEach(cell -> cell.ifPresent(valid::remove));
             trialAndError.getBlock(Board.getBlockIndex(rowIndex, columnIndex))
-                    .stream()
-                    .flatMap(Optional::stream)
-                    .forEach(valid::remove);
+                    .forEach(cell -> cell.ifPresent(valid::remove));
             var singleSolution = Optional.<Board<SudokuNumber>>empty();
             for (var guess : valid) {
                 trialAndError.set(rowIndex, columnIndex, Optional.of(guess));
@@ -103,8 +108,21 @@ public class BruteForce {
     }
 
     private static boolean isSolved(Board<SudokuNumber> board) {
-        return board.rows().stream().allMatch(row -> Set.copyOf(row).size() == Board.UNIT_SIZE)
-                && board.getColumns().stream().allMatch(column -> Set.copyOf(column).size() == Board.UNIT_SIZE)
-                && board.getBlocks().stream().allMatch(block -> Set.copyOf(block).size() == Board.UNIT_SIZE);
+        for (var row : board.rows()) {
+            if (new HashSet<>(row).size() != Board.UNIT_SIZE) {
+                return false;
+            }
+        }
+        for (var column : board.getColumns()) {
+            if (new HashSet<>(column).size() != Board.UNIT_SIZE) {
+                return false;
+            }
+        }
+        for (var block : board.getBlocks()) {
+            if (new HashSet<>(block).size() != Board.UNIT_SIZE) {
+                return false;
+            }
+        }
+        return true;
     }
 }
