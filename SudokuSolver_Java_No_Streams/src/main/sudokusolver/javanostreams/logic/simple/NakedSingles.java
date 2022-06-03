@@ -5,6 +5,7 @@ import sudokusolver.javanostreams.Cell;
 import sudokusolver.javanostreams.SetValue;
 import sudokusolver.javanostreams.UnsolvedCell;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -14,12 +15,12 @@ import java.util.List;
  */
 public class NakedSingles {
     public static List<SetValue> nakedSingles(Board<Cell> board) {
-        return board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .filter(cell -> cell.candidates().size() == 1)
-                .map(cell -> new SetValue(cell, cell.candidates().iterator().next()))
-                .toList();
+        var modifications = new ArrayList<SetValue>();
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().size() == 1) {
+                modifications.add(new SetValue(unsolved, unsolved.candidates().iterator().next()));
+            }
+        }
+        return modifications;
     }
 }
