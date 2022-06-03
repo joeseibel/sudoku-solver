@@ -10,31 +10,33 @@ import sudokusolver.javanostreams.UnsolvedCell;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * If a cell is solved, then no other cells in the same unit can have that number as a candidate.
  */
 public class PruneCandidates {
     public static List<RemoveCandidates> pruneCandidates(Board<Cell> board) {
-        return board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .flatMap(cell -> {
-                    var sameUnits = new ArrayList<Cell>();
-                    sameUnits.addAll(board.getRow(cell.row()));
-                    sameUnits.addAll(board.getColumn(cell.column()));
-                    sameUnits.addAll(board.getBlock(cell.block()));
-                    var toRemove = sameUnits.stream()
-                            .filter(SolvedCell.class::isInstance)
-                            .map(SolvedCell.class::cast)
-                            .map(SolvedCell::value)
-                            .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
-                    toRemove.retainAll(cell.candidates());
-                    return toRemove.isEmpty() ? Stream.empty() : Stream.of(new RemoveCandidates(cell, toRemove));
-                })
-                .toList();
+        var removals = new ArrayList<RemoveCandidates>();
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell unsolved) {
+                var toRemove = EnumSet.noneOf(SudokuNumber.class);
+                collectCandidates(board.getRow(cell.row()), toRemove);
+                collectCandidates(board.getColumn(cell.column()), toRemove);
+                collectCandidates(board.getBlock(cell.block()), toRemove);
+                toRemove.retainAll(unsolved.candidates());
+                if (!toRemove.isEmpty()) {
+                    removals.add(new RemoveCandidates(unsolved, toRemove));
+                }
+            }
+        }
+        return removals;
+    }
+
+    private static void collectCandidates(List<Cell> unit, EnumSet<SudokuNumber> toRemove) {
+        for (var cell : unit) {
+            if (cell instanceof SolvedCell solved) {
+                toRemove.add(solved.value());
+            }
+        }
     }
 }
