@@ -6,9 +6,9 @@ import sudokusolver.javanostreams.SetValue;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Getting_Started
@@ -17,21 +17,20 @@ import java.util.stream.Stream;
  */
 public class HiddenSingles {
     public static List<SetValue> hiddenSingles(Board<Cell> board) {
-        return board.getUnits().stream().flatMap(unit -> {
-            var unsolved = unit.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .toList();
-            return Arrays.stream(SudokuNumber.values()).flatMap(candidate -> {
-                var unsolvedWithCandidate = unsolved.stream()
-                        .filter(cell -> cell.candidates().contains(candidate))
-                        .toList();
-                if (unsolvedWithCandidate.size() == 1) {
-                    return Stream.of(new SetValue(unsolvedWithCandidate.get(0), candidate));
-                } else {
-                    return Stream.empty();
+        var modifications = new HashSet<SetValue>();
+        for (var unit : board.getUnits()) {
+            for (var candidate : SudokuNumber.values()) {
+                var withCandidate = new ArrayList<UnsolvedCell>();
+                for (var cell : unit) {
+                    if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                        withCandidate.add(unsolved);
+                    }
                 }
-            });
-        }).distinct().toList();
+                if (withCandidate.size() == 1) {
+                    modifications.add(new SetValue(withCandidate.get(0), candidate));
+                }
+            }
+        }
+        return List.copyOf(modifications);
     }
 }
