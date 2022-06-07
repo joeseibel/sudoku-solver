@@ -42,9 +42,7 @@ public class HiddenPairs {
                             var toRemove = EnumSet.copyOf(cell.candidates());
                             toRemove.remove(a);
                             toRemove.remove(b);
-                            if (!toRemove.isEmpty()) {
-                                removals.add(cell, toRemove);
-                            }
+                            removals.add(cell, toRemove);
                         }
                     }
                 }

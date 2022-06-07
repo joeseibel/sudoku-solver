@@ -15,7 +15,9 @@ public class Removals {
     private final Map<UnsolvedCell, EnumSet<SudokuNumber>> removals = new HashMap<>();
 
     public void add(UnsolvedCell cell, EnumSet<SudokuNumber> candidates) {
-        removals.computeIfAbsent(cell, key -> EnumSet.noneOf(SudokuNumber.class)).addAll(candidates);
+        if (!candidates.isEmpty()) {
+            removals.computeIfAbsent(cell, key -> EnumSet.noneOf(SudokuNumber.class)).addAll(candidates);
+        }
     }
 
     public List<RemoveCandidates> toList() {

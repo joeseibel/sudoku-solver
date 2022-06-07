@@ -48,9 +48,7 @@ public class HiddenTriples {
                                     toRemove.remove(a);
                                     toRemove.remove(b);
                                     toRemove.remove(c);
-                                    if (!toRemove.isEmpty()) {
-                                        removals.add(cell, toRemove);
-                                    }
+                                    removals.add(cell, toRemove);
                                 }
                             }
                         }

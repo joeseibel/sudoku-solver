@@ -37,9 +37,7 @@ public class NakedTriples {
                             ) {
                                 var toRemove = EnumSet.copyOf(unsolved.candidates());
                                 toRemove.retainAll(unionOfCandidates);
-                                if (!toRemove.isEmpty()) {
-                                    removals.add(unsolved, toRemove);
-                                }
+                                removals.add(unsolved, toRemove);
                             }
                         }
                     }

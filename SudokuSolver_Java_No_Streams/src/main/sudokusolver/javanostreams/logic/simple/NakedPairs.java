@@ -30,9 +30,7 @@ public class NakedPairs {
                         if (cell instanceof UnsolvedCell unsolved && !unsolved.equals(a) && !unsolved.equals(b)) {
                             var toRemove = EnumSet.copyOf(unsolved.candidates());
                             toRemove.retainAll(a.candidates());
-                            if (!toRemove.isEmpty()) {
-                                removals.add(unsolved, toRemove);
-                            }
+                            removals.add(unsolved, toRemove);
                         }
                     }
                 }
