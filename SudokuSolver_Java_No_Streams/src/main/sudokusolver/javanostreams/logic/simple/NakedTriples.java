@@ -2,14 +2,13 @@ package sudokusolver.javanostreams.logic.simple;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.Triple;
 import sudokusolver.javanostreams.UnsolvedCell;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Naked_Candidates#NT
@@ -19,34 +18,34 @@ import java.util.stream.Stream;
  */
 public class NakedTriples {
     public static List<RemoveCandidates> nakedTriples(Board<Cell> board) {
-        return board.getUnits()
-                .stream()
-                .flatMap(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .collect(Triple.zipEveryTriple())
-                        .flatMap(triple -> {
-                            var a = triple.first();
-                            var b = triple.second();
-                            var c = triple.third();
-                            var unionOfCandidates = EnumSet.copyOf(a.candidates());
-                            unionOfCandidates.addAll(b.candidates());
-                            unionOfCandidates.addAll(c.candidates());
-                            if (unionOfCandidates.size() == 3) {
-                                return unit.stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
-                                        .filter(cell -> !cell.equals(a) && !cell.equals(b) && !cell.equals(c))
-                                        .flatMap(cell -> {
-                                            var toRemove = EnumSet.copyOf(cell.candidates());
-                                            toRemove.retainAll(unionOfCandidates);
-                                            return toRemove.stream()
-                                                    .map(candidate -> new LocatedCandidate(cell, candidate));
-                                        });
-                            } else {
-                                return Stream.empty();
+        var removals = new Removals();
+        for (var unit : board.getUnits()) {
+            for (var triple : Triple.zipEveryTriple(unit)) {
+                if (triple.first() instanceof UnsolvedCell a &&
+                        triple.second() instanceof UnsolvedCell b &&
+                        triple.third() instanceof UnsolvedCell c
+                ) {
+                    var unionOfCandidates = EnumSet.copyOf(a.candidates());
+                    unionOfCandidates.addAll(b.candidates());
+                    unionOfCandidates.addAll(c.candidates());
+                    if (unionOfCandidates.size() == 3) {
+                        for (var cell : unit) {
+                            if (cell instanceof UnsolvedCell unsolved &&
+                                    !unsolved.equals(a) &&
+                                    !unsolved.equals(b) &&
+                                    !unsolved.equals(c)
+                            ) {
+                                var toRemove = EnumSet.copyOf(unsolved.candidates());
+                                toRemove.retainAll(unionOfCandidates);
+                                if (!toRemove.isEmpty()) {
+                                    removals.add(unsolved, toRemove);
+                                }
                             }
-                        }))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 }
