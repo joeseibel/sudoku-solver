@@ -2,8 +2,8 @@ package sudokusolver.javanostreams.logic.simple;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
 import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.UnsolvedCell;
 
@@ -18,28 +18,26 @@ import java.util.List;
  */
 public class NakedPairs {
     public static List<RemoveCandidates> nakedPairs(Board<Cell> board) {
-        return board.getUnits()
-                .stream()
-                .flatMap(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .filter(cell -> cell.candidates().size() == 2)
-                        .collect(Pair.zipEveryPair())
-                        .filter(pair -> pair.first().candidates().equals(pair.second().candidates()))
-                        .flatMap(pair -> {
-                            var a = pair.first();
-                            var b = pair.second();
-                            return unit.stream()
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
-                                    .filter(cell -> !cell.equals(a) && !cell.equals(b))
-                                    .flatMap(cell -> {
-                                        var toRemove = EnumSet.copyOf(cell.candidates());
-                                        toRemove.retainAll(a.candidates());
-                                        return toRemove.stream()
-                                                .map(candidate -> new LocatedCandidate(cell, candidate));
-                                    });
-                        }))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var unit : board.getUnits()) {
+            for (var pair : Pair.zipEveryPair(unit)) {
+                if (pair.first() instanceof UnsolvedCell a &&
+                        a.candidates().size() == 2 &&
+                        pair.second() instanceof UnsolvedCell b &&
+                        a.candidates().equals(b.candidates())
+                ) {
+                    for (var cell : unit) {
+                        if (cell instanceof UnsolvedCell unsolved && !unsolved.equals(a) && !unsolved.equals(b)) {
+                            var toRemove = EnumSet.copyOf(unsolved.candidates());
+                            toRemove.retainAll(a.candidates());
+                            if (!toRemove.isEmpty()) {
+                                removals.add(unsolved, toRemove);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 }
