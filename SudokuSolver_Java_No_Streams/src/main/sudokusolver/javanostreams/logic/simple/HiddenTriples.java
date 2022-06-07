@@ -2,17 +2,14 @@ package sudokusolver.javanostreams.logic.simple;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
-import sudokusolver.javanostreams.Triple;
 import sudokusolver.javanostreams.UnsolvedCell;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Hidden_Candidates#HT
@@ -22,41 +19,45 @@ import java.util.stream.Stream;
  */
 public class HiddenTriples {
     public static List<RemoveCandidates> hiddenTriples(Board<Cell> board) {
-        return board.getUnits()
-                .stream()
-                .flatMap(unit -> Arrays.stream(SudokuNumber.values())
-                        .collect(Triple.zipEveryTriple())
-                        .flatMap(triple -> {
-                            var a = triple.first();
-                            var b = triple.second();
-                            var c = triple.third();
-                            var cells = unit.stream()
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
-                                    .filter(cell -> cell.candidates().contains(a) ||
-                                            cell.candidates().contains(b) ||
-                                            cell.candidates().contains(c))
-                                    .toList();
-                            if (cells.size() == 3) {
-                                var union = cells.stream()
-                                        .flatMap(cell -> cell.candidates().stream())
-                                        .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
-                                if (union.contains(a) && union.contains(b) && union.contains(c)) {
-                                    return cells.stream().flatMap(cell -> {
-                                        var toRemove = EnumSet.copyOf(cell.candidates());
-                                        toRemove.remove(a);
-                                        toRemove.remove(b);
-                                        toRemove.remove(c);
-                                        return toRemove.stream()
-                                                .map(candidate -> new LocatedCandidate(cell, candidate));
-                                    });
-                                } else {
-                                    return Stream.empty();
-                                }
-                            } else {
-                                return Stream.empty();
+        var removals = new Removals();
+        for (var unit : board.getUnits()) {
+            for (var i = 0; i < SudokuNumber.values().length - 2; i++) {
+                var a = SudokuNumber.values()[i];
+                for (var j = i + 1; j < SudokuNumber.values().length - 1; j++) {
+                    var b = SudokuNumber.values()[j];
+                    for (var k = j + 1; k < SudokuNumber.values().length; k++) {
+                        var c = SudokuNumber.values()[k];
+                        var cells = new ArrayList<UnsolvedCell>();
+                        for (var cell : unit) {
+                            if (cell instanceof UnsolvedCell unsolved &&
+                                    (unsolved.candidates().contains(a) ||
+                                            unsolved.candidates().contains(b) ||
+                                            unsolved.candidates().contains(c))
+                            ) {
+                                cells.add(unsolved);
                             }
-                        }))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+                        }
+                        if (cells.size() == 3) {
+                            var union = EnumSet.noneOf(SudokuNumber.class);
+                            for (var cell : cells) {
+                                union.addAll(cell.candidates());
+                            }
+                            if (union.contains(a) && union.contains(b) && union.contains(c)) {
+                                for (var cell : cells) {
+                                    var toRemove = EnumSet.copyOf(cell.candidates());
+                                    toRemove.remove(a);
+                                    toRemove.remove(b);
+                                    toRemove.remove(c);
+                                    if (!toRemove.isEmpty()) {
+                                        removals.add(cell, toRemove);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 }
