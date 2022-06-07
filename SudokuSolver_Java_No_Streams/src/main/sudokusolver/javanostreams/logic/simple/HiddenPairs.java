@@ -22,8 +22,8 @@ public class HiddenPairs {
         var removals = new Removals();
         for (var unit : board.getUnits()) {
             for (var i = 0; i < SudokuNumber.values().length - 1; i++) {
+                var a = SudokuNumber.values()[i];
                 for (var j = i + 1; j < SudokuNumber.values().length; j++) {
-                    var a = SudokuNumber.values()[i];
                     var b = SudokuNumber.values()[j];
                     var cellsWithA = new ArrayList<UnsolvedCell>();
                     for (var cell : unit) {
