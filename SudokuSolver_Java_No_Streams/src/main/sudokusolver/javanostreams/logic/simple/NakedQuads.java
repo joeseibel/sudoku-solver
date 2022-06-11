@@ -2,14 +2,13 @@ package sudokusolver.javanostreams.logic.simple;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Quad;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.UnsolvedCell;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Naked_Candidates#NQ
@@ -19,39 +18,40 @@ import java.util.stream.Stream;
  */
 public class NakedQuads {
     public static List<RemoveCandidates> nakedQuads(Board<Cell> board) {
-        return board.getUnits()
-                .stream()
-                .flatMap(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .collect(Quad.zipEveryQuad())
-                        .flatMap(quad -> {
-                            var a = quad.first();
-                            var b = quad.second();
-                            var c = quad.third();
-                            var d = quad.fourth();
+        var removals = new Removals();
+        for (var unit : board.getUnits()) {
+            var unsolvedInUnit = new ArrayList<UnsolvedCell>();
+            for (var cell : unit) {
+                if (cell instanceof UnsolvedCell unsolved) {
+                    unsolvedInUnit.add(unsolved);
+                }
+            }
+            for (var i = 0; i < unsolvedInUnit.size() - 3; i++) {
+                var a = unsolvedInUnit.get(i);
+                for (var j = i + 1; j < unsolvedInUnit.size() - 2; j++) {
+                    var b = unsolvedInUnit.get(j);
+                    for (var k = j + 1; k < unsolvedInUnit.size() - 1; k++) {
+                        var c = unsolvedInUnit.get(k);
+                        for (var l = k + 1; l < unsolvedInUnit.size(); l++) {
+                            var d = unsolvedInUnit.get(l);
                             var unionOfCandidates = EnumSet.copyOf(a.candidates());
                             unionOfCandidates.addAll(b.candidates());
                             unionOfCandidates.addAll(c.candidates());
                             unionOfCandidates.addAll(d.candidates());
                             if (unionOfCandidates.size() == 4) {
-                                return unit.stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
-                                        .filter(cell -> !cell.equals(a) &&
-                                                !cell.equals(b) &&
-                                                !cell.equals(c) &&
-                                                !cell.equals(d))
-                                        .flatMap(cell -> {
-                                            var toRemove = EnumSet.copyOf(cell.candidates());
-                                            toRemove.retainAll(unionOfCandidates);
-                                            return toRemove.stream()
-                                                    .map(candidate -> new LocatedCandidate(cell, candidate));
-                                        });
-                            } else {
-                                return Stream.empty();
+                                for (var cell : unsolvedInUnit) {
+                                    if (!cell.equals(a) && !cell.equals(b) && !cell.equals(c) && !cell.equals(d)) {
+                                        var toRemove = EnumSet.copyOf(cell.candidates());
+                                        toRemove.retainAll(unionOfCandidates);
+                                        removals.add(cell, toRemove);
+                                    }
+                                }
                             }
-                        }))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 }
