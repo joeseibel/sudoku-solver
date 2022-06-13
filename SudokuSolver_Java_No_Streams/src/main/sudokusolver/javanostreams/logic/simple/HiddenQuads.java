@@ -2,17 +2,14 @@ package sudokusolver.javanostreams.logic.simple;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Quad;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Hidden_Candidates#HQ
@@ -22,43 +19,50 @@ import java.util.stream.Stream;
  */
 public class HiddenQuads {
     public static List<RemoveCandidates> hiddenQuads(Board<Cell> board) {
-        return board.getUnits()
-                .stream()
-                .flatMap(unit -> Arrays.stream(SudokuNumber.values())
-                        .collect(Quad.zipEveryQuad())
-                        .flatMap(quad -> {
-                            var a = quad.first();
-                            var b = quad.second();
-                            var c = quad.third();
-                            var d = quad.fourth();
-                            var cells = unit.stream()
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
-                                    .filter(cell -> cell.candidates().contains(a) ||
-                                            cell.candidates().contains(b) ||
-                                            cell.candidates().contains(c) ||
-                                            cell.candidates().contains(d))
-                                    .toList();
+        var removals = new Removals();
+        for (var unit : board.getUnits()) {
+            for (var i = 0; i < SudokuNumber.values().length - 3; i++) {
+                var a = SudokuNumber.values()[i];
+                for (var j = i + 1; j < SudokuNumber.values().length - 2; j++) {
+                    var b = SudokuNumber.values()[j];
+                    for (var k = j + 1; k < SudokuNumber.values().length - 1; k++) {
+                        var c = SudokuNumber.values()[k];
+                        for (var l = k + 1; l < SudokuNumber.values().length; l++) {
+                            var d = SudokuNumber.values()[l];
+                            var cells = new ArrayList<UnsolvedCell>();
+                            for (var cell : unit) {
+                                if (cell instanceof UnsolvedCell unsolved &&
+                                        (unsolved.candidates().contains(a) ||
+                                                unsolved.candidates().contains(b) ||
+                                                unsolved.candidates().contains(c) ||
+                                                unsolved.candidates().contains(d))
+                                ) {
+                                    cells.add(unsolved);
+                                }
+                            }
                             if (cells.size() == 4) {
-                                var union = cells.stream()
-                                        .flatMap(cell -> cell.candidates().stream())
-                                        .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
+                                var union = EnumSet.noneOf(SudokuNumber.class);
+                                for (var cell : cells) {
+                                    union.addAll(cell.candidates());
+                                }
                                 if (union.contains(a) && union.contains(b) && union.contains(c) && union.contains(d)) {
-                                    return cells.stream().flatMap(cell -> {
+                                    for (var cell : cells) {
                                         var toRemove = EnumSet.copyOf(cell.candidates());
                                         toRemove.remove(a);
                                         toRemove.remove(b);
                                         toRemove.remove(c);
                                         toRemove.remove(d);
-                                        return toRemove.stream().map(candidate -> new LocatedCandidate(cell, candidate));
-                                    });
-                                } else {
-                                    return Stream.empty();
+                                        for (var candidate : toRemove) {
+                                            removals.add(cell, EnumSet.of(candidate));
+                                        }
+                                    }
                                 }
-                            } else {
-                                return Stream.empty();
                             }
-                        }))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 }
