@@ -21,7 +21,6 @@ fun boxLineReduction(board: Board<Cell>): List<RemoveCandidates> =
 
         fun boxLineReduction(units: List<List<Cell>>, getUnitIndex: (Cell) -> Int) =
             units.mapNotNull { unit ->
-                val unitIndex = getUnitIndex(unit.first())
                 unit.asSequence()
                     .filterIsInstance<UnsolvedCell>()
                     .filter { candidate in it.candidates }
@@ -29,6 +28,7 @@ fun boxLineReduction(board: Board<Cell>): List<RemoveCandidates> =
                     .toSet()
                     .singleOrNull()
                     ?.let { blockIndex ->
+                        val unitIndex = getUnitIndex(unit.first())
                         board.getBlock(blockIndex)
                             .filterIsInstance<UnsolvedCell>()
                             .filter { getUnitIndex(it) != unitIndex && candidate in it.candidates }

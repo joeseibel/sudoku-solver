@@ -50,7 +50,6 @@ public class BoxLineReduction {
             ToIntFunction<Cell> getUnitIndex
     ) {
         return units.stream().flatMap(unit -> {
-            var unitIndex = getUnitIndex.applyAsInt(unit.get(0));
             var blockIndices = unit.stream()
                     .filter(UnsolvedCell.class::isInstance)
                     .map(UnsolvedCell.class::cast)
@@ -58,6 +57,7 @@ public class BoxLineReduction {
                     .map(Cell::block)
                     .collect(Collectors.toSet());
             if (blockIndices.size() == 1) {
+                var unitIndex = getUnitIndex.applyAsInt(unit.get(0));
                 return board.getBlock(blockIndices.iterator().next())
                         .stream()
                         .filter(UnsolvedCell.class::isInstance)
