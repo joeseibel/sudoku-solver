@@ -2,17 +2,15 @@ package sudokusolver.javanostreams.logic.tough;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/X_Wing_Strategy
@@ -27,62 +25,56 @@ import java.util.stream.Stream;
  */
 public class XWing {
     public static List<RemoveCandidates> xWing(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var rowModifications = xWing(
-                            candidate,
-                            board.rows(),
-                            board::getColumn,
-                            Cell::column
-                    );
-                    var columnModifications = xWing(
-                            candidate,
-                            board.getColumns(),
-                            board::getRow,
-                            Cell::row
-                    );
-                    return Stream.concat(rowModifications, columnModifications);
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            xWing(removals, candidate, board.rows(), board::getColumn, Cell::column);
+            xWing(removals, candidate, board.getColumns(), board::getRow, Cell::row);
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> xWing(
+    private static void xWing(
+            Removals removals,
             SudokuNumber candidate,
             List<List<Cell>> units,
             IntFunction<List<Cell>> getOtherUnit,
             ToIntFunction<Cell> getOtherUnitIndex
     ) {
-        return units.stream().collect(Pair.zipEveryPair()).flatMap(pair -> {
-            var unitA = pair.first();
-            var unitB = pair.second();
-            var aWithCandidate = unitA.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate))
-                    .toList();
-            var bWithCandidate = unitB.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate))
-                    .toList();
-            if (aWithCandidate.size() == 2 && bWithCandidate.size() == 2 &&
-                    getOtherUnitIndex.applyAsInt(aWithCandidate.get(0)) ==
-                            getOtherUnitIndex.applyAsInt(bWithCandidate.get(0)) &&
-                    getOtherUnitIndex.applyAsInt(aWithCandidate.get(1)) ==
-                            getOtherUnitIndex.applyAsInt(bWithCandidate.get(1))
-            ) {
-                var otherUnitA = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.get(0)));
-                var otherUnitB = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.get(1)));
-                return Stream.concat(otherUnitA.stream(), otherUnitB.stream())
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .filter(cell -> cell.candidates().contains(candidate) &&
-                                !unitA.contains(cell) &&
-                                !unitB.contains(cell))
-                        .map(cell -> new LocatedCandidate(cell, candidate));
-            } else {
-                return Stream.empty();
+        for (var i = 0; i < units.size() - 1; i++) {
+            var unitA = units.get(i);
+            var aWithCandidate = new ArrayList<UnsolvedCell>();
+            for (var cell : unitA) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    aWithCandidate.add(unsolved);
+                }
             }
-        });
+            for (var j = i + 1; j < units.size(); j++) {
+                var unitB = units.get(j);
+                var bWithCandidate = new ArrayList<UnsolvedCell>();
+                for (var cell : unitB) {
+                    if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                        bWithCandidate.add(unsolved);
+                    }
+                }
+                if (aWithCandidate.size() == 2 && bWithCandidate.size() == 2 &&
+                        getOtherUnitIndex.applyAsInt(aWithCandidate.get(0)) ==
+                                getOtherUnitIndex.applyAsInt(bWithCandidate.get(0)) &&
+                        getOtherUnitIndex.applyAsInt(aWithCandidate.get(1)) ==
+                                getOtherUnitIndex.applyAsInt(bWithCandidate.get(1))
+                ) {
+                    for (var cellInUnitA : aWithCandidate) {
+                        for (var cell : getOtherUnit.apply(getOtherUnitIndex.applyAsInt(cellInUnitA))) {
+                            if (cell instanceof UnsolvedCell unsolved &&
+                                    unsolved.candidates().contains(candidate) &&
+                                    !unitA.contains(unsolved) &&
+                                    !unitB.contains(unsolved)
+                            ) {
+                                removals.add(unsolved, candidate);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
