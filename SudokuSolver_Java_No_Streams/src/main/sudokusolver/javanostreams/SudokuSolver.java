@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 public class SudokuSolver {
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.out.println("usage: java sudokusolver.java.SudokuSolver board");
+            System.out.println("usage: java sudokusolver.javanostreams.SudokuSolver board");
         } else {
             var board = args[0];
             var showError = board.length() != Board.UNIT_SIZE_SQUARED;
