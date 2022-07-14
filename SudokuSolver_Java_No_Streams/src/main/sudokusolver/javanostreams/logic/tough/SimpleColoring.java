@@ -7,17 +7,15 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 import sudokusolver.javanostreams.VertexColor;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Singles_Chains
@@ -35,26 +33,30 @@ public class SimpleColoring {
      * solution. All candidates with that color in that chain can be removed.
      */
     public static List<RemoveCandidates> simpleColoringRule2(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> createConnectedComponents(board, candidate).stream().flatMap(graph -> {
-                    var colors = VertexColor.colorToMap(graph);
-                    return graph.vertexSet()
-                            .stream()
-                            .collect(Pair.zipEveryPair())
-                            .filter(pair -> {
-                                var a = pair.first();
-                                var b = pair.second();
-                                return colors.get(a) == colors.get(b) && a.isInSameUnit(b);
-                            })
-                            .map(pair -> colors.get(pair.first()))
-                            .findFirst()
-                            .map(colorToRemove -> graph.vertexSet()
-                                    .stream()
-                                    .filter(cell -> colors.get(cell) == colorToRemove)
-                                    .map(cell -> new LocatedCandidate(cell, candidate)))
-                            .orElseGet(Stream::empty);
-                }))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            for (var graph : createConnectedComponents(board, candidate)) {
+                var colors = VertexColor.colorToMap(graph);
+                var vertices = List.copyOf(graph.vertexSet());
+                outerLoop:
+                for (var i = 0; i < vertices.size() - 1; i++) {
+                    var a = vertices.get(i);
+                    for (var j = i + 1; j < vertices.size(); j++) {
+                        var b = vertices.get(j);
+                        if (colors.get(a) == colors.get(b) && a.isInSameUnit(b)) {
+                            var colorToRemove = colors.get(a);
+                            for (var cell : graph.vertexSet()) {
+                                if (colors.get(cell) == colorToRemove) {
+                                    removals.add(cell, candidate);
+                                }
+                            }
+                            break outerLoop;
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 
     /*
@@ -65,22 +67,41 @@ public class SimpleColoring {
      * removed from the cell outside the chain.
      */
     public static List<RemoveCandidates> simpleColoringRule4(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> createConnectedComponents(board, candidate).stream().flatMap(graph -> {
-                    var colors = VertexColor.colorToLists(graph);
-                    var colorOne = colors.get(VertexColor.COLOR_ONE);
-                    var colorTwo = colors.get(VertexColor.COLOR_TWO);
-                    return board.getCells()
-                            .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
-                            .filter(cell -> cell.candidates().contains(candidate) &&
-                                    !graph.vertexSet().contains(cell) &&
-                                    colorOne.stream().anyMatch(cell::isInSameUnit) &&
-                                    colorTwo.stream().anyMatch(cell::isInSameUnit))
-                            .map(cell -> new LocatedCandidate(cell, candidate));
-                }))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            for (var graph : createConnectedComponents(board, candidate)) {
+                var colors = VertexColor.colorToLists(graph);
+                var colorOne = colors.get(VertexColor.COLOR_ONE);
+                var colorTwo = colors.get(VertexColor.COLOR_TWO);
+                for (var cell : board.getCells()) {
+                    if (cell instanceof UnsolvedCell unsolved &&
+                            unsolved.candidates().contains(candidate) &&
+                            !graph.vertexSet().contains(unsolved)
+                    ) {
+                        var canSeeColorOne = false;
+                        for (var colorOneCell : colorOne) {
+                            if (unsolved.isInSameUnit(colorOneCell)) {
+                                canSeeColorOne = true;
+                                break;
+                            }
+                        }
+                        if (canSeeColorOne) {
+                            var canSeeColorTwo = false;
+                            for (var colorTwoCell : colorTwo) {
+                                if (unsolved.isInSameUnit(colorTwoCell)) {
+                                    canSeeColorTwo = true;
+                                    break;
+                                }
+                            }
+                            if (canSeeColorTwo) {
+                                removals.add(unsolved, candidate);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 
     private static Set<Graph<UnsolvedCell, DefaultEdge>> createConnectedComponents(
@@ -88,19 +109,19 @@ public class SimpleColoring {
             SudokuNumber candidate
     ) {
         var graph = new SimpleGraph<UnsolvedCell, DefaultEdge>(DefaultEdge.class);
-        board.getUnits()
-                .stream()
-                .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .filter(cell -> cell.candidates().contains(candidate))
-                        .toList())
-                .filter(withCandidate -> withCandidate.size() == 2)
-                .forEach(withCandidate -> {
-                    var a = withCandidate.get(0);
-                    var b = withCandidate.get(1);
-                    Graphs.addEdgeWithVertices(graph, a, b);
-                });
+        for (var unit : board.getUnits()) {
+            var withCandidate = new ArrayList<UnsolvedCell>();
+            for (var cell : unit) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    withCandidate.add(unsolved);
+                }
+            }
+            if (withCandidate.size() == 2) {
+                var a = withCandidate.get(0);
+                var b = withCandidate.get(1);
+                Graphs.addEdgeWithVertices(graph, a, b);
+            }
+        }
         return new BiconnectivityInspector<>(graph).getConnectedComponents();
     }
 }
