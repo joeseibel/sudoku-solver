@@ -2,15 +2,14 @@ package sudokusolver.javanostreams.logic.tough;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.Triple;
 import sudokusolver.javanostreams.UnsolvedCell;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Y_Wing_Strategy
@@ -22,35 +21,31 @@ import java.util.stream.Stream;
  */
 public class YWing {
     public static List<RemoveCandidates> yWing(Board<Cell> board) {
-        return board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .filter(cell -> cell.candidates().size() == 2)
-                .collect(Triple.zipEveryTriple())
-                .filter(triple -> {
-                    var a = triple.first();
-                    var b = triple.second();
-                    var c = triple.third();
-                    var allCandidates = EnumSet.copyOf(a.candidates());
-                    allCandidates.addAll(b.candidates());
-                    allCandidates.addAll(c.candidates());
-                    return allCandidates.size() == 3;
-                })
-                .flatMap(triple -> {
-                    var a = triple.first();
-                    var b = triple.second();
-                    var c = triple.third();
-                    return Stream.of(
-                            tryHinge(board, a, b, c),
-                            tryHinge(board, b, a, c),
-                            tryHinge(board, c, a, b)
-                    ).flatMap(Function.identity());
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        var cells = new ArrayList<UnsolvedCell>();
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().size() == 2) {
+                cells.add(unsolved);
+            }
+        }
+        for (var triple : Triple.zipEveryTriple(cells)) {
+            var a = triple.first();
+            var b = triple.second();
+            var c = triple.third();
+            var allCandidates = EnumSet.copyOf(a.candidates());
+            allCandidates.addAll(b.candidates());
+            allCandidates.addAll(c.candidates());
+            if (allCandidates.size() == 3) {
+                tryHinge(removals, board, a, b, c);
+                tryHinge(removals, board, b, a, c);
+                tryHinge(removals, board, c, a, b);
+            }
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> tryHinge(
+    private static void tryHinge(
+            Removals removals,
             Board<Cell> board,
             UnsolvedCell hinge,
             UnsolvedCell wingA,
@@ -66,16 +61,17 @@ public class YWing {
                 hingeAndACandidates.size() == 1 && hingeAndBCandidates.size() == 1 && wingCandidates.size() == 1
         ) {
             var candidate = wingCandidates.iterator().next();
-            return board.getCells()
-                    .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> !cell.equals(wingA) && !cell.equals(wingB) &&
-                            cell.candidates().contains(candidate) &&
-                            cell.isInSameUnit(wingA) && cell.isInSameUnit(wingB))
-                    .map(cell -> new LocatedCandidate(cell, candidate));
-        } else {
-            return Stream.empty();
+            for (var cell : board.getCells()) {
+                if (cell instanceof UnsolvedCell unsolved &&
+                        !unsolved.equals(wingA) &&
+                        !unsolved.equals(wingB) &&
+                        unsolved.candidates().contains(candidate) &&
+                        unsolved.isInSameUnit(wingA) &&
+                        unsolved.isInSameUnit(wingB)
+                ) {
+                    removals.add(unsolved, candidate);
+                }
+            }
         }
     }
 }
