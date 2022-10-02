@@ -2,19 +2,16 @@ package sudokusolver.javanostreams.logic.tough;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
-import sudokusolver.javanostreams.Triple;
 import sudokusolver.javanostreams.UnsolvedCell;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Sword_Fish_Strategy
@@ -29,52 +26,45 @@ import java.util.stream.Stream;
  */
 public class Swordfish {
     public static List<RemoveCandidates> swordfish(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var rowRemovals = swordfish(
-                            candidate,
-                            board.rows(),
-                            board::getColumn,
-                            Cell::column
-                    );
-                    var columnRemovals = swordfish(
-                            candidate,
-                            board.getColumns(),
-                            board::getRow,
-                            Cell::row
-                    );
-                    return Stream.concat(rowRemovals, columnRemovals);
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            swordfish(removals, candidate, board.rows(), board::getColumn, Cell::column);
+            swordfish(removals, candidate, board.getColumns(), board::getRow, Cell::row);
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> swordfish(
+    private static void swordfish(
+            Removals removals,
             SudokuNumber candidate,
             List<List<Cell>> units,
             IntFunction<List<Cell>> getOtherUnit,
             ToIntFunction<Cell> getOtherUnitIndex
     ) {
-        return units.stream()
-                .collect(Triple.zipEveryTriple())
-                .flatMap(triple -> {
-                    var unitA = triple.first();
-                    var unitB = triple.second();
-                    var unitC = triple.third();
-                    var aWithCandidate = unitA.stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
-                            .filter(cell -> cell.candidates().contains(candidate))
-                            .toList();
-                    var bWithCandidate = unitB.stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
-                            .filter(cell -> cell.candidates().contains(candidate))
-                            .toList();
-                    var cWithCandidate = unitC.stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
-                            .filter(cell -> cell.candidates().contains(candidate))
-                            .toList();
+        for (var i = 0; i < units.size() - 2; i++) {
+            var unitA = units.get(i);
+            var aWithCandidate = new ArrayList<UnsolvedCell>();
+            for (var cell : unitA) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    aWithCandidate.add(unsolved);
+                }
+            }
+            for (var j = i + 1; j < units.size() - 1; j++) {
+                var unitB = units.get(j);
+                var bWithCandidate = new ArrayList<UnsolvedCell>();
+                for (var cell : unitB) {
+                    if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                        bWithCandidate.add(unsolved);
+                    }
+                }
+                for (var k = j + 1; k < units.size(); k++) {
+                    var unitC = units.get(k);
+                    var cWithCandidate = new ArrayList<UnsolvedCell>();
+                    for (var cell : unitC) {
+                        if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                            cWithCandidate.add(unsolved);
+                        }
+                    }
                     if ((aWithCandidate.size() == 2 || aWithCandidate.size() == 3) &&
                             (bWithCandidate.size() == 2 || bWithCandidate.size() == 3) &&
                             (cWithCandidate.size() == 2 || cWithCandidate.size() == 3)
@@ -82,23 +72,25 @@ public class Swordfish {
                         var withCandidate = new ArrayList<>(aWithCandidate);
                         withCandidate.addAll(bWithCandidate);
                         withCandidate.addAll(cWithCandidate);
-                        var otherUnitIndices = withCandidate.stream()
-                                .map(getOtherUnitIndex::applyAsInt)
-                                .collect(Collectors.toSet());
-                        if (otherUnitIndices.size() == 3) {
-                            return otherUnitIndices.stream()
-                                    .flatMap(otherUnitIndex -> getOtherUnit.apply(otherUnitIndex).stream())
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
-                                    .filter(cell -> cell.candidates().contains(candidate) &&
-                                            !withCandidate.contains(cell))
-                                    .map(cell -> new LocatedCandidate(cell, candidate));
-                        } else {
-                            return Stream.empty();
+                        var otherUnitIndices = new HashSet<Integer>();
+                        for (var cell : withCandidate) {
+                            otherUnitIndices.add(getOtherUnitIndex.applyAsInt(cell));
                         }
-                    } else {
-                        return Stream.empty();
+                        if (otherUnitIndices.size() == 3) {
+                            for (var otherUnitIndex : otherUnitIndices) {
+                                for (var cell : getOtherUnit.apply(otherUnitIndex)) {
+                                    if (cell instanceof UnsolvedCell unsolved &&
+                                            unsolved.candidates().contains(candidate) &&
+                                            !withCandidate.contains(unsolved)
+                                    ) {
+                                        removals.add(unsolved, candidate);
+                                    }
+                                }
+                            }
+                        }
                     }
-                });
+                }
+            }
+        }
     }
 }
