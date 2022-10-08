@@ -2,14 +2,13 @@ package sudokusolver.javanostreams.logic.tough;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
 import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.UnsolvedCell;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/XYZ_Wing
@@ -22,49 +21,44 @@ import java.util.stream.Stream;
  */
 public class XYZWing {
     public static List<RemoveCandidates> xyzWing(Board<Cell> board) {
-        return board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .filter(hinge -> hinge.candidates().size() == 3)
-                .flatMap(hinge -> board.getCells()
-                        .stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .collect(Pair.zipEveryPair())
-                        .filter(pair -> {
-                            var wingA = pair.first();
-                            var wingB = pair.second();
-                            var allCandidates = EnumSet.copyOf(hinge.candidates());
-                            allCandidates.addAll(wingA.candidates());
-                            allCandidates.addAll(wingB.candidates());
-                            return wingA.candidates().size() == 2 && wingB.candidates().size() == 2 &&
-                                    hinge.isInSameUnit(wingA) && hinge.isInSameUnit(wingB) &&
-                                    allCandidates.size() == 3;
-                        })
-                        .flatMap(pair -> {
-                            var wingA = pair.first();
-                            var wingB = pair.second();
+        var removals = new Removals();
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell hinge && hinge.candidates().size() == 3) {
+                for (var pair : Pair.zipEveryPair(board.getCells())) {
+                    if (pair.first() instanceof UnsolvedCell wingA &&
+                            wingA.candidates().size() == 2 &&
+                            hinge.isInSameUnit(wingA) &&
+                            pair.second() instanceof UnsolvedCell wingB &&
+                            wingB.candidates().size() == 2 &&
+                            hinge.isInSameUnit(wingB)
+                    ) {
+                        var allCandidates = EnumSet.copyOf(hinge.candidates());
+                        allCandidates.addAll(wingA.candidates());
+                        allCandidates.addAll(wingB.candidates());
+                        if (allCandidates.size() == 3) {
                             var toRemove = EnumSet.copyOf(wingA.candidates());
                             toRemove.retainAll(wingB.candidates());
                             if (toRemove.size() == 1) {
                                 var candidate = toRemove.iterator().next();
-                                return board.getCells()
-                                        .stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
-                                        .filter(cell -> !cell.equals(hinge) &&
-                                                !cell.equals(wingA) &&
-                                                !cell.equals(wingB) &&
-                                                cell.candidates().contains(candidate) &&
-                                                cell.isInSameUnit(hinge) &&
-                                                cell.isInSameUnit(wingA) &&
-                                                cell.isInSameUnit(wingB))
-                                        .map(cell -> new LocatedCandidate(cell, candidate));
-                            } else {
-                                return Stream.empty();
+                                for (var removalCell : board.getCells()) {
+                                    if (removalCell instanceof UnsolvedCell unsolved &&
+                                            !unsolved.equals(hinge) &&
+                                            !unsolved.equals(wingA) &&
+                                            !unsolved.equals(wingB) &&
+                                            unsolved.candidates().contains(candidate) &&
+                                            unsolved.isInSameUnit(hinge) &&
+                                            unsolved.isInSameUnit(wingA) &&
+                                            unsolved.isInSameUnit(wingB)
+                                    ) {
+                                        removals.add(unsolved, candidate);
+                                    }
+                                }
                             }
-                        }))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 }
