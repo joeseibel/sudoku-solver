@@ -3,8 +3,10 @@ package sudokusolver.javanostreams.logic.diabolical;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
 import sudokusolver.javanostreams.SetValue;
+import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 /*
@@ -21,26 +23,33 @@ import java.util.Optional;
  */
 public class BUG {
     public static Optional<SetValue> bug(Board<Cell> board) {
-        var cellsWithNotTwo = board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .filter(cell -> cell.candidates().size() != 2)
-                .toList();
+        var cellsWithNotTwo = new ArrayList<UnsolvedCell>();
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().size() != 2) {
+                cellsWithNotTwo.add(unsolved);
+            }
+        }
         if (cellsWithNotTwo.size() == 1) {
             var cell = cellsWithNotTwo.get(0);
             if (cell.candidates().size() == 3) {
-                var row = board.getRow(cell.row())
-                        .stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .toList();
-                var candidates = cell.candidates()
-                        .stream()
-                        .filter(candidate -> row.stream()
-                                .filter(rowCell -> rowCell.candidates().contains(candidate))
-                                .count() == 3)
-                        .toList();
+                var row = new ArrayList<UnsolvedCell>();
+                for (var rowCell : board.getRow(cell.row())) {
+                    if (rowCell instanceof UnsolvedCell unsolved) {
+                        row.add(unsolved);
+                    }
+                }
+                var candidates = new ArrayList<SudokuNumber>();
+                for (var candidate : cell.candidates()) {
+                    var withCandidate = 0;
+                    for (var rowCell : row) {
+                        if (rowCell.candidates().contains(candidate)) {
+                            withCandidate++;
+                        }
+                    }
+                    if (withCandidate == 3) {
+                        candidates.add(candidate);
+                    }
+                }
                 assert candidates.size() == 1 : "There are multiple candidates that appear three times in the row";
                 return Optional.of(new SetValue(cell, candidates.get(0)));
             } else {
