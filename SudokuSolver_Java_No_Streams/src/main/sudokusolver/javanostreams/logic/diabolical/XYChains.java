@@ -9,7 +9,7 @@ import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
 import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.Strength;
 import sudokusolver.javanostreams.StrengthEdge;
@@ -17,12 +17,12 @@ import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/XY_Chains
@@ -44,39 +44,41 @@ import java.util.stream.Stream;
  */
 public class XYChains {
     public static List<RemoveCandidates> xyChains(Board<Cell> board) {
+        var removals = new Removals();
         var graph = createStrongLinks(board);
         addWeakLinks(graph);
-        return graph.vertexSet()
-                .stream()
-                .collect(Collectors.groupingBy(LocatedCandidate::candidate))
-                .entrySet()
-                .stream()
-                .flatMap(entry -> {
-                    var candidate = entry.getKey();
-                    var vertices = entry.getValue();
-                    return vertices.stream()
-                            .collect(Pair.zipEveryPair())
-                            .flatMap(pair -> {
-                                var vertexA = pair.first();
-                                var vertexB = pair.second();
-                                var cellA = vertexA.cell();
-                                var cellB = vertexB.cell();
-                                var visibleCells = board.getCells()
-                                        .stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
-                                        .filter(cell -> cell.candidates().contains(candidate) &&
-                                                !cell.equals(cellA) && !cell.equals(cellB) &&
-                                                cell.isInSameUnit(cellA) && cell.isInSameUnit(cellB))
-                                        .toList();
-                                if (!visibleCells.isEmpty() && alternatingPathExists(graph, vertexA, vertexB)) {
-                                    return visibleCells.stream().map(cell -> new LocatedCandidate(cell, candidate));
-                                } else {
-                                    return Stream.empty();
-                                }
-                            });
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var grouping = new HashMap<SudokuNumber, List<LocatedCandidate>>();
+        for (var vertex : graph.vertexSet()) {
+            grouping.computeIfAbsent(vertex.candidate(), key -> new ArrayList<>()).add(vertex);
+        }
+        for (var entry : grouping.entrySet()) {
+            var candidate = entry.getKey();
+            var vertices = entry.getValue();
+            for (var i = 0; i < vertices.size() - 1; i++) {
+                var vertexA = vertices.get(i);
+                var cellA = vertexA.cell();
+                for (var j = i + 1; j < vertices.size(); j++) {
+                    var vertexB = vertices.get(j);
+                    var cellB = vertexB.cell();
+                    var visibleCells = new ArrayList<UnsolvedCell>();
+                    for (var cell : board.getCells()) {
+                        if (cell instanceof UnsolvedCell unsolved &&
+                                unsolved.candidates().contains(candidate) &&
+                                !unsolved.equals(cellA) && !unsolved.equals(cellB) &&
+                                unsolved.isInSameUnit(cellA) && unsolved.isInSameUnit(cellB)
+                        ) {
+                            visibleCells.add(unsolved);
+                        }
+                    }
+                    if (!visibleCells.isEmpty() && alternatingPathExists(graph, vertexA, vertexB)) {
+                        for (var cell : visibleCells) {
+                            removals.add(cell, candidate);
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 
     public static String toDOT(Graph<LocatedCandidate, StrengthEdge> graph) {
@@ -95,38 +97,32 @@ public class XYChains {
 
     private static Graph<LocatedCandidate, StrengthEdge> createStrongLinks(Board<Cell> board) {
         var builder = new GraphBuilder<>(new SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge.class));
-        board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .filter(cell -> cell.candidates().size() == 2)
-                .forEach(cell -> {
-                    var candidates = cell.candidates().toArray(SudokuNumber[]::new);
-                    var source = new LocatedCandidate(cell, candidates[0]);
-                    var target = new LocatedCandidate(cell, candidates[1]);
-                    builder.addEdge(source, target, new StrengthEdge(Strength.STRONG));
-                });
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().size() == 2) {
+                var candidates = ((UnsolvedCell) cell).candidates().toArray(SudokuNumber[]::new);
+                var source = new LocatedCandidate(unsolved, candidates[0]);
+                var target = new LocatedCandidate(unsolved, candidates[1]);
+                builder.addEdge(source, target, new StrengthEdge(Strength.STRONG));
+            }
+        }
         return builder.build();
     }
 
     private static void addWeakLinks(Graph<LocatedCandidate, StrengthEdge> graph) {
-        graph.vertexSet()
-                .stream()
-                .collect(Pair.zipEveryPair())
-                .filter(pair -> {
-                    var vertexA = pair.first();
-                    var cellA = vertexA.cell();
-                    var candidateA = vertexA.candidate();
-                    var vertexB = pair.second();
-                    var cellB = vertexB.cell();
-                    var candidateB = vertexB.candidate();
-                    return candidateA == candidateB && cellA.isInSameUnit(cellB);
-                })
-                .forEach(pair -> {
-                    var vertexA = pair.first();
-                    var vertexB = pair.second();
+        var vertices = graph.vertexSet().toArray(LocatedCandidate[]::new);
+        for (var i = 0; i < vertices.length - 1; i++) {
+            var vertexA = vertices[i];
+            var cellA = vertexA.cell();
+            var candidateA = vertexA.candidate();
+            for (var j = i + 1; j < vertices.length; j++) {
+                var vertexB = vertices[j];
+                var cellB = vertexB.cell();
+                var candidateB = vertexB.candidate();
+                if (candidateA == candidateB && cellA.isInSameUnit(cellB)) {
                     graph.addEdge(vertexA, vertexB, new StrengthEdge(Strength.WEAK));
-                });
+                }
+            }
+        }
     }
 
     private static boolean alternatingPathExists(
@@ -144,21 +140,25 @@ public class XYChains {
             Strength nextType,
             Set<LocatedCandidate> visited
     ) {
-        var nextVertices = graph.edgesOf(currentVertex)
-                .stream()
-                .filter(edge -> edge.getStrength().isCompatibleWith(nextType))
-                .map(edge -> Graphs.getOppositeVertex(graph, edge, currentVertex))
-                .collect(Collectors.toList());
+        var nextVertices = new ArrayList<LocatedCandidate>();
+        for (var edge : graph.edgesOf(currentVertex)) {
+            if (edge.getStrength().isCompatibleWith(nextType)) {
+                nextVertices.add(Graphs.getOppositeVertex(graph, edge, currentVertex));
+            }
+        }
         if (nextType == Strength.STRONG && nextVertices.contains(end)) {
             return true;
         } else {
             nextVertices.removeAll(visited);
             nextVertices.remove(end);
-            return nextVertices.stream().anyMatch(nextVertex -> {
+            for (var nextVertex : nextVertices) {
                 var nextVisited = new HashSet<>(visited);
                 nextVisited.add(nextVertex);
-                return alternatingPathExists(graph, end, nextVertex, nextType.getOpposite(), nextVisited);
-            });
+                if (alternatingPathExists(graph, end, nextVertex, nextType.getOpposite(), nextVisited)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
