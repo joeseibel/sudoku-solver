@@ -7,8 +7,7 @@ import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SetValue;
 import sudokusolver.javanostreams.Strength;
@@ -17,14 +16,12 @@ import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
 import java.io.StringWriter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Stream;
 
 /*
  * http://www.sudokuwiki.org/X_Cycles
@@ -49,42 +46,24 @@ public class XCycles {
      * be removed from any other cell which is in the same unit as both vertices of a weak link.
      */
     public static List<RemoveCandidates> xCyclesRule1(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var graph = createStrongLinks(board, candidate);
-                    addWeakLinks(graph);
-                    Strength.trim(graph);
-                    return Strength.getWeakEdgesInAlternatingCycle(graph).stream().flatMap(edge -> {
-                        var source = graph.getEdgeSource(edge);
-                        var target = graph.getEdgeTarget(edge);
-                        var rowRemovals = removeFromUnit(
-                                candidate,
-                                source,
-                                target,
-                                Cell::row,
-                                board::getRow
-                        );
-                        var columnRemovals = removeFromUnit(
-                                candidate,
-                                source,
-                                target,
-                                Cell::column,
-                                board::getColumn
-                        );
-                        var blockRemovals = removeFromUnit(
-                                candidate,
-                                source,
-                                target,
-                                Cell::block,
-                                board::getBlock
-                        );
-                        return Stream.of(rowRemovals, columnRemovals, blockRemovals).flatMap(Function.identity());
-                    });
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            var graph = createStrongLinks(board, candidate);
+            addWeakLinks(graph);
+            Strength.trim(graph);
+            for (var edge : Strength.getWeakEdgesInAlternatingCycle(graph)) {
+                var source = graph.getEdgeSource(edge);
+                var target = graph.getEdgeTarget(edge);
+                removeFromUnit(removals, candidate, source, target, Cell::row, board::getRow);
+                removeFromUnit(removals, candidate, source, target, Cell::column, board::getColumn);
+                removeFromUnit(removals, candidate, source, target, Cell::block, board::getBlock);
+            }
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> removeFromUnit(
+    private static void removeFromUnit(
+            Removals removals,
             SudokuNumber candidate,
             UnsolvedCell source,
             UnsolvedCell target,
@@ -92,15 +71,15 @@ public class XCycles {
             IntFunction<List<Cell>> getUnit
     ) {
         if (getUnitIndex.applyAsInt(source) == getUnitIndex.applyAsInt(target)) {
-            return getUnit.apply(getUnitIndex.applyAsInt(source))
-                    .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate) &&
-                            !cell.equals(source) && !cell.equals(target))
-                    .map(cell -> new LocatedCandidate(cell, candidate));
-        } else {
-            return Stream.empty();
+            for (var cell : getUnit.apply(getUnitIndex.applyAsInt(source))) {
+                if (cell instanceof UnsolvedCell unsolved &&
+                        unsolved.candidates().contains(candidate) &&
+                        !unsolved.equals(source) &&
+                        !unsolved.equals(target)
+                ) {
+                    removals.add(unsolved, candidate);
+                }
+            }
         }
     }
 
@@ -114,16 +93,17 @@ public class XCycles {
      * contradiction in the cycle. Therefore, the candidate must be the solution for that vertex.
      */
     public static List<SetValue> xCyclesRule2(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var graph = createStrongLinks(board, candidate);
-                    addWeakLinks(graph);
-                    return graph.vertexSet()
-                            .stream()
-                            .filter(vertex -> Strength.alternatingCycleExists(graph, vertex, Strength.STRONG))
-                            .map(vertex -> new SetValue(vertex, candidate));
-                })
-                .toList();
+        var modifications = new ArrayList<SetValue>();
+        for (var candidate : SudokuNumber.values()) {
+            var graph = createStrongLinks(board, candidate);
+            addWeakLinks(graph);
+            for (var vertex : graph.vertexSet()) {
+                if (Strength.alternatingCycleExists(graph, vertex, Strength.STRONG)) {
+                    modifications.add(new SetValue(vertex, candidate));
+                }
+            }
+        }
+        return modifications;
     }
 
     /*
@@ -136,17 +116,18 @@ public class XCycles {
      * in the cycle. Therefore, the candidate can be removed from the vertex.
      */
     public static List<RemoveCandidates> xCyclesRule3(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var graph = createStrongLinks(board, candidate);
-                    addWeakLinks(graph);
-                    additionalWeakLinks(graph, board, candidate);
-                    return graph.vertexSet()
-                            .stream()
-                            .filter(vertex -> Strength.alternatingCycleExists(graph, vertex, Strength.WEAK))
-                            .map(vertex -> new LocatedCandidate(vertex, candidate));
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            var graph = createStrongLinks(board, candidate);
+            addWeakLinks(graph);
+            additionalWeakLinks(graph, board, candidate);
+            for (var vertex : graph.vertexSet()) {
+                if (Strength.alternatingCycleExists(graph, vertex, Strength.WEAK)) {
+                    removals.add(vertex, candidate);
+                }
+            }
+        }
+        return removals.toList();
     }
 
     public static String toDOT(Graph<UnsolvedCell, StrengthEdge> graph, SudokuNumber candidate) {
@@ -162,36 +143,33 @@ public class XCycles {
 
     private static Graph<UnsolvedCell, StrengthEdge> createStrongLinks(Board<Cell> board, SudokuNumber candidate) {
         var builder = new GraphBuilder<>(new SimpleGraph<UnsolvedCell, StrengthEdge>(StrengthEdge.class));
-        board.getUnits()
-                .stream()
-                .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .filter(cell -> cell.candidates().contains(candidate))
-                        .toList())
-                .filter(withCandidate -> withCandidate.size() == 2)
-                .forEach(withCandidate -> {
-                    var a = withCandidate.get(0);
-                    var b = withCandidate.get(1);
-                    builder.addEdge(a, b, new StrengthEdge(Strength.STRONG));
-                });
+        for (var unit : board.getUnits()) {
+            var withCandidate = new ArrayList<UnsolvedCell>();
+            for (var cell : unit) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    withCandidate.add(unsolved);
+                }
+            }
+            if (withCandidate.size() == 2) {
+                var a = withCandidate.get(0);
+                var b = withCandidate.get(1);
+                builder.addEdge(a, b, new StrengthEdge(Strength.STRONG));
+            }
+        }
         return builder.build();
     }
 
     private static void addWeakLinks(Graph<UnsolvedCell, StrengthEdge> graph) {
-        graph.vertexSet()
-                .stream()
-                .collect(Pair.zipEveryPair())
-                .filter(pair -> {
-                    var a = pair.first();
-                    var b = pair.second();
-                    return a.isInSameUnit(b) && !graph.containsEdge(a, b);
-                })
-                .forEach(pair -> {
-                    var a = pair.first();
-                    var b = pair.second();
+        var vertices = graph.vertexSet().toArray(UnsolvedCell[]::new);
+        for (var i = 0; i < vertices.length - 1; i++) {
+            var a = vertices[i];
+            for (var j = i + 1; j < vertices.length; j++) {
+                var b = vertices[j];
+                if (a.isInSameUnit(b) && !graph.containsEdge(a, b)) {
                     graph.addEdge(a, b, new StrengthEdge(Strength.WEAK));
-                });
+                }
+            }
+        }
     }
 
     private static void additionalWeakLinks(
@@ -200,16 +178,18 @@ public class XCycles {
             SudokuNumber candidate
     ) {
         var vertices = Set.copyOf(graph.vertexSet());
-        board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .filter(cell -> cell.candidates().contains(candidate) && !vertices.contains(cell))
-                .forEach(cell -> vertices.stream()
-                        .filter(vertex -> vertex.isInSameUnit(cell))
-                        .forEach(vertex -> {
-                            graph.addVertex(cell);
-                            graph.addEdge(vertex, cell, new StrengthEdge(Strength.WEAK));
-                        }));
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell unsolved &&
+                    unsolved.candidates().contains(candidate) &&
+                    !vertices.contains(unsolved)
+            ) {
+                for (var vertex : vertices) {
+                    if (vertex.isInSameUnit(unsolved)) {
+                        graph.addVertex(unsolved);
+                        graph.addEdge(vertex, unsolved, new StrengthEdge(Strength.WEAK));
+                    }
+                }
+            }
+        }
     }
 }
