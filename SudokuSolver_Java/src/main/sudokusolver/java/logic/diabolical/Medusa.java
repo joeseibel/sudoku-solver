@@ -17,6 +17,7 @@ import sudokusolver.java.VertexColor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -223,19 +224,22 @@ public class Medusa {
                                     .stream()
                                     .noneMatch(candidate -> graph.vertexSet()
                                             .contains(new LocatedCandidate(cell, candidate))))
-                            .flatMap(cell -> {
+                            .map(cell -> {
                                 if (everyCandidateCanSeeColor(cell, colorOne)) {
                                     return colorTwo.stream();
                                 } else if (everyCandidateCanSeeColor(cell, colorTwo)) {
                                     return colorOne.stream();
                                 } else {
-                                    return Stream.empty();
+                                    return null;
                                 }
                             })
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse(Stream.empty())
                             .map(vertex -> {
                                 var coloredCell = vertex.cell();
                                 var coloredCandidate = vertex.candidate();
-                                return new SetValue(coloredCell, coloredCandidate);
+                                return  new SetValue(coloredCell, coloredCandidate);
                             });
                 })
                 .toList();
