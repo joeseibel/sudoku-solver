@@ -188,7 +188,8 @@ public class Medusa {
                             .stream()
                             .filter(UnsolvedCell.class::isInstance)
                             .map(UnsolvedCell.class::cast)
-                            .flatMap(cell -> cell.candidates().stream().map(candidate -> new LocatedCandidate(cell, candidate)))
+                            .flatMap(cell -> cell.candidates()
+                                    .stream().map(candidate -> new LocatedCandidate(cell, candidate)))
                             .filter(removal -> !graph.vertexSet().contains(removal))
                             .filter(removal -> canSeeColor(removal, colorOne) && colorInCell(removal, colorTwo) ||
                                     canSeeColor(removal, colorTwo) && colorInCell(removal, colorOne));
