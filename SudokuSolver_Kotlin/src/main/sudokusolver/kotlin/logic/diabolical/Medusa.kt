@@ -174,7 +174,7 @@ fun medusaRule6(board: Board<Cell>): List<SetValue> =
         board.cells
             .filterIsInstance<UnsolvedCell>()
             .filter { cell -> cell.candidates.none { candidate -> cell to candidate in graph.vertexSet() } }
-            .flatMap { cell ->
+            .firstNotNullOfOrNull { cell ->
 
                 fun everyCandidateCanSeeColor(color: List<LocatedCandidate>) =
                     cell.candidates.all { candidate ->
@@ -186,10 +186,11 @@ fun medusaRule6(board: Board<Cell>): List<SetValue> =
                 when {
                     everyCandidateCanSeeColor(colorOne) -> colorTwo
                     everyCandidateCanSeeColor(colorTwo) -> colorOne
-                    else -> emptyList()
+                    else -> null
                 }
             }
-            .map { (coloredCell, coloredCandidate) -> SetValue(coloredCell, coloredCandidate) }
+            ?.map { (coloredCell, coloredCandidate) -> SetValue(coloredCell, coloredCandidate) }
+            ?: emptyList()
     }
 
 private fun createConnectedComponents(board: Board<Cell>): Set<Graph<LocatedCandidate, DefaultEdge>> {
