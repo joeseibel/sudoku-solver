@@ -8,17 +8,17 @@ import org.jgrapht.graph.SimpleGraph;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
 import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SetValue;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 import sudokusolver.javanostreams.VertexColor;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/3D_Medusa
@@ -40,28 +40,30 @@ public class Medusa {
      * and the opposite color must be the solution. All vertices with the opposite color can be set as the solution.
      */
     public static List<SetValue> medusaRule1(Board<Cell> board) {
-        return createConnectedComponents(board).stream()
-                .flatMap(graph -> {
-                    var colors = VertexColor.colorToMap(graph);
-                    return graph.vertexSet()
-                            .stream()
-                            .collect(Pair.zipEveryPair())
-                            .filter(pair -> {
-                                var a = pair.first();
-                                var b = pair.second();
-                                var cellA = a.cell();
-                                var cellB = b.cell();
-                                return cellA.equals(cellB) && colors.get(a) == colors.get(b);
-                            })
-                            .findFirst()
-                            .map(pair -> colors.get(pair.first()).getOpposite())
-                            .stream()
-                            .flatMap(colorToSet -> graph.vertexSet()
-                                    .stream()
-                                    .filter(vertex -> colors.get(vertex) == colorToSet)
-                                    .map(vertex -> new SetValue(vertex.cell(), vertex.candidate())));
-                })
-                .toList();
+        var modifications = new ArrayList<SetValue>();
+        for (var graph : createConnectedComponents(board)) {
+            var colors = VertexColor.colorToMap(graph);
+            var vertices = graph.vertexSet().toArray(LocatedCandidate[]::new);
+            outerLoop:
+            for (var i = 0; i < vertices.length - 1; i++) {
+                var a = vertices[i];
+                var cellA = a.cell();
+                for (var j = i + 1; j < vertices.length; j++) {
+                    var b = vertices[j];
+                    var cellB = b.cell();
+                    if (cellA.equals(cellB) && colors.get(a) == colors.get(b)) {
+                        var colorToSet = colors.get(a).getOpposite();
+                        for (var vertex : graph.vertexSet()) {
+                            if (colors.get(vertex) == colorToSet) {
+                                modifications.add(new SetValue(vertex.cell(), vertex.candidate()));
+                            }
+                        }
+                        break outerLoop;
+                    }
+                }
+            }
+        }
+        return modifications;
     }
 
     /*
@@ -72,32 +74,32 @@ public class Medusa {
      * set as the solution.
      */
     public static List<SetValue> medusaRule2(Board<Cell> board) {
-        return createConnectedComponents(board).stream()
-                .flatMap(graph -> {
-                    var colors = VertexColor.colorToMap(graph);
-                    return graph.vertexSet()
-                            .stream()
-                            .collect(Pair.zipEveryPair())
-                            .filter(pair -> {
-                                var a = pair.first();
-                                var b = pair.second();
-                                var cellA = a.cell();
-                                var candidateA = a.candidate();
-                                var cellB = b.cell();
-                                var candidateB = b.candidate();
-                                return candidateA == candidateB &&
-                                        colors.get(a) == colors.get(b) &&
-                                        cellA.isInSameUnit(cellB);
-                            })
-                            .findFirst()
-                            .map(pair -> colors.get(pair.first()).getOpposite())
-                            .stream()
-                            .flatMap(colorToSet -> graph.vertexSet()
-                                    .stream()
-                                    .filter(vertex -> colors.get(vertex) == colorToSet)
-                                    .map(vertex -> new SetValue(vertex.cell(), vertex.candidate())));
-                })
-                .toList();
+        var modifications = new ArrayList<SetValue>();
+        for (var graph : createConnectedComponents(board)) {
+            var colors = VertexColor.colorToMap(graph);
+            var vertices = graph.vertexSet().toArray(LocatedCandidate[]::new);
+            outerLoop:
+            for (var i = 0; i < vertices.length - 1; i++) {
+                var a = vertices[i];
+                var cellA = a.cell();
+                var candidateA = a.candidate();
+                for (var j = i + 1; j < vertices.length; j++) {
+                    var b = vertices[j];
+                    var cellB = b.cell();
+                    var candidateB = b.candidate();
+                    if (candidateA == candidateB && colors.get(a) == colors.get(b) && cellA.isInSameUnit(cellB)) {
+                        var colorToSet = colors.get(a).getOpposite();
+                        for (var vertex : graph.vertexSet()) {
+                            if (colors.get(vertex) == colorToSet) {
+                                modifications.add(new SetValue(vertex.cell(), vertex.candidate()));
+                            }
+                        }
+                        break outerLoop;
+                    }
+                }
+            }
+        }
+        return modifications;
     }
 
     /*
@@ -107,29 +109,34 @@ public class Medusa {
      * All other candidates in the cell can be removed.
      */
     public static List<RemoveCandidates> medusaRule3(Board<Cell> board) {
-        return createConnectedComponents(board).stream()
-                .flatMap(graph -> {
-                    var colors = VertexColor.colorToMap(graph);
-                    return graph.vertexSet()
-                            .stream()
-                            .filter(vertex -> vertex.cell().candidates().size() > 2)
-                            .collect(Pair.zipEveryPair())
-                            .filter(pair -> {
-                                var a = pair.first();
-                                var b = pair.second();
-                                var cellA = a.cell();
-                                var cellB = b.cell();
-                                return cellA.equals(cellB) && colors.get(a) != colors.get(b);
-                            })
-                            .findFirst()
-                            .map(pair -> pair.first().cell())
-                            .stream()
-                            .flatMap(cell -> cell.candidates()
-                                    .stream()
-                                    .map(candidate -> new LocatedCandidate(cell, candidate))
-                                    .filter(removal -> !graph.vertexSet().contains(removal)));
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var graph : createConnectedComponents(board)) {
+            var colors = VertexColor.colorToMap(graph);
+            var vertices = new ArrayList<LocatedCandidate>();
+            for (var vertex : graph.vertexSet()) {
+                if (vertex.cell().candidates().size() > 2) {
+                    vertices.add(vertex);
+                }
+            }
+            outerLoop:
+            for (var i = 0; i < vertices.size() - 1; i++) {
+                var a = vertices.get(i);
+                var cellA = a.cell();
+                for (var j = i + 1; j < vertices.size(); j++) {
+                    var b = vertices.get(j);
+                    var cellB = b.cell();
+                    if (cellA.equals(cellB) && colors.get(a) != colors.get(b)) {
+                        for (var candidate : cellA.candidates()) {
+                            if (!graph.vertexSet().contains(new LocatedCandidate(cellA, candidate))) {
+                                removals.add(cellA, candidate);
+                            }
+                        }
+                        break outerLoop;
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 
     /*
@@ -141,32 +148,36 @@ public class Medusa {
      * The uncolored candidate can be removed from the first cell.
      */
     public static List<RemoveCandidates> medusaRule4(Board<Cell> board) {
-        return createConnectedComponents(board).stream()
-                .flatMap(graph -> {
-                    var colors = VertexColor.colorToLists(graph);
-                    var colorOne = colors.get(VertexColor.COLOR_ONE);
-                    var colorTwo = colors.get(VertexColor.COLOR_TWO);
-                    return board.getCells()
-                            .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
-                            .flatMap(cell -> cell.candidates()
-                                    .stream()
-                                    .map(candidate -> new LocatedCandidate(cell, candidate)))
-                            .filter(removal -> !graph.vertexSet().contains(removal) &&
-                                    canSeeColor(removal, colorOne) && canSeeColor(removal, colorTwo));
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var graph : createConnectedComponents(board)) {
+            var colors = VertexColor.colorToLists(graph);
+            var colorOne = colors.get(VertexColor.COLOR_ONE);
+            var colorTwo = colors.get(VertexColor.COLOR_TWO);
+            for (var cell : board.getCells()) {
+                if (cell instanceof UnsolvedCell unsolved) {
+                    for (var candidate : unsolved.candidates()) {
+                        if (!graph.vertexSet().contains(new LocatedCandidate(unsolved, candidate)) &&
+                                canSeeColor(unsolved, candidate, colorOne) &&
+                                canSeeColor(unsolved, candidate, colorTwo)
+                        ) {
+                            removals.add(unsolved, candidate);
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 
-    private static boolean canSeeColor(LocatedCandidate removal, List<LocatedCandidate> color) {
-        var cell = removal.cell();
-        var candidate = removal.candidate();
-        return color.stream().anyMatch(vertex -> {
+    private static boolean canSeeColor(UnsolvedCell cell, SudokuNumber candidate, List<LocatedCandidate> color) {
+        for (var vertex : color) {
             var coloredCell = vertex.cell();
             var coloredCandidate = vertex.candidate();
-            return candidate == coloredCandidate && cell.isInSameUnit(coloredCell);
-        });
+            if (candidate == coloredCandidate && cell.isInSameUnit(coloredCell)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /*
@@ -178,28 +189,34 @@ public class Medusa {
      * the uncolored candidate cannot be the solution and can be removed from the unsolved cell.
      */
     public static List<RemoveCandidates> medusaRule5(Board<Cell> board) {
-        return createConnectedComponents(board).stream()
-                .flatMap(graph -> {
-                    var colors = VertexColor.colorToLists(graph);
-                    var colorOne = colors.get(VertexColor.COLOR_ONE);
-                    var colorTwo = colors.get(VertexColor.COLOR_TWO);
-                    return board.getCells()
-                            .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
-                            .flatMap(cell -> cell.candidates().stream().map(candidate -> new LocatedCandidate(cell, candidate)))
-                            .filter(removal -> !graph.vertexSet().contains(removal))
-                            .filter(removal -> canSeeColor(removal, colorOne) && colorInCell(removal, colorTwo) ||
-                                    canSeeColor(removal, colorTwo) && colorInCell(removal, colorOne));
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var graph : createConnectedComponents(board)) {
+            var colors = VertexColor.colorToLists(graph);
+            var colorOne = colors.get(VertexColor.COLOR_ONE);
+            var colorTwo = colors.get(VertexColor.COLOR_TWO);
+            for (var cell : board.getCells()) {
+                if (cell instanceof UnsolvedCell unsolved) {
+                    for (var candidate : unsolved.candidates()) {
+                        if (!graph.vertexSet().contains(new LocatedCandidate(unsolved, candidate)) &&
+                                (canSeeColor(unsolved, candidate, colorOne) && colorInCell(unsolved, colorTwo) ||
+                                        canSeeColor(unsolved, candidate, colorTwo) && colorInCell(unsolved, colorOne))
+                        ) {
+                            removals.add(unsolved, candidate);
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 
-    private static boolean colorInCell(LocatedCandidate removal, List<LocatedCandidate> color) {
-        var cell = removal.cell();
-        return cell.candidates()
-                .stream()
-                .anyMatch(otherCandidate -> color.contains(new LocatedCandidate(cell, otherCandidate)));
+    private static boolean colorInCell(UnsolvedCell cell, List<LocatedCandidate> color) {
+        for (var otherCandidate : cell.candidates()) {
+            if (color.contains(new LocatedCandidate(cell, otherCandidate))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /*
@@ -210,71 +227,81 @@ public class Medusa {
      * no solution. All vertices with the opposite color can be set as the solution.
      */
     public static List<SetValue> medusaRule6(Board<Cell> board) {
-        return createConnectedComponents(board).stream()
-                .flatMap(graph -> {
-                    var colors = VertexColor.colorToLists(graph);
-                    var colorOne = colors.get(VertexColor.COLOR_ONE);
-                    var colorTwo = colors.get(VertexColor.COLOR_TWO);
-                    return board.getCells()
-                            .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
-                            .filter(cell -> cell.candidates()
-                                    .stream()
-                                    .noneMatch(candidate -> graph.vertexSet()
-                                            .contains(new LocatedCandidate(cell, candidate))))
-                            .flatMap(cell -> {
-                                if (everyCandidateCanSeeColor(cell, colorOne)) {
-                                    return colorTwo.stream();
-                                } else if (everyCandidateCanSeeColor(cell, colorTwo)) {
-                                    return colorOne.stream();
-                                } else {
-                                    return Stream.empty();
-                                }
-                            })
-                            .map(vertex -> {
-                                var coloredCell = vertex.cell();
-                                var coloredCandidate = vertex.candidate();
-                                return new SetValue(coloredCell, coloredCandidate);
-                            });
-                })
-                .toList();
+        var modifications = new ArrayList<SetValue>();
+        for (var graph : createConnectedComponents(board)) {
+            var colors = VertexColor.colorToLists(graph);
+            var colorOne = colors.get(VertexColor.COLOR_ONE);
+            var colorTwo = colors.get(VertexColor.COLOR_TWO);
+            var oppositeColor = Collections.<LocatedCandidate>emptyList();
+            cellLoop:
+            for (var cell : board.getCells()) {
+                if (cell instanceof UnsolvedCell unsolved) {
+                    for (var candidate : unsolved.candidates()) {
+                        if (graph.vertexSet().contains(new LocatedCandidate(unsolved, candidate))) {
+                            continue cellLoop;
+                        }
+                    }
+                    if (everyCandidateCanSeeColor(unsolved, colorOne)) {
+                        oppositeColor = colorTwo;
+                        break;
+                    } else if (everyCandidateCanSeeColor(unsolved, colorTwo)) {
+                        oppositeColor = colorOne;
+                        break;
+                    }
+                }
+            }
+            for (var vertex : oppositeColor) {
+                var coloredCell = vertex.cell();
+                var coloredCandidate = vertex.candidate();
+                modifications.add(new SetValue(coloredCell, coloredCandidate));
+            }
+        }
+        return modifications;
     }
 
     private static boolean everyCandidateCanSeeColor(UnsolvedCell cell, List<LocatedCandidate> color) {
-        return cell.candidates().stream().allMatch(candidate -> color.stream().anyMatch(vertex -> {
-            var coloredCell = vertex.cell();
-            var coloredCandidate = vertex.candidate();
-            return candidate == coloredCandidate && cell.isInSameUnit(coloredCell);
-        }));
+        for (var candidate : cell.candidates()) {
+            var canSeeColor = false;
+            for (var vertex : color) {
+                var coloredCell = vertex.cell();
+                var coloredCandidate = vertex.candidate();
+                if (candidate == coloredCandidate && cell.isInSameUnit(coloredCell)) {
+                    canSeeColor = true;
+                    break;
+                }
+            }
+            if (!canSeeColor) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static Set<Graph<LocatedCandidate, DefaultEdge>> createConnectedComponents(Board<Cell> board) {
         var graph = new SimpleGraph<LocatedCandidate, DefaultEdge>(DefaultEdge.class);
-        board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .filter(cell -> cell.candidates().size() == 2)
-                .forEach(cell -> {
-                    var candidates = cell.candidates().toArray(SudokuNumber[]::new);
-                    var a = new LocatedCandidate(cell, candidates[0]);
-                    var b = new LocatedCandidate(cell, candidates[1]);
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().size() == 2) {
+                var candidates = unsolved.candidates().toArray(SudokuNumber[]::new);
+                var a = new LocatedCandidate(unsolved, candidates[0]);
+                var b = new LocatedCandidate(unsolved, candidates[1]);
+                Graphs.addEdgeWithVertices(graph, a, b);
+            }
+        }
+        for (var candidate : SudokuNumber.values()) {
+            for (var unit : board.getUnits()) {
+                var withCandidate = new ArrayList<UnsolvedCell>();
+                for (var cell : unit) {
+                    if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                        withCandidate.add(unsolved);
+                    }
+                }
+                if (withCandidate.size() == 2) {
+                    var a = new LocatedCandidate(withCandidate.get(0), candidate);
+                    var b = new LocatedCandidate(withCandidate.get(1), candidate);
                     Graphs.addEdgeWithVertices(graph, a, b);
-                });
-        Arrays.stream(SudokuNumber.values()).forEach(candidate -> board.getUnits()
-                .stream()
-                .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .filter(cell -> cell.candidates().contains(candidate))
-                        .toList())
-                .filter(unit -> unit.size() == 2)
-                .forEach(unit -> {
-                    var a = new LocatedCandidate(unit.get(0), candidate);
-                    var b = new LocatedCandidate(unit.get(1), candidate);
-                    Graphs.addEdgeWithVertices(graph, a, b);
-                }));
+                }
+            }
+        }
         return new BiconnectivityInspector<>(graph).getConnectedComponents();
     }
 }
