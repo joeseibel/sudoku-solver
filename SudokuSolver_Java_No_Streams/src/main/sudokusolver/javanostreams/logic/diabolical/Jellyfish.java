@@ -2,19 +2,16 @@ package sudokusolver.javanostreams.logic.diabolical;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Quad;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Jelly_Fish_Strategy
@@ -29,82 +26,90 @@ import java.util.stream.Stream;
  */
 public class Jellyfish {
     public static List<RemoveCandidates> jellyfish(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var rowRemovals = jellyfish(
-                            candidate,
-                            board.rows(),
-                            board::getColumn,
-                            Cell::column
-                    );
-                    var columnRemovals = jellyfish(
-                            candidate,
-                            board.getColumns(),
-                            board::getRow,
-                            Cell::row
-                    );
-                    return Stream.concat(rowRemovals, columnRemovals);
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            jellyfish(removals, candidate, board.rows(), board::getColumn, Cell::column);
+            jellyfish(removals, candidate, board.getColumns(), board::getRow, Cell::row);
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> jellyfish(
+    private static void jellyfish(
+            Removals removals,
             SudokuNumber candidate,
             List<List<Cell>> units,
             IntFunction<List<Cell>> getOtherUnit,
             ToIntFunction<Cell> getOtherUnitIndex
     ) {
-        return units.stream().collect(Quad.zipEveryQuad()).flatMap(quad -> {
-            var unitA = quad.first();
-            var unitB = quad.second();
-            var unitC = quad.third();
-            var unitD = quad.fourth();
-            var aWithCandidate = unitA.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate))
-                    .toList();
-            var bWithCandidate = unitB.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate))
-                    .toList();
-            var cWithCandidate = unitC.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate))
-                    .toList();
-            var dWithCandidate = unitD.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate))
-                    .toList();
-            if (aWithCandidate.size() >= 2 && aWithCandidate.size() <= 4 &&
-                    bWithCandidate.size() >= 2 && bWithCandidate.size() <= 4 &&
-                    cWithCandidate.size() >= 2 && cWithCandidate.size() <= 4 &&
-                    dWithCandidate.size() >= 2 && dWithCandidate.size() <= 4
-            ) {
-                var withCandidate = new ArrayList<UnsolvedCell>();
-                withCandidate.addAll(aWithCandidate);
-                withCandidate.addAll(bWithCandidate);
-                withCandidate.addAll(cWithCandidate);
-                withCandidate.addAll(dWithCandidate);
-                var otherUnitIndices = withCandidate.stream()
-                        .map(getOtherUnitIndex::applyAsInt)
-                        .collect(Collectors.toSet());
-                if (otherUnitIndices.size() == 4) {
-                    return otherUnitIndices.stream()
-                            .flatMap(otherUnitIndex -> getOtherUnit.apply(otherUnitIndex).stream())
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
-                            .filter(cell -> cell.candidates().contains(candidate) && !withCandidate.contains(cell))
-                            .map(cell -> new LocatedCandidate(cell, candidate));
-                } else {
-                    return Stream.empty();
+        for (var i = 0; i < units.size() - 3; i ++) {
+            var unitA = units.get(i);
+            var aWithCandidate = new ArrayList<UnsolvedCell>();
+            for (var cell : unitA) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    aWithCandidate.add(unsolved);
                 }
-            } else {
-                return Stream.empty();
             }
-        });
+            if (aWithCandidate.size() >= 2 && aWithCandidate.size() <= 4) {
+                for (var j = i + 1; j < units.size() - 2; j++) {
+                    var unitB = units.get(j);
+                    var bWithCandidate = new ArrayList<UnsolvedCell>();
+                    for (var cell : unitB) {
+                        if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                            bWithCandidate.add(unsolved);
+                        }
+                    }
+                    if (bWithCandidate.size() >= 2 && bWithCandidate.size() <= 4) {
+                        for (var k = j + 1; k < units.size() - 1; k++) {
+                            var unitC = units.get(k);
+                            var cWithCandidate = new ArrayList<UnsolvedCell>();
+                            for (var cell : unitC) {
+                                if (cell instanceof UnsolvedCell unsolved &&
+                                        unsolved.candidates().contains(candidate)
+                                ) {
+                                    cWithCandidate.add(unsolved);
+                                }
+                            }
+                            if (cWithCandidate.size() >= 2 && cWithCandidate.size() <= 4) {
+                                for (var l = k + 1; l < units.size(); l++) {
+                                    var unitD = units.get(l);
+                                    var dWithCandidate = new ArrayList<UnsolvedCell>();
+                                    for (var cell : unitD) {
+                                        if (cell instanceof UnsolvedCell unsolved &&
+                                                unsolved.candidates().contains(candidate)
+                                        ) {
+                                            dWithCandidate.add(unsolved);
+                                        }
+                                    }
+                                    if (dWithCandidate.size() >= 2 && dWithCandidate.size() <= 4) {
+                                        var withCandidate = new ArrayList<UnsolvedCell>();
+                                        withCandidate.addAll(aWithCandidate);
+                                        withCandidate.addAll(bWithCandidate);
+                                        withCandidate.addAll(cWithCandidate);
+                                        withCandidate.addAll(dWithCandidate);
+                                        var otherUnitIndices = new HashSet<Integer>();
+                                        for (var cell : withCandidate) {
+                                            otherUnitIndices.add(getOtherUnitIndex.applyAsInt(cell));
+                                        }
+                                        if (otherUnitIndices.size() == 4) {
+                                            for (var otherUnitIndex : otherUnitIndices) {
+                                                for (var cell : getOtherUnit.apply(otherUnitIndex)) {
+                                                    if (cell instanceof UnsolvedCell unsolved) {
+                                                        if (unsolved.candidates().contains(candidate) &&
+                                                                !withCandidate.contains(unsolved)
+                                                        ) {
+                                                            removals.add(unsolved, candidate);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
