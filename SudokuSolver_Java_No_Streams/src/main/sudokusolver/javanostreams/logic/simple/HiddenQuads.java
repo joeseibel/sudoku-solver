@@ -52,9 +52,7 @@ public class HiddenQuads {
                                         toRemove.remove(b);
                                         toRemove.remove(c);
                                         toRemove.remove(d);
-                                        for (var candidate : toRemove) {
-                                            removals.add(cell, EnumSet.of(candidate));
-                                        }
+                                        removals.add(cell, toRemove);
                                     }
                                 }
                             }
