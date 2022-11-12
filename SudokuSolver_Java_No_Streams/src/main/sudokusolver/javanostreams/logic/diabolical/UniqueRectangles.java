@@ -2,21 +2,18 @@ package sudokusolver.javanostreams.logic.diabolical;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
 import sudokusolver.javanostreams.Rectangle;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SetValue;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Unique_Rectangles
@@ -43,18 +40,15 @@ public class UniqueRectangles {
      * the roof leaving only the additional candidates remaining.
      */
     public static List<RemoveCandidates> uniqueRectanglesType1(Board<Cell> board) {
-        return Rectangle.createRectangles(board)
-                .stream()
-                .flatMap(rectangle -> Optional.of(rectangle.getRoof())
-                        .filter(roof -> roof.size() == 1)
-                        .map(roof -> {
-                            var roofCell = roof.get(0);
-                            return rectangle.getCommonCandidates()
-                                    .stream()
-                                    .map(candidate -> new LocatedCandidate(roofCell, candidate));
-                        })
-                        .orElseGet(Stream::empty))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var rectangle : Rectangle.createRectangles(board)) {
+            var roof = rectangle.getRoof();
+            if (roof.size() == 1) {
+                var roofCell = roof.get(0);
+                removals.add(roofCell, rectangle.getCommonCandidates());
+            }
+        }
+        return removals.toList();
     }
 
     /*
@@ -66,34 +60,32 @@ public class UniqueRectangles {
      * cells. The common candidate can be removed from any other cell that can see both of the roof cells.
      */
     public static List<RemoveCandidates> uniqueRectanglesType2(Board<Cell> board) {
-        return Rectangle.createRectangles(board)
-                .stream()
-                .flatMap(rectangle -> Optional.of(rectangle.getRoof())
-                        .filter(roof -> roof.size() == 2)
-                        .map(roof -> {
-                            var roofA = roof.get(0);
-                            var roofB = roof.get(1);
-                            if (roofA.candidates().size() == 3 && roofA.candidates().equals(roofB.candidates())) {
-                                var additionalCandidates = EnumSet.copyOf(roofA.candidates());
-                                additionalCandidates.removeAll(rectangle.getCommonCandidates());
-                                assert additionalCandidates.size() == 1;
-                                var additionalCandidate = additionalCandidates.iterator().next();
-                                return board.getCells()
-                                        .stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
-                                        .filter(cell -> cell.candidates().contains(additionalCandidate) &&
-                                                !cell.equals(roofA) &&
-                                                !cell.equals(roofB) &&
-                                                cell.isInSameUnit(roofA) &&
-                                                cell.isInSameUnit(roofB))
-                                        .map(cell -> new LocatedCandidate(cell, additionalCandidate));
-                            } else {
-                                return Stream.<LocatedCandidate>empty();
-                            }
-                        })
-                        .orElseGet(Stream::empty))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var rectangle : Rectangle.createRectangles(board)) {
+            var roof = rectangle.getRoof();
+            if (roof.size() == 2) {
+                var roofA = roof.get(0);
+                var roofB = roof.get(1);
+                if (roofA.candidates().size() == 3 && roofA.candidates().equals(roofB.candidates())) {
+                    var additionalCandidates = EnumSet.copyOf(roofA.candidates());
+                    additionalCandidates.removeAll(rectangle.getCommonCandidates());
+                    assert additionalCandidates.size() == 1;
+                    var additionalCandidate = additionalCandidates.iterator().next();
+                    for (var cell : board.getCells()) {
+                        if (cell instanceof UnsolvedCell unsolved &&
+                                unsolved.candidates().contains(additionalCandidate) &&
+                                !unsolved.equals(roofA) &&
+                                !unsolved.equals(roofB) &&
+                                unsolved.isInSameUnit(roofA) &&
+                                unsolved.isInSameUnit(roofB)
+                        ) {
+                            removals.add(unsolved, additionalCandidate);
+                        }
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 
     /*
@@ -107,51 +99,29 @@ public class UniqueRectangles {
      * cell in the unit.
      */
     public static List<RemoveCandidates> uniqueRectanglesType3(Board<Cell> board) {
-        return Rectangle.createRectangles(board)
-                .stream()
-                .flatMap(rectangle -> Optional.of(rectangle.getRoof())
-                        .filter(roof -> roof.size() == 2)
-                        .map(roof -> {
-                            var roofA = roof.get(0);
-                            var roofB = roof.get(1);
-                            if (roofA.candidates().size() == 3 && roofB.candidates().size() == 3 &&
-                                    !roofA.candidates().equals(roofB.candidates())
-                            ) {
-                                var additionalCandidates = EnumSet.copyOf(roofA.candidates());
-                                additionalCandidates.addAll(roofB.candidates());
-                                additionalCandidates.removeAll(rectangle.getCommonCandidates());
-                                var rowRemovals = getRemovalsType3(
-                                        roofA,
-                                        roofB,
-                                        additionalCandidates,
-                                        Cell::row,
-                                        board::getRow
-                                );
-                                var columnRemovals = getRemovalsType3(
-                                        roofA,
-                                        roofB,
-                                        additionalCandidates,
-                                        Cell::column,
-                                        board::getColumn
-                                );
-                                var blockRemovals = getRemovalsType3(
-                                        roofA,
-                                        roofB,
-                                        additionalCandidates,
-                                        Cell::block,
-                                        board::getBlock
-                                );
-                                return Stream.of(rowRemovals, columnRemovals, blockRemovals)
-                                        .flatMap(Function.identity());
-                            } else {
-                                return Stream.<LocatedCandidate>empty();
-                            }
-                        })
-                        .orElseGet(Stream::empty))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var rectangle : Rectangle.createRectangles(board)) {
+            var roof = rectangle.getRoof();
+            if (roof.size() == 2) {
+                var roofA = roof.get(0);
+                var roofB = roof.get(1);
+                if (roofA.candidates().size() == 3 && roofB.candidates().size() == 3 &&
+                        !roofA.candidates().equals(roofB.candidates())
+                ) {
+                    var additionalCandidates = EnumSet.copyOf(roofA.candidates());
+                    additionalCandidates.addAll(roofB.candidates());
+                    additionalCandidates.removeAll(rectangle.getCommonCandidates());
+                    getRemovalsType3(removals, roofA, roofB, additionalCandidates, Cell::row, board::getRow);
+                    getRemovalsType3(removals, roofA, roofB, additionalCandidates, Cell::column, board::getColumn);
+                    getRemovalsType3(removals, roofA, roofB, additionalCandidates, Cell::block, board::getBlock);
+                }
+            }
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> getRemovalsType3(
+    private static void getRemovalsType3(
+            Removals removals,
             UnsolvedCell roofA,
             UnsolvedCell roofB,
             EnumSet<SudokuNumber> additionalCandidates,
@@ -161,25 +131,24 @@ public class UniqueRectangles {
         var indexA = getUnitIndex.applyAsInt(roofA);
         var indexB = getUnitIndex.applyAsInt(roofB);
         if (indexA == indexB) {
-            var unit = getUnit.apply(indexA)
-                    .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .toList();
-            return unit.stream()
-                    .filter(cell -> cell.candidates().equals(additionalCandidates))
-                    .findFirst()
-                    .map(pairCell -> unit.stream()
-                            .filter(cell -> !cell.equals(pairCell) && !cell.equals(roofA) && !cell.equals(roofB))
-                            .flatMap(cell -> {
-                                var removeCandidates = EnumSet.copyOf(cell.candidates());
-                                removeCandidates.retainAll(additionalCandidates);
-                                return removeCandidates.stream()
-                                        .map(candidate -> new LocatedCandidate(cell, candidate));
-                            }))
-                    .orElseGet(Stream::empty);
-        } else {
-            return Stream.empty();
+            var unit = new ArrayList<UnsolvedCell>();
+            for (var cell : getUnit.apply(indexA)) {
+                if (cell instanceof UnsolvedCell unsolved) {
+                    unit.add(unsolved);
+                }
+            }
+            for (var pairCell : unit) {
+                if (pairCell.candidates().equals(additionalCandidates)) {
+                    for (var cell : unit) {
+                        if (!cell.equals(pairCell) && !cell.equals(roofA) && !cell.equals(roofB)) {
+                            var removeCandidates = EnumSet.copyOf(cell.candidates());
+                            removeCandidates.retainAll(additionalCandidates);
+                            removals.add(cell, removeCandidates);
+                        }
+                    }
+                    break;
+                }
+            }
         }
     }
 
@@ -192,44 +161,25 @@ public class UniqueRectangles {
      * candidates in the union can be removed from any other cell in the unit.
      */
     public static List<RemoveCandidates> uniqueRectanglesType3BWithTriplePseudoCells(Board<Cell> board) {
-        return Rectangle.createRectangles(board)
-                .stream()
-                .flatMap(rectangle -> Optional.of(rectangle.getRoof())
-                        .filter(roof -> roof.size() == 2)
-                        .map(roof -> {
-                            var roofA = roof.get(0);
-                            var roofB = roof.get(1);
-                            var additionalCandidates = EnumSet.copyOf(roofA.candidates());
-                            additionalCandidates.addAll(roofB.candidates());
-                            additionalCandidates.removeAll(rectangle.getCommonCandidates());
-                            var rowRemovals = getRemovalsType3B(
-                                    roofA,
-                                    roofB,
-                                    additionalCandidates,
-                                    Cell::row,
-                                    board::getRow
-                            );
-                            var columnRemovals = getRemovalsType3B(
-                                    roofA,
-                                    roofB,
-                                    additionalCandidates,
-                                    Cell::column,
-                                    board::getColumn
-                            );
-                            var blockRemovals = getRemovalsType3B(
-                                    roofA,
-                                    roofB,
-                                    additionalCandidates,
-                                    Cell::block,
-                                    board::getBlock
-                            );
-                            return Stream.of(rowRemovals, columnRemovals, blockRemovals).flatMap(Function.identity());
-                        })
-                        .orElseGet(Stream::empty))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var rectangle : Rectangle.createRectangles(board)) {
+            var roof = rectangle.getRoof();
+            if (roof.size() == 2) {
+                var roofA = roof.get(0);
+                var roofB = roof.get(1);
+                var additionalCandidates = EnumSet.copyOf(roofA.candidates());
+                additionalCandidates.addAll(roofB.candidates());
+                additionalCandidates.removeAll(rectangle.getCommonCandidates());
+                getRemovalsType3B(removals, roofA, roofB, additionalCandidates, Cell::row, board::getRow);
+                getRemovalsType3B(removals, roofA, roofB, additionalCandidates, Cell::column, board::getColumn);
+                getRemovalsType3B(removals, roofA, roofB, additionalCandidates, Cell::block, board::getBlock);
+            }
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> getRemovalsType3B(
+    private static void getRemovalsType3B(
+            Removals removals,
             UnsolvedCell roofA,
             UnsolvedCell roofB,
             EnumSet<SudokuNumber> additionalCandidates,
@@ -239,35 +189,30 @@ public class UniqueRectangles {
         var indexA = getUnitIndex.applyAsInt(roofA);
         var indexB = getUnitIndex.applyAsInt(roofB);
         if (indexA == indexB) {
-            var unit = getUnit.apply(indexA)
-                    .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> !cell.equals(roofA) && !cell.equals(roofB))
-                    .toList();
-            return unit.stream()
-                    .collect(Pair.zipEveryPair())
-                    .flatMap(pair -> {
-                        var tripleA = pair.first();
-                        var tripleB = pair.second();
-                        var tripleCandidates = EnumSet.copyOf(additionalCandidates);
-                        tripleCandidates.addAll(tripleA.candidates());
-                        tripleCandidates.addAll(tripleB.candidates());
-                        if (tripleCandidates.size() == 3) {
-                            return unit.stream()
-                                    .filter(cell -> !cell.equals(tripleA) && !cell.equals(tripleB))
-                                    .flatMap(cell -> {
-                                        var removeCandidates = EnumSet.copyOf(cell.candidates());
-                                        removeCandidates.retainAll(tripleCandidates);
-                                        return removeCandidates.stream()
-                                                .map(candidate -> new LocatedCandidate(cell, candidate));
-                                    });
-                        } else {
-                            return Stream.empty();
+            var unit = new ArrayList<UnsolvedCell>();
+            for (var cell : getUnit.apply(indexA)) {
+                if (cell instanceof UnsolvedCell unsolved && !unsolved.equals(roofA) && !unsolved.equals(roofB)) {
+                    unit.add(unsolved);
+                }
+            }
+            for (var i = 0; i < unit.size() - 1; i++) {
+                var tripleA = unit.get(i);
+                for (var j = i + 1; j < unit.size(); j++) {
+                    var tripleB = unit.get(j);
+                    var tripleCandidates = EnumSet.copyOf(additionalCandidates);
+                    tripleCandidates.addAll(tripleA.candidates());
+                    tripleCandidates.addAll(tripleB.candidates());
+                    if (tripleCandidates.size() == 3) {
+                        for (var cell : unit) {
+                            if (!cell.equals(tripleA) && !cell.equals(tripleB)) {
+                                var removeCandidates = EnumSet.copyOf(cell.candidates());
+                                removeCandidates.retainAll(tripleCandidates);
+                                removals.add(cell, removeCandidates);
+                            }
                         }
-                    });
-        } else {
-            return Stream.empty();
+                    }
+                }
+            }
         }
     }
 
@@ -280,38 +225,21 @@ public class UniqueRectangles {
      * removed from the roof cells.
      */
     public static List<RemoveCandidates> uniqueRectanglesType4(Board<Cell> board) {
-        return Rectangle.createRectangles(board)
-                .stream()
-                .flatMap(rectangle -> Optional.of(rectangle.getRoof())
-                        .filter(roof -> roof.size() == 2)
-                        .map(roof -> {
-                            var commonCandidates = rectangle.getCommonCandidates()
-                                    .toArray(SudokuNumber[]::new);
-                            var rowRemovals = getRemovalsType4(
-                                    roof,
-                                    commonCandidates,
-                                    Cell::row,
-                                    board::getRow
-                            );
-                            var columnRemovals = getRemovalsType4(
-                                    roof,
-                                    commonCandidates,
-                                    Cell::column,
-                                    board::getColumn
-                            );
-                            var blockRemovals = getRemovalsType4(
-                                    roof,
-                                    commonCandidates,
-                                    Cell::block,
-                                    board::getBlock
-                            );
-                            return Stream.of(rowRemovals, columnRemovals, blockRemovals).flatMap(Function.identity());
-                        })
-                        .orElseGet(Stream::empty))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var rectangle : Rectangle.createRectangles(board)) {
+            var roof = rectangle.getRoof();
+            if (roof.size() == 2) {
+                var commonCandidates = rectangle.getCommonCandidates().toArray(SudokuNumber[]::new);
+                getRemovalsType4(removals, roof, commonCandidates, Cell::row, board::getRow);
+                getRemovalsType4(removals, roof, commonCandidates, Cell::column, board::getColumn);
+                getRemovalsType4(removals, roof, commonCandidates, Cell::block, board::getBlock);
+            }
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> getRemovalsType4(
+    private static void getRemovalsType4(
+            Removals removals,
             List<UnsolvedCell> roof,
             SudokuNumber[] commonCandidates,
             ToIntFunction<Cell> getUnitIndex,
@@ -322,31 +250,36 @@ public class UniqueRectangles {
         var indexA = getUnitIndex.applyAsInt(roofA);
         var indexB = getUnitIndex.applyAsInt(roofB);
         if (indexA == indexB) {
-            var unit = getUnit.apply(indexA)
-                    .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast).toList();
-            var commonCandidateA = commonCandidates[0];
-            var commonCandidateB = commonCandidates[1];
-            return Stream.concat(
-                    searchUnit(roof, unit, commonCandidateA, commonCandidateB),
-                    searchUnit(roof, unit, commonCandidateB, commonCandidateA)
-            );
-        } else {
-            return Stream.empty();
+            var unit = new ArrayList<UnsolvedCell>();
+            for (var cell : getUnit.apply(indexA)) {
+                if (cell instanceof UnsolvedCell unsolved) {
+                    unit.add(unsolved);
+                }
+            }
+            var commonCandidatesA = commonCandidates[0];
+            var commonCandidatesB = commonCandidates[1];
+            searchUnit(removals, roof, unit, commonCandidatesA, commonCandidatesB);
+            searchUnit(removals, roof, unit, commonCandidatesB, commonCandidatesA);
         }
     }
 
-    private static Stream<LocatedCandidate> searchUnit(
+    private static void searchUnit(
+            Removals removals,
             List<UnsolvedCell> roof,
             List<UnsolvedCell> unit,
             SudokuNumber search,
             SudokuNumber removal
     ) {
-        if (unit.stream().filter(cell -> cell.candidates().contains(search)).count() == 2) {
-            return roof.stream().map(roofCell -> new LocatedCandidate(roofCell, removal));
-        } else {
-            return Stream.empty();
+        var withSearchCount = 0;
+        for (var cell : unit) {
+            if (cell.candidates().contains(search)) {
+                withSearchCount++;
+            }
+        }
+        if (withSearchCount == 2) {
+            for (var roofCell : roof) {
+                removals.add(roofCell, removal);
+            }
         }
     }
 
@@ -363,38 +296,41 @@ public class UniqueRectangles {
      * link candidate must be the solution for the floor cells.
      */
     public static List<SetValue> uniqueRectanglesType5(Board<Cell> board) {
-        return Rectangle.createRectangles(board)
-                .stream()
-                .flatMap(rectangle -> Optional.of(rectangle.getFloor())
-                        .filter(floor -> floor.size() == 2)
-                        .map(floor -> {
-                            var floorA = floor.get(0);
-                            var floorB = floor.get(1);
-                            if (floorA.row() != floorB.row() && floorA.column() != floorB.column()) {
-                                return rectangle.getCommonCandidates()
-                                        .stream()
-                                        .filter(candidate -> floor.stream().allMatch(floorCell -> {
-                                            var row = board.getRow(floorCell.row());
-                                            var column = board.getColumn(floorCell.column());
-                                            return hasStrongLink(candidate, row) && hasStrongLink(candidate, column);
-                                        }))
-                                        .findFirst()
-                                        .stream()
-                                        .flatMap(strongLinkCandidate -> floor.stream()
-                                                .map(floorCell -> new SetValue(floorCell, strongLinkCandidate)));
-                            } else {
-                                return Stream.<SetValue>empty();
+        var modifications = new ArrayList<SetValue>();
+        for (var rectangle : Rectangle.createRectangles(board)) {
+            var floor = rectangle.getFloor();
+            if (floor.size() == 2) {
+                var floorA = floor.get(0);
+                var floorB = floor.get(1);
+                if (floorA.row() != floorB.row() && floorA.column() != floorB.column()) {
+                    for (var candidate : rectangle.getCommonCandidates()) {
+                        var isStrongLinkCandidate = true;
+                        for (var floorCell : floor) {
+                            var row = board.getRow(floorCell.row());
+                            var column = board.getColumn(floorCell.column());
+                            if (doesNotHaveStrongLink(candidate, row) || doesNotHaveStrongLink(candidate, column)) {
+                                isStrongLinkCandidate = false;
                             }
-                        })
-                        .orElseGet(Stream::empty))
-                .toList();
+                        }
+                        if (isStrongLinkCandidate) {
+                            for (var floorCell : floor) {
+                                modifications.add(new SetValue(floorCell, candidate));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return modifications;
     }
 
-    private static boolean hasStrongLink(SudokuNumber candidate, List<Cell> unit) {
-        return unit.stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .filter(cell -> cell.candidates().contains(candidate))
-                .count() == 2;
+    private static boolean doesNotHaveStrongLink(SudokuNumber candidate, List<Cell> unit) {
+        var withCandidateCount = 0;
+        for (var cell : unit) {
+            if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                withCandidateCount++;
+            }
+        }
+        return withCandidateCount != 2;
     }
 }
