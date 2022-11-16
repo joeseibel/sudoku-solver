@@ -2,19 +2,16 @@ package sudokusolver.javanostreams.logic.diabolical;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
-import sudokusolver.javanostreams.Triple;
 import sudokusolver.javanostreams.UnsolvedCell;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Extended_Unique_Rectangles
@@ -27,89 +24,113 @@ import java.util.stream.Stream;
  */
 public class ExtendedUniqueRectangles {
     public static List<RemoveCandidates> extendedUniqueRectangles(Board<Cell> board) {
-        var rowRemovals = getRemovals(board::get);
-        var columnRemovals = getRemovals((columnIndex, rowIndex) ->
-                board.get(rowIndex, columnIndex));
-        return Stream.concat(rowRemovals, columnRemovals).collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        getRemovals(removals, board::get);
+        getRemovals(removals, (columnIndex, rowIndex) -> board.get(rowIndex, columnIndex));
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> getRemovals(BiFunction<Integer, Integer, Cell> getCell) {
-        return IntStream.range(0, Board.UNIT_SIZE)
-                .boxed()
-                .collect(Pair.zipEveryPair())
-                .flatMap(unitIndices -> {
-                    var unitIndexA = unitIndices.first();
-                    var unitIndexB = unitIndices.second();
-                    return IntStream.range(0, Board.UNIT_SIZE)
-                            .boxed()
-                            .collect(Triple.zipEveryTriple())
-                            .map(otherUnitIndices -> {
-                                var otherUnitIndexA = otherUnitIndices.first();
-                                var otherUnitIndexB = otherUnitIndices.second();
-                                var otherUnitIndexC = otherUnitIndices.third();
-                                var unitA = List.of(
-                                        getCell.apply(unitIndexA, otherUnitIndexA),
-                                        getCell.apply(unitIndexA, otherUnitIndexB),
-                                        getCell.apply(unitIndexA, otherUnitIndexC)
-                                );
-                                var unitB = List.of(
-                                        getCell.apply(unitIndexB, otherUnitIndexA),
-                                        getCell.apply(unitIndexB, otherUnitIndexB),
-                                        getCell.apply(unitIndexB, otherUnitIndexC)
-                                );
-                                return new Pair<>(unitA, unitB);
-                            });
-                })
-                .filter(pair -> {
-                    var unitA = pair.first();
-                    var unitB = pair.second();
-                    return unitA.stream().allMatch(UnsolvedCell.class::isInstance) &&
-                            unitB.stream().allMatch(UnsolvedCell.class::isInstance) &&
-                            Stream.concat(unitA.stream(), unitB.stream()).map(Cell::block).distinct().count() == 3;
-                })
-                .map(pair -> {
-                    var unitA = pair.first().stream().map(UnsolvedCell.class::cast).toList();
-                    var unitB = pair.second().stream().map(UnsolvedCell.class::cast).toList();
-                    return new Pair<>(unitA, unitB);
-                })
-                .flatMap(pair -> {
-                    var unitA = pair.first();
-                    var unitB = pair.second();
-                    var unitACandidates = unitA.stream()
-                            .flatMap(cell -> cell.candidates().stream())
-                            .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
-                    var unitBCandidates = unitB.stream()
-                            .flatMap(cell -> cell.candidates().stream())
-                            .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
-                    if (unitACandidates.size() == 3) {
-                        return getRemovals(unitACandidates, unitB, unitBCandidates);
-                    } else if (unitBCandidates.size() == 3) {
-                        return getRemovals(unitBCandidates, unitA, unitACandidates);
-                    } else {
-                        return Stream.empty();
+    private static void getRemovals(Removals removals, BiFunction<Integer, Integer, Cell> getCell) {
+        for (var unitIndexA = 0; unitIndexA < Board.UNIT_SIZE - 1; unitIndexA++) {
+            for (var unitIndexB = unitIndexA + 1; unitIndexB < Board.UNIT_SIZE; unitIndexB++) {
+                for (var otherUnitIndexA = 0; otherUnitIndexA < Board.UNIT_SIZE - 2; otherUnitIndexA++) {
+                    for (var otherUnitIndexB = otherUnitIndexA + 1;
+                         otherUnitIndexB < Board.UNIT_SIZE - 1;
+                         otherUnitIndexB++
+                    ) {
+                        for (var otherUnitIndexC = otherUnitIndexB + 1;
+                             otherUnitIndexC < Board.UNIT_SIZE;
+                             otherUnitIndexC++
+                        ) {
+                            getRemovals(removals,
+                                    unitIndexA, unitIndexB,
+                                    otherUnitIndexA, otherUnitIndexB, otherUnitIndexC,
+                                    getCell
+                            );
+                        }
                     }
-                });
+                }
+            }
+        }
     }
 
-    private static Stream<LocatedCandidate> getRemovals(
+    /*
+     * This method used to be a part of the previous method, but was extracted to resolve the warning, "Method
+     * 'getRemovals' is too complex to analyze by data flow algorithm."
+     */
+    private static void getRemovals(
+            Removals removals,
+            int unitIndexA, int unitIndexB,
+            int otherUnitIndexA, int otherUnitIndexB, int otherUnitIndexC,
+            BiFunction<Integer, Integer, Cell> getCell
+    ) {
+        var unitA = new ArrayList<UnsolvedCell>();
+        if (getCell.apply(unitIndexA, otherUnitIndexA) instanceof UnsolvedCell unsolved) {
+            unitA.add(unsolved);
+        }
+        if (getCell.apply(unitIndexA, otherUnitIndexB) instanceof UnsolvedCell unsolved) {
+            unitA.add(unsolved);
+        }
+        if (getCell.apply(unitIndexA, otherUnitIndexC) instanceof UnsolvedCell unsolved) {
+            unitA.add(unsolved);
+        }
+        if (unitA.size() == 3) {
+            var unitB = new ArrayList<UnsolvedCell>();
+            if (getCell.apply(unitIndexB, otherUnitIndexA) instanceof UnsolvedCell unsolved) {
+                unitB.add(unsolved);
+            }
+            if (getCell.apply(unitIndexB, otherUnitIndexB) instanceof UnsolvedCell unsolved) {
+                unitB.add(unsolved);
+            }
+            if (getCell.apply(unitIndexB, otherUnitIndexC) instanceof UnsolvedCell unsolved) {
+                unitB.add(unsolved);
+            }
+            if (unitB.size() == 3) {
+                var blockIndices = new HashSet<Integer>();
+                for (var cell : unitA) {
+                    blockIndices.add(cell.block());
+                }
+                for (var cell : unitB) {
+                    blockIndices.add(cell.block());
+                }
+                if (blockIndices.size() == 3) {
+                    var unitACandidates = EnumSet.noneOf(SudokuNumber.class);
+                    for (var cell : unitA) {
+                        unitACandidates.addAll(cell.candidates());
+                    }
+                    var unitBCandidates = EnumSet.noneOf(SudokuNumber.class);
+                    for (var cell : unitB) {
+                        unitBCandidates.addAll(cell.candidates());
+                    }
+                    if (unitACandidates.size() == 3) {
+                        getRemovals(removals, unitACandidates, unitB, unitBCandidates);
+                    } else if (unitBCandidates.size() == 3) {
+                        getRemovals(removals, unitBCandidates, unitA, unitACandidates);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void getRemovals(
+            Removals removals,
             EnumSet<SudokuNumber> commonCandidates,
             List<UnsolvedCell> unit,
             EnumSet<SudokuNumber> unitCandidates
     ) {
         if (unitCandidates.size() > 3 && unitCandidates.containsAll(commonCandidates)) {
-            var withAdditionalList = unit.stream()
-                    .filter(cell -> !commonCandidates.containsAll(cell.candidates()))
-                    .toList();
+            var withAdditionalList = new ArrayList<UnsolvedCell>();
+            for (var cell : unit) {
+                if (!commonCandidates.containsAll(cell.candidates())) {
+                    withAdditionalList.add(cell);
+                }
+            }
             if (withAdditionalList.size() == 1) {
                 var withAdditional = withAdditionalList.get(0);
-                var removals = EnumSet.copyOf(withAdditional.candidates());
-                removals.retainAll(commonCandidates);
-                return removals.stream().map(candidate -> new LocatedCandidate(withAdditional, candidate));
-            } else {
-                return Stream.empty();
+                var toRemove = EnumSet.copyOf(withAdditional.candidates());
+                toRemove.retainAll(commonCandidates);
+                removals.add(withAdditional, toRemove);
             }
-        } else {
-            return Stream.empty();
         }
     }
 }
