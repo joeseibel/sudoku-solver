@@ -2,19 +2,17 @@ package sudokusolver.javanostreams.logic.diabolical;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
 import sudokusolver.javanostreams.Rectangle;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Hidden_Unique_Rectangles
@@ -26,23 +24,24 @@ import java.util.stream.Stream;
  */
 public class HiddenUniqueRectangles {
     public static List<RemoveCandidates> hiddenUniqueRectangles(Board<Cell> board) {
-        return Rectangle.createRectangles(board)
-                .stream()
-                .flatMap(rectangle -> {
-                    var partitioned = rectangle.getCells()
-                            .stream()
-                            .collect(Collectors.partitioningBy(cell -> cell.candidates().size() == 2));
-                    var floor = partitioned.get(true);
-                    var roof = partitioned.get(false);
-                    if (floor.size() == 1) {
-                        return type1(board, rectangle, floor.get(0)).stream();
-                    } else if (roof.size() == 2) {
-                        return type2(board, roof, rectangle.getCommonCandidates()).stream();
-                    } else {
-                        return Stream.empty();
-                    }
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var rectangle : Rectangle.createRectangles(board)) {
+            var floor = new ArrayList<UnsolvedCell>();
+            var roof = new ArrayList<UnsolvedCell>();
+            for (var cell : rectangle.getCells()) {
+                if (cell.candidates().size() == 2) {
+                    floor.add(cell);
+                } else {
+                    roof.add(cell);
+                }
+            }
+            if (floor.size() == 1) {
+                type1(removals, board, rectangle, floor.get(0));
+            } else if (roof.size() == 2) {
+                type2(removals, board, roof, rectangle.getCommonCandidates());
+            }
+        }
+        return removals.toList();
     }
 
     /*
@@ -55,42 +54,57 @@ public class HiddenUniqueRectangles {
      * candidate cannot be the solution to that cell. The other common candidate can be removed from the roof cell which
      * is opposite of the one floor cell.
      */
-    private static Optional<LocatedCandidate> type1(Board<Cell> board, Rectangle rectangle, UnsolvedCell floor) {
-        var row = board.getRow(floor.row())
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .toList();
-        var column = board.getColumn(floor.column())
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .toList();
-        var strongCandidates = rectangle.getCommonCandidates()
-                .stream()
-                .filter(candidate -> {
-                    var inRowCount = row.stream().filter(cell -> cell.candidates().contains(candidate)).count();
-                    var inColumnCount = column.stream()
-                            .filter(cell -> cell.candidates().contains(candidate))
-                            .count();
-                    return inRowCount == 2 && inColumnCount == 2;
-                })
-                .toList();
+    private static void type1(Removals removals, Board<Cell> board, Rectangle rectangle, UnsolvedCell floor) {
+        var row = new ArrayList<UnsolvedCell>();
+        for (var cell : board.getRow(floor.row())) {
+            if (cell instanceof UnsolvedCell unsolved) {
+                row.add(unsolved);
+            }
+        }
+        var column = new ArrayList<UnsolvedCell>();
+        for (var cell : board.getColumn(floor.column())) {
+            if (cell instanceof UnsolvedCell unsolved) {
+                column.add(unsolved);
+            }
+        }
+        var strongCandidates = EnumSet.noneOf(SudokuNumber.class);
+        for (var candidate : rectangle.getCommonCandidates()) {
+            var inRowCount = 0;
+            for (var cell : row) {
+                if (cell.candidates().contains(candidate)) {
+                    inRowCount++;
+                }
+            }
+            if (inRowCount == 2) {
+                var inColumnCount = 0;
+                for (var cell : column) {
+                    if (cell.candidates().contains(candidate)) {
+                        inColumnCount++;
+                    }
+                }
+                if (inColumnCount == 2) {
+                    strongCandidates.add(candidate);
+                }
+            }
+        }
         if (strongCandidates.size() == 1) {
-            var strongCandidate = strongCandidates.get(0);
-            var oppositeCell = rectangle.getCells()
-                    .stream()
-                    .filter(cell -> cell.row() != floor.row() && cell.column() != floor.column())
-                    .findFirst()
-                    .orElseThrow();
-            var otherCandidate = rectangle.getCommonCandidates()
-                    .stream()
-                    .filter(candidate -> candidate != strongCandidate)
-                    .findFirst()
-                    .orElseThrow();
-            return Optional.of(new LocatedCandidate(oppositeCell, otherCandidate));
-        } else {
-            return Optional.empty();
+            var strongCandidate = strongCandidates.iterator().next();
+            UnsolvedCell oppositeCell = null;
+            for (var cell : rectangle.getCells()) {
+                if (cell.row() != floor.row() && cell.column() != floor.column()) {
+                    oppositeCell = cell;
+                }
+            }
+            assert oppositeCell != null;
+            SudokuNumber otherCandidate = null;
+            for (var candidate : rectangle.getCommonCandidates()) {
+                if (candidate != strongCandidate) {
+                    otherCandidate = candidate;
+                    break;
+                }
+            }
+            assert otherCandidate != null;
+            removals.add(oppositeCell, otherCandidate);
         }
     }
 
@@ -109,7 +123,8 @@ public class HiddenUniqueRectangles {
      * Therefore, the other common candidate cannot be the solution to the other roof cell. The other common candidate
      * can be removed from the other roof cell.
      */
-    private static Optional<LocatedCandidate> type2(
+    private static void type2(
+            Removals removals,
             Board<Cell> board,
             List<UnsolvedCell> roof,
             EnumSet<SudokuNumber> commonCandidates
@@ -120,15 +135,14 @@ public class HiddenUniqueRectangles {
         var candidateA = commonCandidatesArray[0];
         var candidateB = commonCandidatesArray[1];
         if (roofA.row() == roofB.row()) {
-            return getRemoval(roofA, roofB, candidateA, candidateB, Cell::column, board::getColumn);
+            getRemoval(removals, roofA, roofB, candidateA, candidateB, Cell::column, board::getColumn);
         } else if (roofA.column() == roofB.column()) {
-            return getRemoval(roofA, roofB, candidateA, candidateB, Cell::row, board::getRow);
-        } else {
-            return Optional.empty();
+            getRemoval(removals, roofA, roofB, candidateA, candidateB, Cell::row, board::getRow);
         }
     }
 
-    private static Optional<LocatedCandidate> getRemoval(
+    private static void getRemoval(
+            Removals removals,
             UnsolvedCell roofA,
             UnsolvedCell roofB,
             SudokuNumber candidateA,
@@ -136,26 +150,40 @@ public class HiddenUniqueRectangles {
             ToIntFunction<Cell> getUnitIndex,
             IntFunction<List<Cell>> getUnit
     ) {
-        var unitA = getUnit.apply(getUnitIndex.applyAsInt(roofA))
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .toList();
-        var unitB = getUnit.apply(getUnitIndex.applyAsInt(roofB))
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .toList();
-        if (unitA.stream().filter(cell -> cell.candidates().contains(candidateA)).count() == 2) {
-            return Optional.of(new LocatedCandidate(roofB, candidateB));
-        } else if (unitA.stream().filter(cell -> cell.candidates().contains(candidateB)).count() == 2) {
-            return Optional.of(new LocatedCandidate(roofB, candidateA));
-        } else if (unitB.stream().filter(cell -> cell.candidates().contains(candidateA)).count() == 2) {
-            return Optional.of(new LocatedCandidate(roofA, candidateB));
-        } else if (unitB.stream().filter(cell -> cell.candidates().contains(candidateB)).count() == 2) {
-            return Optional.of(new LocatedCandidate(roofA, candidateA));
+        var unitAWithCandidateACount = 0;
+        var unitAWithCandidateBCount = 0;
+        for (var cell : getUnit.apply(getUnitIndex.applyAsInt(roofA))) {
+            if (cell instanceof UnsolvedCell unsolved) {
+                if (unsolved.candidates().contains(candidateA)) {
+                    unitAWithCandidateACount++;
+                }
+                if (unsolved.candidates().contains(candidateB)) {
+                    unitAWithCandidateBCount++;
+                }
+            }
+        }
+        if (unitAWithCandidateACount == 2) {
+            removals.add(roofB, candidateB);
+        } else if (unitAWithCandidateBCount == 2) {
+            removals.add(roofB, candidateA);
         } else {
-            return Optional.empty();
+            var unitBWithCandidateACount = 0;
+            var unitBWithCandidateBCount = 0;
+            for (var cell : getUnit.apply(getUnitIndex.applyAsInt(roofB))) {
+                if (cell instanceof UnsolvedCell unsolved) {
+                    if (unsolved.candidates().contains(candidateA)) {
+                        unitBWithCandidateACount++;
+                    }
+                    if (unsolved.candidates().contains(candidateB)) {
+                        unitBWithCandidateBCount++;
+                    }
+                }
+            }
+            if (unitBWithCandidateACount == 2) {
+                removals.add(roofA, candidateB);
+            } else if (unitBWithCandidateBCount == 2) {
+                removals.add(roofA, candidateA);
+            }
         }
     }
 }
