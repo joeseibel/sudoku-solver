@@ -7,8 +7,7 @@ import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SetValue;
 import sudokusolver.javanostreams.Strength;
@@ -18,7 +17,7 @@ import sudokusolver.javanostreams.UnsolvedCell;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,6 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Grouped_X_Cycles
@@ -71,44 +68,19 @@ public class GroupedXCycles {
      * contained in either of the vertices.
      */
     public static List<RemoveCandidates> groupedXCyclesRule1(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var graph = buildGraph(board, candidate);
-                    Strength.trim(graph);
-                    return Strength.getWeakEdgesInAlternatingCycle(graph)
-                            .stream()
-                            .flatMap(edge -> {
-                                var source = graph.getEdgeSource(edge);
-                                var target = graph.getEdgeTarget(edge);
-                                var rowRemovals = removeFromUnit(
-                                        candidate,
-                                        source,
-                                        target,
-                                        Node::hasRow,
-                                        Node::getRow,
-                                        board::getRow
-                                );
-                                var columnRemovals = removeFromUnit(
-                                        candidate,
-                                        source,
-                                        target,
-                                        Node::hasColumn,
-                                        Node::getColumn,
-                                        board::getColumn
-                                );
-                                var blockRemovals = removeFromUnit(
-                                        candidate,
-                                        source,
-                                        target,
-                                        node -> true,
-                                        Node::getBlock,
-                                        board::getBlock
-                                );
-                                return Stream.of(rowRemovals, columnRemovals, blockRemovals)
-                                        .flatMap(Function.identity());
-                            });
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            var graph = buildGraph(board, candidate);
+            Strength.trim(graph);
+            for (var edge : Strength.getWeakEdgesInAlternatingCycle(graph)) {
+                var source = graph.getEdgeSource(edge);
+                var target = graph.getEdgeTarget(edge);
+                removeFromUnit(removals, candidate, source, target, Node::hasRow, Node::getRow, board::getRow);
+                removeFromUnit(removals, candidate, source, target, Node::hasColumn, Node::getColumn, board::getColumn);
+                removeFromUnit(removals, candidate, source, target, node -> true, Node::getBlock, board::getBlock);
+            }
+        }
+        return removals.toList();
     }
 
     /*
@@ -143,7 +115,8 @@ public class GroupedXCycles {
      * to be OptionalInt. Unwrapping the optional would be required even when working with something that is a RowGroup
      * at compile time.
      */
-    private static Stream<LocatedCandidate> removeFromUnit(
+    private static void removeFromUnit(
+            Removals removals,
             SudokuNumber candidate,
             Node source,
             Node target,
@@ -154,17 +127,17 @@ public class GroupedXCycles {
         if (hasUnitIndex.test(source) && hasUnitIndex.test(target)) {
             var sourceUnitIndex = getUnitIndex.applyAsInt(source);
             if (sourceUnitIndex == getUnitIndex.applyAsInt(target)) {
-                return getUnit.apply(sourceUnitIndex)
-                        .stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .filter(cell -> cell.candidates().contains(candidate) &&
-                                !source.getCells().contains(cell) &&
-                                !target.getCells().contains(cell))
-                        .map(cell -> new LocatedCandidate(cell, candidate));
+                for (var cell : getUnit.apply(sourceUnitIndex)) {
+                    if (cell instanceof UnsolvedCell unsolved &&
+                            unsolved.candidates().contains(candidate) &&
+                            !source.getCells().contains(unsolved) &&
+                            !target.getCells().contains(unsolved)
+                    ) {
+                        removals.add(unsolved, candidate);
+                    }
+                }
             }
         }
-        return Stream.empty();
     }
 
     /*
@@ -177,17 +150,18 @@ public class GroupedXCycles {
      * does not cause any contradiction in the cycle. Therefore, the candidate must be the solution for that vertex.
      */
     public static List<SetValue> groupedXCyclesRule2(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var graph = buildGraph(board, candidate);
-                    return graph.vertexSet()
-                            .stream()
-                            .filter(CellNode.class::isInstance)
-                            .map(CellNode.class::cast)
-                            .filter(vertex -> Strength.alternatingCycleExists(graph, vertex, Strength.STRONG))
-                            .map(vertex -> new SetValue(vertex.cell(), candidate));
-                })
-                .toList();
+        var modifications = new ArrayList<SetValue>();
+        for (var candidate : SudokuNumber.values()) {
+            var graph = buildGraph(board, candidate);
+            for (var vertex : graph.vertexSet()) {
+                if (vertex instanceof CellNode cellNode &&
+                        Strength.alternatingCycleExists(graph, cellNode, Strength.STRONG)
+                ) {
+                    modifications.add(new SetValue(cellNode.cell(), candidate));
+                }
+            }
+        }
+        return modifications;
     }
 
     /*
@@ -200,17 +174,18 @@ public class GroupedXCycles {
      * cause any contradiction in the cycle. Therefore, the candidate can be removed from the vertex.
      */
     public static List<RemoveCandidates> groupedXCyclesRule3(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var graph = buildGraph(board, candidate);
-                    return graph.vertexSet()
-                            .stream()
-                            .filter(CellNode.class::isInstance)
-                            .map(CellNode.class::cast)
-                            .filter(vertex -> Strength.alternatingCycleExists(graph, vertex, Strength.WEAK))
-                            .map(vertex -> new LocatedCandidate(vertex.cell(), candidate));
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            var graph = buildGraph(board, candidate);
+            for (var vertex : graph.vertexSet()) {
+                if (vertex instanceof CellNode cellNode &&
+                        Strength.alternatingCycleExists(graph, cellNode, Strength.WEAK)
+                ) {
+                    removals.add(cellNode.cell(), candidate);
+                }
+            }
+        }
+        return removals.toList();
     }
 
     public static String toDOT(Graph<Node, StrengthEdge> graph, SudokuNumber candidate) {
@@ -228,21 +203,22 @@ public class GroupedXCycles {
         var builder = new GraphBuilder<>(new SimpleGraph<Node, StrengthEdge>(StrengthEdge.class));
 
         //Connect cells.
-        board.getUnits()
-                .stream()
-                .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .filter(cell -> cell.candidates().contains(candidate))
-                        .toList())
-                .forEach(withCandidate -> {
-                    var strength = withCandidate.size() == 2 ? Strength.STRONG : Strength.WEAK;
-                    withCandidate.stream().collect(Pair.zipEveryPair()).forEach(pair -> {
-                        var a = pair.first();
-                        var b = pair.second();
-                        builder.addEdge(new CellNode(a), new CellNode(b), new StrengthEdge(strength));
-                    });
-                });
+        for (var unit : board.getUnits()) {
+            var withCandidate = new ArrayList<UnsolvedCell>();
+            for (var cell : unit) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    withCandidate.add(unsolved);
+                }
+            }
+            var strength = withCandidate.size() == 2 ? Strength.STRONG : Strength.WEAK;
+            for (var i = 0; i < withCandidate.size() - 1; i++) {
+                var a = withCandidate.get(i);
+                for (var j = i + 1; j < withCandidate.size(); j++) {
+                    var b = withCandidate.get(j);
+                    builder.addEdge(new CellNode(a), new CellNode(b), new StrengthEdge(strength));
+                }
+            }
+        }
 
         //Add groups.
         var rowGroups = createGroups(candidate, board.rows(), RowGroup::new);
@@ -269,17 +245,21 @@ public class GroupedXCycles {
             List<List<Cell>> units,
             Function<Set<UnsolvedCell>, G> groupConstructor
     ) {
-        return units.stream()
-                .flatMap(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .filter(cell -> cell.candidates().contains(candidate))
-                        .collect(Collectors.groupingBy(Cell::block, Collectors.toSet()))
-                        .values()
-                        .stream()
-                        .filter(group -> group.size() >= 2)
-                        .map(groupConstructor))
-                .toList();
+        var groups = new ArrayList<G>();
+        for (var unit : units) {
+            var groupings = new HashMap<Integer, Set<UnsolvedCell>>();
+            for (var cell : unit) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    groupings.computeIfAbsent(unsolved.block(), key -> new HashSet<>()).add(unsolved);
+                }
+            }
+            for (var group : groupings.values()) {
+                if (group.size() >= 2) {
+                    groups.add(groupConstructor.apply(group));
+                }
+            }
+        }
+        return groups;
     }
 
     private static void connectGroupsToCells(
@@ -289,16 +269,21 @@ public class GroupedXCycles {
             IntFunction<List<Cell>> getUnit,
             ToIntFunction<Group> getUnitIndex
     ) {
-        groups.forEach(group -> {
-            var otherCellsInUnit = getUnit.apply(getUnitIndex.applyAsInt(group))
-                    .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate) && !group.getCells().contains(cell))
-                    .toList();
+        for (var group : groups) {
+            var otherCellsInUnit = new ArrayList<UnsolvedCell>();
+            for (var cell : getUnit.apply(getUnitIndex.applyAsInt(group))) {
+                if (cell instanceof UnsolvedCell unsolved &&
+                        unsolved.candidates().contains(candidate) &&
+                        !group.getCells().contains(unsolved)
+                ) {
+                    otherCellsInUnit.add(unsolved);
+                }
+            }
             var strength = otherCellsInUnit.size() == 1 ? Strength.STRONG : Strength.WEAK;
-            otherCellsInUnit.forEach(cell -> builder.addEdge(group, new CellNode(cell), new StrengthEdge(strength)));
-        });
+            for (var cell : otherCellsInUnit) {
+                builder.addEdge(group, new CellNode(cell), new StrengthEdge(strength));
+            }
+        }
     }
 
     private static void connectGroupsToGroups(
@@ -308,29 +293,28 @@ public class GroupedXCycles {
             IntFunction<List<Cell>> getUnit,
             ToIntFunction<Group> getUnitIndex
     ) {
-        groups.stream()
-                .collect(Pair.zipEveryPair())
-                .filter(pair -> {
-                    var a = pair.first();
-                    var b = pair.second();
-                    var commonCells = new HashSet<UnsolvedCell>(a.getCells());
-                    commonCells.retainAll(b.getCells());
-                    return getUnitIndex.applyAsInt(a) == getUnitIndex.applyAsInt(b) && commonCells.isEmpty();
-                })
-                .forEach(pair -> {
-                    var a = pair.first();
-                    var b = pair.second();
-                    var otherCellsInUnit = getUnit.apply(getUnitIndex.applyAsInt(a))
-                            .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
-                            .filter(cell -> cell.candidates().contains(candidate) &&
-                                    !a.getCells().contains(cell) &&
-                                    !b.getCells().contains(cell))
-                            .toList();
+        for (var i = 0; i < groups.size() - 1; i++) {
+            var a = groups.get(i);
+            for (var j = i + 1; j < groups.size(); j++) {
+                var b = groups.get(j);
+                var commonCells = new HashSet<>(a.getCells());
+                commonCells.retainAll(b.getCells());
+                if (getUnitIndex.applyAsInt(a) == getUnitIndex.applyAsInt(b) && commonCells.isEmpty()) {
+                    var otherCellsInUnit = new ArrayList<UnsolvedCell>();
+                    for (var cell : getUnit.apply(getUnitIndex.applyAsInt(a))) {
+                        if (cell instanceof UnsolvedCell unsolved &&
+                                unsolved.candidates().contains(candidate) &&
+                                !a.getCells().contains(unsolved) &&
+                                !b.getCells().contains(unsolved)
+                        ) {
+                            otherCellsInUnit.add(unsolved);
+                        }
+                    }
                     var strength = otherCellsInUnit.isEmpty() ? Strength.STRONG : Strength.WEAK;
                     builder.addEdge(a, b, new StrengthEdge(strength));
-                });
+                }
+            }
+        }
     }
 
     public interface Node {
@@ -387,7 +371,11 @@ public class GroupedXCycles {
                 throw new IllegalArgumentException("Group can only be constructed with 2 or " +
                         Board.UNIT_SIZE_SQUARE_ROOT + " cells, but cells.size() is " + cells.size() + '.');
             }
-            if (cells.stream().map(Cell::block).collect(Collectors.toSet()).size() != 1) {
+            var blockIndices = new HashSet<Integer>();
+            for (var cell : cells) {
+                blockIndices.add(cell.block());
+            }
+            if (blockIndices.size() != 1) {
                 throw new IllegalArgumentException("Group cells must be in the same block.");
             }
             this.cells = cells;
@@ -415,16 +403,32 @@ public class GroupedXCycles {
 
         @Override
         public String toString() {
-            return cells.stream()
-                    .map(cell -> "[" + cell.row() + ',' + cell.column() + ']')
-                    .collect(Collectors.joining(", ", "{", "}"));
+            var builder = new StringBuilder();
+            builder.append('{');
+            for (var iterator = cells.iterator(); iterator.hasNext();) {
+                var cell = iterator.next();
+                builder.append('[');
+                builder.append(cell.row());
+                builder.append(',');
+                builder.append(cell.column());
+                builder.append(']');
+                if (iterator.hasNext()) {
+                    builder.append(", ");
+                }
+            }
+            builder.append('}');
+            return builder.toString();
         }
     }
 
     public static class RowGroup extends Group {
         public RowGroup(Set<UnsolvedCell> cells) {
             super(cells);
-            if (cells.stream().map(Cell::row).collect(Collectors.toSet()).size() != 1) {
+            var rowIndices = new HashSet<Integer>();
+            for (var cell : cells) {
+                rowIndices.add(cell.row());
+            }
+            if (rowIndices.size() != 1) {
                 throw new IllegalArgumentException("RowGroup cells must be in the same row.");
             }
         }
@@ -453,7 +457,11 @@ public class GroupedXCycles {
     public static class ColumnGroup extends Group {
         public ColumnGroup(Set<UnsolvedCell> cells) {
             super(cells);
-            if (cells.stream().map(Cell::column).collect(Collectors.toSet()).size() != 1) {
+            var columnIndices = new HashSet<Integer>();
+            for (var cell : cells) {
+                columnIndices.add(cell.column());
+            }
+            if (columnIndices.size() != 1) {
                 throw new IllegalArgumentException("ColumnGroup cells must be in the same column.");
             }
         }
