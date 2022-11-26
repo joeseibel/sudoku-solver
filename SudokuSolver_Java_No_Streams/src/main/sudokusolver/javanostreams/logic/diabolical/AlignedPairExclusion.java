@@ -2,18 +2,15 @@ package sudokusolver.javanostreams.logic.diabolical;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
 import sudokusolver.javanostreams.Pair;
-import sudokusolver.javanostreams.Quad;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
-import sudokusolver.javanostreams.Triple;
 import sudokusolver.javanostreams.UnsolvedCell;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Aligned_Pair_Exclusion
@@ -45,42 +42,33 @@ import java.util.stream.Stream;
  */
 public class AlignedPairExclusion {
     public static List<RemoveCandidates> alignedPairExclusion(Board<Cell> board) {
-        return board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .collect(Pair.zipEveryPair())
-                .flatMap(pair -> {
-                    var cellA = pair.first();
-                    var cellB = pair.second();
-                    var almostLockedSets = getAlmostLockedSets(board, cellA, cellB);
-                    var validACandidates = EnumSet.noneOf(SudokuNumber.class);
-                    var validBCandidates = EnumSet.noneOf(SudokuNumber.class);
-                    cellA.candidates().forEach(candidateA -> cellB.candidates()
-                            .stream()
-                            .filter(candidateB -> {
-                                if (candidateA == candidateB) {
-                                    return !cellA.isInSameUnit(cellB);
-                                } else {
-                                    var pairAsSet = EnumSet.of(candidateA, candidateB);
-                                    return almostLockedSets.stream().noneMatch(als -> als.containsAll(pairAsSet));
-                                }
-                            })
-                            .forEach(candidateB -> {
-                                validACandidates.add(candidateA);
-                                validBCandidates.add(candidateB);
-                            }));
-                    var removalsA = cellA.candidates()
-                            .stream()
-                            .filter(candidate -> !validACandidates.contains(candidate))
-                            .map(candidate -> new LocatedCandidate(cellA, candidate));
-                    var removalsB = cellB.candidates()
-                            .stream()
-                            .filter(candidate -> !validBCandidates.contains(candidate))
-                            .map(candidate -> new LocatedCandidate(cellB, candidate));
-                    return Stream.concat(removalsA, removalsB);
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var pair : Pair.zipEveryPair(board.getCells())) {
+            if (pair.first() instanceof UnsolvedCell cellA && pair.second() instanceof UnsolvedCell cellB) {
+                var almostLockedSets = getAlmostLockedSets(board, cellA, cellB);
+                var validACandidates = EnumSet.noneOf(SudokuNumber.class);
+                var validBCandidates = EnumSet.noneOf(SudokuNumber.class);
+                for (var candidateA : cellA.candidates()) {
+                    for (var candidateB : cellB.candidates()) {
+                        if (isValid(candidateA, candidateB, cellA, cellB, almostLockedSets)) {
+                            validACandidates.add(candidateA);
+                            validBCandidates.add(candidateB);
+                        }
+                    }
+                }
+                for (var candidate : cellA.candidates()) {
+                    if (!validACandidates.contains(candidate)) {
+                        removals.add(cellA, candidate);
+                    }
+                }
+                for (var candidate : cellB.candidates()) {
+                    if (!validBCandidates.contains(candidate)) {
+                        removals.add(cellB, candidate);
+                    }
+                }
+            }
+        }
+        return removals.toList();
     }
 
     private static List<EnumSet<SudokuNumber>> getAlmostLockedSets(
@@ -88,78 +76,108 @@ public class AlignedPairExclusion {
             UnsolvedCell cellA,
             UnsolvedCell cellB
     ) {
-        var visible = board.getCells()
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .filter(cell -> !cell.equals(cellA) &&
-                        !cell.equals(cellB) &&
-                        cell.isInSameUnit(cellA) &&
-                        cell.isInSameUnit(cellB))
-                .toList();
-        var almostLockedSets1 = visible.stream()
-                .map(UnsolvedCell::candidates)
-                .filter(candidates -> candidates.size() == 2);
-        var almostLockedSets2 = visible.stream()
-                .collect(Pair.zipEveryPair())
-                .filter(pair -> {
-                    var alsA = pair.first();
-                    var alsB = pair.second();
-                    return alsA.isInSameUnit(alsB);
-                })
-                .map(pair -> {
-                    var alsA = pair.first();
-                    var alsB = pair.second();
+        var visible = new ArrayList<UnsolvedCell>();
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell unsolved &&
+                    !unsolved.equals(cellA) &&
+                    !unsolved.equals(cellB) &&
+                    unsolved.isInSameUnit(cellA) &&
+                    unsolved.isInSameUnit(cellB)
+            ) {
+                visible.add(unsolved);
+            }
+        }
+        var almostLockedSets = new ArrayList<EnumSet<SudokuNumber>>();
+        for (var cell : visible) {
+            if (cell.candidates().size() == 2) {
+                almostLockedSets.add(cell.candidates());
+            }
+        }
+        for (var i = 0; i < visible.size() - 1; i++) {
+            var alsA = visible.get(i);
+            for (var j = i + 1; j < visible.size(); j++) {
+                var alsB = visible.get(j);
+                if (alsA.isInSameUnit(alsB)) {
                     var candidates = EnumSet.copyOf(alsA.candidates());
                     candidates.addAll(alsB.candidates());
-                    return candidates;
-                })
-                .filter(candidates -> candidates.size() == 3);
-        var almostLockedSets3 = visible.stream()
-                .collect(Triple.zipEveryTriple())
-                .filter(triple -> {
-                    var alsA = triple.first();
-                    var alsB = triple.second();
-                    var alsC = triple.third();
-                    return alsA.isInSameUnit(alsB) && alsA.isInSameUnit(alsC) && alsB.isInSameUnit(alsC);
-                })
-                .map(triple -> {
-                    var alsA = triple.first();
-                    var alsB = triple.second();
-                    var alsC = triple.third();
-                    var candidates = EnumSet.copyOf(alsA.candidates());
-                    candidates.addAll(alsB.candidates());
-                    candidates.addAll(alsC.candidates());
-                    return candidates;
-                })
-                .filter(candidates -> candidates.size() == 4);
-        var almostLockedSets4 = visible.stream()
-                .collect(Quad.zipEveryQuad())
-                .filter(quad -> {
-                    var alsA = quad.first();
-                    var alsB = quad.second();
-                    var alsC = quad.third();
-                    var alsD = quad.fourth();
-                    return alsA.isInSameUnit(alsB) &&
-                            alsA.isInSameUnit(alsC) &&
-                            alsA.isInSameUnit(alsD) &&
-                            alsB.isInSameUnit(alsC) &&
-                            alsB.isInSameUnit(alsD) &&
-                            alsC.isInSameUnit(alsD);
-                }).map(quad -> {
-                    var alsA = quad.first();
-                    var alsB = quad.second();
-                    var alsC = quad.third();
-                    var alsD = quad.fourth();
-                    var candidates = EnumSet.copyOf(alsA.candidates());
-                    candidates.addAll(alsB.candidates());
-                    candidates.addAll(alsC.candidates());
-                    candidates.addAll(alsD.candidates());
-                    return candidates;
-                })
-                .filter(candidates -> candidates.size() == 5);
-        return Stream.of(almostLockedSets1, almostLockedSets2, almostLockedSets3, almostLockedSets4)
-                .flatMap(Function.identity())
-                .toList();
+                    if (candidates.size() == 3) {
+                        almostLockedSets.add(candidates);
+                    }
+                }
+            }
+        }
+        for (var i = 0; i < visible.size() - 2; i++) {
+            var alsA = visible.get(i);
+            for (var j = i + 1; j < visible.size() - 1; j++) {
+                var alsB = visible.get(j);
+                if (alsA.isInSameUnit(alsB)) {
+                    for (var k = j + 1; k < visible.size(); k++) {
+                        var alsC = visible.get(k);
+                        if (alsA.isInSameUnit(alsC) && alsB.isInSameUnit(alsC)) {
+                            var candidates = EnumSet.copyOf(alsA.candidates());
+                            candidates.addAll(alsB.candidates());
+                            candidates.addAll(alsC.candidates());
+                            if (candidates.size() == 4) {
+                                almostLockedSets.add(candidates);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (var i = 0; i < visible.size() - 3; i++) {
+            var alsA = visible.get(i);
+            for (var j = i + 1; j < visible.size() - 2; j++) {
+                var alsB = visible.get(j);
+                if (alsA.isInSameUnit(alsB)) {
+                    for (var k = j + 1; k < visible.size() - 1; k++) {
+                        var alsC = visible.get(k);
+                        if (alsA.isInSameUnit(alsC) && alsB.isInSameUnit(alsC)) {
+                            for (var l = k + 1; l < visible.size(); l++) {
+                                var alsD = visible.get(l);
+                                if (alsA.isInSameUnit(alsD) && alsB.isInSameUnit(alsD) && alsC.isInSameUnit(alsD)) {
+                                    var candidates = EnumSet.copyOf(alsA.candidates());
+                                    candidates.addAll(alsB.candidates());
+                                    candidates.addAll(alsC.candidates());
+                                    candidates.addAll(alsD.candidates());
+                                    if (candidates.size() == 5) {
+                                        almostLockedSets.add(candidates);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return almostLockedSets;
+    }
+
+    private static boolean isValid(
+            SudokuNumber candidateA,
+            SudokuNumber candidateB,
+            UnsolvedCell cellA,
+            UnsolvedCell cellB,
+            List<EnumSet<SudokuNumber>> almostLockedSets
+    ) {
+        if (candidateA == candidateB) {
+            return !cellA.isInSameUnit(cellB);
+        } else {
+            return !isALS(candidateA, candidateB, almostLockedSets);
+        }
+    }
+
+    private static boolean isALS(
+            SudokuNumber candidateA,
+            SudokuNumber candidateB,
+            List<EnumSet<SudokuNumber>> almostLockedSets
+    ) {
+        var pairAsSet = EnumSet.of(candidateA, candidateB);
+        for (var als : almostLockedSets) {
+            if (als.containsAll(pairAsSet)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
