@@ -2,19 +2,16 @@ package sudokusolver.javanostreams.logic.extreme;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
 import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Empty_Rectangles
@@ -41,37 +38,41 @@ import java.util.stream.Stream;
  */
 public class EmptyRectangles {
     public static List<RemoveCandidates> emptyRectangles(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> getIntersections(board, candidate).flatMap(intersection -> {
-                    var row = intersection.first();
-                    var column = intersection.second();
-                    var block = board.get(row, column).block();
-                    var rowRemovals = getRemovals(
-                            board,
-                            candidate,
-                            block,
-                            board.getRow(row),
-                            Cell::column,
-                            board::getColumn,
-                            Cell::row,
-                            cell -> column
-                    );
-                    var columnRemovals = getRemovals(
-                            board,
-                            candidate,
-                            block,
-                            board.getColumn(column),
-                            Cell::row,
-                            board::getRow,
-                            cell -> row,
-                            Cell::column
-                    );
-                    return Stream.concat(rowRemovals, columnRemovals);
-                }))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            for (var intersection : getIntersections(board, candidate)) {
+                var row = intersection.first();
+                var column = intersection.second();
+                var block = board.get(row, column).block();
+                getRemovals(
+                        removals,
+                        board,
+                        candidate,
+                        block,
+                        board.getRow(row),
+                        Cell::column,
+                        board::getColumn,
+                        Cell::row,
+                        cell -> column
+                );
+                getRemovals(
+                        removals,
+                        board,
+                        candidate,
+                        block,
+                        board.getColumn(column),
+                        Cell::row,
+                        board::getRow,
+                        cell -> row,
+                        Cell::column
+                );
+            }
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> getRemovals(
+    private static void getRemovals(
+            Removals removals,
             Board<Cell> board,
             SudokuNumber candidate,
             int block,
@@ -81,37 +82,59 @@ public class EmptyRectangles {
             ToIntFunction<Cell> getRemovalRow,
             ToIntFunction<Cell> getRemovalColumn
     ) {
-        return unit.stream()
-                .filter(strongLink1 -> strongLink1.block() != block && hasCandidate(strongLink1, candidate))
-                .flatMap(strongLink1 -> {
-                    var otherUnit = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(strongLink1))
-                            .stream()
-                            .filter(cell -> hasCandidate(cell, candidate) && !cell.equals(strongLink1))
-                            .toList();
-                    if (otherUnit.size() == 1) {
-                        var strongLink2 = otherUnit.get(0);
-                        if (strongLink1.block() != strongLink2.block() &&
-                                board.get(getRemovalRow.applyAsInt(strongLink2),
-                                        getRemovalColumn.applyAsInt(strongLink2)) instanceof UnsolvedCell removalCell &&
-                                removalCell.candidates().contains(candidate)) {
-                            return Stream.of(new LocatedCandidate(removalCell, candidate));
+        for (var strongLink1 : unit) {
+            if (strongLink1.block() != block && hasCandidate(strongLink1, candidate)) {
+                Cell strongLink2 = null;
+                for (var cell : getOtherUnit.apply(getOtherUnitIndex.applyAsInt(strongLink1))) {
+                    if (hasCandidate(cell, candidate) && !cell.equals(strongLink1)) {
+                        if (strongLink2 == null) {
+                            strongLink2 = cell;
+                        } else {
+                            strongLink2 = null;
+                            break;
                         }
                     }
-                    return Stream.empty();
-                });
+                }
+                removeIfValid(removals, board, candidate, getRemovalRow, getRemovalColumn, strongLink1, strongLink2);
+            }
+        }
     }
 
-    private static Stream<Pair<Integer, Integer>> getIntersections(Board<Cell> board, SudokuNumber candidate) {
-        return IntStream.range(0, Board.UNIT_SIZE).mapToObj(row -> {
+    /*
+     * This method was split off from getRemovals due to a warning on which said, "Method 'getRemovals' is too complex
+     * to analyze by data flow algorithm."
+     */
+    private static void removeIfValid(
+            Removals removals,
+            Board<Cell> board,
+            SudokuNumber candidate,
+            ToIntFunction<Cell> getRemovalRow,
+            ToIntFunction<Cell> getRemovalColumn,
+            Cell strongLink1,
+            Cell strongLink2
+    ) {
+        if (strongLink2 != null &&
+                strongLink1.block() != strongLink2.block() &&
+                board.get(getRemovalRow.applyAsInt(strongLink2),
+                        getRemovalColumn.applyAsInt(strongLink2)) instanceof UnsolvedCell removalCell &&
+                removalCell.candidates().contains(candidate)
+        ) {
+            removals.add(removalCell, candidate);
+        }
+    }
+
+    private static List<Pair<Integer, Integer>> getIntersections(Board<Cell> board, SudokuNumber candidate) {
+        var intersections = new ArrayList<Pair<Integer, Integer>>();
+        for (var row = 0; row < Board.UNIT_SIZE; row++) {
             var rowInBlock = row % Board.UNIT_SIZE_SQUARE_ROOT;
             var rectangleRow1 = rowInBlock == 0 ? row + 1 : row - rowInBlock;
             var rectangleRow2 = rowInBlock == 2 ? row - 1 : row - rowInBlock + 2;
-            return IntStream.range(0, Board.UNIT_SIZE).filter(column -> {
-               var columnInBlock = column % Board.UNIT_SIZE_SQUARE_ROOT;
-               var rectangleColumn1 = columnInBlock == 0 ? column + 1 : column - columnInBlock;
-               var rectangleColumn2 = columnInBlock == 2 ? column - 1 : column - columnInBlock + 2;
-               //Check that the rectangle is empty.
-                return !hasCandidate(board.get(rectangleRow1, rectangleColumn1), candidate) &&
+            for (var column = 0; column < Board.UNIT_SIZE; column++) {
+                var columnInBlock = column % Board.UNIT_SIZE_SQUARE_ROOT;
+                var rectangleColumn1 = columnInBlock == 0 ? column + 1 : column - columnInBlock;
+                var rectangleColumn2 = columnInBlock == 2 ? column - 1 : column - columnInBlock + 2;
+                //Check that the rectangle is empty.
+                if (!hasCandidate(board.get(rectangleRow1, rectangleColumn1), candidate) &&
                         !hasCandidate(board.get(rectangleRow1, rectangleColumn2), candidate) &&
                         !hasCandidate(board.get(rectangleRow2, rectangleColumn1), candidate) &&
                         !hasCandidate(board.get(rectangleRow2, rectangleColumn2), candidate) &&
@@ -123,9 +146,13 @@ public class EmptyRectangles {
                          * candidate.
                          */
                         (hasCandidate(board.get(rectangleRow1, column), candidate) ||
-                                hasCandidate(board.get(rectangleRow2, column), candidate));
-            }).mapToObj(column -> new Pair<>(row, column));
-        }).flatMap(Function.identity());
+                                hasCandidate(board.get(rectangleRow2, column), candidate))
+                ) {
+                    intersections.add(new Pair<>(row, column));
+                }
+            }
+        }
+        return intersections;
     }
 
     private static boolean hasCandidate(Cell cell, SudokuNumber candidate) {
