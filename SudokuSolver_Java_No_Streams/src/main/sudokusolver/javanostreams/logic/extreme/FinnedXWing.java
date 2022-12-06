@@ -2,18 +2,16 @@ package sudokusolver.javanostreams.logic.extreme;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Finned_X_Wing
@@ -55,83 +53,76 @@ import java.util.stream.Stream;
  */
 public class FinnedXWing {
     public static List<RemoveCandidates> finnedXWing(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var rowRemovals = finnedXWing(board, candidate, board.rows(), Cell::column);
-                    var columnRemovals = finnedXWing(
-                            board,
-                            candidate,
-                            board.getColumns(),
-                            Cell::row
-                    );
-                    return Stream.concat(rowRemovals, columnRemovals);
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            finnedXWing(removals, board, candidate, board.rows(), Cell::column);
+            finnedXWing(removals, board, candidate, board.getColumns(), Cell::row);
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> finnedXWing(
+    private static void finnedXWing(
+            Removals removals,
             Board<Cell> board,
             SudokuNumber candidate,
             List<List<Cell>> units,
             ToIntFunction<Cell> getOtherUnitIndex
     ) {
-        return units.stream().flatMap(baseUnit -> {
-            var withCandidate = baseUnit.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate))
-                    .toList();
+        for (var baseUnit : units) {
+            var withCandidate = new ArrayList<UnsolvedCell>();
+            for (var cell : baseUnit) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    withCandidate.add(unsolved);
+                }
+            }
             if (withCandidate.size() == 2) {
                 var baseUnitCell1 = withCandidate.get(0);
                 var baseUnitCell2 = withCandidate.get(1);
                 if (baseUnitCell1.block() != baseUnitCell2.block()) {
-                    return units.stream()
-                            .filter(finnedUnit -> finnedUnit.get(0).block() != baseUnit.get(0).block())
-                            .flatMap(finnedUnit -> {
-                                var finnedUnitByBlock = finnedUnit.stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
-                                        .filter(cell -> cell.candidates().contains(candidate))
-                                        .collect(Collectors.groupingBy(Cell::block));
-                                if (finnedUnitByBlock.size() == 2) {
-                                    var finnedUnitCell1 = finnedUnit.get(
-                                            getOtherUnitIndex.applyAsInt(baseUnitCell1)
-                                    );
-                                    var finnedUnitCell2 = finnedUnit.get(
-                                            getOtherUnitIndex.applyAsInt(baseUnitCell2)
-                                    );
-                                    var firstAttempt = tryFin(
+                    for (var finnedUnit : units) {
+                        if (finnedUnit.get(0).block() != baseUnit.get(0).block()) {
+                            var finnedUnitByBlock = new HashMap<Integer, List<UnsolvedCell>>();
+                            for (var cell : finnedUnit) {
+                                if (cell instanceof UnsolvedCell unsolved &&
+                                        unsolved.candidates().contains(candidate)
+                                ) {
+                                    finnedUnitByBlock.computeIfAbsent(unsolved.block(), key -> new ArrayList<>())
+                                            .add(unsolved);
+                                }
+                            }
+                            if (finnedUnitByBlock.size() == 2) {
+                                var finnedUnitCell1 = finnedUnit.get(getOtherUnitIndex.applyAsInt(baseUnitCell1));
+                                var finnedUnitCell2 = finnedUnit.get(getOtherUnitIndex.applyAsInt(baseUnitCell2));
+                                var firstAttempt = tryFin(
+                                        removals,
+                                        board,
+                                        candidate,
+                                        getOtherUnitIndex,
+                                        finnedUnitByBlock,
+                                        finnedUnitCell1,
+                                        finnedUnitCell2
+                                );
+                                if (!firstAttempt) {
+                                    tryFin(
+                                            removals,
                                             board,
                                             candidate,
                                             getOtherUnitIndex,
                                             finnedUnitByBlock,
-                                            finnedUnitCell1,
-                                            finnedUnitCell2
+                                            finnedUnitCell2,
+                                            finnedUnitCell1
                                     );
-                                    return firstAttempt
-                                            .or(() -> tryFin(
-                                                    board,
-                                                    candidate,
-                                                    getOtherUnitIndex,
-                                                    finnedUnitByBlock,
-                                                    finnedUnitCell2,
-                                                    finnedUnitCell1
-                                            ))
-                                            .orElseGet(Stream::empty);
-                                } else {
-                                    return Stream.empty();
                                 }
-                            });
-                } else {
-                    return Stream.empty();
+                            }
+                        }
+                    }
                 }
-            } else {
-                return Stream.empty();
             }
-        });
+        }
     }
 
-    private static Optional<Stream<LocatedCandidate>> tryFin(
+    private static boolean tryFin(
+            Removals removals,
             Board<Cell> board,
             SudokuNumber candidate,
             ToIntFunction<Cell> getOtherUnitIndex,
@@ -143,22 +134,25 @@ public class FinnedXWing {
         var otherBlock = finnedUnitByBlock.get(otherCorner.block());
         if (finnedBlock != null &&
                 otherBlock != null &&
-                finnedBlock.stream().anyMatch(cell -> !cell.equals(finnedCorner)) &&
                 otherBlock.size() == 1 &&
                 otherCorner instanceof UnsolvedCell &&
                 otherBlock.contains(otherCorner)
         ) {
-            var modifications = board.getBlock(finnedCorner.block())
-                    .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> getOtherUnitIndex.applyAsInt(cell) == getOtherUnitIndex.applyAsInt(finnedCorner) &&
-                            !cell.equals(finnedCorner) &&
-                            cell.candidates().contains(candidate))
-                    .map(cell -> new LocatedCandidate(cell, candidate));
-            return Optional.of(modifications);
-        } else {
-            return Optional.empty();
+            for (var finnedCell : finnedBlock) {
+                if (!finnedCell.equals(finnedCorner)) {
+                    for (var cell : board.getBlock(finnedCorner.block())) {
+                        if (cell instanceof UnsolvedCell unsolved &&
+                                getOtherUnitIndex.applyAsInt(unsolved) == getOtherUnitIndex.applyAsInt(finnedCorner) &&
+                                !unsolved.equals(finnedCorner) &&
+                                unsolved.candidates().contains(candidate)
+                        ) {
+                            removals.add(unsolved, candidate);
+                        }
+                    }
+                    return true;
+                }
+            }
         }
+        return false;
     }
 }
