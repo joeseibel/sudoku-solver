@@ -2,20 +2,17 @@ package sudokusolver.javanostreams.logic.extreme;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Finned_Swordfish
@@ -45,30 +42,16 @@ import java.util.stream.Stream;
  */
 public class FinnedSwordfish {
     public static List<RemoveCandidates> finnedSwordfish(Board<Cell> board) {
-        return Arrays.stream(SudokuNumber.values())
-                .flatMap(candidate -> {
-                    var rowRemovals = finnedSwordfish(
-                            candidate,
-                            board.rows(),
-                            Cell::row,
-                            Cell::column,
-                            board::getColumn,
-                            board::get
-                    );
-                    var columnRemovals = finnedSwordfish(
-                            candidate,
-                            board.getColumns(),
-                            Cell::column,
-                            Cell::row,
-                            board::getRow,
-                            (finnedUnitIndex, otherUnitIndex) -> board.get(otherUnitIndex, finnedUnitIndex)
-                    );
-                    return Stream.concat(rowRemovals, columnRemovals);
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var candidate : SudokuNumber.values()) {
+            finnedSwordfish(removals, candidate, board.rows(), Cell::row, Cell::column, board::getColumn, board::get);
+            finnedSwordfish(removals, candidate, board.getColumns(), Cell::column, Cell::row, board::getRow, (finnedUnitIndex, otherUnitIndex) -> board.get(otherUnitIndex, finnedUnitIndex));
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> finnedSwordfish(
+    private static void finnedSwordfish(
+            Removals removals,
             SudokuNumber candidate,
             List<List<Cell>> units,
             ToIntFunction<Cell> getUnitIndex,
@@ -76,70 +59,81 @@ public class FinnedSwordfish {
             IntFunction<List<Cell>> getOtherUnit,
             BiFunction<Integer, Integer, Cell> getFinnedCell
     ) {
-        var unitsWithCandidate = units.stream()
-                .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .filter(cell -> cell.candidates().contains(candidate))
-                        .toList())
-                .filter(unit -> !unit.isEmpty())
-                .toList();
-        return unitsWithCandidate.stream()
-                .filter(unit -> unit.size() == 2 || unit.size() == 3)
-                .collect(Pair.zipEveryPair())
-                .flatMap(pair -> {
-                    var baseUnitA = pair.first();
-                    var baseUnitB = pair.second();
-                    var otherUnitIndices = Stream.concat(baseUnitA.stream(), baseUnitB.stream())
-                            .map(getOtherUnitIndex::applyAsInt)
-                            .collect(Collectors.toSet());
-                    if (otherUnitIndices.size() == 3) {
-                        return unitsWithCandidate.stream().flatMap(finnedUnit -> {
-                            var finnedUnitIndex = getUnitIndex.applyAsInt(finnedUnit.get(0));
-                            var unitIndices = new HashSet<Integer>();
-                            unitIndices.add(finnedUnitIndex);
-                            unitIndices.add(getUnitIndex.applyAsInt(baseUnitA.get(0)));
-                            unitIndices.add(getUnitIndex.applyAsInt(baseUnitB.get(0)));
-                            if (unitIndices.size() == 3) {
-                                var outsideOtherUnitIndices = finnedUnit.stream()
-                                        .filter(cell -> !otherUnitIndices.contains(getOtherUnitIndex.applyAsInt(cell)))
-                                        .toList();
-                                if (outsideOtherUnitIndices.size() == 1 || outsideOtherUnitIndices.size() == 2) {
-                                    var blockIndices = outsideOtherUnitIndices.stream()
-                                            .map(Cell::block)
-                                            .collect(Collectors.toSet());
-                                    if (blockIndices.size() == 1) {
-                                        var blockIndex = blockIndices.iterator().next();
-                                        var finnedCells = otherUnitIndices.stream()
-                                                .map(otherUnitIndex ->
-                                                        getFinnedCell.apply(finnedUnitIndex, otherUnitIndex))
-                                                .filter(finnedCell -> finnedCell.block() == blockIndex)
-                                                .toList();
-                                        if (finnedCells.size() == 1) {
-                                            return getOtherUnit.apply(getOtherUnitIndex.applyAsInt(finnedCells.get(0)))
-                                                    .stream()
-                                                    .filter(UnsolvedCell.class::isInstance)
-                                                    .map(UnsolvedCell.class::cast)
-                                                    .filter(cell -> cell.candidates().contains(candidate) &&
-                                                            cell.block() == blockIndex &&
-                                                            !unitIndices.contains(getUnitIndex.applyAsInt(cell)))
-                                                    .map(cell -> new LocatedCandidate(cell, candidate));
-                                        } else {
-                                            return Stream.empty();
+        var unitsWithCandidate = new ArrayList<List<UnsolvedCell>>();
+        for (var unit : units) {
+            var withCandidate = new ArrayList<UnsolvedCell>();
+            for (var cell : unit) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    withCandidate.add(unsolved);
+                }
+            }
+            if (!withCandidate.isEmpty()) {
+                unitsWithCandidate.add(withCandidate);
+            }
+        }
+        for (var i = 0; i < unitsWithCandidate.size() - 1; i++) {
+            var baseUnitA = unitsWithCandidate.get(i);
+            if (baseUnitA.size() == 2 || baseUnitA.size() == 3) {
+                for (var j = i + 1; j < unitsWithCandidate.size(); j++) {
+                    var baseUnitB = unitsWithCandidate.get(j);
+                    if (baseUnitB.size() == 2 || baseUnitB.size() == 3) {
+                        var otherUnitIndices = new HashSet<Integer>();
+                        for (var cell : baseUnitA) {
+                            otherUnitIndices.add(getOtherUnitIndex.applyAsInt(cell));
+                        }
+                        for (var cell : baseUnitB) {
+                            otherUnitIndices.add(getOtherUnitIndex.applyAsInt(cell));
+                        }
+                        if (otherUnitIndices.size() == 3) {
+                            for (var finnedUnit : unitsWithCandidate) {
+                                var finnedUnitIndex = getUnitIndex.applyAsInt(finnedUnit.get(0));
+                                var unitIndices = new HashSet<Integer>();
+                                unitIndices.add(finnedUnitIndex);
+                                unitIndices.add(getUnitIndex.applyAsInt(baseUnitA.get(0)));
+                                unitIndices.add(getUnitIndex.applyAsInt(baseUnitB.get(0)));
+                                if (unitIndices.size() == 3) {
+                                    var outsideOtherUnitIndices = new ArrayList<UnsolvedCell>();
+                                    for (var cell : finnedUnit) {
+                                        if (!otherUnitIndices.contains(getOtherUnitIndex.applyAsInt(cell))) {
+                                            outsideOtherUnitIndices.add(cell);
                                         }
-                                    } else {
-                                        return Stream.empty();
                                     }
-                                } else {
-                                    return Stream.empty();
+                                    if (outsideOtherUnitIndices.size() == 1 || outsideOtherUnitIndices.size() == 2) {
+                                        var blockIndices = new HashSet<Integer>();
+                                        for (var cell : outsideOtherUnitIndices) {
+                                            blockIndices.add(cell.block());
+                                        }
+                                        if (blockIndices.size() == 1) {
+                                            var blockIndex = blockIndices.iterator().next();
+                                            var finnedCells = new ArrayList<Cell>();
+                                            for (var otherUnitIndex : otherUnitIndices) {
+                                                var finnedCell = getFinnedCell
+                                                        .apply(finnedUnitIndex, otherUnitIndex);
+                                                if (finnedCell.block() == blockIndex) {
+                                                    finnedCells.add(finnedCell);
+                                                }
+                                            }
+                                            if (finnedCells.size() == 1) {
+                                                for (var cell : getOtherUnit
+                                                        .apply(getOtherUnitIndex.applyAsInt(finnedCells.get(0)))
+                                                ) {
+                                                    if (cell instanceof UnsolvedCell unsolved &&
+                                                            unsolved.candidates().contains(candidate) &&
+                                                            unsolved.block() == blockIndex &&
+                                                            !unitIndices.contains(getUnitIndex.applyAsInt(unsolved))
+                                                    ) {
+                                                        removals.add(unsolved, candidate);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                            } else {
-                                return Stream.empty();
                             }
-                        });
-                    } else {
-                        return Stream.empty();
+                        }
                     }
-                });
+                }
+            }
+        }
     }
 }
