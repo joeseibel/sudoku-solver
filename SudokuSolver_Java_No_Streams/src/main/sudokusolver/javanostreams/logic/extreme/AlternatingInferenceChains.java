@@ -7,7 +7,7 @@ import org.jgrapht.graph.builder.GraphBuilder;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
 import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SetValue;
 import sudokusolver.javanostreams.Strength;
@@ -15,16 +15,13 @@ import sudokusolver.javanostreams.StrengthEdge;
 import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Alternating_Inference_Chains
@@ -57,49 +54,32 @@ public class AlternatingInferenceChains {
     public static List<RemoveCandidates> alternatingInferenceChainsRule1(Board<Cell> board) {
         var graph = buildGraph(board);
         Strength.trim(graph);
-        return Strength.getWeakEdgesInAlternatingCycle(graph)
-                .stream()
-                .flatMap(edge -> {
-                    var source = graph.getEdgeSource(edge);
-                    var sourceCell = source.cell();
-                    var sourceCandidate = source.candidate();
-                    var target = graph.getEdgeTarget(edge);
-                    var targetCell = target.cell();
-                    var targetCandidate = target.candidate();
-                    if (sourceCell.equals(targetCell)) {
-                        var candidates = EnumSet.copyOf(sourceCell.candidates());
-                        candidates.remove(sourceCandidate);
-                        candidates.remove(targetCandidate);
-                        return candidates.stream().map(candidate -> new LocatedCandidate(sourceCell, candidate));
-                    } else {
-                        var rowRemovals = removeFromUnit(
-                                sourceCell,
-                                sourceCandidate,
-                                targetCell,
-                                Cell::row,
-                                board::getRow
-                        );
-                        var columnRemovals = removeFromUnit(
-                                sourceCell,
-                                sourceCandidate,
-                                targetCell,
-                                Cell::column,
-                                board::getColumn
-                        );
-                        var blockRemovals = removeFromUnit(
-                                sourceCell,
-                                sourceCandidate,
-                                targetCell,
-                                Cell::block,
-                                board::getBlock
-                        );
-                        return Stream.of(rowRemovals, columnRemovals, blockRemovals).flatMap(Function.identity());
-                    }
-                })
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var edge : Strength.getWeakEdgesInAlternatingCycle(graph)) {
+            var source = graph.getEdgeSource(edge);
+            var sourceCell = source.cell();
+            var sourceCandidate = source.candidate();
+            var target = graph.getEdgeTarget(edge);
+            var targetCell = target.cell();
+            var targetCandidate = target.candidate();
+            if (sourceCell.equals(targetCell)) {
+                var candidates = EnumSet.copyOf(sourceCell.candidates());
+                candidates.remove(sourceCandidate);
+                candidates.remove(targetCandidate);
+                for (var candidate : candidates) {
+                    removals.add(sourceCell, candidate);
+                }
+            } else {
+                removeFromUnit(removals, sourceCell, sourceCandidate, targetCell, Cell::row, board::getRow);
+                removeFromUnit(removals, sourceCell, sourceCandidate, targetCell, Cell::column, board::getColumn);
+                removeFromUnit(removals, sourceCell, sourceCandidate, targetCell, Cell::block, board::getBlock);
+            }
+        }
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> removeFromUnit(
+    private static void removeFromUnit(
+            Removals removals,
             UnsolvedCell sourceCell,
             SudokuNumber sourceCandidate,
             UnsolvedCell targetCell,
@@ -108,16 +88,15 @@ public class AlternatingInferenceChains {
     ) {
         var sourceUnitIndex = getUnitIndex.applyAsInt(sourceCell);
         if (sourceUnitIndex == getUnitIndex.applyAsInt(targetCell)) {
-            return getUnit.apply(sourceUnitIndex)
-                    .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(sourceCandidate) &&
-                            !cell.equals(sourceCell) &&
-                            !cell.equals(targetCell))
-                    .map(cell -> new LocatedCandidate(cell, sourceCandidate));
-        } else {
-            return Stream.empty();
+            for (var cell : getUnit.apply(sourceUnitIndex)) {
+                if (cell instanceof UnsolvedCell unsolved &&
+                        unsolved.candidates().contains(sourceCandidate) &&
+                        !unsolved.equals(sourceCell) &&
+                        !unsolved.equals(targetCell)
+                ) {
+                    removals.add(unsolved, sourceCandidate);
+                }
+            }
         }
     }
 
@@ -136,11 +115,13 @@ public class AlternatingInferenceChains {
     public static List<SetValue> alternatingInferenceChainsRule2(Board<Cell> board) {
         var graph = buildGraph(board);
         Strength.trim(graph);
-        return graph.vertexSet()
-                .stream()
-                .filter(vertex -> alternatingCycleExists(graph, vertex, Strength.STRONG))
-                .map(vertex -> new SetValue(vertex.cell(), vertex.candidate()))
-                .toList();
+        var modifications = new ArrayList<SetValue>();
+        for (var vertex : graph.vertexSet()) {
+            if (alternatingCycleExists(graph, vertex, Strength.STRONG)) {
+                modifications.add(new SetValue(vertex.cell(), vertex.candidate()));
+            }
+        }
+        return modifications;
     }
 
     /*
@@ -157,47 +138,60 @@ public class AlternatingInferenceChains {
      */
     public static List<RemoveCandidates> alternatingInferenceChainsRule3(Board<Cell> board) {
         var graph = buildGraph(board);
-        return graph.vertexSet()
-                .stream()
-                .filter(vertex -> alternatingCycleExists(graph, vertex, Strength.WEAK))
-                .collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        for (var vertex : graph.vertexSet()) {
+            if (alternatingCycleExists(graph, vertex, Strength.WEAK)) {
+                removals.add(vertex.cell(), vertex.candidate());
+            }
+        }
+        return removals.toList();
     }
 
     private static Graph<LocatedCandidate, StrengthEdge> buildGraph(Board<Cell> board) {
         var builder = new GraphBuilder<>(new SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge.class));
 
         //Connect cells.
-        board.getUnits().forEach(unit -> Arrays.stream(SudokuNumber.values()).forEach(candidate -> {
-            var withCandidates = unit.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.candidates().contains(candidate))
-                    .toList();
-            var strength = withCandidates.size() == 2 ? Strength.STRONG : Strength.WEAK;
-            withCandidates.stream().collect(Pair.zipEveryPair()).forEach(pair -> {
-                var a = pair.first();
-                var b = pair.second();
-                builder.addEdge(
-                        new LocatedCandidate(a, candidate),
-                        new LocatedCandidate(b, candidate),
-                        new StrengthEdge(strength)
-                );
-            });
-        }));
+        for (var unit : board.getUnits()) {
+            for (var candidate : SudokuNumber.values()) {
+                var withCandidates = new ArrayList<UnsolvedCell>();
+                for (var cell : unit) {
+                    if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                        withCandidates.add(unsolved);
+                    }
+                }
+                var strength = withCandidates.size() == 2 ? Strength.STRONG : Strength.WEAK;
+                for (var i = 0; i < withCandidates.size() - 1; i++) {
+                    var a = withCandidates.get(i);
+                    for (var j = i + 1; j < withCandidates.size(); j++) {
+                        var b = withCandidates.get(j);
+                        builder.addEdge(
+                                new LocatedCandidate(a, candidate),
+                                new LocatedCandidate(b, candidate),
+                                new StrengthEdge(strength)
+                        );
+                    }
+                }
+            }
+        }
 
         //Connect candidates in cells.
-        board.getCells().stream().filter(UnsolvedCell.class::isInstance).map(UnsolvedCell.class::cast).forEach(cell -> {
-            var strength = cell.candidates().size() == 2 ? Strength.STRONG : Strength.WEAK;
-            cell.candidates().stream().collect(Pair.zipEveryPair()).forEach(pair -> {
-                var a = pair.first();
-                var b = pair.second();
-                builder.addEdge(
-                        new LocatedCandidate(cell, a),
-                        new LocatedCandidate(cell, b),
-                        new StrengthEdge(strength)
-                );
-            });
-        });
+        for (var cell : board.getCells()) {
+            if (cell instanceof UnsolvedCell unsolved) {
+                var candidates = unsolved.candidates().toArray(SudokuNumber[]::new);
+                var strength = candidates.length == 2 ? Strength.STRONG : Strength.WEAK;
+                for (var i = 0; i < candidates.length - 1; i++) {
+                    var a = candidates[i];
+                    for (var j = i + 1; j < candidates.length; j++) {
+                        var b = candidates[j];
+                        builder.addEdge(
+                                new LocatedCandidate(unsolved, a),
+                                new LocatedCandidate(unsolved, b),
+                                new StrengthEdge(strength)
+                        );
+                    }
+                }
+            }
+        }
 
         return builder.build();
     }
@@ -207,27 +201,34 @@ public class AlternatingInferenceChains {
             LocatedCandidate vertex,
             Strength adjacentEdgesType
     ) {
-        return graph.edgesOf(vertex)
-                .stream()
-                .filter(edge -> edge.getStrength() == adjacentEdgesType)
-                .collect(Pair.zipEveryPair())
-                .anyMatch(pair -> {
-                    var edgeA = pair.first();
-                    var edgeB = pair.second();
-                    var start = Graphs.getOppositeVertex(graph, edgeA, vertex);
-                    var end = Graphs.getOppositeVertex(graph, edgeB, vertex);
-                    var visitedCandidates = EnumSet.of(vertex.candidate(), start.candidate());
-                    visitedCandidates.remove(end.candidate());
-                    return alternatingCycleExists(
-                            graph,
-                            adjacentEdgesType,
-                            end,
-                            start,
-                            adjacentEdgesType.getOpposite(),
-                            Set.of(vertex, start),
-                            visitedCandidates
-                    );
-                });
+        var vertices = graph.edgesOf(vertex).toArray(StrengthEdge[]::new);
+        for (var i = 0; i < vertices.length - 1; i++) {
+            var edgeA = vertices[i];
+            if (edgeA.getStrength() == adjacentEdgesType) {
+                var start = Graphs.getOppositeVertex(graph, edgeA, vertex);
+                for (var j = i + 1; j < vertices.length; j++) {
+                    var edgeB = vertices[j];
+                    if (edgeB.getStrength() == adjacentEdgesType) {
+                        var end = Graphs.getOppositeVertex(graph, edgeB, vertex);
+                        var visitedCandidates = EnumSet.of(vertex.candidate(), start.candidate());
+                        visitedCandidates.remove(end.candidate());
+                        var cycleExists = alternatingCycleExists(
+                                graph,
+                                adjacentEdgesType,
+                                end,
+                                start,
+                                adjacentEdgesType.getOpposite(),
+                                Set.of(vertex, start),
+                                visitedCandidates
+                        );
+                        if (cycleExists) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static boolean alternatingCycleExists(
@@ -239,19 +240,23 @@ public class AlternatingInferenceChains {
             Set<LocatedCandidate> visited,
             EnumSet<SudokuNumber> visitedCandidates
     ) {
-        var nextVertices = graph.edgesOf(currentVertex)
-                .stream()
-                .filter(edge -> edge.getStrength().isCompatibleWith(nextType))
-                .map(edge -> Graphs.getOppositeVertex(graph, edge, currentVertex))
-                .filter(opposite -> opposite.candidate() == currentVertex.candidate() ||
-                        !visitedCandidates.contains(opposite.candidate()))
-                .collect(Collectors.toList());
+        var nextVertices = new ArrayList<LocatedCandidate>();
+        for (var edge : graph.edgesOf(currentVertex)) {
+            if (edge.getStrength().isCompatibleWith(nextType)) {
+                var opposite = Graphs.getOppositeVertex(graph, edge, currentVertex);
+                if (opposite.candidate() == currentVertex.candidate() ||
+                        !visitedCandidates.contains(opposite.candidate())
+                ) {
+                    nextVertices.add(opposite);
+                }
+            }
+        }
         if (adjacentEdgesType.getOpposite() == nextType && nextVertices.contains(end)) {
             return true;
         } else {
             nextVertices.removeAll(visited);
             nextVertices.remove(end);
-            return nextVertices.stream().anyMatch(nextVertex -> {
+            for (var nextVertex : nextVertices) {
                 var nextVisited = new HashSet<>(visited);
                 nextVisited.add(nextVertex);
                 EnumSet<SudokuNumber> nextVisitedCandidates;
@@ -261,7 +266,7 @@ public class AlternatingInferenceChains {
                     nextVisitedCandidates = EnumSet.copyOf(visitedCandidates);
                     nextVisitedCandidates.add(nextVertex.candidate());
                 }
-                return alternatingCycleExists(
+                var cycleExists = alternatingCycleExists(
                         graph,
                         adjacentEdgesType,
                         end,
@@ -270,7 +275,11 @@ public class AlternatingInferenceChains {
                         nextVisited,
                         nextVisitedCandidates
                 );
-            });
+                if (cycleExists) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
