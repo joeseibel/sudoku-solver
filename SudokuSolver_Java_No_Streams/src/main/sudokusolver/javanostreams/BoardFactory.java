@@ -2,9 +2,9 @@ package sudokusolver.javanostreams;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.stream.IntStream;
 
 public class BoardFactory {
     public static Board<Optional<SudokuNumber>> parseOptionalBoard(String board) {
@@ -12,14 +12,15 @@ public class BoardFactory {
             var message = "board length is " + board.length() + ", must be " + Board.UNIT_SIZE_SQUARED + '.';
             throw new IllegalArgumentException(message);
         }
-        var boardAsNumbers = IntStream.range(0, Board.UNIT_SIZE)
-                .mapToObj(row -> IntStream.range(0, Board.UNIT_SIZE)
-                        .mapToObj(column -> {
-                            var ch = board.charAt(row * Board.UNIT_SIZE + column);
-                            return ch == '0' ? Optional.<SudokuNumber>empty() : Optional.of(SudokuNumber.valueOf(ch));
-                        })
-                        .toList())
-                .toList();
+        var boardAsNumbers = new ArrayList<List<Optional<SudokuNumber>>>();
+        for (var row = 0; row < Board.UNIT_SIZE; row++) {
+            var rowAsNumbers = new ArrayList<Optional<SudokuNumber>>();
+            for (var column = 0; column < Board.UNIT_SIZE; column++) {
+                var ch = board.charAt(row * Board.UNIT_SIZE + column);
+                rowAsNumbers.add(ch == '0' ? Optional.empty() : Optional.of(SudokuNumber.valueOf(ch)));
+            }
+            boardAsNumbers.add(rowAsNumbers);
+        }
         return new Board<>(boardAsNumbers);
     }
 
@@ -28,11 +29,14 @@ public class BoardFactory {
             var message = "board length is " + board.length() + ", must be " + Board.UNIT_SIZE_SQUARED + '.';
             throw new IllegalArgumentException(message);
         }
-        var boardAsNumbers = IntStream.range(0, Board.UNIT_SIZE)
-                .mapToObj(row -> IntStream.range(0, Board.UNIT_SIZE)
-                        .mapToObj(column -> SudokuNumber.valueOf(board.charAt(row * Board.UNIT_SIZE + column)))
-                        .toList())
-                .toList();
+        var boardAsNumbers = new ArrayList<List<SudokuNumber>>();
+        for (var row = 0; row < Board.UNIT_SIZE; row++) {
+            var rowAsNumbers = new ArrayList<SudokuNumber>();
+            for (var column = 0; column < Board.UNIT_SIZE; column++) {
+                rowAsNumbers.add(SudokuNumber.valueOf(board.charAt(row * Board.UNIT_SIZE + column)));
+            }
+            boardAsNumbers.add(rowAsNumbers);
+        }
         return new Board<>(boardAsNumbers);
     }
 
@@ -42,18 +46,19 @@ public class BoardFactory {
                     '.';
             throw new IllegalArgumentException(message);
         }
-        var boardAsCells = IntStream.range(0, Board.UNIT_SIZE)
-                .mapToObj(row -> IntStream.range(0, Board.UNIT_SIZE)
-                        .<Cell>mapToObj(column -> {
-                            var cell = simpleBoard.charAt(row * Board.UNIT_SIZE + column);
-                            if (cell == '0') {
-                                return new UnsolvedCell(row, column);
-                            } else {
-                                return new SolvedCell(row, column, SudokuNumber.valueOf(cell));
-                            }
-                        })
-                        .toList())
-                .toList();
+        var boardAsCells = new ArrayList<List<Cell>>();
+        for (var row = 0; row < Board.UNIT_SIZE; row++) {
+            var rowAsCells = new ArrayList<Cell>();
+            for (var column = 0; column < Board.UNIT_SIZE; column++) {
+                var cell = simpleBoard.charAt(row * Board.UNIT_SIZE + column);
+                if (cell == '0') {
+                    rowAsCells.add(new UnsolvedCell(row, column));
+                } else {
+                    rowAsCells.add(new SolvedCell(row, column, SudokuNumber.valueOf(cell)));
+                }
+            }
+            boardAsCells.add(rowAsCells);
+        }
         return new Board<>(boardAsCells);
     }
 
@@ -66,13 +71,19 @@ public class BoardFactory {
      * iteration here.
      */
     public static Board<Cell> createCellBoard(Board<Optional<SudokuNumber>> board) {
-        var cellBoard = IntStream.range(0, Board.UNIT_SIZE)
-                .mapToObj(row -> IntStream.range(0, Board.UNIT_SIZE)
-                        .mapToObj(column -> board.get(row, column)
-                                .<Cell>map(cell -> new SolvedCell(row, column, cell))
-                                .orElseGet(() -> new UnsolvedCell(row, column)))
-                        .toList())
-                .toList();
+        var cellBoard = new ArrayList<List<Cell>>();
+        for (var row = 0; row < Board.UNIT_SIZE; row++) {
+            var cellRow = new ArrayList<Cell>();
+            for (var column = 0; column < Board.UNIT_SIZE; column++) {
+                var cell = board.get(row, column);
+                if (cell.isPresent()) {
+                    cellRow.add(new SolvedCell(row, column, cell.get()));
+                } else {
+                    cellRow.add(new UnsolvedCell(row, column));
+                }
+            }
+            cellBoard.add(cellRow);
+        }
         return new Board<>(cellBoard);
     }
 
@@ -119,11 +130,14 @@ public class BoardFactory {
             var message = "Found " + cellBuilders.size() + " cells, required " + Board.UNIT_SIZE_SQUARED + '.';
             throw new IllegalArgumentException(message);
         }
-        var board = IntStream.range(0, Board.UNIT_SIZE)
-                .mapToObj(row -> IntStream.range(0, Board.UNIT_SIZE)
-                        .mapToObj(column -> cellBuilders.get(row * Board.UNIT_SIZE + column).apply(row, column))
-                        .toList())
-                .toList();
+        var board = new ArrayList<List<Cell>>();
+        for (var row = 0; row < Board.UNIT_SIZE; row++) {
+            var rowList = new ArrayList<Cell>();
+            for (var column = 0; column < Board.UNIT_SIZE; column++) {
+                rowList.add(cellBuilders.get(row * Board.UNIT_SIZE + column).apply(row, column));
+            }
+            board.add(rowList);
+        }
         return new Board<>(board);
     }
 }
