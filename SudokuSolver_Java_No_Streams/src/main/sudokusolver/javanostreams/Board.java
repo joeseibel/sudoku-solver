@@ -1,11 +1,8 @@
 package sudokusolver.javanostreams;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /*
  * For the Java implementation, I decided to have a single Board class whereas in Kotlin, I had three classes:
@@ -33,24 +30,37 @@ public record Board<T>(List<List<T>> rows) {
         if (rows.size() != UNIT_SIZE) {
             throw new IllegalArgumentException("rows size is " + rows.size() + ", must be " + UNIT_SIZE + '.');
         }
-        IntStream.range(0, rows.size()).forEach(index -> {
+        for (var index = 0; index < rows.size(); index++) {
             var row = rows.get(index);
             if (row.size() != UNIT_SIZE) {
                 var message = "rows.get(" + index + ") size is " + row.size() + ", must be " + UNIT_SIZE + '.';
                 throw new IllegalArgumentException(message);
             }
-        });
-        this.rows = rows.stream().<List<T>>map(ArrayList::new).toList();
+        }
+        this.rows = new ArrayList<>();
+        for (var row : rows) {
+            this.rows.add(new ArrayList<>(row));
+        }
     }
 
     public List<List<T>> getColumns() {
-        return IntStream.range(0, UNIT_SIZE)
-                .mapToObj(index -> rows.stream().map(row -> row.get(index)).toList())
-                .toList();
+        var columns = new ArrayList<List<T>>();
+        for (var index = 0; index < UNIT_SIZE; index++) {
+            var column = new ArrayList<T>();
+            for (var row : rows) {
+                column.add(row.get(index));
+            }
+            columns.add(column);
+        }
+        return columns;
     }
 
     public List<List<T>> getBlocks() {
-        return IntStream.range(0, UNIT_SIZE).mapToObj(this::getBlock).toList();
+        var blocks = new ArrayList<List<T>>();
+        for (var index = 0; index < UNIT_SIZE; index++) {
+            blocks.add(getBlock(index));
+        }
+        return blocks;
     }
 
     public List<List<T>> getUnits() {
@@ -61,7 +71,11 @@ public record Board<T>(List<List<T>> rows) {
     }
 
     public List<T> getCells() {
-        return rows.stream().flatMap(Collection::stream).toList();
+        var cells = new ArrayList<T>();
+        for (var row : rows) {
+            cells.addAll(row);
+        }
+        return cells;
     }
 
     public T get(int rowIndex, int columnIndex) {
@@ -77,7 +91,11 @@ public record Board<T>(List<List<T>> rows) {
     }
 
     public List<T> getColumn(int columnIndex) {
-        return rows.stream().map(row -> row.get(columnIndex)).toList();
+        var column = new ArrayList<T>();
+        for (var row : rows) {
+            column.add(row.get(columnIndex));
+        }
+        return column;
     }
 
     public List<T> getBlock(int blockIndex) {
@@ -85,76 +103,98 @@ public record Board<T>(List<List<T>> rows) {
             var message = "blockIndex is " + blockIndex + ", must be between 0 and " + (UNIT_SIZE - 1) + '.';
             throw new IllegalArgumentException(message);
         }
-        var rowIndex = blockIndex / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
-        var columnIndex = blockIndex % UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
-        return rows.stream().skip(rowIndex).limit(UNIT_SIZE_SQUARE_ROOT).flatMap(row ->
-                row.stream().skip(columnIndex).limit(UNIT_SIZE_SQUARE_ROOT)
-        ).toList();
+        var startRowIndex = blockIndex / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
+        var endRowIndex = startRowIndex + UNIT_SIZE_SQUARE_ROOT;
+        var startColumnIndex = blockIndex % UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
+        var block = new ArrayList<T>();
+        for (var rowIndex = startRowIndex; rowIndex < endRowIndex; rowIndex++) {
+            for (var columnIndex = startColumnIndex;
+                 columnIndex < startColumnIndex + UNIT_SIZE_SQUARE_ROOT;
+                 columnIndex++
+            ) {
+                block.add(rows.get(rowIndex).get(columnIndex));
+            }
+        }
+        return block;
     }
 
     public <R> Board<R> mapCells(Function<? super T, R> mapper) {
-        return new Board<>(rows.stream().map(row -> row.stream().map(mapper).toList()).toList());
+        var mappedBoard = new ArrayList<List<R>>();
+        for (var row : rows) {
+            var mappedRow = new ArrayList<R>();
+            for (var cell : row) {
+                mappedRow.add(mapper.apply(cell));
+            }
+            mappedBoard.add(mappedRow);
+        }
+        return new Board<>(mappedBoard);
     }
 
     @Override
     public String toString() {
-        return joinRows(0, UNIT_SIZE_SQUARE_ROOT) + "\n" +
-                "------+-------+------\n" +
-                joinRows(UNIT_SIZE_SQUARE_ROOT, UNIT_SIZE_SQUARE_ROOT * 2) + "\n" +
-                "------+-------+------\n" +
-                joinRows(UNIT_SIZE_SQUARE_ROOT * 2, UNIT_SIZE);
+        var builder = new StringBuilder();
+        joinRows(builder, 0, UNIT_SIZE_SQUARE_ROOT);
+        builder.append("\n------+-------+------\n");
+        joinRows(builder, UNIT_SIZE_SQUARE_ROOT, UNIT_SIZE_SQUARE_ROOT * 2);
+        builder.append("\n------+-------+------\n");
+        joinRows(builder, UNIT_SIZE_SQUARE_ROOT * 2, UNIT_SIZE);
+        return builder.toString();
     }
 
     public static String toSimpleString(Board<Cell> board) {
-        return board.rows
-                .stream()
-                .map(row -> row.stream()
-                        .map(cell -> {
-                            if (cell instanceof SolvedCell solvedCell) {
-                                return solvedCell.value().toString();
-                            } else {
-                                return "0";
-                            }
-                        })
-                        .collect(Collectors.joining()))
-                .collect(Collectors.joining());
+        var builder = new StringBuilder();
+        for (var row : board.rows) {
+            for (var cell : row) {
+                builder.append(cell instanceof SolvedCell solvedCell ? solvedCell.value() : '0');
+            }
+        }
+        return builder.toString();
     }
 
     public static String toStringWithCandidates(Board<Cell> board) {
-        return board.rows
-                .stream()
-                .map(row -> row.stream()
-                        .map(cell -> {
-                            if (cell instanceof SolvedCell solvedCell) {
-                                return solvedCell.value().toString();
-                            } else if (cell instanceof UnsolvedCell unsolvedCell) {
-                                var candidates = unsolvedCell.candidates()
-                                        .stream()
-                                        .map(Object::toString)
-                                        .collect(Collectors.joining());
-                                return '{' + candidates + '}';
-                            } else {
-                                throw new IllegalStateException("Unexpected cell: " + cell);
-                            }
-                        })
-                        .collect(Collectors.joining()))
-                .collect(Collectors.joining("\n"));
+        var builder = new StringBuilder();
+        for (var row = board.rows.iterator(); row.hasNext();) {
+            for (var cell : row.next()) {
+                if (cell instanceof SolvedCell solvedCell) {
+                    builder.append(solvedCell.value().toString());
+                } else if (cell instanceof UnsolvedCell unsolvedCell) {
+                    builder.append('{');
+                    for (var candidate : unsolvedCell.candidates()) {
+                        builder.append(candidate);
+                    }
+                    builder.append('}');
+                } else {
+                    throw new IllegalStateException("Unexpected cell: " + cell);
+                }
+            }
+            if (row.hasNext()) {
+                builder.append('\n');
+            }
+        }
+        return builder.toString();
     }
 
-    private String joinRows(int fromIndex, int toIndex) {
-        return rows.subList(fromIndex, toIndex)
-                .stream()
-                .map(row -> {
-                    var first = joinCells(row, 0, UNIT_SIZE_SQUARE_ROOT);
-                    var second = joinCells(row, UNIT_SIZE_SQUARE_ROOT, UNIT_SIZE_SQUARE_ROOT * 2);
-                    var third = joinCells(row, UNIT_SIZE_SQUARE_ROOT * 2, UNIT_SIZE);
-                    return first + " | " + second + " | " + third;
-                })
-                .collect(Collectors.joining("\n"));
+    private void joinRows(StringBuilder builder, int fromIndex, int toIndex) {
+        for (var rowIterator = rows.subList(fromIndex, toIndex).iterator(); rowIterator.hasNext();) {
+            var row = rowIterator.next();
+            joinCells(builder, row, 0, UNIT_SIZE_SQUARE_ROOT);
+            builder.append(" | ");
+            joinCells(builder, row, UNIT_SIZE_SQUARE_ROOT, UNIT_SIZE_SQUARE_ROOT * 2);
+            builder.append(" | ");
+            joinCells(builder, row, UNIT_SIZE_SQUARE_ROOT * 2, UNIT_SIZE);
+            if (rowIterator.hasNext()) {
+                builder.append('\n');
+            }
+        }
     }
 
-    private String joinCells(List<T> row, int fromIndex, int toIndex) {
-        return row.subList(fromIndex, toIndex).stream().map(Object::toString).collect(Collectors.joining(" "));
+    private void joinCells(StringBuilder builder, List<T> row, int fromIndex, int toIndex) {
+        for (var cell = row.subList(fromIndex, toIndex).iterator(); cell.hasNext();) {
+            builder.append(cell.next());
+            if (cell.hasNext()) {
+                builder.append(' ');
+            }
+        }
     }
 
     public static int getBlockIndex(int rowIndex, int columnIndex) {
