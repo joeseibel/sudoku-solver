@@ -1,8 +1,6 @@
 package sudokusolver.javanostreams;
 
-import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.stream.Collectors;
 
 public record RemoveCandidates(int row, int column, EnumSet<SudokuNumber> candidates) implements BoardModification {
     public RemoveCandidates {
@@ -14,17 +12,23 @@ public record RemoveCandidates(int row, int column, EnumSet<SudokuNumber> candid
 
     public RemoveCandidates(UnsolvedCell cell, EnumSet<SudokuNumber> candidates) {
         this(cell.row(), cell.column(), candidates);
-        candidates.forEach(candidate -> {
+        for (var candidate : candidates) {
             if (!cell.candidates().contains(candidate)) {
                 var message = candidate + " is not a candidate for [" + row + ", " + column + "].";
                 throw new IllegalArgumentException(message);
             }
-        });
+        }
     }
 
     public RemoveCandidates(int row, int column, int... candidates) {
-        this(row, column, Arrays.stream(candidates)
-                .mapToObj(candidate -> SudokuNumber.values()[candidate - 1])
-                .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class))));
+        this(row, column, convertCandidates(candidates));
+    }
+
+    private static EnumSet<SudokuNumber> convertCandidates(int[] candidates) {
+        var candidatesSet = EnumSet.noneOf(SudokuNumber.class);
+        for (var candidate : candidates) {
+            candidatesSet.add(SudokuNumber.values()[candidate - 1]);
+        }
+        return candidatesSet;
     }
 }
