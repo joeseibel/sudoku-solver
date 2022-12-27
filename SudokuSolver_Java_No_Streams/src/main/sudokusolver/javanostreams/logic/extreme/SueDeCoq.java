@@ -2,21 +2,17 @@ package sudokusolver.javanostreams.logic.extreme;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.LocatedCandidate;
-import sudokusolver.javanostreams.Pair;
-import sudokusolver.javanostreams.Quad;
+import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
-import sudokusolver.javanostreams.Triple;
 import sudokusolver.javanostreams.UnsolvedCell;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Sue_De_Coq
@@ -40,156 +36,167 @@ import java.util.stream.Stream;
  */
 public class SueDeCoq {
     public static List<RemoveCandidates> sueDeCoq(Board<Cell> board) {
-        var rowRemovals = sueDeCoq(board, board.rows(), Cell::row);
-        var columnRemovals = sueDeCoq(board, board.getColumns(), Cell::column);
-        return Stream.concat(rowRemovals, columnRemovals).collect(LocatedCandidate.mergeToRemoveCandidates());
+        var removals = new Removals();
+        sueDeCoq(removals, board, board.rows(), Cell::row);
+        sueDeCoq(removals, board, board.getColumns(), Cell::column);
+        return removals.toList();
     }
 
-    private static Stream<LocatedCandidate> sueDeCoq(
+    private static void sueDeCoq(
+            Removals removals,
             Board<Cell> board,
             List<List<Cell>> units,
             ToIntFunction<Cell> getUnitIndex
     ) {
-        return units.stream()
-                .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast).toList())
-                .flatMap(unit -> unit.stream()
-                        .collect(Collectors.groupingBy(Cell::block))
-                        .entrySet()
-                        .stream()
-                        .flatMap(entry -> {
-                            var blockIndex = entry.getKey();
-                            var unitByBlock = entry.getValue();
-                            var otherCellsInUnit = unit.stream()
-                                    .filter(cell -> cell.block() != blockIndex)
-                                    .toList();
-                            var block = board.getBlock(blockIndex)
-                                    .stream()
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
-                                    .toList();
-                            var otherCellsInBlock = block.stream()
-                                    .filter(cell -> getUnitIndex.applyAsInt(cell) !=
-                                            getUnitIndex.applyAsInt(unitByBlock.get(0)))
-                                    .toList();
-                            if (unitByBlock.size() == 2) {
-                                return getGroupRemovals(unit, otherCellsInUnit, block, otherCellsInBlock, unitByBlock);
-                            } else if (unitByBlock.size() == 3) {
-                                var allThree = getGroupRemovals(
-                                        unit,
-                                        otherCellsInUnit,
-                                        block,
-                                        otherCellsInBlock,
-                                        unitByBlock
-                                );
-                                var byPairs = unitByBlock.stream()
-                                        .collect(Pair.zipEveryPair())
-                                        .flatMap(pair -> {
-                                            var a = pair.first();
-                                            var b = pair.second();
-                                            return getGroupRemovals(
-                                                    unit,
-                                                    otherCellsInUnit,
-                                                    block,
-                                                    otherCellsInBlock,
-                                                    List.of(a, b)
-                                            );
-                                        });
-                                return Stream.concat(allThree, byPairs);
-                            } else {
-                                return Stream.empty();
-                            }
-                        }));
+        for (var unit : units) {
+            var unsolvedUnit = new ArrayList<UnsolvedCell>();
+            for (var cell : unit) {
+                if (cell instanceof UnsolvedCell unsolved) {
+                    unsolvedUnit.add(unsolved);
+                }
+            }
+            var grouping = new HashMap<Integer, List<UnsolvedCell>>();
+            for (var cell : unsolvedUnit) {
+                grouping.computeIfAbsent(cell.block(), key -> new ArrayList<>()).add(cell);
+            }
+            for (var entry : grouping.entrySet()) {
+                var blockIndex = entry.getKey();
+                var unitByBlock = entry.getValue();
+                var otherCellsInUnit = new ArrayList<UnsolvedCell>();
+                for (var cell : unsolvedUnit) {
+                    if (cell.block() != blockIndex) {
+                        otherCellsInUnit.add(cell);
+                    }
+                }
+                var block = new ArrayList<UnsolvedCell>();
+                for (var cell : board.getBlock(blockIndex)) {
+                    if (cell instanceof UnsolvedCell unsolved) {
+                        block.add(unsolved);
+                    }
+                }
+                var otherCellsInBlock = new ArrayList<UnsolvedCell>();
+                for (var cell : block) {
+                    if (getUnitIndex.applyAsInt(cell) != getUnitIndex.applyAsInt(unitByBlock.get(0))) {
+                        otherCellsInBlock.add(cell);
+                    }
+                }
+                if (unitByBlock.size() == 2) {
+                    getGroupRemovals(removals, unsolvedUnit, otherCellsInUnit, block, otherCellsInBlock, unitByBlock);
+                } else if (unitByBlock.size() == 3) {
+                    for (var i = 0; i < unitByBlock.size() - 1; i++) {
+                        var a = unitByBlock.get(i);
+                        for (var j = i + 1; j < unitByBlock.size(); j++) {
+                            var b = unitByBlock.get(j);
+                            getGroupRemovals(
+                                    removals,
+                                    unsolvedUnit,
+                                    otherCellsInUnit,
+                                    block,
+                                    otherCellsInBlock,
+                                    List.of(a, b)
+                            );
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    private static Stream<LocatedCandidate> getGroupRemovals(
+    private static void getGroupRemovals(
+            Removals removals,
             List<UnsolvedCell> unit,
             List<UnsolvedCell> otherCellsInUnit,
             List<UnsolvedCell> block,
             List<UnsolvedCell> otherCellsInBlock,
             List<UnsolvedCell> group
     ) {
-        var candidates = group.stream()
-                .flatMap(cell -> cell.candidates().stream())
-                .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
+        var candidates = EnumSet.noneOf(SudokuNumber.class);
+        for (var cell : group) {
+            candidates.addAll(cell.candidates());
+        }
         if (candidates.size() >= group.size() + 2) {
-            return getAlmostLockedSets(otherCellsInUnit, candidates)
-                    .flatMap(unitALS -> getAlmostLockedSets(otherCellsInBlock, candidates)
-                            .filter(blockALS -> {
-                                var intersection = EnumSet.copyOf(unitALS.candidates());
-                                intersection.retainAll(blockALS.candidates());
-                                return intersection.isEmpty() &&
-                                        unitALS.candidates().size() + blockALS.candidates().size() == candidates.size();
-                            })
-                            .flatMap(blockALS -> {
-                                var unitRemovals = unit.stream()
-                                        .filter(cell -> !group.contains(cell) && !unitALS.cells().contains(cell))
-                                        .flatMap(cell -> {
-                                            var intersection = EnumSet.copyOf(cell.candidates());
-                                            intersection.retainAll(unitALS.candidates());
-                                            return intersection.stream()
-                                                    .map(candidate -> new LocatedCandidate(cell, candidate));
-                                        });
-                                var blockRemovals = block.stream()
-                                        .filter(cell -> !group.contains(cell) && !blockALS.cells().contains(cell))
-                                        .flatMap(cell -> {
-                                            var intersection = EnumSet.copyOf(cell.candidates());
-                                            intersection.retainAll(blockALS.candidates());
-                                            return intersection.stream()
-                                                    .map(candidate -> new LocatedCandidate(cell, candidate));
-                                        });
-                                return Stream.concat(unitRemovals, blockRemovals);
-                            }));
-        } else {
-            return Stream.empty();
+            for (var unitALS : getAlmostLockedSets(otherCellsInUnit, candidates)) {
+                for (var blockALS : getAlmostLockedSets(otherCellsInBlock, candidates)) {
+                    var alsIntersection = EnumSet.copyOf(unitALS.candidates());
+                    alsIntersection.retainAll(blockALS.candidates());
+                    if (alsIntersection.isEmpty() &&
+                            unitALS.candidates().size() + blockALS.candidates().size() == candidates.size()
+                    ) {
+                        for (var cell : unit) {
+                            if (!group.contains(cell) && !unitALS.cells().contains(cell)) {
+                                var cellIntersection = EnumSet.copyOf(cell.candidates());
+                                cellIntersection.retainAll(unitALS.candidates());
+                                removals.add(cell, cellIntersection);
+                            }
+                        }
+                        for (var cell : block) {
+                            if (!group.contains(cell) && !blockALS.cells().contains(cell)) {
+                                var cellIntersection = EnumSet.copyOf(cell.candidates());
+                                cellIntersection.retainAll(blockALS.candidates());
+                                removals.add(cell, cellIntersection);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
     private record ALS(Set<UnsolvedCell> cells, EnumSet<SudokuNumber> candidates) {
     }
 
-    private static Stream<ALS> getAlmostLockedSets(List<UnsolvedCell> cells, EnumSet<SudokuNumber> groupCandidates) {
-        var almostLockedSets1 = cells.stream()
-                .filter(cell -> cell.candidates().size() == 2 && groupCandidates.containsAll(cell.candidates()))
-                .map(cell -> new ALS(Set.of(cell), cell.candidates()));
-        var almostLockedSets2 = cells.stream()
-                .collect(Pair.zipEveryPair())
-                .map(pair -> {
-                    var a = pair.first();
-                    var b = pair.second();
-                    var candidates = EnumSet.copyOf(a.candidates());
-                    candidates.addAll(b.candidates());
-                    return new ALS(Set.of(a, b), candidates);
-                })
-                .filter(als -> als.candidates().size() == 3 && groupCandidates.containsAll(als.candidates()));
-        var almostLockedSets3 = cells.stream()
-                .collect(Triple.zipEveryTriple())
-                .map(triple -> {
-                    var a = triple.first();
-                    var b = triple.second();
-                    var c = triple.third();
-                    var candidates = EnumSet.copyOf(a.candidates());
-                    candidates.addAll(b.candidates());
-                    candidates.addAll(c.candidates());
-                    return new ALS(Set.of(a, b, c), candidates);
-                })
-                .filter(als -> als.candidates().size() == 4 && groupCandidates.containsAll(als.candidates()));
-        var almostLockedSets4 = cells.stream()
-                .collect(Quad.zipEveryQuad())
-                .map(quad -> {
-                    var a = quad.first();
-                    var b = quad.second();
-                    var c = quad.third();
-                    var d = quad.fourth();
+    private static List<ALS> getAlmostLockedSets(List<UnsolvedCell> cells, EnumSet<SudokuNumber> groupCandidates) {
+        var almostLockedSets = new ArrayList<ALS>();
+        for (var cell : cells) {
+            if (cell.candidates().size() == 2 && groupCandidates.containsAll(cell.candidates())) {
+                almostLockedSets.add(new ALS(Set.of(cell), cell.candidates()));
+            }
+        }
+        for (var i = 0; i < cells.size() - 1; i++) {
+            var a = cells.get(i);
+            for (var j = i + 1; j < cells.size(); j++) {
+                var b = cells.get(j);
+                var candidates = EnumSet.copyOf(a.candidates());
+                candidates.addAll(b.candidates());
+                if (candidates.size() == 3 && groupCandidates.containsAll(candidates)) {
+                    almostLockedSets.add(new ALS(Set.of(a, b), candidates));
+                }
+            }
+        }
+        for (var i = 0; i < cells.size() - 2; i++) {
+            var a = cells.get(i);
+            for (var j = i + 1; j < cells.size() - 1; j++) {
+                var b = cells.get(j);
+                for (var k = j + 1; k < cells.size(); k++) {
+                    var c = cells.get(k);
                     var candidates = EnumSet.copyOf(a.candidates());
                     candidates.addAll(b.candidates());
                     candidates.addAll(c.candidates());
-                    candidates.addAll(d.candidates());
-                    return new ALS(Set.of(a, b, c, d), candidates);
-                })
-                .filter(als -> als.candidates().size() == 5 && groupCandidates.containsAll(als.candidates()));
-        return Stream.of(almostLockedSets1, almostLockedSets2, almostLockedSets3, almostLockedSets4)
-                .flatMap(Function.identity());
+                    if (candidates.size() == 4 && groupCandidates.containsAll(candidates)) {
+                        almostLockedSets.add(new ALS(Set.of(a, b, c), candidates));
+                    }
+                }
+            }
+        }
+        for (var i = 0; i < cells.size() - 3; i++) {
+            var a = cells.get(i);
+            for (var j = i + 1; j < cells.size() - 2; j++) {
+                var b = cells.get(j);
+                for (var k = j + 1; k < cells.size() - 1; k++) {
+                    var c = cells.get(k);
+                    for (var l = k + 1; l < cells.size(); l++) {
+                        var d = cells.get(l);
+                        var candidates = EnumSet.copyOf(a.candidates());
+                        candidates.addAll(b.candidates());
+                        candidates.addAll(c.candidates());
+                        candidates.addAll(d.candidates());
+                        if (candidates.size() == 5 && groupCandidates.containsAll(candidates)) {
+                            almostLockedSets.add(new ALS(Set.of(a, b, c, d), candidates));
+                        }
+                    }
+                }
+            }
+        }
+        return almostLockedSets;
     }
 }
