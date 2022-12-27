@@ -27,11 +27,11 @@ public enum VertexColor {
 
     public static <V, E> Map<V, VertexColor> colorToMap(Graph<V, E> graph) {
         var result = new HashMap<V, VertexColor>();
-        var breadthFirst = new BreadthFirstIterator<>(graph);
-        breadthFirst.forEachRemaining(vertex -> {
+        for (var breadthFirst = new BreadthFirstIterator<>(graph); breadthFirst.hasNext();) {
+            var vertex = breadthFirst.next();
             var color = breadthFirst.getDepth(vertex) % 2 == 0 ? COLOR_ONE : COLOR_TWO;
             result.put(vertex, color);
-        });
+        }
         return result;
     }
 
@@ -39,11 +39,11 @@ public enum VertexColor {
         var result = new HashMap<VertexColor, List<V>>();
         result.put(COLOR_ONE, new ArrayList<>());
         result.put(COLOR_TWO, new ArrayList<>());
-        var breadthFirst = new BreadthFirstIterator<>(graph);
-        breadthFirst.forEachRemaining(vertex -> {
+        for (var breadthFirst = new BreadthFirstIterator<>(graph); breadthFirst.hasNext();) {
+            var vertex = breadthFirst.next();
             var color = breadthFirst.getDepth(vertex) % 2 == 0 ? COLOR_ONE : COLOR_TWO;
             result.get(color).add(vertex);
-        });
+        }
         return result;
     }
 }
