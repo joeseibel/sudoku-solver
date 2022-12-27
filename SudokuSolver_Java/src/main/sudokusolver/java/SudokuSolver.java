@@ -78,7 +78,7 @@ public class SudokuSolver {
         var board = BoardFactory.createCellBoard(input);
         List<? extends BoardModification> modifications;
         do {
-            if (board.getCells().stream().filter(UnsolvedCell.class::isInstance).findAny().isEmpty()) {
+            if (board.getCells().stream().noneMatch(UnsolvedCell.class::isInstance)) {
                 return bruteForceSolution;
             }
             modifications = performNextSolution(board);
