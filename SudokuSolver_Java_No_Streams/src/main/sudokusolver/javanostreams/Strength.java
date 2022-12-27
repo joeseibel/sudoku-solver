@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public enum Strength {
     STRONG {
@@ -59,13 +58,19 @@ public enum Strength {
     public static <V> void trim(Graph<V, StrengthEdge> graph) {
         List<V> toRemove;
         do {
-            toRemove = graph.vertexSet()
-                    .stream()
-                    .filter(vertex -> {
-                        var edges = graph.edgesOf(vertex);
-                        return edges.size() < 2 || edges.stream().noneMatch(edge -> edge.getStrength() == STRONG);
-                    })
-                    .toList();
+            toRemove = new ArrayList<>();
+            outerLoop:
+            for (var vertex : graph.vertexSet()) {
+                var edges = graph.edgesOf(vertex);
+                if (edges.size() >= 2) {
+                    for (var edge : edges) {
+                        if (edge.getStrength() == STRONG) {
+                            continue outerLoop;
+                        }
+                    }
+                }
+                toRemove.add(vertex);
+            }
             if (!toRemove.isEmpty()) {
                 graph.removeAllVertices(toRemove);
             }
@@ -74,10 +79,11 @@ public enum Strength {
 
     public static <V> Set<StrengthEdge> getWeakEdgesInAlternatingCycle(Graph<V, StrengthEdge> graph) {
         var weakEdgesInAlternatingCycle = new HashSet<StrengthEdge>();
-        graph.edgeSet()
-                .stream()
-                .filter(edge -> edge.getStrength() == WEAK && !weakEdgesInAlternatingCycle.contains(edge))
-                .forEach(edge -> weakEdgesInAlternatingCycle.addAll(getAlternatingCycleWeakEdges(graph, edge)));
+        for (var edge : graph.edgeSet()) {
+            if (edge.getStrength() == WEAK && !weakEdgesInAlternatingCycle.contains(edge)) {
+                weakEdgesInAlternatingCycle.addAll(getAlternatingCycleWeakEdges(graph, edge));
+            }
+        }
         return weakEdgesInAlternatingCycle;
     }
 
@@ -98,8 +104,9 @@ public enum Strength {
                 Set.of(start),
                 List.of(startEdge)
         );
-        assert weakEdges.stream().noneMatch(edge -> edge.getStrength() == STRONG) :
-                "There are strong edges in the return value.";
+        for (var edge : weakEdges) {
+            assert edge.getStrength() == WEAK : "There are strong edges in the return value.";
+        }
         return weakEdges;
     }
 
@@ -111,39 +118,41 @@ public enum Strength {
             Set<V> visited,
             List<StrengthEdge> weakEdges
     ) {
-        var nextVertices = graph.edgesOf(currentVertex)
-                .stream()
-                .filter(edge -> edge.getStrength().isCompatibleWith(nextType))
-                .map(edge -> Graphs.getOppositeVertex(graph, edge, currentVertex))
-                .toList();
+        var nextVertices = new ArrayList<V>();
+        for (var edge : graph.edgesOf(currentVertex)) {
+            if (edge.getStrength().isCompatibleWith(nextType)) {
+                nextVertices.add(Graphs.getOppositeVertex(graph, edge, currentVertex));
+            }
+        }
         if (nextType == STRONG && nextVertices.contains(end)) {
             return weakEdges;
         } else {
-            return nextVertices.stream()
-                    .filter(nextVertex -> !nextVertex.equals(end) && !visited.contains(nextVertex))
-                    .map(nextVertex -> {
-                        var nextVisited = new HashSet<>(visited);
-                        nextVisited.add(nextVertex);
-                        var nextEdge = graph.getEdge(currentVertex, nextVertex);
-                        List<StrengthEdge> nextWeakEdges;
-                        if (nextEdge.getStrength() == WEAK) {
-                            nextWeakEdges = new ArrayList<>(weakEdges);
-                            nextWeakEdges.add(nextEdge);
-                        } else {
-                            nextWeakEdges = weakEdges;
-                        }
-                        return getAlternatingCycleWeakEdges(
-                                graph,
-                                end,
-                                nextVertex,
-                                nextType.getOpposite(),
-                                nextVisited,
-                                nextWeakEdges
-                        );
-                    })
-                    .filter(nextResult -> !nextResult.isEmpty())
-                    .findFirst()
-                    .orElseGet(Collections::emptyList);
+            for (var nextVertex : nextVertices) {
+                if (!nextVertex.equals(end) && !visited.contains(nextVertex)) {
+                    var nextVisited = new HashSet<>(visited);
+                    nextVisited.add(nextVertex);
+                    var nextEdge = graph.getEdge(currentVertex, nextVertex);
+                    List<StrengthEdge> nextWeakEdges;
+                    if (nextEdge.getStrength() == WEAK) {
+                        nextWeakEdges = new ArrayList<>(weakEdges);
+                        nextWeakEdges.add(nextEdge);
+                    } else {
+                        nextWeakEdges = weakEdges;
+                    }
+                    var nextResult = getAlternatingCycleWeakEdges(
+                            graph,
+                            end,
+                            nextVertex,
+                            nextType.getOpposite(),
+                            nextVisited,
+                            nextWeakEdges
+                    );
+                    if (!nextResult.isEmpty()) {
+                        return nextResult;
+                    }
+                }
+            }
+            return Collections.emptyList();
         }
     }
 
@@ -152,24 +161,31 @@ public enum Strength {
             V vertex,
             Strength adjacentEdgesType
     ) {
-        return graph.edgesOf(vertex)
-                .stream()
-                .filter(edge -> edge.getStrength() == adjacentEdgesType)
-                .collect(Pair.zipEveryPair())
-                .anyMatch(pair -> {
-                    var edgeA = pair.first();
-                    var edgeB = pair.second();
-                    var start = Graphs.getOppositeVertex(graph, edgeA, vertex);
-                    var end = Graphs.getOppositeVertex(graph, edgeB, vertex);
-                    return alternatingCycleExists(
-                            graph,
-                            adjacentEdgesType,
-                            end,
-                            start,
-                            adjacentEdgesType.getOpposite(),
-                            Set.of(vertex, start)
-                    );
-                });
+        var edges = graph.edgesOf(vertex).toArray(StrengthEdge[]::new);
+        for (var i = 0; i < edges.length - 1; i++) {
+            var edgeA = edges[i];
+            if (edgeA.getStrength() == adjacentEdgesType) {
+                var start = Graphs.getOppositeVertex(graph, edgeA, vertex);
+                for (var j = i + 1; j < edges.length; j++) {
+                    var edgeB = edges[j];
+                    if (edgeB.getStrength() == adjacentEdgesType) {
+                        var end = Graphs.getOppositeVertex(graph, edgeB, vertex);
+                        var cycleExists = alternatingCycleExists(
+                                graph,
+                                adjacentEdgesType,
+                                end,
+                                start,
+                                adjacentEdgesType.getOpposite(),
+                                Set.of(vertex, start)
+                        );
+                        if (cycleExists) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static <V> boolean alternatingCycleExists(
@@ -180,20 +196,21 @@ public enum Strength {
             Strength nextType,
             Set<V> visited
     ) {
-        var nextVertices = graph.edgesOf(currentVertex)
-                .stream()
-                .filter(edge -> edge.getStrength().isCompatibleWith(nextType))
-                .map(edge -> Graphs.getOppositeVertex(graph, edge, currentVertex))
-                .collect(Collectors.toList());
+        var nextVertices = new ArrayList<V>();
+        for (var edge : graph.edgesOf(currentVertex)) {
+            if (edge.getStrength().isCompatibleWith(nextType)) {
+                nextVertices.add(Graphs.getOppositeVertex(graph, edge, currentVertex));
+            }
+        }
         if (adjacentEdgesType.getOpposite() == nextType && nextVertices.contains(end)) {
             return true;
         } else {
             nextVertices.removeAll(visited);
             nextVertices.remove(end);
-            return nextVertices.stream().anyMatch(nextVertex -> {
+            for (var nextVertex : nextVertices) {
                 var nextVisited = new HashSet<>(visited);
                 nextVisited.add(nextVertex);
-                return alternatingCycleExists(
+                var cycleExists = alternatingCycleExists(
                         graph,
                         adjacentEdgesType,
                         end,
@@ -201,7 +218,11 @@ public enum Strength {
                         nextType.getOpposite(),
                         nextVisited
                 );
-            });
+                if (cycleExists) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
