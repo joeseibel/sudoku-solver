@@ -73,10 +73,15 @@ public class BruteForce {
             return moveToNextCell(trialAndError, rowIndex, columnIndex);
         } else {
             var valid = EnumSet.allOf(SudokuNumber.class);
-            trialAndError.getRow(rowIndex).forEach(cell -> cell.ifPresent(valid::remove));
-            trialAndError.getColumn(columnIndex).forEach(cell -> cell.ifPresent(valid::remove));
-            trialAndError.getBlock(Board.getBlockIndex(rowIndex, columnIndex))
-                    .forEach(cell -> cell.ifPresent(valid::remove));
+            for (var cell : trialAndError.getRow(rowIndex)) {
+                cell.ifPresent(valid::remove);
+            }
+            for (var cell : trialAndError.getColumn(columnIndex)) {
+                cell.ifPresent(valid::remove);
+            }
+            for (var cell : trialAndError.getBlock(Board.getBlockIndex(rowIndex, columnIndex))) {
+                cell.ifPresent(valid::remove);
+            }
             var singleSolution = Optional.<Board<SudokuNumber>>empty();
             for (var guess : valid) {
                 trialAndError.set(rowIndex, columnIndex, Optional.of(guess));

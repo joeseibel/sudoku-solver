@@ -45,7 +45,7 @@ public class SudokuAssertions {
         }
         var actual = new ArrayList<>(logicFunction.apply(board));
         Collections.sort(actual);
-        actual.forEach(modification -> {
+        for (var modification : actual) {
             var row = modification.row();
             var column = modification.column();
             var solution = bruteForceSolution.get(row, column);
@@ -62,7 +62,7 @@ public class SudokuAssertions {
                                 "]. Solution is " + solution
                 );
             }
-        });
+        }
         Assertions.assertIterableEquals(expected, actual);
     }
 }

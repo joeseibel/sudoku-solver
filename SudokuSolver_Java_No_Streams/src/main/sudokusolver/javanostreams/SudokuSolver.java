@@ -144,7 +144,7 @@ public class SudokuSolver {
                 return bruteForceSolution;
             }
             modifications = performNextSolution(board);
-            modifications.forEach(modification -> {
+            for (var modification : modifications) {
                 var row = modification.row();
                 var column = modification.column();
                 var cell = board.get(row, column);
@@ -153,7 +153,7 @@ public class SudokuSolver {
                 }
                 var knownSolution = bruteForceSolution.get(row, column);
                 if (modification instanceof RemoveCandidates removeCandidates) {
-                    removeCandidates.candidates().forEach(candidate -> {
+                    for (var candidate : removeCandidates.candidates()) {
                         if (candidate == knownSolution) {
                             var message = "Cannot remove candidate " + candidate + " from [" + row + ", " + column +
                                     ']';
@@ -164,7 +164,7 @@ public class SudokuSolver {
                             throw new IllegalStateException(message);
                         }
                         ((UnsolvedCell) cell).candidates().remove(candidate);
-                    });
+                    }
                 } else if (modification instanceof SetValue setValue) {
                     var value = setValue.value();
                     if (value != knownSolution) {
@@ -174,7 +174,7 @@ public class SudokuSolver {
                     }
                     board.set(row, column, new SolvedCell(row, column, value));
                 }
-            });
+            }
         } while (!modifications.isEmpty());
         throw new UnableToSolveException(board);
     }
