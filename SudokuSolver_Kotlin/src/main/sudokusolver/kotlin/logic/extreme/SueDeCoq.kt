@@ -71,6 +71,7 @@ fun sueDeCoq(board: Board<Cell>): List<RemoveCandidates> {
                     2 -> getGroupRemovals(unitByBlock)
                     3 -> getGroupRemovals(unitByBlock) + unitByBlock.zipEveryPair()
                         .flatMap { getGroupRemovals(it.toList()) }
+
                     else -> emptyList()
                 }
             }
