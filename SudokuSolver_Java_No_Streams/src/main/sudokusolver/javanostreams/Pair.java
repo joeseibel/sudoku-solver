@@ -2,23 +2,8 @@ package sudokusolver.javanostreams;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public record Pair<A, B>(A first, B second) {
-    public static <T> Collector<T, ?, Stream<Pair<T, T>>> zipEveryPair() {
-        return Collectors.collectingAndThen(
-                Collectors.toList(),
-                list -> IntStream.range(0, list.size() - 1)
-                        .mapToObj(first -> IntStream.range(first + 1, list.size())
-                                .mapToObj(second -> new Pair<>(list.get(first), list.get(second))))
-                        .flatMap(Function.identity())
-        );
-    }
-
     /*
      * When I started writing the No Streams version of the Java implementation, I wanted to inline the pair, triple,
      * and quad operations in the form of nested index loops and therefore remove the Pair, Triple, and Quad classes
