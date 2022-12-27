@@ -148,31 +148,32 @@ public class SudokuSolver {
                 var row = modification.row();
                 var column = modification.column();
                 var cell = board.get(row, column);
-                if (!(cell instanceof UnsolvedCell)) {
+                if (cell instanceof UnsolvedCell unsolved) {
+                    var knownSolution = bruteForceSolution.get(row, column);
+                    if (modification instanceof RemoveCandidates removeCandidates) {
+                        for (var candidate : removeCandidates.candidates()) {
+                            if (candidate == knownSolution) {
+                                var message = "Cannot remove candidate " + candidate + " from [" + row + ", " + column +
+                                        ']';
+                                throw new IllegalStateException(message);
+                            }
+                            if (!unsolved.candidates().contains(candidate)) {
+                                var message = candidate + " is not a candidate of [" + row + ", " + column + ']';
+                                throw new IllegalStateException(message);
+                            }
+                            unsolved.candidates().remove(candidate);
+                        }
+                    } else if (modification instanceof SetValue setValue) {
+                        var value = setValue.value();
+                        if (value != knownSolution) {
+                            var message = "Cannot set value " + value + " to [" + row + ", " + column +
+                                    "]. Solution is " + knownSolution;
+                            throw new IllegalStateException(message);
+                        }
+                        board.set(row, column, new SolvedCell(row, column, value));
+                    }
+                } else if (cell instanceof SolvedCell) {
                     throw new IllegalStateException("[" + row + ", " + column + "] is already solved.");
-                }
-                var knownSolution = bruteForceSolution.get(row, column);
-                if (modification instanceof RemoveCandidates removeCandidates) {
-                    for (var candidate : removeCandidates.candidates()) {
-                        if (candidate == knownSolution) {
-                            var message = "Cannot remove candidate " + candidate + " from [" + row + ", " + column +
-                                    ']';
-                            throw new IllegalStateException(message);
-                        }
-                        if (!((UnsolvedCell) cell).candidates().contains(candidate)) {
-                            var message = candidate + " is not a candidate of [" + row + ", " + column + ']';
-                            throw new IllegalStateException(message);
-                        }
-                        ((UnsolvedCell) cell).candidates().remove(candidate);
-                    }
-                } else if (modification instanceof SetValue setValue) {
-                    var value = setValue.value();
-                    if (value != knownSolution) {
-                        var message = "Cannot set value " + value + " to [" + row + ", " + column + "]. Solution is " +
-                                knownSolution;
-                        throw new IllegalStateException(message);
-                    }
-                    board.set(row, column, new SolvedCell(row, column, value));
                 }
             }
         } while (!modifications.isEmpty());
