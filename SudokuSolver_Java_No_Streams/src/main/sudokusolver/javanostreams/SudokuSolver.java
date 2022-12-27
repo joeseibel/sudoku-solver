@@ -40,9 +40,64 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public class SudokuSolver {
+    private static final List<Function<Board<Cell>, List<? extends BoardModification>>> SOLUTIONS = List.of(
+            //Start of simple solutions.
+            PruneCandidates::pruneCandidates,
+            NakedSingles::nakedSingles,
+            HiddenSingles::hiddenSingles,
+            NakedPairs::nakedPairs,
+            NakedTriples::nakedTriples,
+            HiddenPairs::hiddenPairs,
+            HiddenTriples::hiddenTriples,
+            NakedQuads::nakedQuads,
+            HiddenQuads::hiddenQuads,
+            PointingPairsPointingTriples::pointingPairsPointingTriples,
+            BoxLineReduction::boxLineReduction,
+            //Start of tough solutions.
+            XWing::xWing,
+            SimpleColoring::simpleColoringRule2,
+            SimpleColoring::simpleColoringRule4,
+            YWing::yWing,
+            Swordfish::swordfish,
+            XYZWing::xyzWing,
+            //Start of diabolical solutions.
+            XCycles::xCyclesRule1,
+            XCycles::xCyclesRule2,
+            XCycles::xCyclesRule3,
+            b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList),
+            XYChains::xyChains,
+            Medusa::medusaRule1,
+            Medusa::medusaRule2,
+            Medusa::medusaRule3,
+            Medusa::medusaRule4,
+            Medusa::medusaRule5,
+            Medusa::medusaRule6,
+            Jellyfish::jellyfish,
+            UniqueRectangles::uniqueRectanglesType1,
+            UniqueRectangles::uniqueRectanglesType2,
+            UniqueRectangles::uniqueRectanglesType3,
+            UniqueRectangles::uniqueRectanglesType3BWithTriplePseudoCells,
+            UniqueRectangles::uniqueRectanglesType4,
+            UniqueRectangles::uniqueRectanglesType5,
+            ExtendedUniqueRectangles::extendedUniqueRectangles,
+            HiddenUniqueRectangles::hiddenUniqueRectangles,
+            WXYZWing::wxyzWing,
+            AlignedPairExclusion::alignedPairExclusion,
+            //Start of extreme solutions.
+            GroupedXCycles::groupedXCyclesRule1,
+            GroupedXCycles::groupedXCyclesRule2,
+            GroupedXCycles::groupedXCyclesRule3,
+            EmptyRectangles::emptyRectangles,
+            FinnedXWing::finnedXWing,
+            FinnedSwordfish::finnedSwordfish,
+            AlternatingInferenceChains::alternatingInferenceChainsRule1,
+            AlternatingInferenceChains::alternatingInferenceChainsRule2,
+            AlternatingInferenceChains::alternatingInferenceChainsRule3,
+            SueDeCoq::sueDeCoq
+    );
+
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("usage: java sudokusolver.javanostreams.SudokuSolver board");
@@ -78,7 +133,14 @@ public class SudokuSolver {
         var board = BoardFactory.createCellBoard(input);
         List<? extends BoardModification> modifications;
         do {
-            if (board.getCells().stream().filter(UnsolvedCell.class::isInstance).findAny().isEmpty()) {
+            var allSolved = true;
+            for (var cell : board.getCells()) {
+                if (cell instanceof UnsolvedCell) {
+                    allSolved = false;
+                    break;
+                }
+            }
+            if (allSolved) {
                 return bruteForceSolution;
             }
             modifications = performNextSolution(board);
@@ -118,64 +180,12 @@ public class SudokuSolver {
     }
 
     private static List<? extends BoardModification> performNextSolution(Board<Cell> board) {
-        Stream<Function<Board<Cell>, List<? extends BoardModification>>> solutions = Stream.of(
-                //Start of simple solutions.
-                PruneCandidates::pruneCandidates,
-                NakedSingles::nakedSingles,
-                HiddenSingles::hiddenSingles,
-                NakedPairs::nakedPairs,
-                NakedTriples::nakedTriples,
-                HiddenPairs::hiddenPairs,
-                HiddenTriples::hiddenTriples,
-                NakedQuads::nakedQuads,
-                HiddenQuads::hiddenQuads,
-                PointingPairsPointingTriples::pointingPairsPointingTriples,
-                BoxLineReduction::boxLineReduction,
-                //Start of tough solutions.
-                XWing::xWing,
-                SimpleColoring::simpleColoringRule2,
-                SimpleColoring::simpleColoringRule4,
-                YWing::yWing,
-                Swordfish::swordfish,
-                XYZWing::xyzWing,
-                //Start of diabolical solutions.
-                XCycles::xCyclesRule1,
-                XCycles::xCyclesRule2,
-                XCycles::xCyclesRule3,
-                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList),
-                XYChains::xyChains,
-                Medusa::medusaRule1,
-                Medusa::medusaRule2,
-                Medusa::medusaRule3,
-                Medusa::medusaRule4,
-                Medusa::medusaRule5,
-                Medusa::medusaRule6,
-                Jellyfish::jellyfish,
-                UniqueRectangles::uniqueRectanglesType1,
-                UniqueRectangles::uniqueRectanglesType2,
-                UniqueRectangles::uniqueRectanglesType3,
-                UniqueRectangles::uniqueRectanglesType3BWithTriplePseudoCells,
-                UniqueRectangles::uniqueRectanglesType4,
-                UniqueRectangles::uniqueRectanglesType5,
-                ExtendedUniqueRectangles::extendedUniqueRectangles,
-                HiddenUniqueRectangles::hiddenUniqueRectangles,
-                WXYZWing::wxyzWing,
-                AlignedPairExclusion::alignedPairExclusion,
-                //Start of extreme solutions.
-                GroupedXCycles::groupedXCyclesRule1,
-                GroupedXCycles::groupedXCyclesRule2,
-                GroupedXCycles::groupedXCyclesRule3,
-                EmptyRectangles::emptyRectangles,
-                FinnedXWing::finnedXWing,
-                FinnedSwordfish::finnedSwordfish,
-                AlternatingInferenceChains::alternatingInferenceChainsRule1,
-                AlternatingInferenceChains::alternatingInferenceChainsRule2,
-                AlternatingInferenceChains::alternatingInferenceChainsRule3,
-                SueDeCoq::sueDeCoq
-        );
-        return solutions.map(solution -> solution.apply(board))
-                .filter(modifications -> !modifications.isEmpty())
-                .findFirst()
-                .orElse(Collections.emptyList());
+        for (var solution : SOLUTIONS) {
+            var modifications = solution.apply(board);
+            if (!modifications.isEmpty()) {
+                return modifications;
+            }
+        }
+        return Collections.emptyList();
     }
 }
