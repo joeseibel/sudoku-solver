@@ -109,13 +109,7 @@ public record Board<T>(List<List<T>> rows) {
         return board.rows
                 .stream()
                 .map(row -> row.stream()
-                        .map(cell -> {
-                            if (cell instanceof SolvedCell solvedCell) {
-                                return solvedCell.value().toString();
-                            } else {
-                                return "0";
-                            }
-                        })
+                        .map(cell -> cell instanceof SolvedCell solvedCell ? solvedCell.value().toString() : "0")
                         .collect(Collectors.joining()))
                 .collect(Collectors.joining());
     }
