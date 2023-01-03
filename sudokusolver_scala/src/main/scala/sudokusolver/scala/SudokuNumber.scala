@@ -18,8 +18,5 @@ def sudokuNumber(ch: Char): SudokuNumber = ch match
 def parseOptionalBoard(board: String): Board[Option[SudokuNumber]] =
   require(board.length == UnitSizeSquared, s"board length is ${board.length}, must be $UnitSizeSquared.")
   val boardAsNumbers = for row <- board.grouped(UnitSize) yield
-    for cell <- row yield
-      cell match
-        case '0' => None
-        case ch => Some(sudokuNumber(ch))
+    for cell <- row yield if cell == '0' then None else Some(sudokuNumber(cell))
   Board(boardAsNumbers.to(Iterable))
