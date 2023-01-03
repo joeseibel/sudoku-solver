@@ -20,3 +20,7 @@ def parseOptionalBoard(board: String): Board[Option[SudokuNumber]] =
   val boardAsNumbers = for row <- board.grouped(UnitSize) yield
     for cell <- row yield if cell == '0' then None else Some(sudokuNumber(cell))
   Board(boardAsNumbers.to(Iterable))
+
+def parseBoard(board: String): Board[SudokuNumber] =
+  require(board.length == UnitSizeSquared, s"board length is ${board.length}, must be $UnitSizeSquared.")
+  Board(board.grouped(UnitSize).map(row => row.map(sudokuNumber)).to(Iterable))
