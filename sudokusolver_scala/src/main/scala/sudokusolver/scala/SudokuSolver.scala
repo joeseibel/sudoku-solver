@@ -5,3 +5,5 @@ package sudokusolver.scala
     println(s"board must be $UnitSizeSquared numbers with blanks expressed as 0")
   else
     println(s"board is $board")
+    val optionalBoard = parseOptionalBoard(board)
+    println(s"parsed optional board is ${optionalBoard.rows}")
