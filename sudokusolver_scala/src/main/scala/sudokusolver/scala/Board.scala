@@ -24,20 +24,20 @@ class Board[+T](elements: Iterable[Iterable[T]]):
   for (row, index) <- rows.zipWithIndex do
     require(row.size == UnitSize, s"elements($index) size is ${row.size}, must be $UnitSize.")
 
-  lazy val columns: IndexedSeq[IndexedSeq[T]] = (0 until UnitSize).map(index => rows.map(row => row(index)))
-  lazy val blocks: IndexedSeq[IndexedSeq[T]] = (0 until UnitSize).map(getBlock)
-  lazy val cells: IndexedSeq[T] = rows.flatten
+  lazy val columns: IndexedSeq[Vector[T]] = (0 until UnitSize).map(index => rows.map(row => row(index)))
+  lazy val blocks: IndexedSeq[Vector[T]] = (0 until UnitSize).map(getBlock)
+  lazy val cells: Vector[T] = rows.flatten
 
   def apply(rowIndex: Int, columnIndex: Int): T = rows(rowIndex)(columnIndex)
 
   def updated[U >: T](rowIndex: Int, columnIndex: Int, element: U): Board[U] =
     Board(rows.updated(rowIndex, rows(rowIndex).updated(columnIndex, element)))
 
-  def getRow(rowIndex: Int): IndexedSeq[T] = rows(rowIndex)
+  def getRow(rowIndex: Int): Vector[T] = rows(rowIndex)
 
-  def getColumn(columnIndex: Int): IndexedSeq[T] = rows.map(row => row(columnIndex))
+  def getColumn(columnIndex: Int): Vector[T] = rows.map(row => row(columnIndex))
 
-  def getBlock(blockIndex: Int): IndexedSeq[T] =
+  def getBlock(blockIndex: Int): Vector[T] =
     require(0 until UnitSize contains blockIndex, s"blockIndex is $blockIndex, must be between 0 and ${UnitSize - 1}.")
     val rowIndex = blockIndex / UnitSizeSquareRoot * UnitSizeSquareRoot
     val columnIndex = blockIndex % UnitSizeSquareRoot * UnitSizeSquareRoot
