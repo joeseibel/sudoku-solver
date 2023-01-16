@@ -1,10 +1,17 @@
 package sudokusolver.scala
 
-sealed trait Cell
+sealed trait Cell:
+  val row: Int
+  val column: Int
+  lazy val block: Int = getBlockIndex(row, column)
 
-class SolvedCell(rowIndex: Int, columnIndex: Int, value: SudokuNumber) extends Cell
+case class SolvedCell(override val row: Int, override val column: Int, value: SudokuNumber) extends Cell
 
-class UnsolvedCell(row: Int, column: Int) extends Cell
+class UnsolvedCell(
+                    override val row: Int,
+                    override val column: Int,
+                    val candidates: Set[SudokuNumber] = SudokuNumber.values.toSet
+                  ) extends Cell
 
 def parseSimpleCells(simpleBoard: String): Board[Cell] =
   require(
