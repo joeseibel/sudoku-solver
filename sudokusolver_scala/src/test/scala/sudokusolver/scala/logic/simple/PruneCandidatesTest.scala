@@ -79,5 +79,5 @@ class PruneCandidatesTest extends FunSuite:
         s"Cannot remove candidate $solution from [$row, $column]"
       )
     }
-    assertEquals(expected, actual)
+    assertEquals(actual, expected)
   }
