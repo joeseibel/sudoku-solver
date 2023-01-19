@@ -17,3 +17,12 @@ object RemoveCandidates:
 
   def apply(row: Int, column: Int, candidates: Int*): RemoveCandidates =
     RemoveCandidates(row, column, candidates.map(candidate => SudokuNumber.values(candidate - 1)).toSet)
+
+case class SetValue(override val row: Int, override val column: Int, value: SudokuNumber) extends BoardModification
+
+object SetValue:
+  def apply(cell: UnsolvedCell, value: SudokuNumber): SetValue =
+    require(cell.candidates.contains(value), s"$value is not a candidate for [${cell.row}, ${cell.column}].")
+    SetValue(cell.row, cell.column, value)
+
+  def apply(row: Int, column: Int, value: Int): SetValue = SetValue(row, column, SudokuNumber.values(value - 1))
