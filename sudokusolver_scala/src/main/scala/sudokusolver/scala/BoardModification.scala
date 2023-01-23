@@ -4,15 +4,22 @@ sealed trait BoardModification extends Ordered[BoardModification]:
   val row: Int
   val column: Int
 
+  require(0 until UnitSize contains row, s"row is $row, must be between 0 and ${UnitSize - 1}.")
+  require(0 until UnitSize contains column, s"column is $column, must be between 0 and ${UnitSize - 1}.")
+
   override def compare(that: BoardModification): Int =
     val rowCompare = row.compareTo(that.row)
     if rowCompare != 0 then rowCompare else column.compareTo(that.column)
 
 case class RemoveCandidates(override val row: Int, override val column: Int, candidates: Set[SudokuNumber])
-  extends BoardModification
+  extends BoardModification:
+
+  require(candidates.nonEmpty, "candidates must not be empty.")
 
 object RemoveCandidates:
   def apply(cell: UnsolvedCell, candidates: Set[SudokuNumber]): RemoveCandidates =
+    for candidate <- candidates do
+      require(cell.candidates.contains(candidate), s"$candidate is not a candidate for [${cell.row}, ${cell.column}].")
     RemoveCandidates(cell.row, cell.column, candidates)
 
   def apply(row: Int, column: Int, candidates: Int*): RemoveCandidates =

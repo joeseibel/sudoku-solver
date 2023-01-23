@@ -3,6 +3,8 @@ package sudokusolver.scala
 enum SudokuNumber:
   case ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE
 
+  override def toString: String = s"${ordinal + 1}"
+
 def sudokuNumber(ch: Char): SudokuNumber = ch match
   case '1' => SudokuNumber.ONE
   case '2' => SudokuNumber.TWO
