@@ -2,7 +2,7 @@ package sudokusolver.scala.logic.simple
 
 import munit.FunSuite
 import sudokusolver.scala.logic.BruteForceSolution.SingleSolution
-import sudokusolver.scala.logic.bruteForce
+import sudokusolver.scala.logic.{assertLogicalSolution, bruteForce}
 import sudokusolver.scala.{RemoveCandidates, SolvedCell, UnsolvedCell, parseSimpleCells}
 
 class PruneCandidatesTest extends FunSuite:
@@ -63,21 +63,5 @@ class PruneCandidatesTest extends FunSuite:
       RemoveCandidates(8, 7, 1, 2, 3, 4, 5, 7, 8, 9),
       RemoveCandidates(8, 8, 3, 4, 5, 8, 9)
     )
-    val cellBoard = parseSimpleCells(board)
-    val numberBoard = cellBoard.mapCells {
-      case SolvedCell(_, _, value) => Some(value)
-      case _: UnsolvedCell => None
-    }
-    val bruteForceSolution = bruteForce(numberBoard).asInstanceOf[SingleSolution].solution
-    val actual = pruneCandidates(cellBoard).sorted
-    actual.foreach { modification =>
-      val row = modification.row
-      val column = modification.column
-      val solution = bruteForceSolution(row, column)
-      assert(
-        !modification.candidates.contains(solution),
-        s"Cannot remove candidate $solution from [$row, $column]"
-      )
-    }
-    assertEquals(actual, expected)
+    assertLogicalSolution(expected, parseSimpleCells(board), pruneCandidates)
   }

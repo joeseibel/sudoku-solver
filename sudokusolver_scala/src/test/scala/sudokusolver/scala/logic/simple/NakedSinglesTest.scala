@@ -2,7 +2,7 @@ package sudokusolver.scala.logic.simple
 
 import munit.FunSuite
 import sudokusolver.scala.logic.BruteForceSolution.SingleSolution
-import sudokusolver.scala.logic.bruteForce
+import sudokusolver.scala.logic.{assertLogicalSolution, bruteForce}
 import sudokusolver.scala.{SetValue, SolvedCell, UnsolvedCell, parseCellsWithCandidates}
 
 class NakedSinglesTest extends FunSuite:
@@ -23,22 +23,5 @@ class NakedSinglesTest extends FunSuite:
       SetValue(0, 7, 9),
       SetValue(8, 7, 6)
     )
-    val cellBoard = parseCellsWithCandidates(board)
-    val numberBoard = cellBoard.mapCells {
-      case SolvedCell(_, _, value) => Some(value)
-      case _: UnsolvedCell => None
-    }
-    val bruteForceSolution = bruteForce(numberBoard).asInstanceOf[SingleSolution].solution
-    val actual = nakedSingles(cellBoard).sorted
-    actual.foreach { modification =>
-      val row = modification.row
-      val column = modification.column
-      val solution = bruteForceSolution(row, column)
-      assertEquals(
-        modification.value,
-        solution,
-        s"Cannot set value ${modification.value} to [$row, $column]. Solution is $solution"
-      )
-    }
-    assertEquals(actual, expected)
+    assertLogicalSolution(expected, board, nakedSingles)
   }
