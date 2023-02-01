@@ -1,5 +1,7 @@
 package sudokusolver.scala
 
+import scala.annotation.tailrec
+
 sealed trait Cell:
   val row: Int
   val column: Int
@@ -27,31 +29,42 @@ def parseSimpleCells(simpleBoard: String): Board[Cell] =
       if cell == '0' then UnsolvedCell(rowIndex, columnIndex) else SolvedCell(rowIndex, columnIndex, sudokuNumber(cell))
   Board(cells.to(Iterable))
 
+/*
+ * The Scala version of parseCellsWithCandidates was written to be purely functional. Unlike the Kotlin or Java
+ * implementations, it does not contain any 'var' declarations or mutable collections. While loops have been replaced
+ * with tail recursion. This function also makes extensive use of Scala's pattern matching. This is why the parameter
+ * withCandidates is converted from a String to a List[Char]. By converting it to a List, pattern matching can be
+ * applied using the "head :: tail" construct.
+ */
 def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
-  var cellBuilders: List[(Int, Int) => Cell] = Nil
-  var index = 0
-  while index < withCandidates.length do
-    val ch = withCandidates(index)
-    if '1' to '9' contains ch then
-      cellBuilders = cellBuilders :+ ((row, column) => SolvedCell(row, column, sudokuNumber(ch)))
-      index = index + 1
-    else if ch == '{' then
-      index = index + 1
-      val closingBrace = withCandidates.indexOf('}', index)
-      require(closingBrace != -1, "Unmatched '{'.")
-      require(closingBrace != index, "Empty \"{}\".")
-      val charsInBrace = (index until closingBrace).map(withCandidates(_))
-      require(!charsInBrace.contains('{'), "Nested '{'.")
-      for charInBrace <- charsInBrace do require('1' to '9' contains charInBrace, s"Invalid character: '$charInBrace'.")
-      val candidates = charsInBrace.map(sudokuNumber).toSet
-      cellBuilders = cellBuilders :+ ((row, column) => UnsolvedCell(row, column, candidates))
-      index = closingBrace + 1
-    else if ch == '}' then
-      throw IllegalArgumentException("Unmatched '}'.")
-    else
-      throw IllegalArgumentException(s"Invalid character: '$ch'.")
+  type CellBuilder = (Int, Int) => Cell
+
+  @tailrec
+  def getCellBuilders(acc: List[CellBuilder], withCandidates: List[Char]): List[CellBuilder] = withCandidates match
+    case '{' :: tail =>
+
+      @tailrec
+      def collectCandidates(acc: List[Char], withCandidates: List[Char]): (Set[SudokuNumber], List[Char]) =
+        withCandidates match
+          case '{' :: _ => throw IllegalArgumentException("Nested '{'.")
+          case '}' :: _ if acc.isEmpty => throw IllegalArgumentException("Empty \"{}\".")
+          case '}' :: tail => (acc.map(sudokuNumber).toSet, tail)
+          case ch :: tail if '1' to '9' contains ch => collectCandidates(ch :: acc, tail)
+          case ch :: _ => throw IllegalArgumentException(s"Invalid character: '$ch'.")
+          case Nil => throw IllegalArgumentException("Unmatched '{'.")
+
+      val (candidates, next) = collectCandidates(Nil, tail)
+      val builder = (row, column) => UnsolvedCell(row, column, candidates)
+      getCellBuilders(builder :: acc, next)
+    case '}' :: _ => throw IllegalArgumentException("Unmatched '}'.")
+    case ch :: tail if '1' to '9' contains ch =>
+      val builder = (row, column) => SolvedCell(row, column, sudokuNumber(ch))
+      getCellBuilders(builder :: acc, tail)
+    case ch :: _ => throw IllegalArgumentException(s"Invalid character: '$ch'.")
+    case Nil => acc.reverse
+
+  val cellBuilders = getCellBuilders(Nil, withCandidates.toList)
   require(cellBuilders.size == UnitSizeSquared, s"Found ${cellBuilders.size} cells, required $UnitSizeSquared.")
-  val cells = cellBuilders.grouped(UnitSize).zipWithIndex.map { (row, rowIndex) =>
-    row.zipWithIndex.map { (cell, columnIndex) => cell(rowIndex, columnIndex) }
-  }
+  val cells = for (row, rowIndex) <- cellBuilders.grouped(UnitSize).zipWithIndex yield
+    for (cell, columnIndex) <- row.zipWithIndex yield cell(rowIndex, columnIndex)
   Board(cells.to(Iterable))

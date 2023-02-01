@@ -34,22 +34,22 @@ class CellTest extends FunSuite:
   }
 
   test("parseCellsWithCandidates unmatched opening brace") {
-    val message = "requirement failed: Unmatched '{'."
+    val message = "Unmatched '{'."
     interceptMessage[IllegalArgumentException](message)(parseCellsWithCandidates("{"))
   }
 
   test("parseCellsWithCandidates empty braces") {
-    val message = "requirement failed: Empty \"{}\"."
+    val message = "Empty \"{}\"."
     interceptMessage[IllegalArgumentException](message)(parseCellsWithCandidates("{}"))
   }
 
   test("parseCellsWithCandidates nested brace") {
-    val message = "requirement failed: Nested '{'."
+    val message = "Nested '{'."
     interceptMessage[IllegalArgumentException](message)(parseCellsWithCandidates("{{}"))
   }
 
   test("parseCellsWithCandidates invalid character in braces") {
-    val message = "requirement failed: Invalid character: 'a'."
+    val message = "Invalid character: 'a'."
     interceptMessage[IllegalArgumentException](message)(parseCellsWithCandidates("{a}"))
   }
 
