@@ -56,31 +56,27 @@ def solve(input: Board[Option[SudokuNumber]]): SolveResult = bruteForce(input) m
         performNextSolution(board).toList match
           case Nil => UnableToSolve(board)
           case modifications =>
-
-            @tailrec
-            def modifyBoard(board: Board[Cell], modifications: List[BoardModification]): Board[Cell] =
-              modifications match
-                case Nil => board
-                case modification :: tail => board(modification.row, modification.column) match
-                  case SolvedCell(row, column, _) => throw IllegalStateException(s"[$row, $column] is already solved.")
-                  case UnsolvedCell(row, column, existingCandidates) =>
-                    val knownSolution = bruteForceSolution(row, column)
-                    val newCell = modification match
-                      case RemoveCandidates(_, _, candidatesToRemove) =>
-                        for candidate <- candidatesToRemove do
-                          if candidate == knownSolution then
-                            throw IllegalStateException(s"Cannot remove candidate $candidate from [$row, $column")
-                          if !existingCandidates.contains(candidate) then
-                            throw IllegalStateException(s"$candidate is not a candidate of [$row, $column]")
-                        UnsolvedCell(row, column, existingCandidates -- candidatesToRemove)
-                      case SetValue(_, _, value) =>
-                        if value != knownSolution then
-                          val message = s"Cannot set value $value to [$row, $column]. Solution is $knownSolution"
-                          throw IllegalStateException(message)
-                        SolvedCell(row, column, value)
-                    modifyBoard(board.updated(row, column, newCell), tail)
-
-            solve(modifyBoard(board, modifications))
+            val withModifications = modifications.foldLeft(board) { (board, modification) =>
+              board(modification.row, modification.column) match
+                case SolvedCell(row, column, _) => throw IllegalStateException(s"[$row, $column] is already solved.")
+                case UnsolvedCell(row, column, existingCandidates) =>
+                  val knownSolution = bruteForceSolution(row, column)
+                  val newCell = modification match
+                    case RemoveCandidates(_, _, candidatesToRemove) =>
+                      for candidate <- candidatesToRemove do
+                        if candidate == knownSolution then
+                          throw IllegalStateException(s"Cannot remove candidate $candidate from [$row, $column]")
+                        if !existingCandidates.contains(candidate) then
+                          throw IllegalStateException(s"$candidate is not a candidate of [$row, $column]")
+                      UnsolvedCell(row, column, existingCandidates -- candidatesToRemove)
+                    case SetValue(_, _, value) =>
+                      if value != knownSolution then
+                        val message = s"Cannot set value $value to [$row, $column]. Solution is $knownSolution"
+                        throw IllegalStateException(message)
+                      SolvedCell(row, column, value)
+                    board.updated(row, column, newCell)
+            }
+            solve(withModifications)
 
     solve(createCellBoard(input))
 
