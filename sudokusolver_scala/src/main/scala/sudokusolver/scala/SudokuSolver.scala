@@ -11,12 +11,12 @@ import scala.collection.immutable.{AbstractSeq, LinearSeq}
   if board.length != UnitSizeSquared || board.exists(!('0' to '9').contains(_)) then
     println(s"board must be $UnitSizeSquared numbers with blanks expressed as 0")
   else
-    println(s"board is $board")
-    val optionalBoard = parseOptionalBoard(board)
-    println(s"parsed optional board is ${optionalBoard.rows}")
-    val bruteForceSolution = bruteForce(optionalBoard)
-    println(s"brute force solution is $bruteForceSolution")
-
+    val message = solve(parseOptionalBoard(board)) match
+      case InvalidNoSolutions => "No Solutions"
+      case InvalidMultipleSolutions => "Multiple Solutions"
+      case Solution(board) => board
+      case unableToSolve: UnableToSolve => unableToSolve.message
+    println(message)
 
 sealed trait SolveResult
 
