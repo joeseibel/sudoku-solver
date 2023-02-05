@@ -161,8 +161,8 @@ public class SudokuSolver {
                                 var message = candidate + " is not a candidate of [" + row + ", " + column + ']';
                                 throw new IllegalStateException(message);
                             }
-                            unsolved.candidates().remove(candidate);
                         }
+                        unsolved.candidates().removeAll(removeCandidates.candidates());
                     } else if (modification instanceof SetValue setValue) {
                         var value = setValue.value();
                         if (value != knownSolution) {
