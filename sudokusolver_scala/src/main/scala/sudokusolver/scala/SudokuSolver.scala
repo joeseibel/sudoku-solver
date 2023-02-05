@@ -53,8 +53,8 @@ def solve(input: Board[Option[SudokuNumber]]): SolveResult = bruteForce(input) m
       if board.cells.collect { case cell: UnsolvedCell => cell }.isEmpty then
         Solution(bruteForceSolution)
       else
-        performNextSolution(board).toList match
-          case Nil => UnableToSolve(board)
+        performNextSolution(board) match
+          case Seq() => UnableToSolve(board)
           case modifications =>
             val withModifications = modifications.foldLeft(board) { (board, modification) =>
               board(modification.row, modification.column) match
