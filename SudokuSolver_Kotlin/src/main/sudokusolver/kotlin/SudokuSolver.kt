@@ -134,8 +134,8 @@ fun solve(input: Board<SudokuNumber?>): SolveResult {
                                 check(candidate in cell.candidates) {
                                     "$candidate is not a candidate of [$row, $column]"
                                 }
-                                cell.candidates -= candidate
                             }
+                            cell.candidates -= modification.candidates
                         }
 
                         is SetValue -> {
