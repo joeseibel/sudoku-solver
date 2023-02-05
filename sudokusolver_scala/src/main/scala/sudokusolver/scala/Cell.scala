@@ -10,14 +10,35 @@ sealed trait Cell:
   require((0 until UnitSize).contains(row), s"row is $row, must be between 0 and ${UnitSize - 1}.")
   require((0 until UnitSize).contains(column), s"column is $column, must be between 0 and ${UnitSize - 1}.")
 
-case class SolvedCell(override val row: Int, override val column: Int, value: SudokuNumber) extends Cell
+case class SolvedCell(override val row: Int, override val column: Int, value: SudokuNumber) extends Cell:
+  override def toString: String = value.toString
 
-class UnsolvedCell(
-                    override val row: Int,
-                    override val column: Int,
-                    val candidates: Set[SudokuNumber] = SudokuNumber.values.toSet
-                  ) extends Cell:
+case class UnsolvedCell(
+                         override val row: Int,
+                         override val column: Int,
+                         candidates: Set[SudokuNumber] = SudokuNumber.values.toSet
+                       ) extends Cell:
   require(candidates.nonEmpty, "candidates must not be empty.")
+
+  override def toString: String = "0"
+
+extension (board: Board[Cell])
+  def toSimpleString: String = board.cells.map {
+    case SolvedCell(_, _, value) => value.toString
+    case UnsolvedCell(_, _, _) => "0"
+  }.mkString
+
+  def toStringWithCandidates: String = board.rows.map { row =>
+    row.map {
+      case SolvedCell(_, _, value) => value.toString
+      case UnsolvedCell(_, _, candidates) => s"{${candidates.toSeq.sortBy(_.ordinal).mkString}}"
+    }.mkString
+  }.mkString("\n")
+
+def createCellBoard(board: Board[Option[SudokuNumber]]): Board[Cell] = board.mapCellsIndexed {
+  case (row, column, Some(value)) => SolvedCell(row, column, value)
+  case (row, column, None) => UnsolvedCell(row, column)
+}
 
 def parseSimpleCells(simpleBoard: String): Board[Cell] =
   require(

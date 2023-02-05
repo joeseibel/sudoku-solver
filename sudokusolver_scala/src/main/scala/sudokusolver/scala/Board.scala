@@ -51,7 +51,29 @@ class Board[+T](elements: Iterable[Iterable[T]]):
 
   override def hashCode(): Int = rows.hashCode()
 
+  override def toString: String =
+    def joinRows(fromIndex: Int, toIndex: Int) =
+      rows.slice(fromIndex, toIndex).map { row =>
+        def joinCells(fromIndex: Int, toIndex: Int) = row.slice(fromIndex, toIndex).mkString(" ")
+
+        val first = joinCells(0, UnitSizeSquareRoot)
+        val second = joinCells(UnitSizeSquareRoot, UnitSizeSquareRoot * 2)
+        val third = joinCells(UnitSizeSquareRoot * 2, UnitSize)
+        s"$first | $second | $third"
+      }.mkString("\n")
+
+    s"""|${joinRows(0, UnitSizeSquareRoot)}
+        |------+-------+------
+        |${joinRows(UnitSizeSquareRoot, UnitSizeSquareRoot * 2)}
+        |------+-------+------
+        |${joinRows(UnitSizeSquareRoot * 2, UnitSize)}""".stripMargin
+
   def mapCells[R](transform: T => R): Board[R] = Board(rows.map(row => row.map(transform)))
+
+  def mapCellsIndexed[R](transform: (Int, Int, T) => R): Board[R] =
+    val cells = for (row, rowIndex) <- rows.zipWithIndex yield
+      for (cell, columnIndex) <- row.zipWithIndex yield transform(rowIndex, columnIndex, cell)
+    Board(cells)
 
 def getBlockIndex(rowIndex: Int, columnIndex: Int): Int =
   rowIndex / UnitSizeSquareRoot * UnitSizeSquareRoot + columnIndex / UnitSizeSquareRoot
