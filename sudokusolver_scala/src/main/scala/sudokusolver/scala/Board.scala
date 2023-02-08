@@ -26,6 +26,7 @@ class Board[+T](elements: Iterable[Iterable[T]]):
 
   lazy val columns: IndexedSeq[Vector[T]] = (0 until UnitSize).map(index => rows.map(row => row(index)))
   lazy val blocks: IndexedSeq[Vector[T]] = (0 until UnitSize).map(getBlock)
+  lazy val units: Vector[Vector[T]] = rows ++ columns ++ blocks
   lazy val cells: Vector[T] = rows.flatten
 
   def apply(rowIndex: Int, columnIndex: Int): T = rows(rowIndex)(columnIndex)

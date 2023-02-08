@@ -2,7 +2,7 @@ package sudokusolver.scala
 
 import sudokusolver.scala.logic.BruteForceSolution.{MultipleSolutions, NoSolutions, SingleSolution}
 import sudokusolver.scala.logic.bruteForce
-import sudokusolver.scala.logic.simple.{nakedSingles, pruneCandidates}
+import sudokusolver.scala.logic.simple.{hiddenSingles, nakedSingles, pruneCandidates}
 
 import scala.annotation.tailrec
 import scala.collection.immutable.{AbstractSeq, LinearSeq}
@@ -74,7 +74,7 @@ def solve(input: Board[Option[SudokuNumber]]): SolveResult = bruteForce(input) m
                         val message = s"Cannot set value $value to [$row, $column]. Solution is $knownSolution"
                         throw IllegalStateException(message)
                       SolvedCell(row, column, value)
-                    board.updated(row, column, newCell)
+                  board.updated(row, column, newCell)
             }
             solve(withModifications)
 
@@ -84,6 +84,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
 //Start of simple solutions.
   pruneCandidates(board)
     .ifEmpty(nakedSingles(board))
+    .ifEmpty(hiddenSingles(board))
 
 extension[T] (seq: Seq[T])
   def ifEmpty(defaultValue: => Seq[T]): Seq[T] =
