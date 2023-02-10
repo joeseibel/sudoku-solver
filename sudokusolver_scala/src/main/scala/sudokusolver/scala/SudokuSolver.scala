@@ -2,7 +2,7 @@ package sudokusolver.scala
 
 import sudokusolver.scala.logic.BruteForceSolution.{MultipleSolutions, NoSolutions, SingleSolution}
 import sudokusolver.scala.logic.bruteForce
-import sudokusolver.scala.logic.simple.{hiddenSingles, nakedPairs, nakedSingles, pruneCandidates}
+import sudokusolver.scala.logic.simple.{hiddenSingles, nakedPairs, nakedSingles, nakedTriples, pruneCandidates}
 
 import scala.annotation.tailrec
 import scala.collection.immutable.{AbstractSeq, LinearSeq}
@@ -86,6 +86,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     .ifEmpty(nakedSingles(board))
     .ifEmpty(hiddenSingles(board))
     .ifEmpty(nakedPairs(board))
+    .ifEmpty(nakedTriples(board))
 
 extension[T] (seq: Seq[T])
   def ifEmpty(defaultValue: => Seq[T]): Seq[T] =
