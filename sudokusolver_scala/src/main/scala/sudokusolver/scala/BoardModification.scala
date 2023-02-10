@@ -33,3 +33,14 @@ object SetValue:
     SetValue(cell.row, cell.column, value)
 
   def apply(row: Int, column: Int, value: Int): SetValue = SetValue(row, column, SudokuNumber.values(value - 1))
+
+extension (seq: Seq[LocatedCandidate])
+  /*
+   * The receiver represents a list of numbers that should be removed from specific cells. This helper function allows
+   * the logic functions to focus on simply marking the numbers to be removed, then at the end use this function to
+   * produce at most one RemoveCandidates per cell.
+   */
+  def mergeToRemoveCandidates: Seq[RemoveCandidates] =
+    seq.groupMap((cell, _) => cell)((_, candidate) => candidate)
+      .map((cell, candidates) => RemoveCandidates(cell, candidates.toSet))
+      .toSeq

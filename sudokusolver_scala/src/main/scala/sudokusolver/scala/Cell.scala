@@ -22,6 +22,8 @@ case class UnsolvedCell(
 
   override def toString: String = "0"
 
+type LocatedCandidate = (UnsolvedCell, SudokuNumber)
+
 extension (board: Board[Cell])
   def toSimpleString: String = board.cells.map {
     case SolvedCell(_, _, value) => value.toString
