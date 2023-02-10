@@ -2,6 +2,12 @@ package sudokusolver.scala.logic.simple
 
 import sudokusolver.scala.{Board, Cell, RemoveCandidates, UnsolvedCell, mergeToRemoveCandidates, zipEveryTriple}
 
+/*
+ * http://www.sudokuwiki.org/Naked_Candidates#NT
+ *
+ * If a unit has three unsolved cells with a total of three candidates among them, then those three candidates must be
+ * placed in those three cells. The three candidates can be removed from every other cell in the unit.
+ */
 def nakedTriples(board: Board[Cell]): Seq[RemoveCandidates] =
   val removals = board.units.flatMap { unit =>
     unit.collect { case cell: UnsolvedCell => cell }.zipEveryTriple.flatMap { (a, b, c) =>
