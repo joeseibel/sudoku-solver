@@ -11,7 +11,7 @@ import sudokusolver.scala.*
 def nakedPairs(board: Board[Cell]): Seq[RemoveCandidates] =
   val removals = for
     unit <- board.units
-    (a, b) <- unit.collect { case cell: UnsolvedCell => cell }.filter(_.candidates.size == 2).zipEveryPair
+    (a, b) <- unit.collect { case cell: UnsolvedCell if cell.candidates.size == 2 => cell }.zipEveryPair
     if a.candidates == b.candidates
     cell <- unit.collect { case cell: UnsolvedCell => cell }
     if cell != a && cell != b
