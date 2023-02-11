@@ -81,14 +81,13 @@ def solve(input: Board[Option[SudokuNumber]]): SolveResult = bruteForce(input) m
     solve(createCellBoard(input))
 
 private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
-//Start of simple solutions.
-  pruneCandidates(board)
-    .ifEmpty(nakedSingles(board))
-    .ifEmpty(hiddenSingles(board))
-    .ifEmpty(nakedPairs(board))
-    .ifEmpty(nakedTriples(board))
-    .ifEmpty(hiddenPairs(board))
-
-extension[T] (seq: Seq[T])
-  def ifEmpty(defaultValue: => Seq[T]): Seq[T] =
-    if seq.isEmpty then defaultValue else seq
+  val solutions = LazyList(
+    //Start of simple solutions.
+    pruneCandidates,
+    nakedSingles,
+    hiddenSingles,
+    nakedPairs,
+    nakedTriples,
+    hiddenPairs
+  )
+  solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)
