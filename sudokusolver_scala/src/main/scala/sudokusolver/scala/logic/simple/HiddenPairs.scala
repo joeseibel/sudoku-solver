@@ -9,7 +9,7 @@ import sudokusolver.scala.*
  * cells. All other candidates can be removed from those two cells.
  */
 def hiddenPairs(board: Board[Cell]): Seq[RemoveCandidates] =
-  val removals = board.units.flatMap { unit =>
+  board.units.flatMap { unit =>
     SudokuNumber.values.toIndexedSeq.zipEveryPair.flatMap { (a, b) =>
       val cells = unit.collect { case cell: UnsolvedCell if cell.candidates.contains(a) => cell }
       cells match
@@ -17,5 +17,4 @@ def hiddenPairs(board: Board[Cell]): Seq[RemoveCandidates] =
           Some(cells.flatMap(cell => (cell.candidates - a - b).map(candidate => (cell, candidate))))
         case _ => None
     }.flatten
-  }
-  removals.mergeToRemoveCandidates
+  }.mergeToRemoveCandidates

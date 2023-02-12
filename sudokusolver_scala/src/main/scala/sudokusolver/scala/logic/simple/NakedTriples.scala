@@ -9,7 +9,7 @@ import sudokusolver.scala.{Board, Cell, RemoveCandidates, UnsolvedCell, mergeToR
  * placed in those three cells. The three candidates can be removed from every other cell in the unit.
  */
 def nakedTriples(board: Board[Cell]): Seq[RemoveCandidates] =
-  val removals = board.units.flatMap { unit =>
+  board.units.flatMap { unit =>
     unit.collect { case cell: UnsolvedCell => cell }.zipEveryTriple.flatMap { (a, b, c) =>
       val unionOfCandidates = a.candidates ++ b.candidates ++ c.candidates
       if unionOfCandidates.size == 3 then
@@ -22,5 +22,4 @@ def nakedTriples(board: Board[Cell]): Seq[RemoveCandidates] =
       else
         None
     }.flatten
-  }
-  removals.mergeToRemoveCandidates
+  }.mergeToRemoveCandidates
