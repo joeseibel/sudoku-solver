@@ -5,7 +5,6 @@ import sudokusolver.scala.logic.bruteForce
 import sudokusolver.scala.logic.simple.*
 
 import scala.annotation.tailrec
-import scala.collection.immutable.{AbstractSeq, LinearSeq}
 
 @main def sudokuSolver(board: String): Unit =
   if board.length != UnitSizeSquared || board.exists(!('0' to '9').contains(_)) then
@@ -88,6 +87,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     hiddenSingles,
     nakedPairs,
     nakedTriples,
-    hiddenPairs
+    hiddenPairs,
+    hiddenTriples
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)
