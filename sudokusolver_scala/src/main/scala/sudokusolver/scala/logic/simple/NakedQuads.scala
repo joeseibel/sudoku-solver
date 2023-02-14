@@ -16,7 +16,7 @@ def nakedQuads(board: Board[Cell]): Seq[RemoveCandidates] =
         val removals = for
           cell <- unit.collect { case cell: UnsolvedCell if cell != a && cell != b && cell != c && cell != d => cell }
           candidate <- cell.candidates intersect unionOfCandidates
-        yield (cell, candidate)
+        yield cell -> candidate
         Some(removals)
       else
         None

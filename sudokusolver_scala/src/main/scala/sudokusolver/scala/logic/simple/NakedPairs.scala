@@ -16,5 +16,5 @@ def nakedPairs(board: Board[Cell]): Seq[RemoveCandidates] =
     cell <- unit.collect { case cell: UnsolvedCell => cell }
     if cell != a && cell != b
     candidate <- cell.candidates intersect a.candidates
-  yield (cell, candidate)
+  yield cell -> candidate
   removals.mergeToRemoveCandidates

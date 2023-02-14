@@ -17,7 +17,7 @@ def nakedTriples(board: Board[Cell]): Seq[RemoveCandidates] =
           cell <- unit.collect { case cell: UnsolvedCell => cell }
           if cell != a && cell != b && cell != c
           candidate <- cell.candidates intersect unionOfCandidates
-        yield (cell, candidate)
+        yield cell -> candidate
         Some(removals)
       else
         None

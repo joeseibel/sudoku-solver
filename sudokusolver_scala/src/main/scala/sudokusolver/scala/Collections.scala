@@ -5,7 +5,7 @@ extension[T] (seq: IndexedSeq[T])
     for
       (first, firstIndex) <- seq.zipWithIndex
       second <- seq.drop(firstIndex + 1)
-    yield (first, second)
+    yield first -> second
 
   def zipEveryTriple: IndexedSeq[(T, T, T)] =
     for

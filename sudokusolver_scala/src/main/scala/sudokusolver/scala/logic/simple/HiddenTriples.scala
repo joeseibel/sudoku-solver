@@ -18,7 +18,7 @@ def hiddenTriples(board: Board[Cell]): Seq[RemoveCandidates] =
         case Seq(_, _, _) =>
           val union = cells.map(_.candidates).reduce(_ ++ _)
           if union.contains(a) && union.contains(b) && union.contains(c) then
-            Some(cells.flatMap(cell => (cell.candidates - a - b - c).map(candidate => (cell, candidate))))
+            Some(cells.flatMap(cell => (cell.candidates - a - b - c).map(candidate => cell -> candidate)))
           else
             None
         case _ => None

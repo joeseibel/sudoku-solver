@@ -14,7 +14,7 @@ def hiddenPairs(board: Board[Cell]): Seq[RemoveCandidates] =
       val cells = unit.collect { case cell: UnsolvedCell if cell.candidates.contains(a) => cell }
       cells match
         case Seq(_, _) if cells == unit.collect { case cell: UnsolvedCell if cell.candidates.contains(b) => cell } =>
-          Some(cells.flatMap(cell => (cell.candidates - a - b).map(candidate => (cell, candidate))))
+          Some(cells.flatMap(cell => (cell.candidates - a - b).map(candidate => cell -> candidate)))
         case _ => None
     }.flatten
   }.mergeToRemoveCandidates

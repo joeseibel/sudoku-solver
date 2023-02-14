@@ -20,7 +20,7 @@ def hiddenQuads(board: Board[Cell]): Seq[RemoveCandidates] =
           val removals = for
             cell <- cells
             candidate <- cell.candidates - a - b - c - d
-          yield (cell, candidate)
+          yield cell -> candidate
           Some(removals)
         else
           None
