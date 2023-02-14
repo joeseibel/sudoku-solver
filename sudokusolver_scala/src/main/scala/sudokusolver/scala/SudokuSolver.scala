@@ -89,6 +89,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     nakedTriples,
     hiddenPairs,
     hiddenTriples,
-    nakedQuads
+    nakedQuads,
+    hiddenQuads
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)
