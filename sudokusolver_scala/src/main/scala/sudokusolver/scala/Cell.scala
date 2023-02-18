@@ -7,8 +7,8 @@ sealed trait Cell:
   val column: Int
   lazy val block: Int = getBlockIndex(row, column)
 
-  require((0 until UnitSize).contains(row), s"row is $row, must be between 0 and ${UnitSize - 1}.")
-  require((0 until UnitSize).contains(column), s"column is $column, must be between 0 and ${UnitSize - 1}.")
+  require(0 until UnitSize contains row, s"row is $row, must be between 0 and ${UnitSize - 1}.")
+  require(0 until UnitSize contains column, s"column is $column, must be between 0 and ${UnitSize - 1}.")
 
 case class SolvedCell(override val row: Int, override val column: Int, value: SudokuNumber) extends Cell:
   override def toString: String = value.toString
