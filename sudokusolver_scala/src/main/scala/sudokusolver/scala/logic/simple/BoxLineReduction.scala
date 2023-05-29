@@ -12,7 +12,7 @@ import sudokusolver.scala.{Board, Cell, RemoveCandidates, SudokuNumber, Unsolved
  * that column. The candidate can be removed from cells which are in the same block, but different columns.
  */
 def boxLineReduction(board: Board[Cell]): Seq[RemoveCandidates] =
-  SudokuNumber.values.flatMap { candidate =>
+  SudokuNumber.values.toSeq.flatMap { candidate =>
 
     def boxLineReduction(units: Seq[Seq[Cell]], getUnitIndex: Cell => Int) =
       units.flatMap { unit =>
