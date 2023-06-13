@@ -3,7 +3,7 @@ package sudokusolver.scala
 import sudokusolver.scala.logic.BruteForceSolution.{MultipleSolutions, NoSolutions, SingleSolution}
 import sudokusolver.scala.logic.bruteForce
 import sudokusolver.scala.logic.simple.*
-import sudokusolver.scala.logic.tough.xWing
+import sudokusolver.scala.logic.tough.{simpleColoringRule2, simpleColoringRule4, xWing}
 
 import scala.annotation.tailrec
 
@@ -95,6 +95,8 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     pointingPairsPointingTriples,
     boxLineReduction,
     //Start of tough solutions.
-    xWing
+    xWing,
+    simpleColoringRule2,
+    simpleColoringRule4
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)

@@ -20,6 +20,8 @@ case class UnsolvedCell(
                        ) extends Cell:
   require(candidates.nonEmpty, "candidates must not be empty.")
 
+  def isInSameUnit(other: UnsolvedCell): Boolean = row == other.row || column == other.column || block == other.block
+
   override def toString: String = "0"
 
 type LocatedCandidate = (UnsolvedCell, SudokuNumber)
