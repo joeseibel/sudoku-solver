@@ -9,7 +9,7 @@ enum VertexColor:
 extension[N, E <: Edge[N]] (graph: Graph[N, E])
   def colorToMap: Map[N, VertexColor] =
     graph.traverseWithDepth
-      .map((vertex, depth) => (vertex, if depth % 2 == 0 then VertexColor.COLOR_ONE else VertexColor.COLOR_TWO))
+      .map((vertex, depth) => vertex -> (if depth % 2 == 0 then VertexColor.COLOR_ONE else VertexColor.COLOR_TWO))
       .toMap
 
   def colorToLists: (Seq[N], Seq[N]) =
@@ -18,10 +18,10 @@ extension[N, E <: Edge[N]] (graph: Graph[N, E])
   private def traverseWithDepth: Seq[(N, Int)] =
 
     def processNode(node: N, depth: Int, visited: Map[N, Int]): Map[N, Int] =
-      graph.get(node).neighbors.map(_.outer).foldLeft(visited + (node -> depth)) { (nextVisited, next) =>
+      graph.get(node).neighbors.foldLeft(visited + (node -> depth)) { (nextVisited, next) =>
         if nextVisited.contains(next) then nextVisited else nextVisited ++ processNode(next, depth + 1, nextVisited)
       }
 
     graph.nodes.headOption match
-      case Some(startVertex) => processNode(startVertex.outer, 0, Map.empty).toSeq
+      case Some(startVertex) => processNode(startVertex, 0, Map.empty).toSeq
       case None => Seq.empty

@@ -22,7 +22,6 @@ def simpleColoringRule2(board: Board[Cell]): Seq[RemoveCandidates] =
     createConnectedComponents(board, candidate).flatMap { graph =>
       val colors = colorToMap(graph)
       val colorToRemove = graph.nodes
-        .map(_.outer)
         .toIndexedSeq
         .zipEveryPair
         .find((a, b) => colors(a) == colors(b) && a.isInSameUnit(b))
@@ -30,9 +29,8 @@ def simpleColoringRule2(board: Board[Cell]): Seq[RemoveCandidates] =
       colorToRemove match
         case Some(removalColor) =>
           graph.nodes
-            .map(_.outer)
             .filter(colors(_) == removalColor)
-            .map((_, candidate))
+            .map(_.outer -> candidate)
         case None => Seq.empty
     }
   }.mergeToRemoveCandidates
@@ -54,7 +52,7 @@ def simpleColoringRule4(board: Board[Cell]): Seq[RemoveCandidates] =
       !graph.contains(cell) &&
       colorOne.exists(cell.isInSameUnit) &&
       colorTwo.exists(cell.isInSameUnit)
-  yield (cell, candidate)
+  yield cell -> candidate
   removals.mergeToRemoveCandidates
 
 private def createConnectedComponents(
