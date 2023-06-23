@@ -10,6 +10,7 @@ lazy val root = project
 
     libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
     libraryDependencies += ("org.scala-graph" %% "graph-core" % "2.0.0").cross(CrossVersion.for3Use2_13),
+    libraryDependencies += ("org.scala-graph" %% "graph-dot" % "2.0.0").cross(CrossVersion.for3Use2_13),
 
     scalacOptions ++= Seq("-new-syntax", "-deprecation")
   )
