@@ -25,7 +25,7 @@ def pointingPairsPointingTriples(board: Board[Cell]): Seq[RemoveCandidates] =
               cell <- getUnit(unitIndex).collect { case cell: UnsolvedCell
                 if cell.block != blockIndex && cell.candidates.contains(candidate) => cell
               }
-            yield (cell, candidate)
+            yield cell -> candidate
           case _ => Seq.empty
 
       val rowModifications = pointingPairsPointingTriples(board.getRow, _.row)

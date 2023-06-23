@@ -24,7 +24,7 @@ def yWing(board: Board[Cell]): Seq[RemoveCandidates] =
         if cell != wingA && cell != wingB &&
           cell.candidates.contains(candidate) &&
           cell.isInSameUnit(wingA) && cell.isInSameUnit(wingB)
-      yield (cell, candidate)
+      yield cell -> candidate
     else
       Seq.empty
 

@@ -28,7 +28,7 @@ def xWing(board: Board[Cell]): Seq[RemoveCandidates] =
                 val removals = for
                   cell <- (otherUnitA ++ otherUnitB).collect { case cell: UnsolvedCell => cell }
                   if cell.candidates.contains(candidate) && !unitA.contains(cell) && !unitB.contains(cell)
-                yield (cell, candidate)
+                yield cell -> candidate
                 Some(removals)
               case _ => None
           case _ => None

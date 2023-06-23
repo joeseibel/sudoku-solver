@@ -30,7 +30,7 @@ def xyzWing(board: Board[Cell]): Seq[RemoveCandidates] =
             if cell != hinge && cell != wingA && cell != wingB &&
               cell.candidates.contains(candidate) &&
               cell.isInSameUnit(hinge) && cell.isInSameUnit(wingA) && cell.isInSameUnit(wingB)
-          yield (cell, candidate)
+          yield cell -> candidate
           Some(removals)
         else
           None

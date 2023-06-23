@@ -30,7 +30,7 @@ def swordfish(board: Board[Cell]): Seq[RemoveCandidates] =
             val removals = for
               cell <- otherUnitIndices.flatMap(getOtherUnit(_)).collect { case cell: UnsolvedCell => cell }
               if cell.candidates.contains(candidate) && !withCandidate.contains(cell)
-            yield (cell, candidate)
+            yield cell -> candidate
             Some(removals)
           else
             None
