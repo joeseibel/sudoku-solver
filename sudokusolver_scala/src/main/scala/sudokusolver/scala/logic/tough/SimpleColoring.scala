@@ -31,7 +31,7 @@ def simpleColoringRule2(board: Board[Cell]): Seq[RemoveCandidates] =
           graph.nodes
             .filter(colors(_) == removalColor)
             .map(_.outer -> candidate)
-        case None => Seq.empty
+        case None => Nil
     }
   }.mergeToRemoveCandidates
 

@@ -26,7 +26,7 @@ extension[N, E <: Edge[N]] (graph: Graph[N, E])
 
     graph.nodes.headOption match
       case Some(startVertex) => processNode(startVertex, 0, Map.empty).toSeq
-      case None => Seq.empty
+      case None => Nil
 
 class StrengthEdge[+N](val source: N, val target: N, val strength: Strength)
   extends AbstractGenericUnDiEdge[N, StrengthEdge]:

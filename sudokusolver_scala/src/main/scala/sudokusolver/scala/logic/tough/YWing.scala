@@ -26,7 +26,7 @@ def yWing(board: Board[Cell]): Seq[RemoveCandidates] =
           cell.isInSameUnit(wingA) && cell.isInSameUnit(wingB)
       yield cell -> candidate
     else
-      Seq.empty
+      Nil
 
   board.cells
     .collect { case cell: UnsolvedCell if cell.candidates.size == 2 => cell }
