@@ -2,7 +2,7 @@ package sudokusolver.scala
 
 import sudokusolver.scala.logic.BruteForceSolution.{MultipleSolutions, NoSolutions, SingleSolution}
 import sudokusolver.scala.logic.bruteForce
-import sudokusolver.scala.logic.diabolical.{xCyclesRule1, xCyclesRule2, xCyclesRule3}
+import sudokusolver.scala.logic.diabolical.{bug, xCyclesRule1, xCyclesRule2, xCyclesRule3}
 import sudokusolver.scala.logic.simple.*
 import sudokusolver.scala.logic.tough.{simpleColoringRule2, simpleColoringRule4, swordfish, xWing, xyzWing, yWing}
 
@@ -104,6 +104,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     xyzWing,
     xCyclesRule1,
     xCyclesRule2,
-    xCyclesRule3
+    xCyclesRule3,
+    bug(_).toSeq
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)
