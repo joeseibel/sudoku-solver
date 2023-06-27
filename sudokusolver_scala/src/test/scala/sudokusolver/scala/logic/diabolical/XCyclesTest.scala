@@ -2,8 +2,8 @@ package sudokusolver.scala.logic.diabolical
 
 import munit.FunSuite
 import scalax.collection.immutable.Graph
-import sudokusolver.scala.{RemoveCandidates, SetValue, Strength, StrengthEdge, SudokuNumber, UnsolvedCell}
 import sudokusolver.scala.logic.assertLogicalSolution
+import sudokusolver.scala.*
 
 class XCyclesTest extends FunSuite:
   test("test toDOT") {
@@ -11,7 +11,7 @@ class XCyclesTest extends FunSuite:
     val b = UnsolvedCell(0, 3)
     val c = UnsolvedCell(2, 5)
     val graph = Graph.from(Seq(StrengthEdge(a, b, Strength.STRONG), StrengthEdge(b, c, Strength.WEAK)))
-    val actual = graph.toDOT(SudokuNumber.ONE).replace("\t", "  ")
+    val actual = graph.toDOTXCycles(SudokuNumber.ONE).replace("\t", "  ")
     val expected =
       """graph 1 {
         |  "[0,3]" -- "[2,5]" [style = dashed]

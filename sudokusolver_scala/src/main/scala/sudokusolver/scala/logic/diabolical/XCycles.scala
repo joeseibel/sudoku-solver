@@ -30,7 +30,7 @@ import scala.annotation.tailrec
  */
 def xCyclesRule1(board: Board[Cell]): Seq[RemoveCandidates] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
-    val graph = createStrongLinks(board, candidate).addWeakLinks().trim
+    val graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles().trim
     getWeakEdgesInAlternatingCycle(graph).flatMap { edge =>
       val source = graph.get(edge).source
       val target = graph.get(edge).target
@@ -63,7 +63,7 @@ def xCyclesRule1(board: Board[Cell]): Seq[RemoveCandidates] =
 def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
   for
     candidate <- SudokuNumber.values.toSeq
-    graph = createStrongLinks(board, candidate).addWeakLinks()
+    graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles()
     vertex <- graph.nodes
     if alternatingCycleExists(graph, vertex, Strength.STRONG)
   yield SetValue(vertex, candidate)
@@ -80,38 +80,28 @@ def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
 def xCyclesRule3(board: Board[Cell]): Seq[RemoveCandidates] =
   val removals = for
     candidate <- SudokuNumber.values.toSeq
-    graph = createStrongLinks(board, candidate).addWeakLinks().additionalWeakLinks(board, candidate)
+    graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles().additionalWeakLinks(board, candidate)
     vertex <- graph.nodes
     if alternatingCycleExists(graph, vertex, Strength.WEAK)
   yield vertex.outer -> candidate
   removals.mergeToRemoveCandidates
 
 extension (graph: Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]])
-  def toDOT(candidate: SudokuNumber): String =
+  /*
+   * Ideally, this would be called toDOT, but it is called toDOTXCycles to distinguish it from a similarly named method
+   * in XYChains. Unfortunately, having a toDOT in XCycles and a toDOT in XYChains leads to a naming conflict because
+   * the two functions exist in the same package. This is different from Kotlin which allows toDOT to exist in different
+   * files, but in the same package.
+   *
+   * Similar changes have been made to createStrongLinks and addWeakLinks
+   */
+  def toDOTXCycles(candidate: SudokuNumber): String =
     val dotRoot = DotRootGraph(false, Some(candidate.toString))
     graph.toDot(dotRoot, edge =>
-      val source = edge.outer.source
-      val sourceLabel = s"[${source.row},${source.column}]"
-      val target = edge.outer.target
-      val targetLabel = s"[${target.row},${target.column}]"
-      val edgeStmt = if edge.outer.strength == Strength.WEAK then
-        DotEdgeStmt(sourceLabel, targetLabel, Seq(DotAttr("style", "dashed")))
-      else
-        DotEdgeStmt(sourceLabel, targetLabel)
-      Some(dotRoot, edgeStmt)
+      Some(dotRoot, edge.outer.toDotEdgeStmt(vertex => s"[${vertex.row},${vertex.column}]"))
     )
 
-private def createStrongLinks(
-                               board: Board[Cell],
-                               candidate: SudokuNumber
-                             ): Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]] =
-  val edges = board.units
-    .map(unit => unit.collect { case cell: UnsolvedCell if cell.candidates.contains(candidate) => cell })
-    .collect { case Seq(a, b) => StrengthEdge(a, b, Strength.STRONG) }
-  Graph.from(edges)
-
-extension (graph: Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]])
-  private def addWeakLinks(): Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]] =
+  private def addWeakLinksXCycles(): Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]] =
     val weakEdges = for
       (a, b) <- graph.nodes.toIndexedSeq.zipEveryPair
       if a.isInSameUnit(b) && !a.neighbors.contains(b)
@@ -129,3 +119,12 @@ extension (graph: Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]])
       if vertex.isInSameUnit(cell)
     yield StrengthEdge(vertex.outer, cell, Strength.WEAK)
     graph ++ additionalEdges
+
+private def createStrongLinksXCycles(
+                                      board: Board[Cell],
+                                      candidate: SudokuNumber
+                                    ): Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]] =
+  val edges = board.units
+    .map(unit => unit.collect { case cell: UnsolvedCell if cell.candidates.contains(candidate) => cell })
+    .collect { case Seq(a, b) => StrengthEdge(a, b, Strength.STRONG) }
+  Graph.from(edges)

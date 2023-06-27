@@ -2,6 +2,8 @@ package sudokusolver.scala
 
 import scalax.collection.generic.{AbstractGenericUnDiEdge, AnyEdge, Edge}
 import scalax.collection.immutable.Graph
+import scalax.collection.io.dot.implicits.{toId, toNodeId}
+import scalax.collection.io.dot.{DotAttr, DotEdgeStmt}
 
 import scala.annotation.tailrec
 
@@ -32,6 +34,13 @@ class StrengthEdge[+N](val source: N, val target: N, val strength: Strength)
   extends AbstractGenericUnDiEdge[N, StrengthEdge]:
 
   def map[NN](node_1: NN, node_2: NN): StrengthEdge[NN] = StrengthEdge(node_1, node_2, strength)
+
+  def toDotEdgeStmt(getVertexLabel: N => String): DotEdgeStmt =
+    val sourceLabel = getVertexLabel(source)
+    val targetLabel = getVertexLabel(target)
+    strength match
+      case Strength.STRONG => DotEdgeStmt(sourceLabel, targetLabel)
+      case Strength.WEAK => DotEdgeStmt(sourceLabel, targetLabel, Seq(DotAttr("style", "dashed")))
 
 enum Strength:
   def opposite: Strength = this match
