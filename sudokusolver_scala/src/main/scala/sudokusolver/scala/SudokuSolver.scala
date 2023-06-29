@@ -102,10 +102,17 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     yWing,
     swordfish,
     xyzWing,
+    //Start of diabolical solutions.
     xCyclesRule1,
     xCyclesRule2,
     xCyclesRule3,
     bug(_).toSeq,
-    xyChains
+    xyChains,
+    medusaRule1,
+    medusaRule2,
+    medusaRule3,
+    medusaRule4,
+    medusaRule5,
+    medusaRule6
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)

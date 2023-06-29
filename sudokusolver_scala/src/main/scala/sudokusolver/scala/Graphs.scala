@@ -8,6 +8,10 @@ import scalax.collection.io.dot.{DotAttr, DotEdgeStmt}
 import scala.annotation.tailrec
 
 enum VertexColor:
+  def opposite: VertexColor = this match
+    case COLOR_ONE => COLOR_TWO
+    case COLOR_TWO => COLOR_ONE
+
   case COLOR_ONE, COLOR_TWO
 
 extension[N, E <: Edge[N]] (graph: Graph[N, E])
