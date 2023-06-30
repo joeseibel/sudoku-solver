@@ -113,6 +113,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     medusaRule3,
     medusaRule4,
     medusaRule5,
-    medusaRule6
+    medusaRule6,
+    jellyfish
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)
