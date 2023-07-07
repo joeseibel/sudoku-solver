@@ -210,7 +210,7 @@ fun uniqueRectanglesType5(board: Board<Cell>): List<SetValue> =
                     .firstOrNull { candidate ->
 
                         fun hasStrongLink(unit: List<Cell>) =
-                            unit.filterIsInstance<UnsolvedCell>().filter { candidate in it.candidates }.size == 2
+                            unit.filterIsInstance<UnsolvedCell>().count { candidate in it.candidates } == 2
 
                         floor.all {
                             hasStrongLink(board.getRow(it.row)) && hasStrongLink(board.getColumn(it.column))
