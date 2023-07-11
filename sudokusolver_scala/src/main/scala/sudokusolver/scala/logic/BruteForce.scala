@@ -51,7 +51,7 @@ private def bruteForce(board: Board[Option[SudokuNumber]], rowIndex: Int, column
         val rowInvalid = board.getRow(rowIndex).flatten.toSet
         val columnInvalid = board.getColumn(columnIndex).flatten.toSet
         val blockInvalid = board.getBlock(getBlockIndex(rowIndex, columnIndex)).flatten.toSet
-        val invalid = rowInvalid ++ columnInvalid ++ blockInvalid
+        val invalid = rowInvalid | columnInvalid | blockInvalid
         val valid = SudokuNumber.values.toSet -- invalid
         valid.foldLeft(NoSolutions) { (previousResult, guess) =>
           previousResult match

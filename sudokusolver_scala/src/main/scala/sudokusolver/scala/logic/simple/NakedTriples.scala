@@ -11,15 +11,14 @@ import sudokusolver.scala.{Board, Cell, RemoveCandidates, UnsolvedCell, mergeToR
 def nakedTriples(board: Board[Cell]): Seq[RemoveCandidates] =
   board.units.flatMap { unit =>
     unit.collect { case cell: UnsolvedCell => cell }.zipEveryTriple.flatMap { (a, b, c) =>
-      val unionOfCandidates = a.candidates ++ b.candidates ++ c.candidates
+      val unionOfCandidates = a.candidates | b.candidates | c.candidates
       if unionOfCandidates.size == 3 then
-        val removals = for
+        for
           cell <- unit.collect { case cell: UnsolvedCell => cell }
           if cell != a && cell != b && cell != c
           candidate <- cell.candidates intersect unionOfCandidates
         yield cell -> candidate
-        Some(removals)
       else
-        None
-    }.flatten
+        Nil
+    }
   }.mergeToRemoveCandidates

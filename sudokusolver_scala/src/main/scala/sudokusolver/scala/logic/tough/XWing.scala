@@ -25,14 +25,13 @@ def xWing(board: Board[Cell]): Seq[RemoveCandidates] =
                 getOtherUnitIndex(lastA) == getOtherUnitIndex(lastB) =>
                 val otherUnitA = getOtherUnit(getOtherUnitIndex(firstA))
                 val otherUnitB = getOtherUnit(getOtherUnitIndex(lastA))
-                val removals = for
+                for
                   cell <- (otherUnitA ++ otherUnitB).collect { case cell: UnsolvedCell => cell }
                   if cell.candidates.contains(candidate) && !unitA.contains(cell) && !unitB.contains(cell)
                 yield cell -> candidate
-                Some(removals)
-              case _ => None
-          case _ => None
-      }.flatten
+              case _ => Nil
+          case _ => Nil
+      }
 
     val rowRemovals = xWing(board.rows, board.getColumn, _.column)
     val columnRemovals = xWing(board.columns, board.getRow, _.row)

@@ -30,16 +30,15 @@ def jellyfish(board: Board[Cell]): Seq[RemoveCandidates] =
           val withCandidate = aWithCandidate ++ bWithCandidate ++ cWithCandidate ++ dWithCandidate
           val otherUnitIndices = withCandidate.map(getOtherUnitIndex).toSet
           if otherUnitIndices.size == 4 then
-            val removals = for
+            for
               cell <- otherUnitIndices.flatMap(getOtherUnit).collect { case cell: UnsolvedCell => cell }
               if cell.candidates.contains(candidate) && !withCandidate.contains(cell)
             yield cell -> candidate
-            Some(removals)
           else
-            None
+            Nil
         else
-          None
-      }.flatten
+          Nil
+      }
 
     val rowRemovals = jellyfish(board.rows, board.getColumn, _.column)
     val columnRemovals = jellyfish(board.columns, board.getRow, _.row)

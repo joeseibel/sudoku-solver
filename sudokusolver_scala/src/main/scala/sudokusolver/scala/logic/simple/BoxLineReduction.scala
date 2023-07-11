@@ -22,13 +22,12 @@ def boxLineReduction(board: Board[Cell]): Seq[RemoveCandidates] =
         blockIndices match
           case Seq(blockIndex) =>
             val unitIndex = getUnitIndex(unit.head)
-            val removals = for
+            for
               cell <- board.getBlock(blockIndex).collect { case cell: UnsolvedCell => cell }
               if getUnitIndex(cell) != unitIndex && cell.candidates.contains(candidate)
             yield cell -> candidate
-            Some(removals)
-          case _ => None
-      }.flatten
+          case _ => Nil
+      }
 
     val rowRemovals = boxLineReduction(board.rows, _.row)
     val columnRemovals = boxLineReduction(board.columns, _.column)

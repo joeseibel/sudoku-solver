@@ -39,12 +39,8 @@ def xyChains(board: Board[Cell]): Seq[RemoveCandidates] =
             cell.isInSameUnit(cellA) &&
             cell.isInSameUnit(cellB)
         yield cell
-        if visibleCells.nonEmpty && alternatingPathExists(graph, vertexA, vertexB) then
-          Some(visibleCells)
-        else
-          None
+        if visibleCells.nonEmpty && alternatingPathExists(graph, vertexA, vertexB) then visibleCells else Nil
       }
-      .flatten
       .map(_ -> candidate)
   }.mergeToRemoveCandidates
 

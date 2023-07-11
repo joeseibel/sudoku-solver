@@ -9,16 +9,13 @@ import sudokusolver.scala.*
  * placed in those four cells. The four candidates can be removed from every other cell in the unit.
  */
 def nakedQuads(board: Board[Cell]): Seq[RemoveCandidates] =
-  board.units.flatMap { unit =>
-    unit.collect { case cell: UnsolvedCell => cell }.zipEveryQuad.flatMap { (a, b, c, d) =>
-      val unionOfCandidates = a.candidates ++ b.candidates ++ c.candidates ++ d.candidates
-      if unionOfCandidates.size == 4 then
-        val removals = for
-          cell <- unit.collect { case cell: UnsolvedCell if cell != a && cell != b && cell != c && cell != d => cell }
-          candidate <- cell.candidates intersect unionOfCandidates
-        yield cell -> candidate
-        Some(removals)
-      else
-        None
-    }.flatten
-  }.mergeToRemoveCandidates
+  val removals = for
+    unit <- board.units
+    (a, b, c, d) <- unit.collect { case cell: UnsolvedCell => cell }.zipEveryQuad
+    unionOfCandidates = a.candidates | b.candidates | c.candidates | d.candidates
+    if unionOfCandidates.size == 4
+    cell <- unit.collect { case cell: UnsolvedCell => cell }
+    if cell != a && cell != b && cell != c && cell != d
+    candidate <- cell.candidates & unionOfCandidates
+  yield cell -> candidate
+  removals.mergeToRemoveCandidates

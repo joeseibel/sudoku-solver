@@ -14,17 +14,16 @@ def hiddenQuads(board: Board[Cell]): Seq[RemoveCandidates] =
       val cells = unit.collect { case cell@UnsolvedCell(_, _, candidates)
         if candidates.contains(a) || candidates.contains(b) || candidates.contains(c) || candidates.contains(d) => cell
       }
-      if cells.size == 4 then
-        val union = cells.map(_.candidates).reduce(_ ++ _)
-        if union.contains(a) && union.contains(b) && union.contains(c) && union.contains(d) then
-          val removals = for
-            cell <- cells
-            candidate <- cell.candidates - a - b - c - d
-          yield cell -> candidate
-          Some(removals)
-        else
-          None
-      else
-        None
-    }.flatten
+      cells match
+        case Seq(_, _, _, _) =>
+          val union = cells.map(_.candidates).reduce(_ | _)
+          if union.contains(a) && union.contains(b) && union.contains(c) && union.contains(d) then
+            for
+              cell <- cells
+              candidate <- cell.candidates - a - b - c - d
+            yield cell -> candidate
+          else
+            Nil
+        case _ => Nil
+    }
   }.mergeToRemoveCandidates

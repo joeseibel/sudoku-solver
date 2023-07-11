@@ -25,14 +25,13 @@ def xyzWing(board: Board[Cell]): Seq[RemoveCandidates] =
         val candidates = wingA.candidates & wingB.candidates
         if candidates.size == 1 then
           val candidate = candidates.head
-          val removals = for
+          for
             cell <- board.cells.collect { case cell: UnsolvedCell => cell }
             if cell != hinge && cell != wingA && cell != wingB &&
               cell.candidates.contains(candidate) &&
               cell.isInSameUnit(hinge) && cell.isInSameUnit(wingA) && cell.isInSameUnit(wingB)
           yield cell -> candidate
-          Some(removals)
         else
-          None
+          Nil
       }
-  }.flatten.mergeToRemoveCandidates
+  }.mergeToRemoveCandidates

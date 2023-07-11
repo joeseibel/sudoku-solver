@@ -27,16 +27,15 @@ def swordfish(board: Board[Cell]): Seq[RemoveCandidates] =
           val withCandidate = aWithCandidate ++ bWithCandidate ++ cWithCandidate
           val otherUnitIndices = withCandidate.map(getOtherUnitIndex(_)).toSet
           if otherUnitIndices.size == 3 then
-            val removals = for
+            for
               cell <- otherUnitIndices.flatMap(getOtherUnit(_)).collect { case cell: UnsolvedCell => cell }
               if cell.candidates.contains(candidate) && !withCandidate.contains(cell)
             yield cell -> candidate
-            Some(removals)
           else
-            None
+            Nil
         else
-          None
-      }.flatten
+          Nil
+      }
 
     val rowRemovals = swordfish(board.rows, board.getColumn, _.column)
     val columnRemovals = swordfish(board.columns, board.getRow, _.row)
