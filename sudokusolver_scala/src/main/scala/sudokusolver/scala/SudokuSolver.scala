@@ -122,6 +122,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     uniqueRectanglesType4,
     uniqueRectanglesType5,
     extendedUniqueRectangles,
-    hiddenUniqueRectangles
+    hiddenUniqueRectangles,
+    wxyzWing
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)
