@@ -3,7 +3,7 @@ package sudokusolver.scala
 import sudokusolver.scala.logic.BruteForceSolution.{MultipleSolutions, NoSolutions, SingleSolution}
 import sudokusolver.scala.logic.bruteForce
 import sudokusolver.scala.logic.diabolical.*
-import sudokusolver.scala.logic.extreme.{groupedXCyclesRule1, groupedXCyclesRule2, groupedXCyclesRule3}
+import sudokusolver.scala.logic.extreme.{emptyRectangles, groupedXCyclesRule1, groupedXCyclesRule2, groupedXCyclesRule3}
 import sudokusolver.scala.logic.simple.*
 import sudokusolver.scala.logic.tough.*
 
@@ -129,6 +129,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     //Start of extreme solutions.
     groupedXCyclesRule1,
     groupedXCyclesRule2,
-    groupedXCyclesRule3
+    groupedXCyclesRule3,
+    emptyRectangles
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)
