@@ -26,6 +26,9 @@ case class UnsolvedCell(
 
 type LocatedCandidate = (UnsolvedCell, SudokuNumber)
 
+extension (locatedCandidate: LocatedCandidate)
+  def candidate: SudokuNumber = locatedCandidate._2
+
 extension (board: Board[Cell])
   def toSimpleString: String = board.cells.map {
     case SolvedCell(_, _, value) => value.toString

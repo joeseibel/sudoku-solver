@@ -132,6 +132,9 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     groupedXCyclesRule3,
     emptyRectangles,
     finnedXWing,
-    finnedSwordfish
+    finnedSwordfish,
+    alternatingInferenceChainsRule1,
+    alternatingInferenceChainsRule2,
+    alternatingInferenceChainsRule3
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)

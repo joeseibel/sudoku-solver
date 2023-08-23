@@ -45,7 +45,7 @@ import sudokusolver.scala.*
  */
 def groupedXCyclesRule1(board: Board[Cell]): Seq[RemoveCandidates] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
-    getWeakEdgesInAlternatingCycle(buildGraph(board, candidate).trim).flatMap { edge =>
+    getWeakEdgesInAlternatingCycle(buildGraphGroupedXCycles(board, candidate).trim).flatMap { edge =>
       val source = edge.source
       val target = edge.target
 
@@ -79,7 +79,7 @@ def groupedXCyclesRule1(board: Board[Cell]): Seq[RemoveCandidates] =
  */
 def groupedXCyclesRule2(board: Board[Cell]): Seq[SetValue] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
-    val graph = buildGraph(board, candidate)
+    val graph = buildGraphGroupedXCycles(board, candidate)
     graph.nodes
       .map(_.outer)
       .collect { case cell: UnsolvedCell if alternatingCycleExists(graph, cell, Strength.STRONG) => cell }
@@ -97,7 +97,7 @@ def groupedXCyclesRule2(board: Board[Cell]): Seq[SetValue] =
  */
 def groupedXCyclesRule3(board: Board[Cell]): Seq[RemoveCandidates] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
-    val graph = buildGraph(board, candidate)
+    val graph = buildGraphGroupedXCycles(board, candidate)
     graph.nodes
       .map(_.outer)
       .collect { case cell: UnsolvedCell if alternatingCycleExists(graph, cell, Strength.WEAK) => cell }
@@ -115,7 +115,7 @@ extension (graph: Graph[Node, StrengthEdge[Node]])
       Some(dotRoot, edgeStmt)
     )
 
-private def buildGraph(board: Board[Cell], candidate: SudokuNumber): Graph[Node, StrengthEdge[Node]] =
+private def buildGraphGroupedXCycles(board: Board[Cell], candidate: SudokuNumber): Graph[Node, StrengthEdge[Node]] =
   //Connect cells.
   val cellEdges = for
     unit <- board.units
