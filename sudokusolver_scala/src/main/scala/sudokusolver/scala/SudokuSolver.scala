@@ -135,6 +135,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     finnedSwordfish,
     alternatingInferenceChainsRule1,
     alternatingInferenceChainsRule2,
-    alternatingInferenceChainsRule3
+    alternatingInferenceChainsRule3,
+    sueDeCoq
   )
   solutions.map(_(board)).find(_.nonEmpty).getOrElse(LazyList.empty)
