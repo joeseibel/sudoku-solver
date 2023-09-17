@@ -1,6 +1,6 @@
 package sudokusolver.scala
 
-import scalax.collection.generic.{AbstractGenericUnDiEdge, AnyEdge, Edge}
+import scalax.collection.generic.{AbstractGenericUnDiEdge, Edge}
 import scalax.collection.immutable.Graph
 import scalax.collection.io.dot.implicits.{toId, toNodeId}
 import scalax.collection.io.dot.{DotAttr, DotEdgeStmt}
