@@ -12,6 +12,6 @@ def createRectangles(board: Board[Cell]): Seq[Rectangle] =
       rowA.zip(rowB)
         .collect { case (cellA: UnsolvedCell, cellB: UnsolvedCell) => cellA -> cellB }
         .zipEveryPair
-        .map((columnA, columnB) => Rectangle(Seq(columnA._1, columnA._2, columnB._1, columnB._2)))
+        .map((columnA, columnB) => Rectangle(Seq(columnA(0), columnA(1), columnB(0), columnB(1))))
     }
     .filter(rectangle => rectangle.commonCandidates.size == 2 && rectangle.cells.map(_.block).toSet.size == 2)

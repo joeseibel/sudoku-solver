@@ -26,7 +26,7 @@ private def getRemovals(units: Seq[Seq[Cell]]): Seq[LocatedCandidate] =
           case _ => None
       }.toIndexedSeq.zipEveryTriple
     }
-    .map((otherA, otherB, otherC) => Seq(otherA._1, otherB._1, otherC._1) -> Seq(otherA._2, otherB._2, otherC._2))
+    .map((otherA, otherB, otherC) => Seq(otherA(0), otherB(0), otherC(0)) -> Seq(otherA(1), otherB(1), otherC(1)))
     .filter((unitA, unitB) => (unitA ++ unitB).map(_.block).toSet.size == 3)
     .flatMap { (unitA, unitB) =>
       val unitACandidates = unitA.map(_.candidates).reduce(_ | _)
