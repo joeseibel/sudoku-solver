@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
+		85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
 		85F34B3A2AC35C3F00744103 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F34B392AC35C3F00744103 /* main.swift */; };
+		85F57BE02AF4069400144ABF /* BruteForce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F57BDF2AF4069400144ABF /* BruteForce.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +26,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuNumber.swift; sourceTree = "<group>"; };
+		85CF6BFD2ADA63520076BD62 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		85F34B362AC35C3F00744103 /* SudokuSolver_Swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SudokuSolver_Swift; sourceTree = BUILT_PRODUCTS_DIR; };
 		85F34B392AC35C3F00744103 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		85F57BDF2AF4069400144ABF /* BruteForce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BruteForce.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +64,9 @@
 			isa = PBXGroup;
 			children = (
 				85F34B392AC35C3F00744103 /* main.swift */,
+				85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */,
+				85CF6BFD2ADA63520076BD62 /* Board.swift */,
+				85F57BDF2AF4069400144ABF /* BruteForce.swift */,
 			);
 			path = SudokuSolver_Swift;
 			sourceTree = "<group>";
@@ -120,7 +129,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85F57BE02AF4069400144ABF /* BruteForce.swift in Sources */,
 				85F34B3A2AC35C3F00744103 /* main.swift in Sources */,
+				85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */,
+				85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
