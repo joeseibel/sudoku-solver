@@ -80,10 +80,10 @@
 		85F34B382AC35C3F00744103 /* SudokuSolver_Swift */ = {
 			isa = PBXGroup;
 			children = (
+				85F52FC82B1AC4300018E190 /* logic */,
 				85F34B392AC35C3F00744103 /* main.swift */,
 				85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */,
 				85CF6BFD2ADA63520076BD62 /* Board.swift */,
-				85F57BDF2AF4069400144ABF /* BruteForce.swift */,
 			);
 			path = SudokuSolver_Swift;
 			sourceTree = "<group>";
@@ -91,9 +91,25 @@
 		85F52FBC2B19A7A50018E190 /* SudokuSolver_Swift_Tests */ = {
 			isa = PBXGroup;
 			children = (
-				85F52FC52B19A96F0018E190 /* BruteForceTest.swift */,
+				85F52FC92B1AC4A90018E190 /* logic */,
 			);
 			path = SudokuSolver_Swift_Tests;
+			sourceTree = "<group>";
+		};
+		85F52FC82B1AC4300018E190 /* logic */ = {
+			isa = PBXGroup;
+			children = (
+				85F57BDF2AF4069400144ABF /* BruteForce.swift */,
+			);
+			path = logic;
+			sourceTree = "<group>";
+		};
+		85F52FC92B1AC4A90018E190 /* logic */ = {
+			isa = PBXGroup;
+			children = (
+				85F52FC52B19A96F0018E190 /* BruteForceTest.swift */,
+			);
+			path = logic;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
