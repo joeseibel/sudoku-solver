@@ -2,8 +2,8 @@ private let unitSizeSquareRoot = 3
 let unitSize = unitSizeSquareRoot * unitSizeSquareRoot
 let unitSizeSquared = unitSize * unitSize
 
-struct Board<Element> {
-    private var rows: [[Element]]
+struct Board<Element: Equatable> : Equatable {
+    private(set) var rows: [[Element]]
     
     init(elements rows: [[Element]]) {
         precondition(rows.count == unitSize, "elements count is \(rows.count), must be \(unitSize).")
@@ -11,6 +11,14 @@ struct Board<Element> {
             precondition(row.count == unitSize, "elements[\(index)] count is \(row.count), must be \(unitSize).")
         }
         self.rows = rows
+    }
+    
+    var columns: [[Element]] {
+        (0 ..< unitSize).map { index in rows.map { row in row[index] } }
+    }
+    
+    var blocks: [[Element]] {
+        (0 ..< unitSize).map(getBlock)
     }
     
     var cells: [Element] {

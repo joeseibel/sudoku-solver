@@ -29,3 +29,17 @@ func parse(optionalBoard board: String) -> Board<SudokuNumber?> {
     }
     return Board(elements: numbers)
 }
+
+func parse(board: String) -> Board<SudokuNumber> {
+    precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
+    let board = Array(board)
+    let numbers = stride(from: 0, to: board.count, by: unitSize).map { rowIndex in
+        board[rowIndex ..< rowIndex + unitSize].map { cell in
+            guard let number = SudokuNumber(rawValue: cell) else {
+                preconditionFailure(#"Invalid character: "\#(cell)", must be between "1" and "9"."#)
+            }
+            return number
+        }
+    }
+    return Board(elements: numbers)
+}

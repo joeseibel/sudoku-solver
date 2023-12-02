@@ -1,4 +1,4 @@
-private enum BruteForceError: Error {
+enum BruteForceError: Error {
     case noSolutions, multipleSolutions
 }
 
@@ -61,5 +61,7 @@ func bruteForce(board: Board<SudokuNumber?>) throws -> Board<SudokuNumber> {
 }
 
 private func isSolved(board: Board<SudokuNumber>) -> Bool {
-    fatalError("Implement Me!")
+    return board.rows.allSatisfy { Set($0).count == unitSize }
+        && board.columns.allSatisfy { Set($0).count == unitSize }
+        && board.blocks.allSatisfy { Set($0).count == unitSize }
 }

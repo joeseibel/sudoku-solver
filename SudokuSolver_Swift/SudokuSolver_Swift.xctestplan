@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "EA98F239-88F7-4C45-A865-44ECA3B1B93D",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:SudokuSolver_Swift.xcodeproj",
+      "identifier" : "85F34B352AC35C3F00744103",
+      "name" : "SudokuSolver_Swift"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:SudokuSolver_Swift.xcodeproj",
+        "identifier" : "85F52FBA2B19A7A50018E190",
+        "name" : "SudokuSolver_Swift_Tests"
+      }
+    }
+  ],
+  "version" : 1
+}
