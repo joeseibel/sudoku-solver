@@ -8,24 +8,20 @@ enum SudokuNumber: Character, CaseIterable {
     case seven = "7"
     case eight = "8"
     case nine = "9"
+    
+    init(number: Character) {
+        guard let number = SudokuNumber(rawValue: number) else {
+            preconditionFailure(#"Invalid character: "\#(number)", must be between "1" and "9"."#)
+        }
+        self = number
+    }
 }
 
 func parse(optionalBoard board: String) -> Board<SudokuNumber?> {
     precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
     let board = Array(board)
     let numbers = stride(from: 0, to: board.count, by: unitSize).map { rowIndex in
-        board[rowIndex ..< rowIndex + unitSize].map { cell in
-            let optionalNumber: SudokuNumber?
-            if cell == "0" {
-                optionalNumber = nil
-            } else {
-                guard let number = SudokuNumber(rawValue: cell) else {
-                    preconditionFailure(#"Invalid character: "\#(cell)", must be between "1" and "9"."#)
-                }
-                optionalNumber = number
-            }
-            return optionalNumber
-        }
+        board[rowIndex ..< rowIndex + unitSize].map { $0 == "0" ? nil : SudokuNumber(number: $0) }
     }
     return Board(elements: numbers)
 }
@@ -34,12 +30,7 @@ func parse(board: String) -> Board<SudokuNumber> {
     precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
     let board = Array(board)
     let numbers = stride(from: 0, to: board.count, by: unitSize).map { rowIndex in
-        board[rowIndex ..< rowIndex + unitSize].map { cell in
-            guard let number = SudokuNumber(rawValue: cell) else {
-                preconditionFailure(#"Invalid character: "\#(cell)", must be between "1" and "9"."#)
-            }
-            return number
-        }
+        board[rowIndex ..< rowIndex + unitSize].map { SudokuNumber(number: $0) }
     }
     return Board(elements: numbers)
 }
