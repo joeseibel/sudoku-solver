@@ -17,20 +17,24 @@ enum SudokuNumber: Character, CaseIterable {
     }
 }
 
-func parse(optionalBoard board: String) -> Board<SudokuNumber?> {
-    precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
-    let board = Array(board)
-    let numbers = stride(from: 0, to: board.count, by: unitSize).map { rowIndex in
-        board[rowIndex ..< rowIndex + unitSize].map { $0 == "0" ? nil : SudokuNumber(number: $0) }
+extension Board<SudokuNumber?> {
+    init(optionalBoard board: String) {
+        precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
+        let board = Array(board)
+        let numbers = stride(from: 0, to: board.count, by: unitSize).map { rowIndex in
+            board[rowIndex ..< rowIndex + unitSize].map { $0 == "0" ? nil : SudokuNumber(number: $0) }
+        }
+        self.init(elements: numbers)
     }
-    return Board(elements: numbers)
 }
 
-func parse(board: String) -> Board<SudokuNumber> {
-    precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
-    let board = Array(board)
-    let numbers = stride(from: 0, to: board.count, by: unitSize).map { rowIndex in
-        board[rowIndex ..< rowIndex + unitSize].map { SudokuNumber(number: $0) }
+extension Board<SudokuNumber> {
+    init(board: String) {
+        precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
+        let board = Array(board)
+        let numbers = stride(from: 0, to: board.count, by: unitSize).map { rowIndex in
+            board[rowIndex ..< rowIndex + unitSize].map { SudokuNumber(number: $0) }
+        }
+        self.init(elements: numbers)
     }
-    return Board(elements: numbers)
 }
