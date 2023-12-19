@@ -14,6 +14,7 @@
 		85F52FC42B19A8CD0018E190 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
 		85F52FC62B19A96F0018E190 /* BruteForceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F52FC52B19A96F0018E190 /* BruteForceTest.swift */; };
 		85F52FC72B19AB2B0018E190 /* BruteForce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F57BDF2AF4069400144ABF /* BruteForce.swift */; };
+		85F52FCD2B1F02020018E190 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F52FCC2B1F02020018E190 /* Cell.swift */; };
 		85F57BE02AF4069400144ABF /* BruteForce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F57BDF2AF4069400144ABF /* BruteForce.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		85F52FBB2B19A7A50018E190 /* SudokuSolver_Swift_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SudokuSolver_Swift_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		85F52FC32B19A8AA0018E190 /* SudokuSolver_Swift.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SudokuSolver_Swift.xctestplan; sourceTree = "<group>"; };
 		85F52FC52B19A96F0018E190 /* BruteForceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BruteForceTest.swift; sourceTree = "<group>"; };
+		85F52FCC2B1F02020018E190 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 		85F57BDF2AF4069400144ABF /* BruteForce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BruteForce.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,6 +86,7 @@
 				85F34B392AC35C3F00744103 /* main.swift */,
 				85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */,
 				85CF6BFD2ADA63520076BD62 /* Board.swift */,
+				85F52FCC2B1F02020018E190 /* Cell.swift */,
 			);
 			path = SudokuSolver_Swift;
 			sourceTree = "<group>";
@@ -203,6 +206,7 @@
 			files = (
 				85F57BE02AF4069400144ABF /* BruteForce.swift in Sources */,
 				85F34B3A2AC35C3F00744103 /* main.swift in Sources */,
+				85F52FCD2B1F02020018E190 /* Cell.swift in Sources */,
 				85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */,
 				85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */,
 			);

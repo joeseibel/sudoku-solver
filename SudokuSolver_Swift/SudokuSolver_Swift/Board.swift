@@ -57,6 +57,23 @@ struct Board<Element: Equatable> : Equatable {
     func mapCells<T>(_ transform: (Element) -> T) -> Board<T> {
         Board<T>(elements: rows.map { row in row.map(transform) })
     }
+    
+    /*
+     * I originally thought of creating an enumerated() method instead of mapCellsIndexed(_:). This would have resulted
+     * in more of a Swift-style approach at the call site by calling enumerated() and then calling mapCells(_:).
+     * However, I ran into a problem when implementing enumerated(). I tried to have enumerated() return a
+     * Board<(Int, Int, Element)>, but tuples in Swift do not conform to Equatable. This was surprising because the
+     * operator == is available for tuples, but they cannot be used as a type when an Equatable is required. There is a
+     * pitch for tuples to conform to Equatable, but there hasn't been much progress on it:
+     * https://forums.swift.org/t/tuples-conform-to-equatable/32559
+     *
+     * Due to this issue, I have decided to stick with the Kotlin-style approach of having a mapCellsIndexed(_:) method.
+     */
+    func mapCellsIndexed<T>(_ transform: (_ row: Int, _ column: Int, Element) -> T) -> Board<T> {
+        Board<T>(elements: rows.enumerated().map { rowIndex, row in
+            row.enumerated().map { columnIndex, cell in transform(rowIndex, columnIndex, cell) }
+        })
+    }
 }
 
 func getBlockIndex(rowIndex: Int, columnIndex: Int) -> Int {
