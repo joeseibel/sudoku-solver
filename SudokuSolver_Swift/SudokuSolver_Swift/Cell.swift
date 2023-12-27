@@ -22,6 +22,9 @@
  * of each struct. It also solves the second problem as there are now the explicit types Cell, SolvedCell, and
  * UnsolvedCell.
  *
+ * One drawback of this approach is that pattern matching can no longer be used to extract the individual values from a
+ * SolvedCell or UnsolvedCell.
+ *
  * Overall, I believe this is a limitation in the way that Swift implements ADTs. I prefer the approach found in Kotlin,
  * Java, and Scala in which the members of each ADT are types themselves.
  */
