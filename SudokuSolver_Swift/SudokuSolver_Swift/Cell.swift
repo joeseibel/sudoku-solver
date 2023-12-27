@@ -71,4 +71,19 @@ extension Board<Cell> {
             }
         }
     }
+    
+    init(simpleBoard board: String) {
+        precondition(board.count == unitSizeSquared, "simpleBoard.count is \(board.count), must be \(unitSizeSquared).")
+        let board = Array(board)
+        let numbers: [[Cell]] = (0 ..< unitSize).map { rowIndex in
+            board[rowIndex * unitSize ..< rowIndex * unitSize + unitSize].enumerated().map { columnIndex, cell in
+                if cell == "0" {
+                    .unsolvedCell(UnsolvedCell(row: rowIndex, column: columnIndex))
+                } else {
+                    .solvedCell(SolvedCell(row: rowIndex, column: columnIndex, value: SudokuNumber(number: cell)))
+                }
+            }
+        }
+        self.init(elements: numbers)
+    }
 }
