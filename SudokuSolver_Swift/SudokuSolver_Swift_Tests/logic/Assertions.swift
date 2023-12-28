@@ -2,6 +2,18 @@ import XCTest
 
 func assertLogicalSolution(
     expected: [BoardModification],
+    withCandidates: String,
+    logicFunction: (Board<Cell>) -> [BoardModification]
+) {
+    assertLogicalSolution(
+        expected: expected,
+        board: Board(withCandidates: withCandidates),
+        logicFunction: logicFunction
+    )
+}
+
+func assertLogicalSolution(
+    expected: [BoardModification],
     board: Board<Cell>,
     logicFunction: (Board<Cell>) -> [BoardModification]
 ) {

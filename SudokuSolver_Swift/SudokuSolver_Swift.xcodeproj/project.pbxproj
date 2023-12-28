@@ -16,6 +16,9 @@
 		85EB77602B3CD64C0084B86F /* PruneCandidates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB775F2B3CD64C0084B86F /* PruneCandidates.swift */; };
 		85EB77632B3CD6DD0084B86F /* PruneCandidatesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77622B3CD6DD0084B86F /* PruneCandidatesTest.swift */; };
 		85EB77642B3CDAB00084B86F /* PruneCandidates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB775F2B3CD64C0084B86F /* PruneCandidates.swift */; };
+		85EB77662B3E0A510084B86F /* NakedSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77652B3E0A510084B86F /* NakedSingles.swift */; };
+		85EB77682B3E0A9F0084B86F /* NakedSinglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77672B3E0A9F0084B86F /* NakedSinglesTest.swift */; };
+		85EB77692B3E0CAC0084B86F /* NakedSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77652B3E0A510084B86F /* NakedSingles.swift */; };
 		85F34B3A2AC35C3F00744103 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F34B392AC35C3F00744103 /* main.swift */; };
 		85F52FC22B19A8730018E190 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
 		85F52FC42B19A8CD0018E190 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
@@ -44,6 +47,8 @@
 		85EB775A2B3C958E0084B86F /* Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assertions.swift; sourceTree = "<group>"; };
 		85EB775F2B3CD64C0084B86F /* PruneCandidates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PruneCandidates.swift; sourceTree = "<group>"; };
 		85EB77622B3CD6DD0084B86F /* PruneCandidatesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PruneCandidatesTest.swift; sourceTree = "<group>"; };
+		85EB77652B3E0A510084B86F /* NakedSingles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NakedSingles.swift; sourceTree = "<group>"; };
+		85EB77672B3E0A9F0084B86F /* NakedSinglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NakedSinglesTest.swift; sourceTree = "<group>"; };
 		85F34B362AC35C3F00744103 /* SudokuSolver_Swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SudokuSolver_Swift; sourceTree = BUILT_PRODUCTS_DIR; };
 		85F34B392AC35C3F00744103 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		85F52FBB2B19A7A50018E190 /* SudokuSolver_Swift_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SudokuSolver_Swift_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				85EB775F2B3CD64C0084B86F /* PruneCandidates.swift */,
+				85EB77652B3E0A510084B86F /* NakedSingles.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -83,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				85EB77622B3CD6DD0084B86F /* PruneCandidatesTest.swift */,
+				85EB77672B3E0A9F0084B86F /* NakedSinglesTest.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -240,6 +247,7 @@
 				85F34B3A2AC35C3F00744103 /* main.swift in Sources */,
 				85F52FCD2B1F02020018E190 /* Cell.swift in Sources */,
 				85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */,
+				85EB77662B3E0A510084B86F /* NakedSingles.swift in Sources */,
 				85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */,
 				85EB77602B3CD64C0084B86F /* PruneCandidates.swift in Sources */,
 			);
@@ -253,11 +261,13 @@
 				85F52FC72B19AB2B0018E190 /* BruteForce.swift in Sources */,
 				85EB775D2B3C95F60084B86F /* Cell.swift in Sources */,
 				85F52FC62B19A96F0018E190 /* BruteForceTest.swift in Sources */,
+				85EB77692B3E0CAC0084B86F /* NakedSingles.swift in Sources */,
 				85F52FC22B19A8730018E190 /* SudokuNumber.swift in Sources */,
 				85EB775B2B3C958E0084B86F /* Assertions.swift in Sources */,
 				85EB77632B3CD6DD0084B86F /* PruneCandidatesTest.swift in Sources */,
 				85EB77642B3CDAB00084B86F /* PruneCandidates.swift in Sources */,
 				85F52FC42B19A8CD0018E190 /* Board.swift in Sources */,
+				85EB77682B3E0A9F0084B86F /* NakedSinglesTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

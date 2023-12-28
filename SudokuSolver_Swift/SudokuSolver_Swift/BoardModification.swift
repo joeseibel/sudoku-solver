@@ -58,6 +58,15 @@ struct SetValue: Equatable {
         self.column = column
         self.value = value
     }
+    
+    init(cell: UnsolvedCell, value: SudokuNumber) {
+        self.init(row: cell.row, column: cell.column, value: value)
+        precondition(cell.candidates.contains(value), "\(value) is not a candidate for [\(row), \(column)].")
+    }
+    
+    init(row: Int, column: Int, value: Int) {
+        self.init(row: row, column: column, value: SudokuNumber.allCases[value - 1])
+    }
 }
 
 private func validateRowAndColumn(row: Int, column: Int) {
