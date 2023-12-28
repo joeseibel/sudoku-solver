@@ -121,7 +121,7 @@ fun parseCellsWithCandidates(withCandidates: String): Board<Cell> {
                 require(closingBrace != -1) { "Unmatched '{'." }
                 require(closingBrace != index) { "Empty \"{}\"." }
                 val charsInBraces = (index until closingBrace).map { withCandidates[it] }
-                require(!charsInBraces.contains('{')) { "Nested '{'." }
+                require('{' !in charsInBraces) { "Nested '{'." }
                 charsInBraces.forEach { charInBrace ->
                     require(charInBrace in '1'..'9') { "Invalid character: '$charInBrace'." }
                 }
