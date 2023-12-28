@@ -31,6 +31,14 @@
 enum Cell: Equatable {
     case solvedCell(SolvedCell)
     case unsolvedCell(UnsolvedCell)
+    
+    fileprivate init(row: Int, column: Int, value: SudokuNumber) {
+        self = .solvedCell(SolvedCell(row: row, column: column, value: value))
+    }
+    
+    fileprivate init(row: Int, column: Int, candidates: Set<SudokuNumber> = Set(SudokuNumber.allCases)) {
+        self = .unsolvedCell(UnsolvedCell(row: row, column: column, candidates: candidates))
+    }
 }
 
 struct SolvedCell: Equatable {
@@ -38,7 +46,7 @@ struct SolvedCell: Equatable {
     let column: Int
     let value: SudokuNumber
     
-    init(row: Int, column: Int, value: SudokuNumber) {
+    fileprivate init(row: Int, column: Int, value: SudokuNumber) {
         validateRowAndColumn(row: row, column: column)
         self.row = row
         self.column = column
@@ -52,7 +60,7 @@ struct UnsolvedCell: Equatable {
     let block: Int
     let candidates: Set<SudokuNumber>
     
-    init(row: Int, column: Int, candidates: Set<SudokuNumber> = Set(SudokuNumber.allCases)) {
+    fileprivate init(row: Int, column: Int, candidates: Set<SudokuNumber>) {
         validateRowAndColumn(row: row, column: column)
         self.row = row
         self.column = column
@@ -70,9 +78,9 @@ extension Board<Cell> {
     init(toCellBoard board: Board<SudokuNumber?>) {
         self = board.mapCellsIndexed { row, column, cell in
             if let cell {
-                .solvedCell(SolvedCell(row: row, column: column, value: cell))
+                Cell(row: row, column: column, value: cell)
             } else {
-                .unsolvedCell(UnsolvedCell(row: row, column: column))
+                Cell(row: row, column: column)
             }
         }
     }
@@ -80,12 +88,12 @@ extension Board<Cell> {
     init(simpleBoard board: String) {
         precondition(board.count == unitSizeSquared, "simpleBoard.count is \(board.count), must be \(unitSizeSquared).")
         let board = Array(board)
-        let numbers: [[Cell]] = (0 ..< unitSize).map { rowIndex in
+        let numbers = (0 ..< unitSize).map { rowIndex in
             board[rowIndex * unitSize ..< rowIndex * unitSize + unitSize].enumerated().map { columnIndex, cell in
                 if cell == "0" {
-                    .unsolvedCell(UnsolvedCell(row: rowIndex, column: columnIndex))
+                    Cell(row: rowIndex, column: columnIndex)
                 } else {
-                    .solvedCell(SolvedCell(row: rowIndex, column: columnIndex, value: SudokuNumber(number: cell)))
+                    Cell(row: rowIndex, column: columnIndex, value: SudokuNumber(number: cell))
                 }
             }
         }
@@ -99,9 +107,7 @@ extension Board<Cell> {
             let ch = withCandidates[index]
             switch ch {
             case "1" ... "9":
-                cellBuilders.append({ row, column in
-                    .solvedCell(SolvedCell(row: row, column: column, value: SudokuNumber(number: ch)))
-                })
+                cellBuilders.append({ row, column in Cell(row: row, column: column, value: SudokuNumber(number: ch)) })
                 index = withCandidates.index(after: index)
             case "{":
                 index = withCandidates.index(after: index)
@@ -117,9 +123,7 @@ extension Board<Cell> {
                     precondition(("1" ... "9").contains(charInBrace), "Invalid character: \"\(charInBrace)\".")
                 }
                 let candidates = Set(charsInBraces.map { SudokuNumber(number: $0) })
-                cellBuilders.append({ row, column in
-                    .unsolvedCell(UnsolvedCell(row: row, column: column, candidates: candidates))
-                })
+                cellBuilders.append({ row, column in Cell(row: row, column: column, candidates: candidates) })
                 index = withCandidates.index(after: closingBrace)
             case "}":
                 preconditionFailure("Unmatched \"}\".")
