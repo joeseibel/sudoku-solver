@@ -91,6 +91,53 @@ extension Board<Cell> {
         }
         self.init(elements: numbers)
     }
+    
+    init(withCandidates: String) {
+        var cellBuilders: [(_ row: Int, _ column: Int) -> Cell] = []
+        var index = withCandidates.startIndex
+        while index < withCandidates.endIndex {
+            let ch = withCandidates[index]
+            switch ch {
+            case "1" ... "9":
+                cellBuilders.append({ row, column in
+                    .solvedCell(SolvedCell(row: row, column: column, value: SudokuNumber(number: ch)))
+                })
+                index = withCandidates.index(after: index)
+            case "{":
+                index = withCandidates.index(after: index)
+                //TODO: Is there a better way to do this?
+                guard let closingBrace = withCandidates[index...].firstIndex(of: "}") else {
+                    preconditionFailure("Unmatched \"{\".")
+                }
+                precondition(closingBrace != index, "Empty \"{}\".")
+                //TODO: Is there a better way to do this?
+                let charsInBraces = withCandidates[index ... withCandidates.index(before: closingBrace)]
+                precondition(!charsInBraces.contains("{"), "Nested \"{\".")
+                charsInBraces.forEach { charInBrace in
+                    precondition(("1" ... "9").contains(charInBrace), "Invalid character: \"\(charInBrace)\".")
+                }
+                let candidates = Set(charsInBraces.map { SudokuNumber(number: $0) })
+                cellBuilders.append({ row, column in
+                    .unsolvedCell(UnsolvedCell(row: row, column: column, candidates: candidates))
+                })
+                index = withCandidates.index(after: closingBrace)
+            case "}":
+                preconditionFailure("Unmatched \"}\".")
+            default:
+                preconditionFailure("Invalid character: \"\(ch)\".")
+            }
+        }
+        precondition(
+            cellBuilders.count == unitSizeSquared,
+            "Found \(cellBuilders.count) cells, required \(unitSizeSquared)."
+        )
+        let numbers = (0 ..< unitSize).map { rowIndex in
+            cellBuilders[rowIndex * unitSize ..< rowIndex * unitSize + unitSize].enumerated().map { columnIndex, cell in
+                cell(rowIndex, columnIndex)
+            }
+        }
+        self.init(elements: numbers)
+    }
 }
 
 extension [Cell] {
