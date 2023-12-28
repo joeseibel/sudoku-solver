@@ -49,12 +49,14 @@ struct SolvedCell: Equatable {
 struct UnsolvedCell: Equatable {
     let row: Int
     let column: Int
+    let block: Int
     let candidates: Set<SudokuNumber>
     
     init(row: Int, column: Int, candidates: Set<SudokuNumber> = Set(SudokuNumber.allCases)) {
         validateRowAndColumn(row: row, column: column)
         self.row = row
         self.column = column
+        block = getBlockIndex(rowIndex: row, columnIndex: column)
         self.candidates = candidates
     }
 }
@@ -88,5 +90,29 @@ extension Board<Cell> {
             }
         }
         self.init(elements: numbers)
+    }
+}
+
+extension [Cell] {
+    var solvedCells: [SolvedCell] {
+        self.compactMap {
+            switch $0 {
+            case .solvedCell(let solvedCell):
+                solvedCell
+            case .unsolvedCell:
+                nil
+            }
+        }
+    }
+    
+    var unsolvedCells: [UnsolvedCell] {
+        self.compactMap {
+            switch $0 {
+            case .solvedCell:
+                nil
+            case .unsolvedCell(let unsolvedCell):
+                unsolvedCell
+            }
+        }
     }
 }
