@@ -13,9 +13,9 @@ final class NakedSinglesTest: XCTestCase {
             {48}26{78}{18}{178}{179}35
             {358}{35}{158}4{13568}9{127}{6}{1267}
             """.replacing("\n", with: "")
-        let expected: [BoardModification] = [
-            .setValue(SetValue(row: 0, column: 7, value: 9)),
-            .setValue(SetValue(row: 8, column: 7, value: 6))
+        let expected = [
+            BoardModification(row: 0, column: 7, value: 9),
+            BoardModification(row: 8, column: 7, value: 6)
         ]
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedSingles)
     }

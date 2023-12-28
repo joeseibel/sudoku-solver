@@ -20,6 +20,27 @@ enum BoardModification: Equatable {
             setValue.column
         }
     }
+    
+    init(cell: UnsolvedCell, candidates: Set<SudokuNumber>) {
+        self = .removeCandidates(RemoveCandidates(row: cell.row, column: cell.column, candidates: candidates))
+        candidates.forEach { candidate in
+            precondition(cell.candidates.contains(candidate), "\(candidate) is not a candidate for [\(row), \(column).")
+        }
+    }
+    
+    init(row: Int, column: Int, candidates: Int...) {
+        let candidates = Set(candidates.map { SudokuNumber.allCases[$0 - 1] })
+        self = .removeCandidates(RemoveCandidates(row: row, column: column, candidates: candidates))
+    }
+    
+    init(cell: UnsolvedCell, value: SudokuNumber) {
+        self = .setValue(SetValue(row: cell.row, column: cell.column, value: value))
+        precondition(cell.candidates.contains(value), "\(value) is not a candidate for [\(row), \(column)].")
+    }
+    
+    init(row: Int, column: Int, value: Int) {
+        self = .setValue(SetValue(row: row, column: column, value: SudokuNumber.allCases[value - 1]))
+    }
 }
 
 struct RemoveCandidates: Equatable {
@@ -27,23 +48,12 @@ struct RemoveCandidates: Equatable {
     let column: Int
     let candidates: Set<SudokuNumber>
     
-    private init(row: Int, column: Int, candidates: Set<SudokuNumber>) {
+    fileprivate init(row: Int, column: Int, candidates: Set<SudokuNumber>) {
         validateRowAndColumn(row: row, column: column)
         precondition(!candidates.isEmpty, "candidates must not be empty.")
         self.row = row
         self.column = column
         self.candidates = candidates
-    }
-    
-    init(cell: UnsolvedCell, candidates: Set<SudokuNumber>) {
-        self.init(row: cell.row, column: cell.column, candidates: candidates)
-        candidates.forEach { candidate in
-            precondition(cell.candidates.contains(candidate), "\(candidate) is not a candidate for [\(row), \(column).")
-        }
-    }
-    
-    init(row: Int, column: Int, candidates: Int...) {
-        self.init(row: row, column: column, candidates: Set(candidates.map { SudokuNumber.allCases[$0 - 1] }))
     }
 }
 
@@ -52,20 +62,11 @@ struct SetValue: Equatable {
     let column: Int
     let value: SudokuNumber
     
-    private init(row: Int, column: Int, value: SudokuNumber) {
+    fileprivate init(row: Int, column: Int, value: SudokuNumber) {
         validateRowAndColumn(row: row, column: column)
         self.row = row
         self.column = column
         self.value = value
-    }
-    
-    init(cell: UnsolvedCell, value: SudokuNumber) {
-        self.init(row: cell.row, column: cell.column, value: value)
-        precondition(cell.candidates.contains(value), "\(value) is not a candidate for [\(row), \(column)].")
-    }
-    
-    init(row: Int, column: Int, value: Int) {
-        self.init(row: row, column: column, value: SudokuNumber.allCases[value - 1])
     }
 }
 

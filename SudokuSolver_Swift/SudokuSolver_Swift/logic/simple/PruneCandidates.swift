@@ -8,10 +8,6 @@ func pruneCandidates(board: Board<Cell>) -> [BoardModification] {
         let sameBlock = board.getBlock(blockIndex: cell.block)
         let visibleValues = (sameRow + sameColumn + sameBlock).solvedCells.map { $0.value }
         let toRemove = cell.candidates.intersection(visibleValues)
-        return if toRemove.isEmpty {
-            nil as BoardModification?
-        } else {
-            .removeCandidates(RemoveCandidates(cell: cell, candidates: toRemove))
-        }
+        return toRemove.isEmpty ? nil : BoardModification(cell: cell, candidates: toRemove)
     }
 }

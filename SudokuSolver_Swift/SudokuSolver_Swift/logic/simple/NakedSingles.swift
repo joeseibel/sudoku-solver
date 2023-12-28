@@ -7,5 +7,5 @@ func nakedSingles(board: Board<Cell>) -> [BoardModification] {
     board.cells
         .unsolvedCells
         .filter { $0.candidates.count == 1 }
-        .map { .setValue(SetValue(cell: $0, value: $0.candidates.first!)) }
+        .map { BoardModification(cell: $0, value: $0.candidates.first!) }
 }
