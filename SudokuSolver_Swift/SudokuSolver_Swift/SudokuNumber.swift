@@ -1,4 +1,4 @@
-enum SudokuNumber: Character, CaseIterable {
+enum SudokuNumber: Character, CaseIterable, CustomStringConvertible {
     case one = "1"
     case two = "2"
     case three = "3"
@@ -14,6 +14,10 @@ enum SudokuNumber: Character, CaseIterable {
             preconditionFailure(#"Invalid character: "\#(number)", must be between "1" and "9"."#)
         }
         self = number
+    }
+    
+    var description: String {
+        String(rawValue)
     }
 }
 

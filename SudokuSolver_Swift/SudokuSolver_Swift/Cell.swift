@@ -62,6 +62,7 @@ struct UnsolvedCell: Equatable {
     
     fileprivate init(row: Int, column: Int, candidates: Set<SudokuNumber>) {
         validateRowAndColumn(row: row, column: column)
+        precondition(!candidates.isEmpty, "candidates must not be empty.")
         self.row = row
         self.column = column
         block = getBlockIndex(rowIndex: row, columnIndex: column)

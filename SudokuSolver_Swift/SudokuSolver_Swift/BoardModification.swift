@@ -24,7 +24,10 @@ enum BoardModification: Equatable {
     init(cell: UnsolvedCell, candidates: Set<SudokuNumber>) {
         self = .removeCandidates(RemoveCandidates(row: cell.row, column: cell.column, candidates: candidates))
         candidates.forEach { candidate in
-            precondition(cell.candidates.contains(candidate), "\(candidate) is not a candidate for [\(row), \(column).")
+            precondition(
+                cell.candidates.contains(candidate),
+                "\(candidate) is not a candidate for [\(row), \(column)]."
+            )
         }
     }
     
