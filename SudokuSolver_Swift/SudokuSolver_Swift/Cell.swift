@@ -112,13 +112,11 @@ extension Board<Cell> {
                 index = withCandidates.index(after: index)
             case "{":
                 index = withCandidates.index(after: index)
-                //TODO: Is there a better way to do this?
                 guard let closingBrace = withCandidates[index...].firstIndex(of: "}") else {
                     preconditionFailure("Unmatched \"{\".")
                 }
                 precondition(closingBrace != index, "Empty \"{}\".")
-                //TODO: Is there a better way to do this?
-                let charsInBraces = withCandidates[index ... withCandidates.index(before: closingBrace)]
+                let charsInBraces = withCandidates[index ..< closingBrace]
                 precondition(!charsInBraces.contains("{"), "Nested \"{\".")
                 charsInBraces.forEach { charInBrace in
                     precondition(("1" ... "9").contains(charInBrace), "Invalid character: \"\(charInBrace)\".")
