@@ -1,4 +1,4 @@
-enum SudokuNumber: Character, CaseIterable, CustomStringConvertible {
+enum SudokuNumber: Character, CaseIterable {
     case one = "1"
     case two = "2"
     case three = "3"
@@ -15,7 +15,9 @@ enum SudokuNumber: Character, CaseIterable, CustomStringConvertible {
         }
         self = number
     }
-    
+}
+
+extension SudokuNumber: CustomStringConvertible {
     var description: String {
         String(rawValue)
     }
