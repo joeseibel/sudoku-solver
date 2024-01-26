@@ -55,6 +55,12 @@
             ReferencedContainer = "container:SudokuSolver_Swift.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "004007830000050470720030695080700300649513728007008010470080060016040007005276100"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

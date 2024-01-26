@@ -32,12 +32,23 @@ enum Cell: Equatable {
     case solvedCell(SolvedCell)
     case unsolvedCell(UnsolvedCell)
     
-    fileprivate init(row: Int, column: Int, value: SudokuNumber) {
+    init(row: Int, column: Int, value: SudokuNumber) {
         self = .solvedCell(SolvedCell(row: row, column: column, value: value))
     }
     
-    fileprivate init(row: Int, column: Int, candidates: Set<SudokuNumber> = Set(SudokuNumber.allCases)) {
+    init(row: Int, column: Int, candidates: Set<SudokuNumber> = Set(SudokuNumber.allCases)) {
         self = .unsolvedCell(UnsolvedCell(row: row, column: column, candidates: candidates))
+    }
+}
+
+extension Cell: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .solvedCell(let cell):
+            String(describing: cell)
+        case .unsolvedCell(let cell):
+            String(describing: cell)
+        }
     }
 }
 
@@ -51,6 +62,12 @@ struct SolvedCell: Equatable {
         self.row = row
         self.column = column
         self.value = value
+    }
+}
+
+extension SolvedCell: CustomStringConvertible {
+    var description: String {
+        String(describing: value)
     }
 }
 
@@ -70,9 +87,45 @@ struct UnsolvedCell: Equatable {
     }
 }
 
+extension UnsolvedCell: CustomStringConvertible {
+    var description: String {
+        "0"
+    }
+}
+
 private func validateRowAndColumn(row: Int, column: Int) {
     precondition((0 ..< unitSize).contains(row), "row is \(row), must be between 0 and \(unitSize - 1).")
     precondition((0 ..< unitSize).contains(column), "column is \(column), must be between 0 and \(unitSize - 1).")
+}
+
+extension String {
+    init(simpleBoard: Board<Cell>) {
+        self = simpleBoard.cells
+            .map { cell in
+                switch cell {
+                case .solvedCell(let cell):
+                    String(describing: cell.value)
+                case .unsolvedCell(_):
+                    "0"
+                }
+            }
+            .joined()
+    }
+    
+    init(withCandidates: Board<Cell>) {
+        self = withCandidates.rows
+            .map { row in
+                row.map { cell in
+                    switch cell {
+                    case .solvedCell(let cell):
+                        String(describing: cell.value)
+                    case .unsolvedCell(let cell):
+                        "{\(cell.candidates.sorted(by: <).map(String.init(describing:)).joined())}"
+                    }
+                }.joined()
+            }
+            .joined(separator: "\n")
+    }
 }
 
 extension Board<Cell> {

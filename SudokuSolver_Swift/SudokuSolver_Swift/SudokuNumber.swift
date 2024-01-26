@@ -23,6 +23,12 @@ extension SudokuNumber: CustomStringConvertible {
     }
 }
 
+extension SudokuNumber: Comparable {
+    static func < (lhs: SudokuNumber, rhs: SudokuNumber) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+}
+
 extension Board<SudokuNumber?> {
     init(optionalBoard board: String) {
         precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")

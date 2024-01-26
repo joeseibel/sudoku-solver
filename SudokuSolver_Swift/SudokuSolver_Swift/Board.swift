@@ -76,6 +76,33 @@ struct Board<Element: Equatable> : Equatable {
     }
 }
 
+extension Board: CustomStringConvertible {
+    var description: String {
+        func joinRows(fromIndex: Int, toIndex: Int) -> String {
+            rows[fromIndex ..< toIndex]
+                .map { row in
+                    func joinCells(fromIndex: Int, toIndex: Int) -> String {
+                        row[fromIndex ..< toIndex].map(String.init(describing:)).joined(separator: " ")
+                    }
+                    
+                    let first = joinCells(fromIndex: 0, toIndex: unitSizeSquareRoot)
+                    let second = joinCells(fromIndex: unitSizeSquareRoot, toIndex: unitSizeSquareRoot * 2)
+                    let third = joinCells(fromIndex: unitSizeSquareRoot * 2, toIndex: unitSize)
+                    return "\(first) | \(second) | \(third)"
+                }
+                .joined(separator: "\n")
+        }
+        
+        return """
+            \(joinRows(fromIndex: 0, toIndex: unitSizeSquareRoot))
+            ------+-------+------
+            \(joinRows(fromIndex: unitSizeSquareRoot, toIndex: unitSizeSquareRoot * 2))
+            ------+-------+------
+            \(joinRows(fromIndex: unitSizeSquareRoot * 2, toIndex: unitSize))
+            """
+    }
+}
+
 func getBlockIndex(rowIndex: Int, columnIndex: Int) -> Int {
     rowIndex / unitSizeSquareRoot * unitSizeSquareRoot + columnIndex / unitSizeSquareRoot
 }
