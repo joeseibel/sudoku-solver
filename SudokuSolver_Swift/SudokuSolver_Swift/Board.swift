@@ -14,7 +14,7 @@ struct Board<Element: Equatable> : Equatable {
     }
     
     var columns: [[Element]] {
-        (0 ..< unitSize).map { index in rows.map { row in row[index] } }
+        (0 ..< unitSize).map { index in rows.map(\.[index]) }
     }
     
     var blocks: [[Element]] {
@@ -39,7 +39,7 @@ struct Board<Element: Equatable> : Equatable {
     }
     
     func getColumn(columnIndex: Int) -> [Element] {
-        rows.map { row in row[columnIndex] }
+        rows.map(\.[columnIndex])
     }
     
     func getBlock(blockIndex: Int) -> [Element] {
