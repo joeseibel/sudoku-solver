@@ -141,17 +141,15 @@ extension Board<Cell> {
     
     init(simpleBoard board: String) {
         precondition(board.count == unitSizeSquared, "simpleBoard.count is \(board.count), must be \(unitSizeSquared).")
-        let board = Array(board)
-        let numbers = (0 ..< unitSize).map { rowIndex in
-            board[rowIndex * unitSize ..< rowIndex * unitSize + unitSize].enumerated().map { columnIndex, cell in
+        self.init(elements: board.chunks(ofCount: unitSize).enumerated().map { rowIndex, row in
+            row.enumerated().map { columnIndex, cell in
                 if cell == "0" {
                     Cell(row: rowIndex, column: columnIndex)
                 } else {
                     Cell(row: rowIndex, column: columnIndex, value: SudokuNumber(number: cell))
                 }
             }
-        }
-        self.init(elements: numbers)
+        })
     }
     
     init(withCandidates: String) {
@@ -187,12 +185,9 @@ extension Board<Cell> {
             cellBuilders.count == unitSizeSquared,
             "Found \(cellBuilders.count) cells, required \(unitSizeSquared)."
         )
-        let numbers = (0 ..< unitSize).map { rowIndex in
-            cellBuilders[rowIndex * unitSize ..< rowIndex * unitSize + unitSize].enumerated().map { columnIndex, cell in
-                cell(rowIndex, columnIndex)
-            }
-        }
-        self.init(elements: numbers)
+        self.init(elements: cellBuilders.chunks(ofCount: unitSize).enumerated().map { rowIndex, row in
+            row.enumerated().map { columnIndex, cell in cell(rowIndex, columnIndex) }
+        })
     }
 }
 

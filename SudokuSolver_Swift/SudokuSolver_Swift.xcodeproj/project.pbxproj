@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		850E69B92BA14AE70002D1F9 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 850E69B82BA14AE70002D1F9 /* Algorithms */; };
+		850E69BB2BA14B080002D1F9 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 850E69BA2BA14B080002D1F9 /* Algorithms */; };
 		853061702B8D84AF0080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 8530616F2B8D84AF0080E170 /* ArgumentParser */; };
 		853061732B8DC7E60080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 853061722B8DC7E60080E170 /* ArgumentParser */; };
 		85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
@@ -68,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				850E69B92BA14AE70002D1F9 /* Algorithms in Frameworks */,
 				853061702B8D84AF0080E170 /* ArgumentParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -76,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				850E69BB2BA14B080002D1F9 /* Algorithms in Frameworks */,
 				853061732B8DC7E60080E170 /* ArgumentParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -187,6 +191,7 @@
 			name = SudokuSolver_Swift;
 			packageProductDependencies = (
 				8530616F2B8D84AF0080E170 /* ArgumentParser */,
+				850E69B82BA14AE70002D1F9 /* Algorithms */,
 			);
 			productName = SudokuSolver_Swift;
 			productReference = 85F34B362AC35C3F00744103 /* SudokuSolver_Swift */;
@@ -207,6 +212,7 @@
 			name = SudokuSolver_Swift_Tests;
 			packageProductDependencies = (
 				853061722B8DC7E60080E170 /* ArgumentParser */,
+				850E69BA2BA14B080002D1F9 /* Algorithms */,
 			);
 			productName = SudokuSolver_Swift_Tests;
 			productReference = 85F52FBB2B19A7A50018E190 /* SudokuSolver_Swift_Tests.xctest */;
@@ -241,6 +247,7 @@
 			mainGroup = 85F34B2D2AC35C3F00744103;
 			packageReferences = (
 				8530616E2B8D84AF0080E170 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+				850E69B72BA14AE70002D1F9 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = 85F34B372AC35C3F00744103 /* Products */;
 			projectDirPath = "";
@@ -512,6 +519,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		850E69B72BA14AE70002D1F9 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
 		8530616E2B8D84AF0080E170 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
@@ -523,6 +538,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		850E69B82BA14AE70002D1F9 /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 850E69B72BA14AE70002D1F9 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
+		850E69BA2BA14B080002D1F9 /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 850E69B72BA14AE70002D1F9 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
 		8530616F2B8D84AF0080E170 /* ArgumentParser */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8530616E2B8D84AF0080E170 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;

@@ -1,3 +1,5 @@
+import Algorithms
+
 enum SudokuNumber: Character, CaseIterable {
     case one = "1"
     case two = "2"
@@ -32,21 +34,15 @@ extension SudokuNumber: Comparable {
 extension Board<SudokuNumber?> {
     init(optionalBoard board: String) {
         precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
-        let board = Array(board)
-        let numbers = stride(from: 0, to: board.count, by: unitSize).map { rowIndex in
-            board[rowIndex ..< rowIndex + unitSize].map { $0 == "0" ? nil : SudokuNumber(number: $0) }
-        }
-        self.init(elements: numbers)
+        self.init(elements: board.chunks(ofCount: unitSize).map { row in
+            row.map { $0 == "0" ? nil : SudokuNumber(number: $0)}
+        })
     }
 }
 
 extension Board<SudokuNumber> {
     init(board: String) {
         precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
-        let board = Array(board)
-        let numbers = stride(from: 0, to: board.count, by: unitSize).map { rowIndex in
-            board[rowIndex ..< rowIndex + unitSize].map { SudokuNumber(number: $0) }
-        }
-        self.init(elements: numbers)
+        self.init(elements: board.chunks(ofCount: unitSize).map { row in row.map { SudokuNumber(number: $0) } })
     }
 }
