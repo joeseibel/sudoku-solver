@@ -85,7 +85,8 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
     let solutions = [
         //Start of simple solutions.
         pruneCandidates,
-        nakedSingles
+        nakedSingles,
+        hiddenSingles
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }

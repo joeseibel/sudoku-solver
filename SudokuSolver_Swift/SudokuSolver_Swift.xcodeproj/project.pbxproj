@@ -11,6 +11,9 @@
 		850E69BB2BA14B080002D1F9 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 850E69BA2BA14B080002D1F9 /* Algorithms */; };
 		853061702B8D84AF0080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 8530616F2B8D84AF0080E170 /* ArgumentParser */; };
 		853061732B8DC7E60080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 853061722B8DC7E60080E170 /* ArgumentParser */; };
+		8592182F2BCE117D004FCDD1 /* HiddenSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */; };
+		859218302BCE117D004FCDD1 /* HiddenSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */; };
+		859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */; };
 		85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
 		85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
 		85EB77592B3C86670084B86F /* BoardModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77582B3C86670084B86F /* BoardModification.swift */; };
@@ -47,6 +50,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSingles.swift; sourceTree = "<group>"; };
+		859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSinglesTest.swift; sourceTree = "<group>"; };
 		85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuNumber.swift; sourceTree = "<group>"; };
 		85CF6BFD2ADA63520076BD62 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		85EB77582B3C86670084B86F /* BoardModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardModification.swift; sourceTree = "<group>"; };
@@ -99,6 +104,7 @@
 			children = (
 				85EB775F2B3CD64C0084B86F /* PruneCandidates.swift */,
 				85EB77652B3E0A510084B86F /* NakedSingles.swift */,
+				8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -108,6 +114,7 @@
 			children = (
 				85EB77622B3CD6DD0084B86F /* PruneCandidatesTest.swift */,
 				85EB77672B3E0A9F0084B86F /* NakedSinglesTest.swift */,
+				859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -276,6 +283,7 @@
 			files = (
 				85EB77592B3C86670084B86F /* BoardModification.swift in Sources */,
 				85F57BE02AF4069400144ABF /* BruteForce.swift in Sources */,
+				8592182F2BCE117D004FCDD1 /* HiddenSingles.swift in Sources */,
 				85EB776D2B51EBE90084B86F /* SudokuSolver.swift in Sources */,
 				85F52FCD2B1F02020018E190 /* Cell.swift in Sources */,
 				85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */,
@@ -293,7 +301,9 @@
 				85EB776E2B51EBE90084B86F /* SudokuSolver.swift in Sources */,
 				85F52FC72B19AB2B0018E190 /* BruteForce.swift in Sources */,
 				85EB775D2B3C95F60084B86F /* Cell.swift in Sources */,
+				859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */,
 				85EB776B2B51EA350084B86F /* SudokuSolverTest.swift in Sources */,
+				859218302BCE117D004FCDD1 /* HiddenSingles.swift in Sources */,
 				85F52FC62B19A96F0018E190 /* BruteForceTest.swift in Sources */,
 				85EB77692B3E0CAC0084B86F /* NakedSingles.swift in Sources */,
 				85F52FC22B19A8730018E190 /* SudokuNumber.swift in Sources */,

@@ -1,5 +1,5 @@
 //The use of Swift's Enumerations with Associated Values follows the same pattern that was used for Cell.
-enum BoardModification: Equatable {
+enum BoardModification: Hashable {
     case removeCandidates(RemoveCandidates)
     case setValue(SetValue)
     
@@ -46,7 +46,7 @@ enum BoardModification: Equatable {
     }
 }
 
-struct RemoveCandidates: Equatable {
+struct RemoveCandidates: Hashable {
     let row: Int
     let column: Int
     let candidates: Set<SudokuNumber>
@@ -60,7 +60,7 @@ struct RemoveCandidates: Equatable {
     }
 }
 
-struct SetValue: Equatable {
+struct SetValue: Hashable {
     let row: Int
     let column: Int
     let value: SudokuNumber

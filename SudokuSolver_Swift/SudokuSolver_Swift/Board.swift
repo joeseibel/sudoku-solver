@@ -21,6 +21,10 @@ struct Board<Element: Equatable> : Equatable {
         (0 ..< unitSize).map(getBlock)
     }
     
+    var units: [[Element]] {
+        rows + columns + blocks
+    }
+    
     var cells: [Element] {
         rows.flatMap { $0 }
     }
