@@ -71,7 +71,7 @@ extension SolvedCell: CustomStringConvertible {
     }
 }
 
-struct UnsolvedCell: Equatable {
+struct UnsolvedCell: Hashable {
     let row: Int
     let column: Int
     let block: Int

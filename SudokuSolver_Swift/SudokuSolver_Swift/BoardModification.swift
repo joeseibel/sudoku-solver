@@ -77,3 +77,11 @@ private func validateRowAndColumn(row: Int, column: Int) {
     precondition((0 ..< unitSize).contains(row), "row is \(row), must be between 0 and \(unitSize - 1).")
     precondition((0 ..< unitSize).contains(column), "column is \(column), must be between 0 and \(unitSize - 1).")
 }
+
+extension Sequence<(UnsolvedCell, SudokuNumber)> {
+    func mergeToRemoveCandidates() -> [BoardModification] {
+        Dictionary(grouping: self, by: { cell, _ in cell })
+            .mapValues { $0.map { _, candidate in candidate } }
+            .map { cell, candidates in BoardModification(cell: cell, candidates: Set(candidates)) }
+    }
+}
