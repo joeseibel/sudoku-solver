@@ -98,6 +98,8 @@ private func validateRowAndColumn(row: Int, column: Int) {
     precondition((0 ..< unitSize).contains(column), "column is \(column), must be between 0 and \(unitSize - 1).")
 }
 
+typealias LocatedCandidate = (UnsolvedCell, SudokuNumber)
+
 extension String {
     init(simpleBoard: Board<Cell>) {
         self = simpleBoard.cells
