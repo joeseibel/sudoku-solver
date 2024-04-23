@@ -8,10 +8,10 @@ func hiddenSingles(board: Board<Cell>) -> [BoardModification] {
         let unsolved = unit.unsolvedCells
         return SudokuNumber.allCases.compactMap { candidate in
             let withCandidate = unsolved.filter { $0.candidates.contains(candidate) }
-            if let cell = withCandidate.first, withCandidate.count == 1 {
-                return BoardModification(cell: cell, value: candidate)
+            return if let cell = withCandidate.first, withCandidate.count == 1 {
+                BoardModification(cell: cell, value: candidate)
             } else {
-                return nil
+                nil
             }
         }
     }
