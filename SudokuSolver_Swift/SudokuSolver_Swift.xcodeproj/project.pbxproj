@@ -22,6 +22,9 @@
 		8592183C2BD4CFBF004FCDD1 /* NakedTriples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592183B2BD4CFBF004FCDD1 /* NakedTriples.swift */; };
 		8592183D2BD4CFBF004FCDD1 /* NakedTriples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592183B2BD4CFBF004FCDD1 /* NakedTriples.swift */; };
 		8592183F2BD4D01F004FCDD1 /* NakedTriplesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592183E2BD4D01F004FCDD1 /* NakedTriplesTest.swift */; };
+		859218412BD77132004FCDD1 /* HiddenPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218402BD77132004FCDD1 /* HiddenPairs.swift */; };
+		859218422BD77132004FCDD1 /* HiddenPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218402BD77132004FCDD1 /* HiddenPairs.swift */; };
+		859218442BD77198004FCDD1 /* HiddenPairsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218432BD77198004FCDD1 /* HiddenPairsTest.swift */; };
 		85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
 		85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
 		85EB77592B3C86670084B86F /* BoardModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77582B3C86670084B86F /* BoardModification.swift */; };
@@ -65,6 +68,8 @@
 		859218382BD4669D004FCDD1 /* Collections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collections.swift; sourceTree = "<group>"; };
 		8592183B2BD4CFBF004FCDD1 /* NakedTriples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NakedTriples.swift; sourceTree = "<group>"; };
 		8592183E2BD4D01F004FCDD1 /* NakedTriplesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NakedTriplesTest.swift; sourceTree = "<group>"; };
+		859218402BD77132004FCDD1 /* HiddenPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenPairs.swift; sourceTree = "<group>"; };
+		859218432BD77198004FCDD1 /* HiddenPairsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenPairsTest.swift; sourceTree = "<group>"; };
 		85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuNumber.swift; sourceTree = "<group>"; };
 		85CF6BFD2ADA63520076BD62 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		85EB77582B3C86670084B86F /* BoardModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardModification.swift; sourceTree = "<group>"; };
@@ -120,6 +125,7 @@
 				8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */,
 				859218332BD37F8C004FCDD1 /* NakedPairs.swift */,
 				8592183B2BD4CFBF004FCDD1 /* NakedTriples.swift */,
+				859218402BD77132004FCDD1 /* HiddenPairs.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -132,6 +138,7 @@
 				859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */,
 				859218362BD38106004FCDD1 /* NakedPairsTest.swift */,
 				8592183E2BD4D01F004FCDD1 /* NakedTriplesTest.swift */,
+				859218432BD77198004FCDD1 /* HiddenPairsTest.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -309,6 +316,7 @@
 				85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */,
 				85EB77602B3CD64C0084B86F /* PruneCandidates.swift in Sources */,
 				859218342BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
+				859218412BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
 				859218392BD4669D004FCDD1 /* Collections.swift in Sources */,
 				8592183C2BD4CFBF004FCDD1 /* NakedTriples.swift in Sources */,
 			);
@@ -320,6 +328,8 @@
 			files = (
 				85EB775C2B3C95E80084B86F /* BoardModification.swift in Sources */,
 				85EB776E2B51EBE90084B86F /* SudokuSolver.swift in Sources */,
+				859218422BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
+				859218442BD77198004FCDD1 /* HiddenPairsTest.swift in Sources */,
 				85F52FC72B19AB2B0018E190 /* BruteForce.swift in Sources */,
 				85EB775D2B3C95F60084B86F /* Cell.swift in Sources */,
 				859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */,

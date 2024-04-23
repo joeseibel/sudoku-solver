@@ -89,6 +89,7 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         hiddenSingles,
         nakedPairs,
         nakedTriples,
+        hiddenPairs
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }
