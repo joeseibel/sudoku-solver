@@ -31,6 +31,9 @@
 		8592184B2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592184A2BD8C4A7004FCDD1 /* NakedQuads.swift */; };
 		8592184C2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592184A2BD8C4A7004FCDD1 /* NakedQuads.swift */; };
 		8592184E2BD8C51C004FCDD1 /* NakedQuadsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592184D2BD8C51C004FCDD1 /* NakedQuadsTest.swift */; };
+		859218502BD958E3004FCDD1 /* HiddenQuads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592184F2BD958E3004FCDD1 /* HiddenQuads.swift */; };
+		859218512BD958E3004FCDD1 /* HiddenQuads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592184F2BD958E3004FCDD1 /* HiddenQuads.swift */; };
+		859218532BD95956004FCDD1 /* HiddenQuadsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218522BD95956004FCDD1 /* HiddenQuadsTest.swift */; };
 		85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
 		85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
 		85EB77592B3C86670084B86F /* BoardModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77582B3C86670084B86F /* BoardModification.swift */; };
@@ -80,6 +83,8 @@
 		859218482BD835CF004FCDD1 /* HiddenTriplesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenTriplesTest.swift; sourceTree = "<group>"; };
 		8592184A2BD8C4A7004FCDD1 /* NakedQuads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NakedQuads.swift; sourceTree = "<group>"; };
 		8592184D2BD8C51C004FCDD1 /* NakedQuadsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NakedQuadsTest.swift; sourceTree = "<group>"; };
+		8592184F2BD958E3004FCDD1 /* HiddenQuads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenQuads.swift; sourceTree = "<group>"; };
+		859218522BD95956004FCDD1 /* HiddenQuadsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenQuadsTest.swift; sourceTree = "<group>"; };
 		85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuNumber.swift; sourceTree = "<group>"; };
 		85CF6BFD2ADA63520076BD62 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		85EB77582B3C86670084B86F /* BoardModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardModification.swift; sourceTree = "<group>"; };
@@ -138,6 +143,7 @@
 				859218402BD77132004FCDD1 /* HiddenPairs.swift */,
 				859218452BD83566004FCDD1 /* HiddenTriples.swift */,
 				8592184A2BD8C4A7004FCDD1 /* NakedQuads.swift */,
+				8592184F2BD958E3004FCDD1 /* HiddenQuads.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -153,6 +159,7 @@
 				859218432BD77198004FCDD1 /* HiddenPairsTest.swift */,
 				859218482BD835CF004FCDD1 /* HiddenTriplesTest.swift */,
 				8592184D2BD8C51C004FCDD1 /* NakedQuadsTest.swift */,
+				859218522BD95956004FCDD1 /* HiddenQuadsTest.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -326,6 +333,7 @@
 				8592182F2BCE117D004FCDD1 /* HiddenSingles.swift in Sources */,
 				85EB776D2B51EBE90084B86F /* SudokuSolver.swift in Sources */,
 				85F52FCD2B1F02020018E190 /* Cell.swift in Sources */,
+				859218502BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
 				85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */,
 				85EB77662B3E0A510084B86F /* NakedSingles.swift in Sources */,
 				85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */,
@@ -343,10 +351,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				85EB775C2B3C95E80084B86F /* BoardModification.swift in Sources */,
+				859218512BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
 				85EB776E2B51EBE90084B86F /* SudokuSolver.swift in Sources */,
 				859218422BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
 				859218442BD77198004FCDD1 /* HiddenPairsTest.swift in Sources */,
 				85F52FC72B19AB2B0018E190 /* BruteForce.swift in Sources */,
+				859218532BD95956004FCDD1 /* HiddenQuadsTest.swift in Sources */,
 				85EB775D2B3C95F60084B86F /* Cell.swift in Sources */,
 				859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */,
 				859218472BD83566004FCDD1 /* HiddenTriples.swift in Sources */,
