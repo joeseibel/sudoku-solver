@@ -39,6 +39,15 @@ enum Cell: Equatable {
     init(row: Int, column: Int, candidates: Set<SudokuNumber> = Set(SudokuNumber.allCases)) {
         self = .unsolvedCell(UnsolvedCell(row: row, column: column, candidates: candidates))
     }
+    
+    var block: Int {
+        switch self {
+        case .solvedCell(let cell):
+            cell.block
+        case .unsolvedCell(let cell):
+            cell.block
+        }
+    }
 }
 
 extension Cell: CustomStringConvertible {
@@ -55,12 +64,14 @@ extension Cell: CustomStringConvertible {
 struct SolvedCell: Equatable {
     let row: Int
     let column: Int
+    let block: Int
     let value: SudokuNumber
     
     fileprivate init(row: Int, column: Int, value: SudokuNumber) {
         validateRowAndColumn(row: row, column: column)
         self.row = row
         self.column = column
+        block = getBlockIndex(rowIndex: row, columnIndex: column)
         self.value = value
     }
 }
