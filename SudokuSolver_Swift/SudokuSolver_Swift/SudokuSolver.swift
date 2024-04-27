@@ -95,6 +95,8 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         hiddenQuads,
         pointingPairsPointingTriples,
         boxLineReduction,
+        //Start of tough solutions.
+        xWing,
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }
