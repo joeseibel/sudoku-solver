@@ -40,6 +40,24 @@ enum Cell: Equatable {
         self = .unsolvedCell(UnsolvedCell(row: row, column: column, candidates: candidates))
     }
     
+    var row: Int {
+        switch self {
+        case .solvedCell(let cell):
+            cell.row
+        case .unsolvedCell(let cell):
+            cell.row
+        }
+    }
+    
+    var column: Int {
+        switch self {
+        case .solvedCell(let cell):
+            cell.column
+        case .unsolvedCell(let cell):
+            cell.column
+        }
+    }
+    
     var block: Int {
         switch self {
         case .solvedCell(let cell):

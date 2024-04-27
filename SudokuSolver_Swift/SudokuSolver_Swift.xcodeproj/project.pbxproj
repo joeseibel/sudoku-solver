@@ -37,6 +37,9 @@
 		859218552BDA275C004FCDD1 /* PointingPairsPointingTriple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218542BDA275C004FCDD1 /* PointingPairsPointingTriple.swift */; };
 		859218562BDA275C004FCDD1 /* PointingPairsPointingTriple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218542BDA275C004FCDD1 /* PointingPairsPointingTriple.swift */; };
 		859218582BDA27FB004FCDD1 /* PointingPairsPointingTriplesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218572BDA27FB004FCDD1 /* PointingPairsPointingTriplesTest.swift */; };
+		8592185A2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218592BDAD647004FCDD1 /* BoxLineReduction.swift */; };
+		8592185B2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218592BDAD647004FCDD1 /* BoxLineReduction.swift */; };
+		8592185D2BDAD6BC004FCDD1 /* BoxLineReductionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592185C2BDAD6BC004FCDD1 /* BoxLineReductionTest.swift */; };
 		85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
 		85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
 		85EB77592B3C86670084B86F /* BoardModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77582B3C86670084B86F /* BoardModification.swift */; };
@@ -90,6 +93,8 @@
 		859218522BD95956004FCDD1 /* HiddenQuadsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenQuadsTest.swift; sourceTree = "<group>"; };
 		859218542BDA275C004FCDD1 /* PointingPairsPointingTriple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointingPairsPointingTriple.swift; sourceTree = "<group>"; };
 		859218572BDA27FB004FCDD1 /* PointingPairsPointingTriplesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointingPairsPointingTriplesTest.swift; sourceTree = "<group>"; };
+		859218592BDAD647004FCDD1 /* BoxLineReduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxLineReduction.swift; sourceTree = "<group>"; };
+		8592185C2BDAD6BC004FCDD1 /* BoxLineReductionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxLineReductionTest.swift; sourceTree = "<group>"; };
 		85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuNumber.swift; sourceTree = "<group>"; };
 		85CF6BFD2ADA63520076BD62 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		85EB77582B3C86670084B86F /* BoardModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardModification.swift; sourceTree = "<group>"; };
@@ -150,6 +155,7 @@
 				8592184A2BD8C4A7004FCDD1 /* NakedQuads.swift */,
 				8592184F2BD958E3004FCDD1 /* HiddenQuads.swift */,
 				859218542BDA275C004FCDD1 /* PointingPairsPointingTriple.swift */,
+				859218592BDAD647004FCDD1 /* BoxLineReduction.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -167,6 +173,7 @@
 				8592184D2BD8C51C004FCDD1 /* NakedQuadsTest.swift */,
 				859218522BD95956004FCDD1 /* HiddenQuadsTest.swift */,
 				859218572BDA27FB004FCDD1 /* PointingPairsPointingTriplesTest.swift */,
+				8592185C2BDAD6BC004FCDD1 /* BoxLineReductionTest.swift */,
 			);
 			path = simple;
 			sourceTree = "<group>";
@@ -339,6 +346,7 @@
 				8592184B2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */,
 				8592182F2BCE117D004FCDD1 /* HiddenSingles.swift in Sources */,
 				85EB776D2B51EBE90084B86F /* SudokuSolver.swift in Sources */,
+				8592185A2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */,
 				85F52FCD2B1F02020018E190 /* Cell.swift in Sources */,
 				859218552BDA275C004FCDD1 /* PointingPairsPointingTriple.swift in Sources */,
 				859218502BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
@@ -360,6 +368,7 @@
 			files = (
 				85EB775C2B3C95E80084B86F /* BoardModification.swift in Sources */,
 				859218512BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
+				8592185B2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */,
 				85EB776E2B51EBE90084B86F /* SudokuSolver.swift in Sources */,
 				859218422BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
 				859218442BD77198004FCDD1 /* HiddenPairsTest.swift in Sources */,
@@ -376,6 +385,7 @@
 				8592184C2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */,
 				85F52FC22B19A8730018E190 /* SudokuNumber.swift in Sources */,
 				85EB775B2B3C958E0084B86F /* Assertions.swift in Sources */,
+				8592185D2BDAD6BC004FCDD1 /* BoxLineReductionTest.swift in Sources */,
 				8592183D2BD4CFBF004FCDD1 /* NakedTriples.swift in Sources */,
 				85EB77632B3CD6DD0084B86F /* PruneCandidatesTest.swift in Sources */,
 				859218562BDA275C004FCDD1 /* PointingPairsPointingTriple.swift in Sources */,
