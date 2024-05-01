@@ -100,7 +100,7 @@ extension SolvedCell: CustomStringConvertible {
     }
 }
 
-struct UnsolvedCell: Hashable {
+struct UnsolvedCell: Hashable, Codable {
     let row: Int
     let column: Int
     let block: Int
@@ -113,6 +113,10 @@ struct UnsolvedCell: Hashable {
         self.column = column
         block = getBlockIndex(rowIndex: row, columnIndex: column)
         self.candidates = candidates
+    }
+    
+    func isInSameUnit(as other: UnsolvedCell) -> Bool {
+        row == other.row || column == other.column || block == other.block
     }
 }
 

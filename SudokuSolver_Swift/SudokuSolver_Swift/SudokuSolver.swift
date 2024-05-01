@@ -97,6 +97,8 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         boxLineReduction,
         //Start of tough solutions.
         xWing,
+        simpleColoringRule2,
+        simpleColoringRule4,
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }

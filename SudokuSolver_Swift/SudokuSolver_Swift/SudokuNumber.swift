@@ -1,6 +1,6 @@
 import Algorithms
 
-enum SudokuNumber: Character, CaseIterable {
+enum SudokuNumber: Character, CaseIterable, Codable {
     case one = "1"
     case two = "2"
     case three = "3"

@@ -1,5 +1,5 @@
 {
-  "originHash" : "4cfd4cc92e38efe95d43768562db995386a432c2da077c8608dbe5c8ed54daf7",
+  "originHash" : "66fd731ecd6114c94559df54d5dc26adbf5f3c48bcd10692fa7811dce88ee724",
   "pins" : [
     {
       "identity" : "swift-algorithms",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
         "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "swiftgraph",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/davecom/SwiftGraph.git",
+      "state" : {
+        "revision" : "76b5180a5cc32eda7f5236a756f4c1e0936311c6",
+        "version" : "3.1.0"
       }
     }
   ],
