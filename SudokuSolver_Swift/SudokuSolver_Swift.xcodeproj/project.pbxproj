@@ -75,6 +75,9 @@
 		85FA48142BE3580100D8B07F /* Swordfish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA48132BE3580100D8B07F /* Swordfish.swift */; };
 		85FA48152BE3580100D8B07F /* Swordfish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA48132BE3580100D8B07F /* Swordfish.swift */; };
 		85FA48172BE3590200D8B07F /* SwordfishTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA48162BE3590200D8B07F /* SwordfishTest.swift */; };
+		85FA48192BE44B2600D8B07F /* XYZWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA48182BE44B2600D8B07F /* XYZWing.swift */; };
+		85FA481A2BE44B2600D8B07F /* XYZWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA48182BE44B2600D8B07F /* XYZWing.swift */; };
+		85FA481C2BE44BCF00D8B07F /* XYZWingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA481B2BE44BCF00D8B07F /* XYZWingTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -133,6 +136,8 @@
 		85F57BDF2AF4069400144ABF /* BruteForce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BruteForce.swift; sourceTree = "<group>"; };
 		85FA48132BE3580100D8B07F /* Swordfish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swordfish.swift; sourceTree = "<group>"; };
 		85FA48162BE3590200D8B07F /* SwordfishTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwordfishTest.swift; sourceTree = "<group>"; };
+		85FA48182BE44B2600D8B07F /* XYZWing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYZWing.swift; sourceTree = "<group>"; };
+		85FA481B2BE44BCF00D8B07F /* XYZWingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYZWingTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +178,7 @@
 				8592186A2BDDDFF4004FCDD1 /* SimpleColoring.swift */,
 				8592186F2BE30F66004FCDD1 /* YWing.swift */,
 				85FA48132BE3580100D8B07F /* Swordfish.swift */,
+				85FA48182BE44B2600D8B07F /* XYZWing.swift */,
 			);
 			path = tough;
 			sourceTree = "<group>";
@@ -184,6 +190,7 @@
 				8592186D2BDDE089004FCDD1 /* SimpleColoringTest.swift */,
 				859218722BE30FEB004FCDD1 /* YWingTest.swift */,
 				85FA48162BE3590200D8B07F /* SwordfishTest.swift */,
+				85FA481B2BE44BCF00D8B07F /* XYZWingTest.swift */,
 			);
 			path = tough;
 			sourceTree = "<group>";
@@ -407,6 +414,7 @@
 				85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */,
 				85EB77662B3E0A510084B86F /* NakedSingles.swift in Sources */,
 				85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */,
+				85FA48192BE44B2600D8B07F /* XYZWing.swift in Sources */,
 				85EB77602B3CD64C0084B86F /* PruneCandidates.swift in Sources */,
 				859218462BD83566004FCDD1 /* HiddenTriples.swift in Sources */,
 				859218342BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
@@ -454,8 +462,10 @@
 				85EB77642B3CDAB00084B86F /* PruneCandidates.swift in Sources */,
 				859218492BD835CF004FCDD1 /* HiddenTriplesTest.swift in Sources */,
 				859218372BD38106004FCDD1 /* NakedPairsTest.swift in Sources */,
+				85FA481A2BE44B2600D8B07F /* XYZWing.swift in Sources */,
 				85FA48152BE3580100D8B07F /* Swordfish.swift in Sources */,
 				8592183F2BD4D01F004FCDD1 /* NakedTriplesTest.swift in Sources */,
+				85FA481C2BE44BCF00D8B07F /* XYZWingTest.swift in Sources */,
 				859218352BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
 				8592183A2BD4669D004FCDD1 /* Collections.swift in Sources */,
 				85F52FC42B19A8CD0018E190 /* Board.swift in Sources */,
