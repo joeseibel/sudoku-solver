@@ -100,6 +100,7 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         simpleColoringRule2,
         simpleColoringRule4,
         yWing,
+        swordfish,
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }
