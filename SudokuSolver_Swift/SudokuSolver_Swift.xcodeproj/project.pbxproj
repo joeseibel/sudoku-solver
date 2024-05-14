@@ -78,6 +78,9 @@
 		85FA48192BE44B2600D8B07F /* XYZWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA48182BE44B2600D8B07F /* XYZWing.swift */; };
 		85FA481A2BE44B2600D8B07F /* XYZWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA48182BE44B2600D8B07F /* XYZWing.swift */; };
 		85FA481C2BE44BCF00D8B07F /* XYZWingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA481B2BE44BCF00D8B07F /* XYZWingTest.swift */; };
+		85FA481F2BE559E400D8B07F /* XCycles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA481E2BE559E400D8B07F /* XCycles.swift */; };
+		85FA48202BE559E400D8B07F /* XCycles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA481E2BE559E400D8B07F /* XCycles.swift */; };
+		85FA48232BE749E900D8B07F /* XCyclesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FA48222BE749E900D8B07F /* XCyclesTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -138,6 +141,8 @@
 		85FA48162BE3590200D8B07F /* SwordfishTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwordfishTest.swift; sourceTree = "<group>"; };
 		85FA48182BE44B2600D8B07F /* XYZWing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYZWing.swift; sourceTree = "<group>"; };
 		85FA481B2BE44BCF00D8B07F /* XYZWingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYZWingTest.swift; sourceTree = "<group>"; };
+		85FA481E2BE559E400D8B07F /* XCycles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCycles.swift; sourceTree = "<group>"; };
+		85FA48222BE749E900D8B07F /* XCyclesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCyclesTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -277,6 +282,7 @@
 		85F52FC82B1AC4300018E190 /* logic */ = {
 			isa = PBXGroup;
 			children = (
+				85FA481D2BE559AC00D8B07F /* diabolical */,
 				8592185E2BDCCE33004FCDD1 /* tough */,
 				85EB775E2B3CD6340084B86F /* simple */,
 				85F57BDF2AF4069400144ABF /* BruteForce.swift */,
@@ -287,12 +293,29 @@
 		85F52FC92B1AC4A90018E190 /* logic */ = {
 			isa = PBXGroup;
 			children = (
+				85FA48212BE749B600D8B07F /* diabolical */,
 				859218622BDCCF28004FCDD1 /* tough */,
 				85EB77612B3CD6D00084B86F /* simple */,
 				85F52FC52B19A96F0018E190 /* BruteForceTest.swift */,
 				85EB775A2B3C958E0084B86F /* Assertions.swift */,
 			);
 			path = logic;
+			sourceTree = "<group>";
+		};
+		85FA481D2BE559AC00D8B07F /* diabolical */ = {
+			isa = PBXGroup;
+			children = (
+				85FA481E2BE559E400D8B07F /* XCycles.swift */,
+			);
+			path = diabolical;
+			sourceTree = "<group>";
+		};
+		85FA48212BE749B600D8B07F /* diabolical */ = {
+			isa = PBXGroup;
+			children = (
+				85FA48222BE749E900D8B07F /* XCyclesTest.swift */,
+			);
+			path = diabolical;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -410,6 +433,7 @@
 				85F52FCD2B1F02020018E190 /* Cell.swift in Sources */,
 				859218702BE30F66004FCDD1 /* YWing.swift in Sources */,
 				859218552BDA275C004FCDD1 /* PointingPairsPointingTriple.swift in Sources */,
+				85FA481F2BE559E400D8B07F /* XCycles.swift in Sources */,
 				859218502BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
 				85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */,
 				85EB77662B3E0A510084B86F /* NakedSingles.swift in Sources */,
@@ -432,6 +456,7 @@
 				85EB775C2B3C95E80084B86F /* BoardModification.swift in Sources */,
 				859218512BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
 				8592186E2BDDE089004FCDD1 /* SimpleColoringTest.swift in Sources */,
+				85FA48232BE749E900D8B07F /* XCyclesTest.swift in Sources */,
 				8592185B2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */,
 				8592186C2BDDDFF4004FCDD1 /* SimpleColoring.swift in Sources */,
 				859218712BE30F66004FCDD1 /* YWing.swift in Sources */,
@@ -463,6 +488,7 @@
 				859218492BD835CF004FCDD1 /* HiddenTriplesTest.swift in Sources */,
 				859218372BD38106004FCDD1 /* NakedPairsTest.swift in Sources */,
 				85FA481A2BE44B2600D8B07F /* XYZWing.swift in Sources */,
+				85FA48202BE559E400D8B07F /* XCycles.swift in Sources */,
 				85FA48152BE3580100D8B07F /* Swordfish.swift in Sources */,
 				8592183F2BD4D01F004FCDD1 /* NakedTriplesTest.swift in Sources */,
 				85FA481C2BE44BCF00D8B07F /* XYZWingTest.swift in Sources */,
