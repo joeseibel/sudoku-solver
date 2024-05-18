@@ -11,6 +11,9 @@
 		850E69BB2BA14B080002D1F9 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 850E69BA2BA14B080002D1F9 /* Algorithms */; };
 		853061702B8D84AF0080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 8530616F2B8D84AF0080E170 /* ArgumentParser */; };
 		853061732B8DC7E60080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 853061722B8DC7E60080E170 /* ArgumentParser */; };
+		858D84072BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
+		858D84082BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
+		858D840A2BF877B200614631 /* BUGTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84092BF877B200614631 /* BUGTest.swift */; };
 		8592182F2BCE117D004FCDD1 /* HiddenSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */; };
 		859218302BCE117D004FCDD1 /* HiddenSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */; };
 		859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */; };
@@ -96,6 +99,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		858D84062BF8751500614631 /* BUG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUG.swift; sourceTree = "<group>"; };
+		858D84092BF877B200614631 /* BUGTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUGTest.swift; sourceTree = "<group>"; };
 		8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSingles.swift; sourceTree = "<group>"; };
 		859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSinglesTest.swift; sourceTree = "<group>"; };
 		859218332BD37F8C004FCDD1 /* NakedPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NakedPairs.swift; sourceTree = "<group>"; };
@@ -306,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				85FA481E2BE559E400D8B07F /* XCycles.swift */,
+				858D84062BF8751500614631 /* BUG.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -314,6 +320,7 @@
 			isa = PBXGroup;
 			children = (
 				85FA48222BE749E900D8B07F /* XCyclesTest.swift */,
+				858D84092BF877B200614631 /* BUGTest.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -442,6 +449,7 @@
 				85EB77602B3CD64C0084B86F /* PruneCandidates.swift in Sources */,
 				859218462BD83566004FCDD1 /* HiddenTriples.swift in Sources */,
 				859218342BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
+				858D84072BF8751500614631 /* BUG.swift in Sources */,
 				859218412BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
 				859218392BD4669D004FCDD1 /* Collections.swift in Sources */,
 				8592186B2BDDDFF4004FCDD1 /* SimpleColoring.swift in Sources */,
@@ -478,6 +486,7 @@
 				8592184C2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */,
 				85F52FC22B19A8730018E190 /* SudokuNumber.swift in Sources */,
 				85FA48172BE3590200D8B07F /* SwordfishTest.swift in Sources */,
+				858D84082BF8751500614631 /* BUG.swift in Sources */,
 				85EB775B2B3C958E0084B86F /* Assertions.swift in Sources */,
 				859218612BDCCE6E004FCDD1 /* XWing.swift in Sources */,
 				8592185D2BDAD6BC004FCDD1 /* BoxLineReductionTest.swift in Sources */,
@@ -496,6 +505,7 @@
 				8592183A2BD4669D004FCDD1 /* Collections.swift in Sources */,
 				85F52FC42B19A8CD0018E190 /* Board.swift in Sources */,
 				85EB77682B3E0A9F0084B86F /* NakedSinglesTest.swift in Sources */,
+				858D840A2BF877B200614631 /* BUGTest.swift in Sources */,
 				859218582BDA27FB004FCDD1 /* PointingPairsPointingTriplesTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
