@@ -87,14 +87,14 @@ func xCyclesRule3(board: Board<Cell>) -> [BoardModification] {
     }.mergeToRemoveCandidates()
 }
 
-extension UniqueElementsGraph<UnsolvedCell, StrengthEdge> {
+extension WeightedUniqueElementsGraph<UnsolvedCell, Strength> {
     func toDOT(candidate: SudokuNumber) -> String {
         var result = "strict graph \(candidate) {\n"
         for edge in edgeList() {
             let u = vertexAtIndex(edge.u)
             let v = vertexAtIndex(edge.v)
             result += "  \"[\(u.row),\(u.column)]\" -- \"[\(v.row),\(v.column)]\""
-            if edge.strength == .weak {
+            if edge.weight == .weak {
                 result += " [style = dashed]"
             }
             result += "\n"
@@ -107,8 +107,8 @@ extension UniqueElementsGraph<UnsolvedCell, StrengthEdge> {
 private func createStrongLinks(
     board: Board<Cell>,
     candidate: SudokuNumber
-) -> UniqueElementsGraph<UnsolvedCell, StrengthEdge> {
-    let graph = UniqueElementsGraph<UnsolvedCell, StrengthEdge>()
+) -> WeightedUniqueElementsGraph<UnsolvedCell, Strength> {
+    let graph = WeightedUniqueElementsGraph<UnsolvedCell, Strength>()
     board.units
         .map { unit in unit.unsolvedCells.filter { $0.candidates.contains(candidate) } }
         .filter { withCandidate in withCandidate.count == 2 }
@@ -117,34 +117,33 @@ private func createStrongLinks(
             let b = withCandidate[1]
             let aIndex = graph.addVertex(a)
             let bIndex = graph.addVertex(b)
-            graph.addEdge(StrengthEdge(u: aIndex, v: bIndex, strength: .strong))
+            graph.addEdge(fromIndex: aIndex, toIndex: bIndex, weight: .strong)
         }
     return graph
 }
 
-private extension UniqueElementsGraph<UnsolvedCell, StrengthEdge> {
+private extension WeightedUniqueElementsGraph<UnsolvedCell, Strength> {
     func addWeakLinks() {
         indices.zipEveryPair()
             .filter { aIndex, bIndex in
                 let a = vertexAtIndex(aIndex)
                 let b = vertexAtIndex(bIndex)
-                //Don't need to check for weak links because there are only strong links in the graph.
-                return a.isInSameUnit(as: b) && !edgeExists(StrengthEdge(u: aIndex, v: bIndex, strength: .strong))
+                return a.isInSameUnit(as: b) && !edgeExists(fromIndex: aIndex, toIndex: bIndex)
             }
-            .forEach { aIndex, bIndex in addEdge(StrengthEdge(u: aIndex, v: bIndex, strength: .weak)) }
+            .forEach { aIndex, bIndex in addEdge(fromIndex: aIndex, toIndex: bIndex, weight: .weak)}
     }
     
     func additionalWeakLinks(board: Board<Cell>, candidate: SudokuNumber) {
         board.cells.unsolvedCells.filter { $0.candidates.contains(candidate) && !contains($0) }.forEach { cell in
             indices.filter { vertexAtIndex($0).isInSameUnit(as: cell) }.forEach { index in
-                addEdge(StrengthEdge(u: index, v: addVertex(cell), strength: .weak))
+                addEdge(fromIndex: index, toIndex: addVertex(cell), weight: .weak)
             }
         }
     }
 }
 
-private extension UniqueElementsGraph<UnsolvedCell, StrengthEdge> {
-    func getOppositeIndex(edge: StrengthEdge, index: Index) -> Index {
+private extension WeightedUniqueElementsGraph<UnsolvedCell, Strength> {
+    func getOppositeIndex(edge: WeightedEdge<Strength>, index: Index) -> Index {
         if index == edge.u {
             edge.v
         } else if index == edge.v {
@@ -155,21 +154,18 @@ private extension UniqueElementsGraph<UnsolvedCell, StrengthEdge> {
     }
 }
 
-struct StrengthEdge: Edge, Hashable {
-    var u: Int
-    var v: Int
-    var directed: Bool = false
-    let strength: Strength
-    
-    func reversed() -> StrengthEdge {
-        StrengthEdge(u: v, v: u, directed: directed, strength: strength)
-    }
-    
-    var description: String {
-        return "\(u) -> \(v)"
-    }
-}
-
+/*
+ * Strength should be used as the weight for a WeightedUniqueElementsGraph.
+ *
+ * I considered having separate Strength and StrengthEdge types like I do for other languages. However, SwiftGraph
+ * permits the weight to an arbitrary type as long as it is Equatable and Codable. This is different from JGraphT which
+ * forces the weight to be a double.
+ *
+ * I am aware that this might be considered an abuse of the term "weight" since Strength is not a number. However, using
+ * a weight makes the code simplier due to the methods that are available on Graph when its edge type is a WeightedEdge.
+ * While using Strength as a weight might violate the mathematical concept of a weak, it doesn't break anything
+ * regarding SwiftGraph.
+ */
 enum Strength: Codable {
     case strong, weak
     
@@ -197,7 +193,16 @@ enum Strength: Codable {
     }
 }
 
-private extension Graph where Index == Int, E == StrengthEdge {
+extension WeightedEdge<Strength>: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(u)
+        hasher.combine(v)
+        hasher.combine(directed)
+        hasher.combine(weight)
+    }
+}
+
+private extension Graph where Index == Int, E == WeightedEdge<Strength> {
     /*
      * Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The returned graph
      * will either be empty or only contain vertices with a degree of two or more and be connected by at least one
@@ -208,7 +213,7 @@ private extension Graph where Index == Int, E == StrengthEdge {
         repeat {
             toRemove = indices.first { index in
                 let edges = edgesForIndex(index)
-                return edges.count < 2 || !edges.contains { $0.strength == .strong }
+                return edges.count < 2 || !edges.contains { $0.weight == .strong }
             }
             if let toRemove {
                 removeVertexAtIndex(toRemove)
@@ -218,10 +223,10 @@ private extension Graph where Index == Int, E == StrengthEdge {
 }
 
 private func getWeakEdgesInAlternatingCycle(
-    graph: UniqueElementsGraph<UnsolvedCell, StrengthEdge>
-) -> Set<StrengthEdge> {
-    var weakEdgesInAlternatingCycle = Set<StrengthEdge>()
-    graph.edgeList().filter { $0.strength == .weak }.forEach { edge in
+    graph: WeightedUniqueElementsGraph<UnsolvedCell, Strength>
+) -> Set<WeightedEdge<Strength>> {
+    var weakEdgesInAlternatingCycle = Set<WeightedEdge<Strength>>()
+    graph.edgeList().filter { $0.weight == .weak }.forEach { edge in
         if !weakEdgesInAlternatingCycle.contains(edge) {
             weakEdgesInAlternatingCycle.formUnion(getAlternatingCycleWeakEdges(graph: graph, startEdge: edge))
         }
@@ -230,21 +235,21 @@ private func getWeakEdgesInAlternatingCycle(
 }
 
 private func getAlternatingCycleWeakEdges(
-    graph: UniqueElementsGraph<UnsolvedCell, StrengthEdge>,
-    startEdge: StrengthEdge
-) -> [StrengthEdge] {
-    precondition(startEdge.strength == .weak, "startEdge must be weak.")
+    graph: WeightedUniqueElementsGraph<UnsolvedCell, Strength>,
+    startEdge: WeightedEdge<Strength>
+) -> [WeightedEdge<Strength>] {
+    precondition(startEdge.weight == .weak, "startEdge must be weak.")
     let start = startEdge.u
     let end = startEdge.v
     
     func getAlternatingCycleWeakEdges(
-        currentIndex: UniqueElementsGraph.Index,
+        currentIndex: WeightedUniqueElementsGraph<UnsolvedCell, Strength>.Index,
         nextType: Strength,
-        visited: Set<UniqueElementsGraph.Index>,
-        weakEdges: [StrengthEdge]
-    ) -> [StrengthEdge] {
+        visited: Set<WeightedUniqueElementsGraph<UnsolvedCell, Strength>.Index>,
+        weakEdges: [WeightedEdge<Strength>]
+    ) -> [WeightedEdge<Strength>] {
         let nextEdgesAndIndices = graph.edgesForIndex(currentIndex)
-            .filter { $0.strength.isCompatible(with: nextType) }
+            .filter { $0.weight.isCompatible(with: nextType) }
             .map { ($0, graph.getOppositeIndex(edge: $0, index: currentIndex)) }
         return if nextType == .strong && nextEdgesAndIndices.contains(where: { _, nextIndex in nextIndex == end }) {
             weakEdges
@@ -256,7 +261,7 @@ private func getAlternatingCycleWeakEdges(
                         currentIndex: nextIndex,
                         nextType: nextType.opposite,
                         visited: visited.union([nextIndex]),
-                        weakEdges: nextEdge.strength == .weak ? weakEdges + [nextEdge] : weakEdges
+                        weakEdges: nextEdge.weight == .weak ? weakEdges + [nextEdge] : weakEdges
                     )
                 }
                 .first { !$0.isEmpty }
@@ -270,26 +275,26 @@ private func getAlternatingCycleWeakEdges(
         visited: [start],
         weakEdges: [startEdge]
     )
-    assert(!weakEdges.contains { $0.strength == .strong }, "There are strong edges in the return value.")
+    assert(!weakEdges.contains { $0.weight == .strong }, "There are strong edges in the return value.")
     return weakEdges
 }
 
 private func alternatingCycleExists(
-    graph: UniqueElementsGraph<UnsolvedCell, StrengthEdge>,
-    index: UniqueElementsGraph.Index,
+    graph: WeightedUniqueElementsGraph<UnsolvedCell, Strength>,
+    index: WeightedUniqueElementsGraph<UnsolvedCell, Strength>.Index,
     adjacentEdgesType: Strength
 ) -> Bool {
-    graph.edgesForIndex(index).filter { $0.strength == adjacentEdgesType }.zipEveryPair().contains { edgeA, edgeB in
+    graph.edgesForIndex(index).filter { $0.weight == adjacentEdgesType }.zipEveryPair().contains { edgeA, edgeB in
         let start = graph.getOppositeIndex(edge: edgeA, index: index)
         let end = graph.getOppositeIndex(edge: edgeB, index: index)
         
         func alternatingCycleExists(
-            currentIndex: UniqueElementsGraph.Index,
+            currentIndex: WeightedUniqueElementsGraph<UnsolvedCell, Strength>.Index,
             nextType: Strength,
-            visited: Set<UniqueElementsGraph.Index>
+            visited: Set<WeightedUniqueElementsGraph<UnsolvedCell, Strength>.Index>
         ) -> Bool {
             let nextIndices = graph.edgesForIndex(currentIndex)
-                .filter { $0.strength.isCompatible(with: nextType) }
+                .filter { $0.weight.isCompatible(with: nextType) }
                 .map { graph.getOppositeIndex(edge: $0, index: currentIndex) }
             return adjacentEdgesType.opposite == nextType && nextIndices.contains(end) ||
                 Set(nextIndices).subtracting(visited).subtracting([end]).contains { nextIndex in

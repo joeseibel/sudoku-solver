@@ -3,7 +3,7 @@ import SwiftGraph
 
 final class XCyclesTest: XCTestCase {
     func testToDOT() {
-        let graph = UniqueElementsGraph<UnsolvedCell, StrengthEdge>()
+        let graph = WeightedUniqueElementsGraph<UnsolvedCell, Strength>()
         let cells = [Cell(row: 0, column: 0), Cell(row: 0, column: 3), Cell(row: 2, column: 5)].unsolvedCells
         let a = cells[0]
         let b = cells[1]
@@ -11,8 +11,8 @@ final class XCyclesTest: XCTestCase {
         let aIndex = graph.addVertex(a)
         let bIndex = graph.addVertex(b)
         let cIndex = graph.addVertex(c)
-        graph.addEdge(StrengthEdge(u: aIndex, v: bIndex, strength: .strong))
-        graph.addEdge(StrengthEdge(u: bIndex, v: cIndex, strength: .weak))
+        graph.addEdge(fromIndex: aIndex, toIndex: bIndex, weight: .strong)
+        graph.addEdge(fromIndex: bIndex, toIndex: cIndex, weight: .weak)
         let actual = graph.toDOT(candidate: .one)
         let expected = """
             strict graph 1 {
