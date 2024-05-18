@@ -17,13 +17,10 @@ func simpleColoringRule2(board: Board<Cell>) -> [BoardModification] {
     SudokuNumber.allCases.flatMap { candidate in
         createConnectedComponents(board: board, candidate: candidate).compactMap { graph in
             let colors = graph.colorToDictionary()
-            let pair = graph.zipEveryPair().first { a, b in colors[a] == colors[b] && a.isInSameUnit(as: b) }
-            if let (a, _) = pair {
-                let colorToRemove = colors[a]
-                return graph.filter { colors[$0] == colorToRemove }.map { ($0, candidate) }
-            } else {
-                return nil
-            }
+            return graph.zipEveryPair()
+                .first { a, b in colors[a] == colors[b] && a.isInSameUnit(as: b) }
+                .map { a, b in colors[a] }
+                .map { colorToRemove in graph.filter { colors[$0] == colorToRemove }.map { ($0, candidate) } }
         }.joined()
     }.mergeToRemoveCandidates()
 }
