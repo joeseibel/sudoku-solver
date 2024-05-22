@@ -1,5 +1,5 @@
-import XCTest
 import SwiftGraph
+import XCTest
 
 final class XCyclesTest: XCTestCase {
     func testToDOT() {
