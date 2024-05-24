@@ -107,6 +107,12 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         xCyclesRule3,
         { board in bug(board: board).map { [$0] } ?? [] },
         xyChains,
+        medusaRule1,
+        medusaRule2,
+        medusaRule3,
+        medusaRule4,
+        medusaRule5,
+        medusaRule6,
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }

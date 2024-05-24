@@ -19,6 +19,9 @@
 		858D840F2BF9924B00614631 /* XYChainsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D840E2BF9924B00614631 /* XYChainsTest.swift */; };
 		858D84112BFD12E200614631 /* Graphs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84102BFD12E200614631 /* Graphs.swift */; };
 		858D84122BFD12E200614631 /* Graphs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84102BFD12E200614631 /* Graphs.swift */; };
+		858D84142BFE355F00614631 /* Medusa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84132BFE355F00614631 /* Medusa.swift */; };
+		858D84152BFE355F00614631 /* Medusa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84132BFE355F00614631 /* Medusa.swift */; };
+		858D84172BFE3D1D00614631 /* MedusaTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84162BFE3D1D00614631 /* MedusaTest.swift */; };
 		8592182F2BCE117D004FCDD1 /* HiddenSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */; };
 		859218302BCE117D004FCDD1 /* HiddenSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */; };
 		859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */; };
@@ -109,6 +112,8 @@
 		858D840B2BF9919D00614631 /* XYChains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYChains.swift; sourceTree = "<group>"; };
 		858D840E2BF9924B00614631 /* XYChainsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYChainsTest.swift; sourceTree = "<group>"; };
 		858D84102BFD12E200614631 /* Graphs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graphs.swift; sourceTree = "<group>"; };
+		858D84132BFE355F00614631 /* Medusa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Medusa.swift; sourceTree = "<group>"; };
+		858D84162BFE3D1D00614631 /* MedusaTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedusaTest.swift; sourceTree = "<group>"; };
 		8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSingles.swift; sourceTree = "<group>"; };
 		859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSinglesTest.swift; sourceTree = "<group>"; };
 		859218332BD37F8C004FCDD1 /* NakedPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NakedPairs.swift; sourceTree = "<group>"; };
@@ -322,6 +327,7 @@
 				85FA481E2BE559E400D8B07F /* XCycles.swift */,
 				858D84062BF8751500614631 /* BUG.swift */,
 				858D840B2BF9919D00614631 /* XYChains.swift */,
+				858D84132BFE355F00614631 /* Medusa.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -332,6 +338,7 @@
 				85FA48222BE749E900D8B07F /* XCyclesTest.swift */,
 				858D84092BF877B200614631 /* BUGTest.swift */,
 				858D840E2BF9924B00614631 /* XYChainsTest.swift */,
+				858D84162BFE3D1D00614631 /* MedusaTest.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -462,6 +469,7 @@
 				85EB77602B3CD64C0084B86F /* PruneCandidates.swift in Sources */,
 				859218462BD83566004FCDD1 /* HiddenTriples.swift in Sources */,
 				859218342BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
+				858D84142BFE355F00614631 /* Medusa.swift in Sources */,
 				858D84072BF8751500614631 /* BUG.swift in Sources */,
 				859218412BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
 				859218392BD4669D004FCDD1 /* Collections.swift in Sources */,
@@ -476,6 +484,7 @@
 			files = (
 				85EB775C2B3C95E80084B86F /* BoardModification.swift in Sources */,
 				859218512BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
+				858D84152BFE355F00614631 /* Medusa.swift in Sources */,
 				8592186E2BDDE089004FCDD1 /* SimpleColoringTest.swift in Sources */,
 				85FA48232BE749E900D8B07F /* XCyclesTest.swift in Sources */,
 				8592185B2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */,
@@ -486,6 +495,7 @@
 				859218422BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
 				859218442BD77198004FCDD1 /* HiddenPairsTest.swift in Sources */,
 				85F52FC72B19AB2B0018E190 /* BruteForce.swift in Sources */,
+				858D84172BFE3D1D00614631 /* MedusaTest.swift in Sources */,
 				859218532BD95956004FCDD1 /* HiddenQuadsTest.swift in Sources */,
 				85EB775D2B3C95F60084B86F /* Cell.swift in Sources */,
 				859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */,

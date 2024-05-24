@@ -108,21 +108,3 @@ private func alternatingPathExists(
     
     return alternatingPathExists(currentIndex: start, nextType: .strong, visited: [start])
 }
-
-/*
- * This type is the struct equivalent of LocatedCandidate and exists so that it can be used as a vertex type in graphs.
- *
- * I tried to use LocatedCandidate as a vertex type, but that didn't work for the following reasons:
- *   1. Graph requires the vertex type to be Codable.
- *   2. LocatedCandidate is a tuple type. Specifically, it is a type alias for (UnsolvedCell, SudokuNumber).
- *   3. Swift does not allow protocol conformance to be added to tuples.
- *
- * Therefore, tuple types cannot be used as a vertex type for Graph. The Swift community does seem interested in adding
- * support for this: https://forums.swift.org/t/protocol-conformance-for-tuples-anonymous-structs/24207
- *
- * If protocol conformance for tuples is added to Swift, then CodableLocatedCandidate can be removed.
- */
-struct CodableLocatedCandidate: Hashable, Codable {
-    let cell: UnsolvedCell
-    let candidate: SudokuNumber
-}
