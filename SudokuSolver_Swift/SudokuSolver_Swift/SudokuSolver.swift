@@ -113,6 +113,7 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         medusaRule4,
         medusaRule5,
         medusaRule6,
+        jellyfish,
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }

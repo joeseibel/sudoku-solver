@@ -22,6 +22,9 @@
 		858D84142BFE355F00614631 /* Medusa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84132BFE355F00614631 /* Medusa.swift */; };
 		858D84152BFE355F00614631 /* Medusa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84132BFE355F00614631 /* Medusa.swift */; };
 		858D84172BFE3D1D00614631 /* MedusaTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84162BFE3D1D00614631 /* MedusaTest.swift */; };
+		858D84192C00E26200614631 /* Jellyfish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84182C00E26200614631 /* Jellyfish.swift */; };
+		858D841A2C00E26200614631 /* Jellyfish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84182C00E26200614631 /* Jellyfish.swift */; };
+		858D841C2C00E2A800614631 /* JellyfishTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D841B2C00E2A800614631 /* JellyfishTest.swift */; };
 		8592182F2BCE117D004FCDD1 /* HiddenSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */; };
 		859218302BCE117D004FCDD1 /* HiddenSingles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */; };
 		859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */; };
@@ -114,6 +117,8 @@
 		858D84102BFD12E200614631 /* Graphs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graphs.swift; sourceTree = "<group>"; };
 		858D84132BFE355F00614631 /* Medusa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Medusa.swift; sourceTree = "<group>"; };
 		858D84162BFE3D1D00614631 /* MedusaTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedusaTest.swift; sourceTree = "<group>"; };
+		858D84182C00E26200614631 /* Jellyfish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Jellyfish.swift; sourceTree = "<group>"; };
+		858D841B2C00E2A800614631 /* JellyfishTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JellyfishTest.swift; sourceTree = "<group>"; };
 		8592182E2BCE117D004FCDD1 /* HiddenSingles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSingles.swift; sourceTree = "<group>"; };
 		859218312BCE11E1004FCDD1 /* HiddenSinglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSinglesTest.swift; sourceTree = "<group>"; };
 		859218332BD37F8C004FCDD1 /* NakedPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NakedPairs.swift; sourceTree = "<group>"; };
@@ -328,6 +333,7 @@
 				858D84062BF8751500614631 /* BUG.swift */,
 				858D840B2BF9919D00614631 /* XYChains.swift */,
 				858D84132BFE355F00614631 /* Medusa.swift */,
+				858D84182C00E26200614631 /* Jellyfish.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -339,6 +345,7 @@
 				858D84092BF877B200614631 /* BUGTest.swift */,
 				858D840E2BF9924B00614631 /* XYChainsTest.swift */,
 				858D84162BFE3D1D00614631 /* MedusaTest.swift */,
+				858D841B2C00E2A800614631 /* JellyfishTest.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -466,6 +473,7 @@
 				85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */,
 				85FA48192BE44B2600D8B07F /* XYZWing.swift in Sources */,
 				858D84112BFD12E200614631 /* Graphs.swift in Sources */,
+				858D84192C00E26200614631 /* Jellyfish.swift in Sources */,
 				85EB77602B3CD64C0084B86F /* PruneCandidates.swift in Sources */,
 				859218462BD83566004FCDD1 /* HiddenTriples.swift in Sources */,
 				859218342BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
@@ -486,6 +494,7 @@
 				859218512BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
 				858D84152BFE355F00614631 /* Medusa.swift in Sources */,
 				8592186E2BDDE089004FCDD1 /* SimpleColoringTest.swift in Sources */,
+				858D841C2C00E2A800614631 /* JellyfishTest.swift in Sources */,
 				85FA48232BE749E900D8B07F /* XCyclesTest.swift in Sources */,
 				8592185B2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */,
 				8592186C2BDDDFF4004FCDD1 /* SimpleColoring.swift in Sources */,
@@ -506,6 +515,7 @@
 				859218302BCE117D004FCDD1 /* HiddenSingles.swift in Sources */,
 				85F52FC62B19A96F0018E190 /* BruteForceTest.swift in Sources */,
 				85EB77692B3E0CAC0084B86F /* NakedSingles.swift in Sources */,
+				858D841A2C00E26200614631 /* Jellyfish.swift in Sources */,
 				8592184C2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */,
 				85F52FC22B19A8730018E190 /* SudokuNumber.swift in Sources */,
 				85FA48172BE3590200D8B07F /* SwordfishTest.swift in Sources */,
