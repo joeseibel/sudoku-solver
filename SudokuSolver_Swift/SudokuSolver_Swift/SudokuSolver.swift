@@ -102,6 +102,7 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         yWing,
         swordfish,
         xyzWing,
+        //Start of diabolical solutions.
         xCyclesRule1,
         xCyclesRule2,
         xCyclesRule3,
