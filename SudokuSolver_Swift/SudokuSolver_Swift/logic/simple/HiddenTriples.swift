@@ -6,7 +6,7 @@
  */
 func hiddenTriples(board: Board<Cell>) -> [BoardModification] {
     board.units.flatMap { unit in
-        SudokuNumber.allCases.zipEveryTriple().compactMap { a, b, c in
+        SudokuNumber.allCases.zipEveryTriple().flatMap { a, b, c -> [LocatedCandidate] in
             let cells = unit.unsolvedCells
                 .filter { $0.candidates.contains(a) || $0.candidates.contains(b) || $0.candidates.contains(c) }
             if cells.count == 3 {
@@ -16,11 +16,11 @@ func hiddenTriples(board: Board<Cell>) -> [BoardModification] {
                         cell.candidates.subtracting([a, b, c]).map { candidate in (cell, candidate) }
                     }
                 } else {
-                    nil
+                    []
                 }
             } else {
-                return nil
+                return []
             }
-        }.joined()
+        }
     }.mergeToRemoveCandidates()
 }

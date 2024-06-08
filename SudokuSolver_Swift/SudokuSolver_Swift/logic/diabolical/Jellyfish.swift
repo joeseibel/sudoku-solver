@@ -17,7 +17,7 @@ func jellyfish(board: Board<Cell>) -> [BoardModification] {
             getOtherUnit: (Int) -> [Cell],
             getOtherUnitIndex: (UnsolvedCell) -> Int
         ) -> [LocatedCandidate] {
-            Array(units.zipEveryQuad().compactMap { unitA, unitB, unitC, unitD in
+            units.zipEveryQuad().flatMap { unitA, unitB, unitC, unitD in
                 let aWithCandidate = unitA.unsolvedCells.filter { $0.candidates.contains(candidate) }
                 let bWithCandidate = unitB.unsolvedCells.filter { $0.candidates.contains(candidate) }
                 let cWithCandidate = unitC.unsolvedCells.filter { $0.candidates.contains(candidate) }
@@ -35,12 +35,12 @@ func jellyfish(board: Board<Cell>) -> [BoardModification] {
                             .filter { cell in cell.candidates.contains(candidate) && !withCandidate.contains(cell) }
                             .map { ($0, candidate) }
                     } else {
-                        return nil
+                        return []
                     }
                 } else {
-                    return nil
+                    return []
                 }
-            }.joined())
+            }
         }
         
         let rowRemovals = jellyfish(units: board.rows, getOtherUnit: board.getColumn, getOtherUnitIndex: \.column)

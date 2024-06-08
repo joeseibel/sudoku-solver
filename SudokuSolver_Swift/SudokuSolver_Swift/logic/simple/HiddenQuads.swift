@@ -6,7 +6,7 @@
  */
 func hiddenQuads(board: Board<Cell>) -> [BoardModification] {
     board.units.flatMap { unit in
-        SudokuNumber.allCases.zipEveryQuad().compactMap { a, b, c, d in
+        SudokuNumber.allCases.zipEveryQuad().flatMap { a, b, c, d -> [LocatedCandidate] in
             let cells = unit.unsolvedCells
                 .filter { $0.candidates.contains(a) ||
                     $0.candidates.contains(b) ||
@@ -20,11 +20,11 @@ func hiddenQuads(board: Board<Cell>) -> [BoardModification] {
                         cell.candidates.subtracting([a, b, c, d]).map { candidate in (cell, candidate)}
                     }
                 } else {
-                    nil
+                    []
                 }
             } else {
-                return nil
+                return []
             }
-        }.joined()
+        }
     }.mergeToRemoveCandidates()
 }

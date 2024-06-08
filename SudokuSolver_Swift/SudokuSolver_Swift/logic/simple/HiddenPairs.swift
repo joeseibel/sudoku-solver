@@ -6,13 +6,13 @@
  */
 func hiddenPairs(board: Board<Cell>) -> [BoardModification] {
     board.units.flatMap { unit in
-        SudokuNumber.allCases.zipEveryPair().compactMap { a, b in
+        SudokuNumber.allCases.zipEveryPair().flatMap { a, b -> [LocatedCandidate] in
             let cells = unit.unsolvedCells.filter { $0.candidates.contains(a) }
             return if cells.count == 2 && cells == unit.unsolvedCells.filter({ $0.candidates.contains(b) }) {
                 cells.flatMap { cell in cell.candidates.subtracting([a, b]).map { candidate in (cell, candidate) } }
             } else {
-                nil
+                []
             }
-        }.joined()
+        }
     }.mergeToRemoveCandidates()
 }

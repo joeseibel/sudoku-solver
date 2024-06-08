@@ -17,7 +17,7 @@ func xWing(board: Board<Cell>) -> [BoardModification] {
             getOtherUnit: (Int) -> [Cell],
             getOtherUnitIndex: (UnsolvedCell) -> Int
         ) -> [LocatedCandidate] {
-            Array(units.zipEveryPair().compactMap { unitA, unitB in
+            units.zipEveryPair().flatMap { unitA, unitB in
                 let unitA = unitA.unsolvedCells
                 let unitB = unitB.unsolvedCells
                 let aWithCandidate = unitA.filter { $0.candidates.contains(candidate) }
@@ -35,9 +35,9 @@ func xWing(board: Board<Cell>) -> [BoardModification] {
                         .filter { $0.candidates.contains(candidate) && !unitA.contains($0) && !unitB.contains($0) }
                         .map { ($0, candidate) }
                 } else {
-                    return nil
+                    return []
                 }
-            }.joined())
+            }
         }
         
         let rowRemovals = xWing(units: board.rows, getOtherUnit: board.getColumn, getOtherUnitIndex: \.column)

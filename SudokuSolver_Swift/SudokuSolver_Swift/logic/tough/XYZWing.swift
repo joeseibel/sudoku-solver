@@ -17,7 +17,7 @@ func xyzWing(board: Board<Cell>) -> [BoardModification] {
                     hinge.isInSameUnit(as: wingA) && hinge.isInSameUnit(as: wingB) &&
                     hinge.candidates.union(wingA.candidates).union(wingB.candidates).count == 3
             }
-            .compactMap { wingA, wingB in
+            .flatMap { wingA, wingB -> [LocatedCandidate] in
                 let candidates = wingA.candidates.intersection(wingB.candidates)
                 return if let candidate = candidates.first, candidates.count == 1 {
                     board.cells
@@ -31,9 +31,8 @@ func xyzWing(board: Board<Cell>) -> [BoardModification] {
                         }
                         .map { ($0, candidate) }
                 } else {
-                    nil
+                    []
                 }
             }
-            .joined()
     }.mergeToRemoveCandidates()
 }

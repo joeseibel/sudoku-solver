@@ -24,7 +24,7 @@ func xyChains(board: Board<Cell>) -> [BoardModification] {
     return Dictionary(grouping: graph.indices, by: { graph.vertexAtIndex($0).candidate })
         .flatMap { candidate, indices in
             indices.zipEveryPair()
-                .compactMap { indexA, indexB in
+                .flatMap { indexA, indexB -> [UnsolvedCell] in
                     let cellA = graph.vertexAtIndex(indexA).cell
                     let cellB = graph.vertexAtIndex(indexB).cell
                     let visibleCells = board.cells
@@ -36,13 +36,12 @@ func xyChains(board: Board<Cell>) -> [BoardModification] {
                                 $0.isInSameUnit(as: cellA) &&
                                 $0.isInSameUnit(as: cellB)
                         }
-                    if !visibleCells.isEmpty && alternatingPathExists(graph: graph, start: indexA, end: indexB) {
-                        return visibleCells
+                    return if !visibleCells.isEmpty && alternatingPathExists(graph: graph, start: indexA, end: indexB) {
+                        visibleCells
                     } else {
-                        return nil
+                        []
                     }
                 }
-                .joined()
                 .map { ($0, candidate) }
         }
         .mergeToRemoveCandidates()

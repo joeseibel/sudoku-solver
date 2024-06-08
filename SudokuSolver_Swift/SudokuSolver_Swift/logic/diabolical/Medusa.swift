@@ -18,7 +18,7 @@ import SwiftGraph
  * the opposite color must be the solution. All vertices with the opposite color can be set as the solution.
  */
 func medusaRule1(board: Board<Cell>) -> [BoardModification] {
-    Array(createConnectedComponents(board: board).compactMap { graph in
+    createConnectedComponents(board: board).flatMap { graph in
         let colors = graph.colorToDictionary()
         return graph.zipEveryPair()
             .first { a, b in a.cell == b.cell && colors[a] == colors[b] }
@@ -27,7 +27,8 @@ func medusaRule1(board: Board<Cell>) -> [BoardModification] {
             .map { colorToSet in
                 graph.filter { colors[$0] == colorToSet }.map { BoardModification(cell: $0.cell, value: $0.candidate) }
             }
-    }.joined())
+            ?? []
+    }
 }
 
 /*
@@ -38,7 +39,7 @@ func medusaRule1(board: Board<Cell>) -> [BoardModification] {
  * as the solution.
  */
 func medusaRule2(board: Board<Cell>) -> [BoardModification] {
-    Array(createConnectedComponents(board: board).compactMap { graph in
+    createConnectedComponents(board: board).flatMap { graph in
         let colors = graph.colorToDictionary()
         return graph.zipEveryPair()
             .first { a, b in a.candidate == b.candidate && colors[a] == colors[b] && a.cell.isInSameUnit(as: b.cell) }
@@ -47,7 +48,8 @@ func medusaRule2(board: Board<Cell>) -> [BoardModification] {
             .map { colorToSet in
                 graph.filter { colors[$0] == colorToSet }.map { BoardModification(cell: $0.cell, value: $0.candidate) }
             }
-    }.joined())
+            ?? []
+    }
 }
 
 /*
@@ -57,7 +59,7 @@ func medusaRule2(board: Board<Cell>) -> [BoardModification] {
  * other candidates in the cell can be removed.
  */
 func medusaRule3(board: Board<Cell>) -> [BoardModification] {
-    createConnectedComponents(board: board).compactMap { graph in
+    createConnectedComponents(board: board).flatMap { graph in
         let colors = graph.colorToDictionary()
         return graph.filter { $0.cell.candidates.count > 2 }
             .zipEveryPair()
@@ -71,7 +73,8 @@ func medusaRule3(board: Board<Cell>) -> [BoardModification] {
                         !graph.contains(CodableLocatedCandidate(cell: cell, candidate: candidate))
                     }
             }
-    }.joined().mergeToRemoveCandidates()
+            ?? []
+    }.mergeToRemoveCandidates()
 }
 
 /*

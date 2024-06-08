@@ -17,7 +17,7 @@ func swordfish(board: Board<Cell>) -> [BoardModification] {
             getOtherUnit: (Int) -> [Cell],
             getOtherUnitIndex: (UnsolvedCell) -> Int
         ) -> [LocatedCandidate] {
-            Array(units.zipEveryTriple().compactMap { unitA, unitB, unitC in
+            units.zipEveryTriple().flatMap { unitA, unitB, unitC -> [LocatedCandidate] in
                 let aWithCandidate = unitA.unsolvedCells.filter { $0.candidates.contains(candidate) }
                 let bWithCandidate = unitB.unsolvedCells.filter { $0.candidates.contains(candidate) }
                 let cWithCandidate = unitC.unsolvedCells.filter { $0.candidates.contains(candidate) }
@@ -34,12 +34,12 @@ func swordfish(board: Board<Cell>) -> [BoardModification] {
                             .filter { cell in cell.candidates.contains(candidate) && !withCandidate.contains(cell) }
                             .map { ($0, candidate) }
                     } else {
-                        nil
+                        []
                     }
                 } else {
-                    return nil
+                    return []
                 }
-            }.joined())
+            }
         }
         
         let rowRemovals = swordfish(units: board.rows, getOtherUnit: board.getColumn, getOtherUnitIndex: \.column)

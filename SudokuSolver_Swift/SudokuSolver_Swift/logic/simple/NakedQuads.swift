@@ -6,7 +6,7 @@
  */
 func nakedQuads(board: Board<Cell>) -> [BoardModification] {
     board.units.flatMap { unit in
-        unit.unsolvedCells.zipEveryQuad().compactMap { a, b, c, d in
+        unit.unsolvedCells.zipEveryQuad().flatMap { a, b, c, d -> [LocatedCandidate] in
             let unionOfCandidates = a.candidates.union(b.candidates).union(c.candidates).union(d.candidates)
             return if unionOfCandidates.count == 4 {
                 unit.unsolvedCells
@@ -15,8 +15,8 @@ func nakedQuads(board: Board<Cell>) -> [BoardModification] {
                         cell.candidates.intersection(unionOfCandidates).map { candidate in (cell, candidate) }
                     }
             } else {
-                nil
+                []
             }
-        }.joined()
+        }
     }.mergeToRemoveCandidates()
 }

@@ -211,7 +211,7 @@ func uniqueRectanglesType4(board: Board<Cell>) -> [BoardModification] {
  * solution for the floor cells.
  */
 func uniqueRectanglesType5(board: Board<Cell>) -> [BoardModification] {
-    Array(createRectangles(board: board).compactMap { rectangle in
+    createRectangles(board: board).flatMap { rectangle -> [BoardModification] in
         let floor = rectangle.floor()
         if floor.count == 2 {
             let floorA = floor[0]
@@ -232,13 +232,14 @@ func uniqueRectanglesType5(board: Board<Cell>) -> [BoardModification] {
                     .map { strongLinkCandidate in
                         floor.map { BoardModification(cell: $0, value: strongLinkCandidate) }
                     }
+                    ?? []
             } else {
-                nil
+                []
             }
         } else {
-            return nil
+            return []
         }
-    }.joined())
+    }
 }
 
 private struct Rectangle {

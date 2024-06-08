@@ -15,13 +15,14 @@ import SwiftGraph
  */
 func simpleColoringRule2(board: Board<Cell>) -> [BoardModification] {
     SudokuNumber.allCases.flatMap { candidate in
-        createConnectedComponents(board: board, candidate: candidate).compactMap { graph in
+        createConnectedComponents(board: board, candidate: candidate).flatMap { graph in
             let colors = graph.colorToDictionary()
             return graph.zipEveryPair()
                 .first { a, b in colors[a] == colors[b] && a.isInSameUnit(as: b) }
                 .map { a, b in colors[a] }
                 .map { colorToRemove in graph.filter { colors[$0] == colorToRemove }.map { ($0, candidate) } }
-        }.joined()
+                ?? []
+        }
     }.mergeToRemoveCandidates()
 }
 

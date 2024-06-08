@@ -11,7 +11,7 @@ func boxLineReduction(board: Board<Cell>) -> [BoardModification] {
     SudokuNumber.allCases.flatMap { candidate -> [LocatedCandidate] in
         
         func boxLineReduction(units: [[Cell]], getUnitIndex: (Location) -> Int) -> [LocatedCandidate] {
-            Array(units.compactMap { unit in
+            units.flatMap { unit in
                 let blockIndices = Set(unit.unsolvedCells.filter { $0.candidates.contains(candidate) }.map(\.block))
                 if let blockIndex = blockIndices.first, blockIndices.count == 1 {
                     let unitIndex = getUnitIndex(unit.first!)
@@ -20,9 +20,9 @@ func boxLineReduction(board: Board<Cell>) -> [BoardModification] {
                         .filter { getUnitIndex($0) != unitIndex && $0.candidates.contains(candidate) }
                         .map { ($0, candidate) }
                 } else {
-                    return nil
+                    return []
                 }
-            }.joined())
+            }
         }
         
         let rowRemovals = boxLineReduction(units: board.rows, getUnitIndex: \.row)
