@@ -27,8 +27,8 @@ private func getRemovals(units: [[Cell]]) -> [LocatedCandidate] {
         .map { otherA, otherB, otherC in ([otherA.0, otherB.0, otherC.0], [otherA.1, otherB.1, otherC.1]) }
         .filter { unitA, unitB in Set((unitA + unitB).map(\.block)).count == 3 }
         .flatMap { unitA, unitB -> [LocatedCandidate] in
-            let unitACandidates = unitA.reduce(Set(), { $0.union($1.candidates) })
-            let unitBCandidates = unitB.reduce(Set(), { $0.union($1.candidates) })
+            let unitACandidates = unitA.reduce(Set()) { $0.union($1.candidates) }
+            let unitBCandidates = unitB.reduce(Set()) { $0.union($1.candidates) }
             return if unitACandidates.count == 3 {
                 getRemovals(commonCandidates: unitACandidates, unit: unitB, unitCandidates: unitBCandidates)
             } else if unitBCandidates.count == 3 {
