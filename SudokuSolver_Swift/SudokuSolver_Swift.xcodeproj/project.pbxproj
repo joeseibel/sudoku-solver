@@ -71,6 +71,11 @@
 		859E961D2C1594DA00928244 /* ExtendedUniqueRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E961C2C1594DA00928244 /* ExtendedUniqueRectangles.swift */; };
 		859E961E2C1594DA00928244 /* ExtendedUniqueRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E961C2C1594DA00928244 /* ExtendedUniqueRectangles.swift */; };
 		859E96202C15952500928244 /* ExtendedUniqueRectanglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E961F2C15952500928244 /* ExtendedUniqueRectanglesTest.swift */; };
+		859E96222C24B52A00928244 /* HiddenUniqueRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96212C24B52A00928244 /* HiddenUniqueRectangles.swift */; };
+		859E96232C24B52A00928244 /* HiddenUniqueRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96212C24B52A00928244 /* HiddenUniqueRectangles.swift */; };
+		859E96252C26A1F600928244 /* HiddenUniqueRectanglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96242C26A1F600928244 /* HiddenUniqueRectanglesTest.swift */; };
+		859E96272C2F1CB400928244 /* Rectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96262C2F1CB400928244 /* Rectangles.swift */; };
+		859E96282C2F1CB400928244 /* Rectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96262C2F1CB400928244 /* Rectangles.swift */; };
 		85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
 		85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
 		85EB77592B3C86670084B86F /* BoardModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77582B3C86670084B86F /* BoardModification.swift */; };
@@ -154,6 +159,9 @@
 		859218722BE30FEB004FCDD1 /* YWingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YWingTest.swift; sourceTree = "<group>"; };
 		859E961C2C1594DA00928244 /* ExtendedUniqueRectangles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedUniqueRectangles.swift; sourceTree = "<group>"; };
 		859E961F2C15952500928244 /* ExtendedUniqueRectanglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedUniqueRectanglesTest.swift; sourceTree = "<group>"; };
+		859E96212C24B52A00928244 /* HiddenUniqueRectangles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenUniqueRectangles.swift; sourceTree = "<group>"; };
+		859E96242C26A1F600928244 /* HiddenUniqueRectanglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenUniqueRectanglesTest.swift; sourceTree = "<group>"; };
+		859E96262C2F1CB400928244 /* Rectangles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rectangles.swift; sourceTree = "<group>"; };
 		85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuNumber.swift; sourceTree = "<group>"; };
 		85CF6BFD2ADA63520076BD62 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		85EB77582B3C86670084B86F /* BoardModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardModification.swift; sourceTree = "<group>"; };
@@ -300,6 +308,7 @@
 				85EB776C2B51EBE90084B86F /* SudokuSolver.swift */,
 				859218382BD4669D004FCDD1 /* Collections.swift */,
 				858D84102BFD12E200614631 /* Graphs.swift */,
+				859E96262C2F1CB400928244 /* Rectangles.swift */,
 			);
 			path = SudokuSolver_Swift;
 			sourceTree = "<group>";
@@ -346,6 +355,7 @@
 				858D84182C00E26200614631 /* Jellyfish.swift */,
 				858D841D2C08FFFC00614631 /* UniqueRectangles.swift */,
 				859E961C2C1594DA00928244 /* ExtendedUniqueRectangles.swift */,
+				859E96212C24B52A00928244 /* HiddenUniqueRectangles.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -360,6 +370,7 @@
 				858D841B2C00E2A800614631 /* JellyfishTest.swift */,
 				858D84202C09375600614631 /* UniqueRectanglesTest.swift */,
 				859E961F2C15952500928244 /* ExtendedUniqueRectanglesTest.swift */,
+				859E96242C26A1F600928244 /* HiddenUniqueRectanglesTest.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -470,6 +481,7 @@
 			files = (
 				85EB77592B3C86670084B86F /* BoardModification.swift in Sources */,
 				85F57BE02AF4069400144ABF /* BruteForce.swift in Sources */,
+				859E96222C24B52A00928244 /* HiddenUniqueRectangles.swift in Sources */,
 				8592184B2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */,
 				85FA48142BE3580100D8B07F /* Swordfish.swift in Sources */,
 				858D841E2C08FFFC00614631 /* UniqueRectangles.swift in Sources */,
@@ -495,6 +507,7 @@
 				859218342BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
 				858D84142BFE355F00614631 /* Medusa.swift in Sources */,
 				858D84072BF8751500614631 /* BUG.swift in Sources */,
+				859E96272C2F1CB400928244 /* Rectangles.swift in Sources */,
 				859218412BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
 				859218392BD4669D004FCDD1 /* Collections.swift in Sources */,
 				8592186B2BDDDFF4004FCDD1 /* SimpleColoring.swift in Sources */,
@@ -530,18 +543,21 @@
 				8592184E2BD8C51C004FCDD1 /* NakedQuadsTest.swift in Sources */,
 				859218732BE30FEB004FCDD1 /* YWingTest.swift in Sources */,
 				85EB776B2B51EA350084B86F /* SudokuSolverTest.swift in Sources */,
+				859E96252C26A1F600928244 /* HiddenUniqueRectanglesTest.swift in Sources */,
 				859218302BCE117D004FCDD1 /* HiddenSingles.swift in Sources */,
 				85F52FC62B19A96F0018E190 /* BruteForceTest.swift in Sources */,
 				85EB77692B3E0CAC0084B86F /* NakedSingles.swift in Sources */,
 				858D841A2C00E26200614631 /* Jellyfish.swift in Sources */,
 				8592184C2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */,
 				85F52FC22B19A8730018E190 /* SudokuNumber.swift in Sources */,
+				859E96282C2F1CB400928244 /* Rectangles.swift in Sources */,
 				85FA48172BE3590200D8B07F /* SwordfishTest.swift in Sources */,
 				858D84082BF8751500614631 /* BUG.swift in Sources */,
 				85EB775B2B3C958E0084B86F /* Assertions.swift in Sources */,
 				859218612BDCCE6E004FCDD1 /* XWing.swift in Sources */,
 				8592185D2BDAD6BC004FCDD1 /* BoxLineReductionTest.swift in Sources */,
 				858D84212C09375600614631 /* UniqueRectanglesTest.swift in Sources */,
+				859E96232C24B52A00928244 /* HiddenUniqueRectangles.swift in Sources */,
 				8592183D2BD4CFBF004FCDD1 /* NakedTriples.swift in Sources */,
 				85EB77632B3CD6DD0084B86F /* PruneCandidatesTest.swift in Sources */,
 				859218562BDA275C004FCDD1 /* PointingPairsPointingTriple.swift in Sources */,

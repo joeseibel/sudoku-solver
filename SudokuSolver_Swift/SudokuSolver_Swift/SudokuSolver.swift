@@ -122,6 +122,7 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         uniqueRectanglesType4,
         uniqueRectanglesType5,
         extendedUniqueRectangles,
+        hiddenUniqueRectangles,
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }

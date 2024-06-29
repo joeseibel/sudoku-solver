@@ -78,7 +78,9 @@ func uniqueRectanglesType3(board: Board<Cell>) -> [BoardModification] {
             let roofA = roof[0]
             let roofB = roof[1]
             if roofA.candidates.count == 3 && roofB.candidates.count == 3 && roofA.candidates != roofB.candidates {
-                let additionalCandidates = roofA.candidates.union(roofB.candidates).subtracting(rectangle.commonCandidates)
+                let additionalCandidates = roofA.candidates
+                    .union(roofB.candidates)
+                    .subtracting(rectangle.commonCandidates)
                 
                 func getRemovals(getUnitIndex: (UnsolvedCell) -> Int, getUnit: (Int) -> [Cell]) -> [LocatedCandidate] {
                     let indexA = getUnitIndex(roofA)
@@ -240,40 +242,4 @@ func uniqueRectanglesType5(board: Board<Cell>) -> [BoardModification] {
             return []
         }
     }
-}
-
-private struct Rectangle {
-    fileprivate let cells: [UnsolvedCell]
-    fileprivate let commonCandidates: Set<SudokuNumber>
-    
-    fileprivate init(cells: [UnsolvedCell]) {
-        self.cells = cells
-        commonCandidates = cells.map(\.candidates).reduce(Set(SudokuNumber.allCases), { $0.intersection($1) })
-    }
-    
-    fileprivate func floor() -> [UnsolvedCell] {
-        cells.filter { $0.candidates.count == 2 }
-    }
-    
-    fileprivate func roof() -> [UnsolvedCell] {
-        cells.filter { $0.candidates.count > 2 }
-    }
-}
-
-private func createRectangles(board: Board<Cell>) -> [Rectangle] {
-    board.rows
-        .zipEveryPair()
-        .flatMap { rowA, rowB in
-            zip(rowA, rowB)
-                .compactMap { cellA, cellB in
-                    if case .unsolvedCell(let cellA) = cellA, case .unsolvedCell(let cellB) = cellB {
-                        (cellA, cellB)
-                    } else {
-                        nil
-                    }
-                }
-                .zipEveryPair()
-                .map { columnA, columnB in Rectangle(cells: [columnA.0, columnA.1, columnB.0, columnB.1]) }
-        }
-        .filter { rectangle in rectangle.commonCandidates.count == 2 && Set(rectangle.cells.map(\.block)).count == 2 }
 }
