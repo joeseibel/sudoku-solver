@@ -79,6 +79,9 @@
 		859E962A2C308AEB00928244 /* WXYZWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96292C308AEB00928244 /* WXYZWing.swift */; };
 		859E962B2C308AEB00928244 /* WXYZWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96292C308AEB00928244 /* WXYZWing.swift */; };
 		859E962D2C308B4B00928244 /* WXYZWingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E962C2C308B4B00928244 /* WXYZWingTest.swift */; };
+		859E962F2C320CF800928244 /* AlignedPairExclusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E962E2C320CF800928244 /* AlignedPairExclusion.swift */; };
+		859E96302C320CF800928244 /* AlignedPairExclusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E962E2C320CF800928244 /* AlignedPairExclusion.swift */; };
+		859E96322C320D4C00928244 /* AlignedPairExclusionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96312C320D4C00928244 /* AlignedPairExclusionTest.swift */; };
 		85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
 		85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
 		85EB77592B3C86670084B86F /* BoardModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77582B3C86670084B86F /* BoardModification.swift */; };
@@ -167,6 +170,8 @@
 		859E96262C2F1CB400928244 /* Rectangles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rectangles.swift; sourceTree = "<group>"; };
 		859E96292C308AEB00928244 /* WXYZWing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WXYZWing.swift; sourceTree = "<group>"; };
 		859E962C2C308B4B00928244 /* WXYZWingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WXYZWingTest.swift; sourceTree = "<group>"; };
+		859E962E2C320CF800928244 /* AlignedPairExclusion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignedPairExclusion.swift; sourceTree = "<group>"; };
+		859E96312C320D4C00928244 /* AlignedPairExclusionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignedPairExclusionTest.swift; sourceTree = "<group>"; };
 		85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuNumber.swift; sourceTree = "<group>"; };
 		85CF6BFD2ADA63520076BD62 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		85EB77582B3C86670084B86F /* BoardModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardModification.swift; sourceTree = "<group>"; };
@@ -362,6 +367,7 @@
 				859E961C2C1594DA00928244 /* ExtendedUniqueRectangles.swift */,
 				859E96212C24B52A00928244 /* HiddenUniqueRectangles.swift */,
 				859E96292C308AEB00928244 /* WXYZWing.swift */,
+				859E962E2C320CF800928244 /* AlignedPairExclusion.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -378,6 +384,7 @@
 				859E961F2C15952500928244 /* ExtendedUniqueRectanglesTest.swift */,
 				859E96242C26A1F600928244 /* HiddenUniqueRectanglesTest.swift */,
 				859E962C2C308B4B00928244 /* WXYZWingTest.swift */,
+				859E96312C320D4C00928244 /* AlignedPairExclusionTest.swift */,
 			);
 			path = diabolical;
 			sourceTree = "<group>";
@@ -509,6 +516,7 @@
 				858D84112BFD12E200614631 /* Graphs.swift in Sources */,
 				858D84192C00E26200614631 /* Jellyfish.swift in Sources */,
 				85EB77602B3CD64C0084B86F /* PruneCandidates.swift in Sources */,
+				859E962F2C320CF800928244 /* AlignedPairExclusion.swift in Sources */,
 				859E961D2C1594DA00928244 /* ExtendedUniqueRectangles.swift in Sources */,
 				859218462BD83566004FCDD1 /* HiddenTriples.swift in Sources */,
 				859218342BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
@@ -543,8 +551,10 @@
 				859218442BD77198004FCDD1 /* HiddenPairsTest.swift in Sources */,
 				85F52FC72B19AB2B0018E190 /* BruteForce.swift in Sources */,
 				858D84172BFE3D1D00614631 /* MedusaTest.swift in Sources */,
+				859E96302C320CF800928244 /* AlignedPairExclusion.swift in Sources */,
 				859218532BD95956004FCDD1 /* HiddenQuadsTest.swift in Sources */,
 				85EB775D2B3C95F60084B86F /* Cell.swift in Sources */,
+				859E96322C320D4C00928244 /* AlignedPairExclusionTest.swift in Sources */,
 				859E961E2C1594DA00928244 /* ExtendedUniqueRectangles.swift in Sources */,
 				859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */,
 				859218472BD83566004FCDD1 /* HiddenTriples.swift in Sources */,
