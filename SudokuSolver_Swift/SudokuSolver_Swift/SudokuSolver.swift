@@ -125,6 +125,10 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         hiddenUniqueRectangles,
         wxyzWing,
         alignedPairExclusion,
+        //Start of extreme solutions.
+        groupedXCyclesRule1,
+        groupedXCyclesRule2,
+        groupedXCyclesRule3,
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }

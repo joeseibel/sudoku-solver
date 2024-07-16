@@ -35,7 +35,7 @@ extension UnweightedUniqueElementsGraph {
     }
 }
 
-extension Graph where E == WeightedEdge<Strength> {
+extension Graph where E: WeightedEdgeProtocol, E.Weight == Strength {
     func toDOT(graphId: String? = nil, vertexLabelProvider getVertexLabel: (V) -> String) -> String {
         var result = "strict graph "
         if let graphId {
@@ -133,7 +133,7 @@ extension Graph {
  *
  * I am aware that this might be considered an abuse of the term "weight" since Strength is not a number. However, using
  * a weight makes the code simplier due to the methods that are available on Graph when its edge type is a WeightedEdge.
- * While using Strength as a weight might violate the mathematical concept of a weak, it doesn't break anything
+ * While using Strength as a weight might violate the mathematical concept of a weight, it doesn't break anything
  * regarding SwiftGraph.
  */
 enum Strength: Codable {
@@ -169,5 +169,113 @@ extension WeightedEdge<Strength>: Hashable {
         hasher.combine(v)
         hasher.combine(directed)
         hasher.combine(weight)
+    }
+}
+
+extension Graph where Index == Int, E: WeightedEdgeProtocol, E.Weight == Strength {
+    /*
+     * Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The returned graph
+     * will either be empty or only contain vertices with a degree of two or more and be connected by at least one
+     * strong link and one weak link.
+     */
+    mutating func trim() {
+        var toRemove: Index?
+        repeat {
+            toRemove = indices.first { index in
+                let edges = edgesForIndex(index)
+                return edges.count < 2 || !edges.contains { $0.weight == .strong }
+            }
+            if let toRemove {
+                removeVertexAtIndex(toRemove)
+            }
+        } while toRemove != nil
+    }
+}
+
+func getWeakEdgesInAlternatingCycle<G: Graph>(
+    graph: G
+) -> Set<G.E> where G.Index == Int, G.E: WeightedEdgeProtocol, G.E.Weight == Strength {
+    var weakEdgesInAlternatingCycle = Set<G.E>()
+    graph.edgeList().filter { $0.weight == .weak }.forEach { edge in
+        if !weakEdgesInAlternatingCycle.contains(edge) {
+            weakEdgesInAlternatingCycle.formUnion(getAlternatingCycleWeakEdges(graph: graph, startEdge: edge))
+        }
+    }
+    return weakEdgesInAlternatingCycle
+}
+
+private func getAlternatingCycleWeakEdges<G: Graph>(
+    graph: G,
+    startEdge: G.E
+) -> [G.E] where G.Index == Int, G.E: WeightedEdgeProtocol, G.E.Weight == Strength {
+    precondition(startEdge.weight == .weak, "startEdge must be weak.")
+    let start = startEdge.u
+    let end = startEdge.v
+    
+    func getAlternatingCycleWeakEdges(
+        currentIndex: G.Index,
+        nextType: Strength,
+        visited: Set<G.Index>,
+        weakEdges: [G.E]
+    ) -> [G.E] {
+        let nextEdgesAndIndices = graph.edgesForIndex(currentIndex)
+            .filter { $0.weight.isCompatible(with: nextType) }
+            .map { ($0, $0.getOppositeIndex(index: currentIndex)) }
+        return if nextType == .strong && nextEdgesAndIndices.contains(where: { _, nextIndex in nextIndex == end }) {
+            weakEdges
+        } else {
+            nextEdgesAndIndices.lazy
+                .filter { _, nextIndex in nextIndex != end && !visited.contains(nextIndex) }
+                .map { nextEdge, nextIndex in
+                    getAlternatingCycleWeakEdges(
+                        currentIndex: nextIndex,
+                        nextType: nextType.opposite,
+                        visited: visited.union([nextIndex]),
+                        weakEdges: nextEdge.weight == .weak ? weakEdges + [nextEdge] : weakEdges
+                    )
+                }
+                .first { !$0.isEmpty }
+                ?? []
+        }
+    }
+    
+    let weakEdges = getAlternatingCycleWeakEdges(
+        currentIndex: start,
+        nextType: .strong,
+        visited: [start],
+        weakEdges: [startEdge]
+    )
+    assert(!weakEdges.contains { $0.weight == .strong }, "There are strong edges in the return value.")
+    return weakEdges
+}
+
+func alternatingCycleExists<G: Graph>(
+    graph: G,
+    index: G.Index,
+    adjacentEdgesType: Strength
+) -> Bool where G.Index == Int, G.E: WeightedEdgeProtocol, G.E.Weight == Strength {
+    graph.edgesForIndex(index).filter { $0.weight == adjacentEdgesType }.zipEveryPair().contains { edgeA, edgeB in
+        let start = edgeA.getOppositeIndex(index: index)
+        let end = edgeB.getOppositeIndex(index: index)
+        
+        func alternatingCycleExists(currentIndex: G.Index, nextType: Strength, visited: Set<G.Index>) -> Bool {
+            let nextIndices = graph.edgesForIndex(currentIndex)
+                .filter { $0.weight.isCompatible(with: nextType) }
+                .map { $0.getOppositeIndex(index: currentIndex) }
+            return adjacentEdgesType.opposite == nextType && nextIndices.contains(end) ||
+                Set(nextIndices).subtracting(visited).subtracting([end]).contains { nextIndex in
+                    alternatingCycleExists(
+                        currentIndex: nextIndex,
+                        nextType: nextType.opposite,
+                        visited: visited.union([nextIndex])
+                    )
+                }
+        }
+        
+        return alternatingCycleExists(
+            currentIndex: start,
+            nextType: adjacentEdgesType.opposite,
+            visited: [index, start]
+        )
     }
 }

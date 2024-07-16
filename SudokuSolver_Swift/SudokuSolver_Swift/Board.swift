@@ -1,4 +1,4 @@
-private let unitSizeSquareRoot = 3
+let unitSizeSquareRoot = 3
 let unitSize = unitSizeSquareRoot * unitSizeSquareRoot
 let unitSizeSquared = unitSize * unitSize
 

@@ -82,6 +82,9 @@
 		859E962F2C320CF800928244 /* AlignedPairExclusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E962E2C320CF800928244 /* AlignedPairExclusion.swift */; };
 		859E96302C320CF800928244 /* AlignedPairExclusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E962E2C320CF800928244 /* AlignedPairExclusion.swift */; };
 		859E96322C320D4C00928244 /* AlignedPairExclusionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96312C320D4C00928244 /* AlignedPairExclusionTest.swift */; };
+		859E96352C3473B000928244 /* GroupedXCycles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96342C3473B000928244 /* GroupedXCycles.swift */; };
+		859E96362C3473B000928244 /* GroupedXCycles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96342C3473B000928244 /* GroupedXCycles.swift */; };
+		859E96392C34752C00928244 /* GroupedXCyclesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E96382C34752C00928244 /* GroupedXCyclesTest.swift */; };
 		85CF6BFC2ADA611A0076BD62 /* SudokuNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */; };
 		85CF6BFE2ADA63520076BD62 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF6BFD2ADA63520076BD62 /* Board.swift */; };
 		85EB77592B3C86670084B86F /* BoardModification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB77582B3C86670084B86F /* BoardModification.swift */; };
@@ -172,6 +175,8 @@
 		859E962C2C308B4B00928244 /* WXYZWingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WXYZWingTest.swift; sourceTree = "<group>"; };
 		859E962E2C320CF800928244 /* AlignedPairExclusion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignedPairExclusion.swift; sourceTree = "<group>"; };
 		859E96312C320D4C00928244 /* AlignedPairExclusionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignedPairExclusionTest.swift; sourceTree = "<group>"; };
+		859E96342C3473B000928244 /* GroupedXCycles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedXCycles.swift; sourceTree = "<group>"; };
+		859E96382C34752C00928244 /* GroupedXCyclesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedXCyclesTest.swift; sourceTree = "<group>"; };
 		85CF6BFB2ADA611A0076BD62 /* SudokuNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuNumber.swift; sourceTree = "<group>"; };
 		85CF6BFD2ADA63520076BD62 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		85EB77582B3C86670084B86F /* BoardModification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardModification.swift; sourceTree = "<group>"; };
@@ -249,6 +254,22 @@
 				85FA481B2BE44BCF00D8B07F /* XYZWingTest.swift */,
 			);
 			path = tough;
+			sourceTree = "<group>";
+		};
+		859E96332C34739200928244 /* extreme */ = {
+			isa = PBXGroup;
+			children = (
+				859E96342C3473B000928244 /* GroupedXCycles.swift */,
+			);
+			path = extreme;
+			sourceTree = "<group>";
+		};
+		859E96372C34751B00928244 /* extreme */ = {
+			isa = PBXGroup;
+			children = (
+				859E96382C34752C00928244 /* GroupedXCyclesTest.swift */,
+			);
+			path = extreme;
 			sourceTree = "<group>";
 		};
 		85EB775E2B3CD6340084B86F /* simple */ = {
@@ -335,6 +356,7 @@
 		85F52FC82B1AC4300018E190 /* logic */ = {
 			isa = PBXGroup;
 			children = (
+				859E96332C34739200928244 /* extreme */,
 				85FA481D2BE559AC00D8B07F /* diabolical */,
 				8592185E2BDCCE33004FCDD1 /* tough */,
 				85EB775E2B3CD6340084B86F /* simple */,
@@ -346,6 +368,7 @@
 		85F52FC92B1AC4A90018E190 /* logic */ = {
 			isa = PBXGroup;
 			children = (
+				859E96372C34751B00928244 /* extreme */,
 				85FA48212BE749B600D8B07F /* diabolical */,
 				859218622BDCCF28004FCDD1 /* tough */,
 				85EB77612B3CD6D00084B86F /* simple */,
@@ -497,6 +520,7 @@
 				85F57BE02AF4069400144ABF /* BruteForce.swift in Sources */,
 				859E96222C24B52A00928244 /* HiddenUniqueRectangles.swift in Sources */,
 				8592184B2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */,
+				859E96352C3473B000928244 /* GroupedXCycles.swift in Sources */,
 				85FA48142BE3580100D8B07F /* Swordfish.swift in Sources */,
 				858D841E2C08FFFC00614631 /* UniqueRectangles.swift in Sources */,
 				859218602BDCCE6E004FCDD1 /* XWing.swift in Sources */,
@@ -542,6 +566,7 @@
 				8592186E2BDDE089004FCDD1 /* SimpleColoringTest.swift in Sources */,
 				858D841C2C00E2A800614631 /* JellyfishTest.swift in Sources */,
 				85FA48232BE749E900D8B07F /* XCyclesTest.swift in Sources */,
+				859E96362C3473B000928244 /* GroupedXCycles.swift in Sources */,
 				8592185B2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */,
 				8592186C2BDDDFF4004FCDD1 /* SimpleColoring.swift in Sources */,
 				859218712BE30F66004FCDD1 /* YWing.swift in Sources */,
@@ -590,6 +615,7 @@
 				85FA48152BE3580100D8B07F /* Swordfish.swift in Sources */,
 				8592183F2BD4D01F004FCDD1 /* NakedTriplesTest.swift in Sources */,
 				85FA481C2BE44BCF00D8B07F /* XYZWingTest.swift in Sources */,
+				859E96392C34752C00928244 /* GroupedXCyclesTest.swift in Sources */,
 				859218352BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
 				8592183A2BD4669D004FCDD1 /* Collections.swift in Sources */,
 				85F52FC42B19A8CD0018E190 /* Board.swift in Sources */,
