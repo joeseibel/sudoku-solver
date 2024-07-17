@@ -87,7 +87,7 @@ func xCyclesRule3(board: Board<Cell>) -> [BoardModification] {
     }.mergeToRemoveCandidates()
 }
 
-extension WeightedUniqueElementsGraph<UnsolvedCell, Strength> {
+extension Graph where V == UnsolvedCell, E: WeightedEdgeProtocol, E.Weight == Strength {
     func toDOT(candidate: SudokuNumber) -> String {
         toDOT(graphId: String(describing: candidate)) { "[\($0.row),\($0.column)]" }
     }

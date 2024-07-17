@@ -47,7 +47,7 @@ func xyChains(board: Board<Cell>) -> [BoardModification] {
         .mergeToRemoveCandidates()
 }
 
-extension WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength> {
+extension Graph where V == CodableLocatedCandidate, E: WeightedEdgeProtocol, E.Weight == Strength {
     func toDOT() -> String {
         toDOT() { "[\($0.cell.row),\($0.cell.column)] : \($0.candidate)" }
     }
@@ -81,17 +81,13 @@ private extension WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>
     }
 }
 
-private func alternatingPathExists(
-    graph: WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>,
-    start: WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>.Index,
-    end: WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>.Index
-) -> Bool {
+private func alternatingPathExists<G: Graph>(
+    graph: G,
+    start: G.Index,
+    end: G.Index
+) -> Bool where G.Index == Int, G.E: WeightedEdgeProtocol, G.E.Weight == Strength {
     
-    func alternatingPathExists(
-        currentIndex: WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>.Index,
-        nextType: Strength,
-        visited: Set<WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>.Index>
-    ) -> Bool {
+    func alternatingPathExists(currentIndex: G.Index, nextType: Strength, visited: Set<G.Index>) -> Bool {
         let nextIndices = graph.edgesForIndex(currentIndex)
             .filter { $0.weight.isCompatible(with: nextType) }
             .map { $0.getOppositeIndex(index: currentIndex) }
