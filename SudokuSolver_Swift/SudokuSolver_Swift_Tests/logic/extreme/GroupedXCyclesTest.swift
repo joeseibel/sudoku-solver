@@ -4,7 +4,7 @@ import XCTest
 final class GroupedXCyclesTest: XCTestCase {
     func testToDOT() {
         let graph = WeightedUniqueElementsGraph<Node, Strength>()
-        let a = Node(cell: [Cell(row: 6, column: 1)].unsolvedCells.first!)
+        let a = Node.cell([Cell(row: 6, column: 1)].unsolvedCells.first!)
         let bCells = [Cell(row: 6, column: 6), Cell(row: 6, column: 7), Cell(row: 6, column: 8)].unsolvedCells
         let b = Node(rowGroup: bCells)
         let c = Node(columnGroup: [Cell(row: 6, column: 2), Cell(row: 8, column: 2)].unsolvedCells)
@@ -21,63 +21,6 @@ final class GroupedXCyclesTest: XCTestCase {
             }
             """
         XCTAssertEqual(expected, actual)
-    }
-    
-    func testGroupTooSmall() {
-//        assertEquals(
-//            "Group can only be constructed with 2 or 3 cells, but cells.size is 0.",
-//            assertThrows<IllegalArgumentException> { RowGroup(emptySet()) }.message
-//        )
-        
-//        _ = Node(rowGroup: [])
-    }
-    
-    func testGroupTooLarge() {
-//        assertEquals(
-//            "Group can only be constructed with 2 or 3 cells, but cells.size is 4.",
-//            assertThrows<IllegalArgumentException> { RowGroup(cells) }.message
-//        )
-        
-//        let cells = [
-//            Cell(row: 0, column: 0),
-//            Cell(row: 0, column: 1),
-//            Cell(row: 0, column: 2),
-//            Cell(row: 0, column: 3)
-//        ].unsolvedCells
-//        _ = Node(rowGroup: cells)
-    }
-    
-    func testGroupNotInSameBlock() {
-//        val cells = setOf(UnsolvedCell(0, 0), UnsolvedCell(0, 3))
-//        assertEquals(
-//            "Group cells must be in the same block.",
-//            assertThrows<IllegalArgumentException> { RowGroup(cells) }.message
-//        )
-        
-//        let cells = [Cell(row: 0, column: 0), Cell(row: 0, column: 3)].unsolvedCells
-//        _ = Node(rowGroup: cells)
-    }
-    
-    func testRowGroupNotInSameRow() {
-//        val cells = setOf(UnsolvedCell(0, 0), UnsolvedCell(1, 1))
-//        assertEquals(
-//            "RowGroup cells must be in the same row.",
-//            assertThrows<IllegalArgumentException> { RowGroup(cells) }.message
-//        )
-        
-//        let cells = [Cell(row: 0, column: 0), Cell(row: 1, column: 1)].unsolvedCells
-//        _ = Node(rowGroup: cells)
-    }
-    
-    func testColumnGroupNotInSameColumn() {
-//        val cells = setOf(UnsolvedCell(0, 0), UnsolvedCell(1, 1))
-//        assertEquals(
-//            "ColumnGroup cells must be in the same column.",
-//            assertThrows<IllegalArgumentException> { ColumnGroup(cells) }.message
-//        )
-        
-//        let cells = [Cell(row: 0, column: 0), Cell(row: 1, column: 1)].unsolvedCells
-//        _ = Node(columnGroup: cells)
     }
     
     func testRule1Test1() {

@@ -97,12 +97,15 @@ func groupedXCyclesRule1(board: Board<Cell>) -> [BoardModification] {
 func groupedXCyclesRule2(board: Board<Cell>) -> [BoardModification] {
     SudokuNumber.allCases.flatMap { candidate in
         let graph = buildGraph(board: board, candidate: candidate)
-        return graph.vertices
-            .filter {
-                $0.type == .cell &&
-                    alternatingCycleExists(graph: graph, index: graph.indexOfVertex($0)!, adjacentEdgesType: .strong)
+        return graph.indices.compactMap { index in
+            if case .cell(let cell) = graph.vertexAtIndex(index),
+               alternatingCycleExists(graph: graph, index: index, adjacentEdgesType: .strong)
+            {
+                BoardModification(cell: cell, value: candidate)
+            } else {
+                nil
             }
-            .map { BoardModification(cell: $0.cells.first!, value: candidate) }
+        }
     }
 }
 
@@ -118,12 +121,15 @@ func groupedXCyclesRule2(board: Board<Cell>) -> [BoardModification] {
 func groupedXCyclesRule3(board: Board<Cell>) -> [BoardModification] {
     SudokuNumber.allCases.flatMap { candidate in
         let graph = buildGraph(board: board, candidate: candidate)
-        return graph.vertices
-            .filter {
-                $0.type == .cell &&
-                    alternatingCycleExists(graph: graph, index: graph.indexOfVertex($0)!, adjacentEdgesType: .weak)
+        return graph.indices.compactMap { index in
+            if case .cell(let cell) = graph.vertexAtIndex(index),
+               alternatingCycleExists(graph: graph, index: index, adjacentEdgesType: .weak)
+            {
+                (cell, candidate)
+            } else {
+                nil
             }
-            .map { ($0.cells.first!, candidate) }
+        }
     }.mergeToRemoveCandidates()
 }
 
@@ -142,8 +148,8 @@ private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> Weighted
         .forEach { withCandidate in
             let strength = withCandidate.count == 2 ? Strength.strong : .weak
             withCandidate.zipEveryPair().forEach { a, b in
-                let aIndex = graph.addVertex(Node(cell: a))
-                let bIndex = graph.addVertex(Node(cell: b))
+                let aIndex = graph.addVertex(.cell(a))
+                let bIndex = graph.addVertex(.cell(b))
                 graph.addEdge(fromIndex: aIndex, toIndex: bIndex, weight: strength)
             }
         }
@@ -158,44 +164,47 @@ private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> Weighted
         }
     }
     
-    let rowGroups = createGroups(units: board.rows, groupConstructor: Node.init(rowGroup:))
-    let columnGroups = createGroups(units: board.columns, groupConstructor: Node.init(columnGroup:))
-    let groups = rowGroups + columnGroups
-    for group in groups {
-        _ = graph.addVertex(group)
-    }
+    let rowGroupIndices = createGroups(units: board.rows, groupConstructor: Node.init(rowGroup:)).map(graph.addVertex)
+    let columnGroupIndices = createGroups(units: board.columns, groupConstructor: Node.init(columnGroup:))
+        .map(graph.addVertex)
+    let groupIndices = rowGroupIndices + columnGroupIndices
     
     //Connect groups to cels.
-    func connectGroupsToCells(groups: [Node], getUnit: (Int) -> [Cell], getUnitIndex: (Node) -> Int) {
-        groups.forEach { group in
+    func connectGroupsToCells(groupIndices: [Int], getUnit: (Int) -> [Cell], getUnitIndex: (Node) -> Int) {
+        groupIndices.forEach { groupIndex in
+            let group = graph.vertexAtIndex(groupIndex)
             let otherCellsInUnit = getUnit(getUnitIndex(group))
                 .unsolvedCells
                 .filter { $0.candidates.contains(candidate) && !group.cells.contains($0) }
             let strength = otherCellsInUnit.count == 1 ? Strength.strong : .weak
-            otherCellsInUnit.forEach { cell in graph.addEdge(from: group, to: Node(cell: cell), weight: strength) }
+            otherCellsInUnit.forEach { cell in
+                graph.addEdge(fromIndex: groupIndex, toIndex: graph.indexOfVertex(.cell(cell))!, weight: strength)
+            }
         }
     }
     
-    connectGroupsToCells(groups: rowGroups, getUnit: board.getRow, getUnitIndex: \.row!)
-    connectGroupsToCells(groups: columnGroups, getUnit: board.getColumn, getUnitIndex: \.column!)
-    connectGroupsToCells(groups: groups, getUnit: board.getBlock, getUnitIndex: \.block)
+    connectGroupsToCells(groupIndices: rowGroupIndices, getUnit: board.getRow, getUnitIndex: \.row!)
+    connectGroupsToCells(groupIndices: columnGroupIndices, getUnit: board.getColumn, getUnitIndex: \.column!)
+    connectGroupsToCells(groupIndices: groupIndices, getUnit: board.getBlock, getUnitIndex: \.block)
     
     //Connect groups to groups.
-    func connectGroupsToGroups(groups: [Node], getUnit: (Int) -> [Cell], getUnitIndex: (Node) -> Int) {
-        groups.zipEveryPair()
-            .filter { a, b in getUnitIndex(a) == getUnitIndex(b) && Set(a.cells).intersection(b.cells).isEmpty }
-            .forEach { a, b in
+    func connectGroupsToGroups(groupIndices: [Int], getUnit: (Int) -> [Cell], getUnitIndex: (Node) -> Int) {
+        for (aIndex, bIndex) in groupIndices.zipEveryPair() {
+            let a = graph.vertexAtIndex(aIndex)
+            let b = graph.vertexAtIndex(bIndex)
+            if getUnitIndex(a) == getUnitIndex(b) && Set(a.cells).intersection(b.cells).isEmpty {
                 let otherCellsInUnit = getUnit(getUnitIndex(a))
                     .unsolvedCells
                     .filter { $0.candidates.contains(candidate) && !a.cells.contains($0) && !b.cells.contains($0) }
                 let strength = otherCellsInUnit.isEmpty ? Strength.strong : .weak
-                graph.addEdge(from: a, to: b, weight: strength)
+                graph.addEdge(fromIndex: aIndex, toIndex: bIndex, weight: strength)
             }
+        }
     }
     
-    connectGroupsToGroups(groups: rowGroups, getUnit: board.getRow, getUnitIndex: \.row!)
-    connectGroupsToGroups(groups: columnGroups, getUnit: board.getColumn, getUnitIndex: \.column!)
-    connectGroupsToGroups(groups: groups, getUnit: board.getBlock, getUnitIndex: \.block)
+    connectGroupsToGroups(groupIndices: rowGroupIndices, getUnit: board.getRow, getUnitIndex: \.row!)
+    connectGroupsToGroups(groupIndices: columnGroupIndices, getUnit: board.getColumn, getUnitIndex: \.column!)
+    connectGroupsToGroups(groupIndices: groupIndices, getUnit: board.getBlock, getUnitIndex: \.block)
     
     return graph
 }
@@ -234,57 +243,99 @@ private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> Weighted
  * All of this makes sense when I take time to think about Swift protocols, but it is extremely counter-intuitive when
  * coming to Swift from a JVM background.
  */
-struct Node: Codable, Equatable {
-    let type: NodeType
-    let row: Int?
-    let column: Int?
-    let block: Int
-    let cells: [UnsolvedCell]
+enum Node: Codable, Equatable {
+    case cell(UnsolvedCell)
+    case rowGroup(RowGroup)
+    case columnGroup(ColumnGroup)
     
-    init(cell: UnsolvedCell) {
-        type = .cell
-        row = cell.row
-        column = cell.column
-        block = cell.block
-        cells = [cell]
+    var row: Int? {
+        switch self {
+        case .cell(let cell):
+            cell.row
+        case .rowGroup(let rowGroup):
+            rowGroup.cells.first!.row
+        case .columnGroup:
+            nil
+        }
+    }
+    
+    var column: Int? {
+        switch self {
+        case .cell(let cell):
+            cell.column
+        case .rowGroup:
+            nil
+        case .columnGroup(let columnGroup):
+            columnGroup.cells.first!.column
+        }
+    }
+    
+    var block: Int {
+        switch self {
+        case .cell(let cell):
+            cell.block
+        case .rowGroup(let rowGroup):
+            rowGroup.cells.first!.block
+        case .columnGroup(let columnGroup):
+            columnGroup.cells.first!.block
+        }
+    }
+    
+    var cells: [UnsolvedCell] {
+        switch self {
+        case .cell(let cell):
+            [cell]
+        case .rowGroup(let rowGroup):
+            rowGroup.cells
+        case .columnGroup(let columnGroup):
+            columnGroup.cells
+        }
     }
     
     init(rowGroup cells: [UnsolvedCell]) {
-        precondition(
-            (2 ... unitSizeSquareRoot).contains(cells.count),
-            "Group can only be constructed with 2 or \(unitSizeSquareRoot) cells, but cells.count is \(cells.count)."
-        )
-        precondition(Set(cells.map(\.block)).count == 1, "Group cells must be in the same block.")
-        precondition(Set(cells.map(\.row)).count == 1, "rowGroup cells must be in the same row.")
-        type = .rowGroup
-        row = cells.first!.row
-        column = nil
-        block = cells.first!.block
-        self.cells = cells
+        self = .rowGroup(RowGroup(cells: cells))
     }
     
     init(columnGroup cells: [UnsolvedCell]) {
-        precondition(
-            (2 ... unitSizeSquareRoot).contains(cells.count),
-            "Group can only be constructed with 2 or \(unitSizeSquareRoot) cells, but cells.count is \(cells.count)."
-        )
-        precondition(Set(cells.map(\.block)).count == 1, "Group cells must be in the same block.")
-        precondition(Set(cells.map(\.column)).count == 1, "columnGroup cells must be in the same column.")
-        type = .columnGroup
-        row = nil
-        column = cells.first!.column
-        block = cells.first!.block
-        self.cells = cells
+        self = .columnGroup(ColumnGroup(cells: cells))
     }
-}
-
-enum NodeType : Codable {
-    case cell, rowGroup, columnGroup
 }
 
 extension Node: CustomStringConvertible {
     var description: String {
-        let coordinates = cells.map { "[\($0.row),\($0.column)]" }.joined(separator: ", ")
-        return cells.count == 1 ? coordinates : "{\(coordinates)}"
+        switch self {
+        case .cell(let cell):
+            "[\(cell.row),\(cell.column)]"
+        default:
+            "{\(cells.map { "[\($0.row),\($0.column)]" }.joined(separator: ", "))}"
+        }
     }
+}
+
+struct RowGroup: Codable, Equatable {
+    let cells: [UnsolvedCell]
+    
+    init(cells: [UnsolvedCell]) {
+        validateGroup(cells: cells)
+        precondition(Set(cells.map(\.row)).count == 1, "RowGroup cells must be in the same row.")
+        self.cells = cells
+    }
+}
+
+struct ColumnGroup: Codable, Equatable {
+    let cells: [UnsolvedCell]
+    
+    init(cells: [UnsolvedCell]) {
+        validateGroup(cells: cells)
+        precondition(Set(cells.map(\.column)).count == 1, "ColumnGroup cells must be in the same column.")
+        self.cells = cells
+    }
+}
+
+private func validateGroup(cells: [UnsolvedCell]) {
+    precondition(
+        (2 ... unitSizeSquareRoot).contains(cells.count),
+        "Group can only be initialized with 2 or \(unitSizeSquareRoot) cells, but cells.count is \(cells.count)."
+    )
+    precondition(Set(cells.map(\.block)).count == 1, "Group cells must be in the same block.")
 }
