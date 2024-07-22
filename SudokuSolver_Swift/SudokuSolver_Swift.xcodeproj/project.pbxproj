@@ -11,6 +11,9 @@
 		850E69BB2BA14B080002D1F9 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 850E69BA2BA14B080002D1F9 /* Algorithms */; };
 		853061702B8D84AF0080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 8530616F2B8D84AF0080E170 /* ArgumentParser */; };
 		853061732B8DC7E60080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 853061722B8DC7E60080E170 /* ArgumentParser */; };
+		8581262F2C4EDF4C00F0D5B1 /* EmptyRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */; };
+		858126302C4EDF4C00F0D5B1 /* EmptyRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */; };
+		858126322C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */; };
 		858D84072BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
 		858D84082BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
 		858D840A2BF877B200614631 /* BUGTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84092BF877B200614631 /* BUGTest.swift */; };
@@ -130,6 +133,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRectangles.swift; sourceTree = "<group>"; };
+		858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRectanglesTest.swift; sourceTree = "<group>"; };
 		858D84062BF8751500614631 /* BUG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUG.swift; sourceTree = "<group>"; };
 		858D84092BF877B200614631 /* BUGTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUGTest.swift; sourceTree = "<group>"; };
 		858D840B2BF9919D00614631 /* XYChains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYChains.swift; sourceTree = "<group>"; };
@@ -260,6 +265,7 @@
 			isa = PBXGroup;
 			children = (
 				859E96342C3473B000928244 /* GroupedXCycles.swift */,
+				8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -268,6 +274,7 @@
 			isa = PBXGroup;
 			children = (
 				859E96382C34752C00928244 /* GroupedXCyclesTest.swift */,
+				858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -517,6 +524,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				85EB77592B3C86670084B86F /* BoardModification.swift in Sources */,
+				8581262F2C4EDF4C00F0D5B1 /* EmptyRectangles.swift in Sources */,
 				85F57BE02AF4069400144ABF /* BruteForce.swift in Sources */,
 				859E96222C24B52A00928244 /* HiddenUniqueRectangles.swift in Sources */,
 				8592184B2BD8C4A7004FCDD1 /* NakedQuads.swift in Sources */,
@@ -614,9 +622,11 @@
 				85FA48202BE559E400D8B07F /* XCycles.swift in Sources */,
 				85FA48152BE3580100D8B07F /* Swordfish.swift in Sources */,
 				8592183F2BD4D01F004FCDD1 /* NakedTriplesTest.swift in Sources */,
+				858126322C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift in Sources */,
 				85FA481C2BE44BCF00D8B07F /* XYZWingTest.swift in Sources */,
 				859E96392C34752C00928244 /* GroupedXCyclesTest.swift in Sources */,
 				859218352BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
+				858126302C4EDF4C00F0D5B1 /* EmptyRectangles.swift in Sources */,
 				8592183A2BD4669D004FCDD1 /* Collections.swift in Sources */,
 				85F52FC42B19A8CD0018E190 /* Board.swift in Sources */,
 				859E962D2C308B4B00928244 /* WXYZWingTest.swift in Sources */,
