@@ -130,6 +130,7 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         groupedXCyclesRule2,
         groupedXCyclesRule3,
         emptyRectangles,
+        finnedXWing,
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }

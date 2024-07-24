@@ -30,15 +30,3 @@ func boxLineReduction(board: Board<Cell>) -> [BoardModification] {
         return rowRemovals + columnRemovals
     }.mergeToRemoveCandidates()
 }
-
-// TODO: Move to Cell.swift when another solution requires this protocol.
-private protocol Location {
-    var row: Int { get }
-    var column: Int { get }
-}
-
-extension Cell: Location {
-}
-
-extension UnsolvedCell: Location {
-}

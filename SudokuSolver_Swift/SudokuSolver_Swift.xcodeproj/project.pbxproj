@@ -14,6 +14,9 @@
 		8581262F2C4EDF4C00F0D5B1 /* EmptyRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */; };
 		858126302C4EDF4C00F0D5B1 /* EmptyRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */; };
 		858126322C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */; };
+		858126342C50187200F0D5B1 /* FinnedXWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126332C50187200F0D5B1 /* FinnedXWing.swift */; };
+		858126352C50187200F0D5B1 /* FinnedXWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126332C50187200F0D5B1 /* FinnedXWing.swift */; };
+		858126372C5018CA00F0D5B1 /* FinnedXWingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126362C5018CA00F0D5B1 /* FinnedXWingTest.swift */; };
 		858D84072BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
 		858D84082BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
 		858D840A2BF877B200614631 /* BUGTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84092BF877B200614631 /* BUGTest.swift */; };
@@ -135,6 +138,8 @@
 /* Begin PBXFileReference section */
 		8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRectangles.swift; sourceTree = "<group>"; };
 		858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRectanglesTest.swift; sourceTree = "<group>"; };
+		858126332C50187200F0D5B1 /* FinnedXWing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedXWing.swift; sourceTree = "<group>"; };
+		858126362C5018CA00F0D5B1 /* FinnedXWingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedXWingTest.swift; sourceTree = "<group>"; };
 		858D84062BF8751500614631 /* BUG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUG.swift; sourceTree = "<group>"; };
 		858D84092BF877B200614631 /* BUGTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUGTest.swift; sourceTree = "<group>"; };
 		858D840B2BF9919D00614631 /* XYChains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYChains.swift; sourceTree = "<group>"; };
@@ -266,6 +271,7 @@
 			children = (
 				859E96342C3473B000928244 /* GroupedXCycles.swift */,
 				8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */,
+				858126332C50187200F0D5B1 /* FinnedXWing.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -275,6 +281,7 @@
 			children = (
 				859E96382C34752C00928244 /* GroupedXCyclesTest.swift */,
 				858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */,
+				858126362C5018CA00F0D5B1 /* FinnedXWingTest.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -556,6 +563,7 @@
 				858D84072BF8751500614631 /* BUG.swift in Sources */,
 				859E96272C2F1CB400928244 /* Rectangles.swift in Sources */,
 				859218412BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
+				858126342C50187200F0D5B1 /* FinnedXWing.swift in Sources */,
 				859218392BD4669D004FCDD1 /* Collections.swift in Sources */,
 				8592186B2BDDDFF4004FCDD1 /* SimpleColoring.swift in Sources */,
 				859E962A2C308AEB00928244 /* WXYZWing.swift in Sources */,
@@ -574,6 +582,7 @@
 				8592186E2BDDE089004FCDD1 /* SimpleColoringTest.swift in Sources */,
 				858D841C2C00E2A800614631 /* JellyfishTest.swift in Sources */,
 				85FA48232BE749E900D8B07F /* XCyclesTest.swift in Sources */,
+				858126372C5018CA00F0D5B1 /* FinnedXWingTest.swift in Sources */,
 				859E96362C3473B000928244 /* GroupedXCycles.swift in Sources */,
 				8592185B2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */,
 				8592186C2BDDDFF4004FCDD1 /* SimpleColoring.swift in Sources */,
@@ -594,6 +603,7 @@
 				8592184E2BD8C51C004FCDD1 /* NakedQuadsTest.swift in Sources */,
 				859218732BE30FEB004FCDD1 /* YWingTest.swift in Sources */,
 				85EB776B2B51EA350084B86F /* SudokuSolverTest.swift in Sources */,
+				858126352C50187200F0D5B1 /* FinnedXWing.swift in Sources */,
 				859E96252C26A1F600928244 /* HiddenUniqueRectanglesTest.swift in Sources */,
 				859218302BCE117D004FCDD1 /* HiddenSingles.swift in Sources */,
 				85F52FC62B19A96F0018E190 /* BruteForceTest.swift in Sources */,

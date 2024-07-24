@@ -28,7 +28,7 @@
  * Overall, I believe this is a limitation in the way that Swift implements ADTs. I prefer the approach found in Kotlin,
  * Java, and Scala in which the members of each ADT are types themselves.
  */
-enum Cell: Equatable {
+enum Cell: Location, Equatable {
     case solvedCell(SolvedCell)
     case unsolvedCell(UnsolvedCell)
     
@@ -79,6 +79,17 @@ extension Cell: CustomStringConvertible {
     }
 }
 
+/*
+ * Some of the logical solutions require the ability to get the row or column from a Cell or UnsolvedCell. Since Cell,
+ * SolvedCell, and UnsolvedCell are all independent types, I decided to create this Location protocol so that the row
+ * and column values can be retrieved regardless of whether the cell is a Cell or an UnsolvedCell. Currently, SolvedCell
+ * does not conform to Location because that functionality has not been needed.
+ */
+protocol Location {
+    var row: Int { get }
+    var column: Int { get }
+}
+
 struct SolvedCell: Equatable {
     let row: Int
     let column: Int
@@ -100,7 +111,7 @@ extension SolvedCell: CustomStringConvertible {
     }
 }
 
-struct UnsolvedCell: Hashable, Codable {
+struct UnsolvedCell: Location, Hashable, Codable {
     let row: Int
     let column: Int
     let block: Int
