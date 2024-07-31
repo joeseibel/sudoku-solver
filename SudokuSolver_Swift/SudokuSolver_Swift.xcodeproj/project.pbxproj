@@ -17,6 +17,9 @@
 		858126342C50187200F0D5B1 /* FinnedXWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126332C50187200F0D5B1 /* FinnedXWing.swift */; };
 		858126352C50187200F0D5B1 /* FinnedXWing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126332C50187200F0D5B1 /* FinnedXWing.swift */; };
 		858126372C5018CA00F0D5B1 /* FinnedXWingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126362C5018CA00F0D5B1 /* FinnedXWingTest.swift */; };
+		858126392C51C5B500F0D5B1 /* FinnedSwordfish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126382C51C5B500F0D5B1 /* FinnedSwordfish.swift */; };
+		8581263A2C51C5B500F0D5B1 /* FinnedSwordfish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126382C51C5B500F0D5B1 /* FinnedSwordfish.swift */; };
+		8581263C2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8581263B2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift */; };
 		858D84072BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
 		858D84082BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
 		858D840A2BF877B200614631 /* BUGTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84092BF877B200614631 /* BUGTest.swift */; };
@@ -140,6 +143,8 @@
 		858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRectanglesTest.swift; sourceTree = "<group>"; };
 		858126332C50187200F0D5B1 /* FinnedXWing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedXWing.swift; sourceTree = "<group>"; };
 		858126362C5018CA00F0D5B1 /* FinnedXWingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedXWingTest.swift; sourceTree = "<group>"; };
+		858126382C51C5B500F0D5B1 /* FinnedSwordfish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedSwordfish.swift; sourceTree = "<group>"; };
+		8581263B2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedSwordfishTest.swift; sourceTree = "<group>"; };
 		858D84062BF8751500614631 /* BUG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUG.swift; sourceTree = "<group>"; };
 		858D84092BF877B200614631 /* BUGTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUGTest.swift; sourceTree = "<group>"; };
 		858D840B2BF9919D00614631 /* XYChains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYChains.swift; sourceTree = "<group>"; };
@@ -272,6 +277,7 @@
 				859E96342C3473B000928244 /* GroupedXCycles.swift */,
 				8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */,
 				858126332C50187200F0D5B1 /* FinnedXWing.swift */,
+				858126382C51C5B500F0D5B1 /* FinnedSwordfish.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -282,6 +288,7 @@
 				859E96382C34752C00928244 /* GroupedXCyclesTest.swift */,
 				858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */,
 				858126362C5018CA00F0D5B1 /* FinnedXWingTest.swift */,
+				8581263B2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -540,6 +547,7 @@
 				858D841E2C08FFFC00614631 /* UniqueRectangles.swift in Sources */,
 				859218602BDCCE6E004FCDD1 /* XWing.swift in Sources */,
 				8592182F2BCE117D004FCDD1 /* HiddenSingles.swift in Sources */,
+				858126392C51C5B500F0D5B1 /* FinnedSwordfish.swift in Sources */,
 				85EB776D2B51EBE90084B86F /* SudokuSolver.swift in Sources */,
 				8592185A2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */,
 				85F52FCD2B1F02020018E190 /* Cell.swift in Sources */,
@@ -575,6 +583,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8581263A2C51C5B500F0D5B1 /* FinnedSwordfish.swift in Sources */,
+				8581263C2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift in Sources */,
 				85EB775C2B3C95E80084B86F /* BoardModification.swift in Sources */,
 				859218512BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
 				859E96202C15952500928244 /* ExtendedUniqueRectanglesTest.swift in Sources */,
