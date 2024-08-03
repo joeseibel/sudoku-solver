@@ -20,6 +20,9 @@
 		858126392C51C5B500F0D5B1 /* FinnedSwordfish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126382C51C5B500F0D5B1 /* FinnedSwordfish.swift */; };
 		8581263A2C51C5B500F0D5B1 /* FinnedSwordfish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126382C51C5B500F0D5B1 /* FinnedSwordfish.swift */; };
 		8581263C2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8581263B2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift */; };
+		858126412C59EAEF00F0D5B1 /* AlternatingInferenceChains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126402C59EAEF00F0D5B1 /* AlternatingInferenceChains.swift */; };
+		858126422C59EAEF00F0D5B1 /* AlternatingInferenceChains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126402C59EAEF00F0D5B1 /* AlternatingInferenceChains.swift */; };
+		858126442C59EBA500F0D5B1 /* AlternatingInferenceChainsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126432C59EBA500F0D5B1 /* AlternatingInferenceChainsTest.swift */; };
 		858D84072BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
 		858D84082BF8751500614631 /* BUG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84062BF8751500614631 /* BUG.swift */; };
 		858D840A2BF877B200614631 /* BUGTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858D84092BF877B200614631 /* BUGTest.swift */; };
@@ -145,6 +148,8 @@
 		858126362C5018CA00F0D5B1 /* FinnedXWingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedXWingTest.swift; sourceTree = "<group>"; };
 		858126382C51C5B500F0D5B1 /* FinnedSwordfish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedSwordfish.swift; sourceTree = "<group>"; };
 		8581263B2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedSwordfishTest.swift; sourceTree = "<group>"; };
+		858126402C59EAEF00F0D5B1 /* AlternatingInferenceChains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlternatingInferenceChains.swift; sourceTree = "<group>"; };
+		858126432C59EBA500F0D5B1 /* AlternatingInferenceChainsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlternatingInferenceChainsTest.swift; sourceTree = "<group>"; };
 		858D84062BF8751500614631 /* BUG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUG.swift; sourceTree = "<group>"; };
 		858D84092BF877B200614631 /* BUGTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BUGTest.swift; sourceTree = "<group>"; };
 		858D840B2BF9919D00614631 /* XYChains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYChains.swift; sourceTree = "<group>"; };
@@ -278,6 +283,7 @@
 				8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */,
 				858126332C50187200F0D5B1 /* FinnedXWing.swift */,
 				858126382C51C5B500F0D5B1 /* FinnedSwordfish.swift */,
+				858126402C59EAEF00F0D5B1 /* AlternatingInferenceChains.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -289,6 +295,7 @@
 				858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */,
 				858126362C5018CA00F0D5B1 /* FinnedXWingTest.swift */,
 				8581263B2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift */,
+				858126432C59EBA500F0D5B1 /* AlternatingInferenceChainsTest.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -571,6 +578,7 @@
 				858D84072BF8751500614631 /* BUG.swift in Sources */,
 				859E96272C2F1CB400928244 /* Rectangles.swift in Sources */,
 				859218412BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
+				858126412C59EAEF00F0D5B1 /* AlternatingInferenceChains.swift in Sources */,
 				858126342C50187200F0D5B1 /* FinnedXWing.swift in Sources */,
 				859218392BD4669D004FCDD1 /* Collections.swift in Sources */,
 				8592186B2BDDDFF4004FCDD1 /* SimpleColoring.swift in Sources */,
@@ -585,6 +593,7 @@
 			files = (
 				8581263A2C51C5B500F0D5B1 /* FinnedSwordfish.swift in Sources */,
 				8581263C2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift in Sources */,
+				858126422C59EAEF00F0D5B1 /* AlternatingInferenceChains.swift in Sources */,
 				85EB775C2B3C95E80084B86F /* BoardModification.swift in Sources */,
 				859218512BD958E3004FCDD1 /* HiddenQuads.swift in Sources */,
 				859E96202C15952500928244 /* ExtendedUniqueRectanglesTest.swift in Sources */,
@@ -607,6 +616,7 @@
 				859218532BD95956004FCDD1 /* HiddenQuadsTest.swift in Sources */,
 				85EB775D2B3C95F60084B86F /* Cell.swift in Sources */,
 				859E96322C320D4C00928244 /* AlignedPairExclusionTest.swift in Sources */,
+				858126442C59EBA500F0D5B1 /* AlternatingInferenceChainsTest.swift in Sources */,
 				859E961E2C1594DA00928244 /* ExtendedUniqueRectangles.swift in Sources */,
 				859218322BCE11E1004FCDD1 /* HiddenSinglesTest.swift in Sources */,
 				859218472BD83566004FCDD1 /* HiddenTriples.swift in Sources */,

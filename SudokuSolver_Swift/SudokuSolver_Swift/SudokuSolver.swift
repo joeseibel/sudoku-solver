@@ -132,6 +132,9 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         emptyRectangles,
         finnedXWing,
         finnedSwordfish,
+        alternatingInferenceChainsRule1,
+        alternatingInferenceChainsRule2,
+        alternatingInferenceChainsRule3,
     ]
     return solutions.lazy.map { $0(board) }.first { !$0.isEmpty } ?? []
 }
