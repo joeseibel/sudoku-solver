@@ -11,6 +11,9 @@
 		850E69BB2BA14B080002D1F9 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 850E69BA2BA14B080002D1F9 /* Algorithms */; };
 		853061702B8D84AF0080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 8530616F2B8D84AF0080E170 /* ArgumentParser */; };
 		853061732B8DC7E60080E170 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 853061722B8DC7E60080E170 /* ArgumentParser */; };
+		855497082C60FA8A00B240DA /* SueDeCoq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855497072C60FA8A00B240DA /* SueDeCoq.swift */; };
+		855497092C60FA8A00B240DA /* SueDeCoq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855497072C60FA8A00B240DA /* SueDeCoq.swift */; };
+		8554970B2C60FACB00B240DA /* SueDeCoqTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8554970A2C60FACB00B240DA /* SueDeCoqTest.swift */; };
 		8581262F2C4EDF4C00F0D5B1 /* EmptyRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */; };
 		858126302C4EDF4C00F0D5B1 /* EmptyRectangles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */; };
 		858126322C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */; };
@@ -142,6 +145,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		855497072C60FA8A00B240DA /* SueDeCoq.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SueDeCoq.swift; sourceTree = "<group>"; };
+		8554970A2C60FACB00B240DA /* SueDeCoqTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SueDeCoqTest.swift; sourceTree = "<group>"; };
 		8581262E2C4EDF4C00F0D5B1 /* EmptyRectangles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRectangles.swift; sourceTree = "<group>"; };
 		858126312C4EDFA000F0D5B1 /* EmptyRectanglesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRectanglesTest.swift; sourceTree = "<group>"; };
 		858126332C50187200F0D5B1 /* FinnedXWing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnedXWing.swift; sourceTree = "<group>"; };
@@ -284,6 +289,7 @@
 				858126332C50187200F0D5B1 /* FinnedXWing.swift */,
 				858126382C51C5B500F0D5B1 /* FinnedSwordfish.swift */,
 				858126402C59EAEF00F0D5B1 /* AlternatingInferenceChains.swift */,
+				855497072C60FA8A00B240DA /* SueDeCoq.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -296,6 +302,7 @@
 				858126362C5018CA00F0D5B1 /* FinnedXWingTest.swift */,
 				8581263B2C51C6FA00F0D5B1 /* FinnedSwordfishTest.swift */,
 				858126432C59EBA500F0D5B1 /* AlternatingInferenceChainsTest.swift */,
+				8554970A2C60FACB00B240DA /* SueDeCoqTest.swift */,
 			);
 			path = extreme;
 			sourceTree = "<group>";
@@ -575,6 +582,7 @@
 				859218462BD83566004FCDD1 /* HiddenTriples.swift in Sources */,
 				859218342BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
 				858D84142BFE355F00614631 /* Medusa.swift in Sources */,
+				855497082C60FA8A00B240DA /* SueDeCoq.swift in Sources */,
 				858D84072BF8751500614631 /* BUG.swift in Sources */,
 				859E96272C2F1CB400928244 /* Rectangles.swift in Sources */,
 				859218412BD77132004FCDD1 /* HiddenPairs.swift in Sources */,
@@ -601,6 +609,7 @@
 				8592186E2BDDE089004FCDD1 /* SimpleColoringTest.swift in Sources */,
 				858D841C2C00E2A800614631 /* JellyfishTest.swift in Sources */,
 				85FA48232BE749E900D8B07F /* XCyclesTest.swift in Sources */,
+				8554970B2C60FACB00B240DA /* SueDeCoqTest.swift in Sources */,
 				858126372C5018CA00F0D5B1 /* FinnedXWingTest.swift in Sources */,
 				859E96362C3473B000928244 /* GroupedXCycles.swift in Sources */,
 				8592185B2BDAD647004FCDD1 /* BoxLineReduction.swift in Sources */,
@@ -656,6 +665,7 @@
 				85FA481C2BE44BCF00D8B07F /* XYZWingTest.swift in Sources */,
 				859E96392C34752C00928244 /* GroupedXCyclesTest.swift in Sources */,
 				859218352BD37F8C004FCDD1 /* NakedPairs.swift in Sources */,
+				855497092C60FA8A00B240DA /* SueDeCoq.swift in Sources */,
 				858126302C4EDF4C00F0D5B1 /* EmptyRectangles.swift in Sources */,
 				8592183A2BD4669D004FCDD1 /* Collections.swift in Sources */,
 				85F52FC42B19A8CD0018E190 /* Board.swift in Sources */,
