@@ -49,23 +49,20 @@ func xyChains(board: Board<Cell>) -> [BoardModification] {
 
 extension Graph where V == CodableLocatedCandidate, E: WeightedEdgeProtocol, E.Weight == Strength {
     func toDOT() -> String {
-        toDOT() { "[\($0.cell.row),\($0.cell.column)] : \($0.candidate)" }
+        toDOT { "[\($0.cell.row),\($0.cell.column)] : \($0.candidate)" }
     }
 }
 
 private func createStrongLinks(board: Board<Cell>) -> WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength> {
     let graph = WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>()
-    board.cells
-        .unsolvedCells
-        .filter { $0.candidates.count == 2 }
-        .forEach { cell in
-            let candidates = Array(cell.candidates)
-            let source = CodableLocatedCandidate(cell: cell, candidate: candidates.first!)
-            let target = CodableLocatedCandidate(cell: cell, candidate: candidates.last!)
-            let sourceIndex = graph.addVertex(source)
-            let targetIndex = graph.addVertex(target)
-            graph.addEdge(fromIndex: sourceIndex, toIndex: targetIndex, weight: .strong)
-        }
+    for cell in board.cells.unsolvedCells.filter({ $0.candidates.count == 2 }) {
+        let candidates = Array(cell.candidates)
+        let source = CodableLocatedCandidate(cell: cell, candidate: candidates.first!)
+        let target = CodableLocatedCandidate(cell: cell, candidate: candidates.last!)
+        let sourceIndex = graph.addVertex(source)
+        let targetIndex = graph.addVertex(target)
+        graph.addEdge(fromIndex: sourceIndex, toIndex: targetIndex, weight: .strong)
+    }
     return graph
 }
 

@@ -196,7 +196,7 @@ func getWeakEdgesInAlternatingCycle<G: Graph>(
     graph: G
 ) -> Set<G.E> where G.Index == Int, G.E: WeightedEdgeProtocol, G.E.Weight == Strength {
     var weakEdgesInAlternatingCycle = Set<G.E>()
-    graph.edgeList().filter { $0.weight == .weak }.forEach { edge in
+    for edge in graph.edgeList().filter({ $0.weight == .weak }) {
         if !weakEdgesInAlternatingCycle.contains(edge) {
             weakEdgesInAlternatingCycle.formUnion(getAlternatingCycleWeakEdges(graph: graph, startEdge: edge))
         }

@@ -17,7 +17,7 @@ func jellyfish(board: Board<Cell>) -> [BoardModification] {
             getOtherUnit: (Int) -> [Cell],
             getOtherUnitIndex: (UnsolvedCell) -> Int
         ) -> [LocatedCandidate] {
-            units.zipEveryQuad().flatMap { unitA, unitB, unitC, unitD in
+            units.zipEveryQuad().flatMap { unitA, unitB, unitC, unitD -> [LocatedCandidate] in
                 let aWithCandidate = unitA.unsolvedCells.filter { $0.candidates.contains(candidate) }
                 let bWithCandidate = unitB.unsolvedCells.filter { $0.candidates.contains(candidate) }
                 let cWithCandidate = unitC.unsolvedCells.filter { $0.candidates.contains(candidate) }
@@ -29,13 +29,13 @@ func jellyfish(board: Board<Cell>) -> [BoardModification] {
                 {
                     let withCandidate = aWithCandidate + bWithCandidate + cWithCandidate + dWithCandidate
                     let otherUnitIndices = Set(withCandidate.map(getOtherUnitIndex))
-                    if otherUnitIndices.count == 4 {
-                        return otherUnitIndices.flatMap(getOtherUnit)
+                    return if otherUnitIndices.count == 4 {
+                        otherUnitIndices.flatMap(getOtherUnit)
                             .unsolvedCells
                             .filter { cell in cell.candidates.contains(candidate) && !withCandidate.contains(cell) }
                             .map { ($0, candidate) }
                     } else {
-                        return []
+                        []
                     }
                 } else {
                     return []

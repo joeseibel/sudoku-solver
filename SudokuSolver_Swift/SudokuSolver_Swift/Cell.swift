@@ -138,8 +138,8 @@ extension UnsolvedCell: CustomStringConvertible {
 }
 
 private func validateRowAndColumn(row: Int, column: Int) {
-    precondition((0 ..< unitSize).contains(row), "row is \(row), must be between 0 and \(unitSize - 1).")
-    precondition((0 ..< unitSize).contains(column), "column is \(column), must be between 0 and \(unitSize - 1).")
+    precondition((0..<unitSize).contains(row), "row is \(row), must be between 0 and \(unitSize - 1).")
+    precondition((0..<unitSize).contains(column), "column is \(column), must be between 0 and \(unitSize - 1).")
 }
 
 typealias LocatedCandidate = (UnsolvedCell, SudokuNumber)
@@ -204,7 +204,7 @@ extension Board<Cell> {
         while index < withCandidates.endIndex {
             let ch = withCandidates[index]
             switch ch {
-            case "1" ... "9":
+            case "1"..."9":
                 cellBuilders.append({ row, column in Cell(row: row, column: column, value: SudokuNumber(number: ch)) })
                 index = withCandidates.index(after: index)
             case "{":
@@ -213,10 +213,10 @@ extension Board<Cell> {
                     preconditionFailure("Unmatched \"{\".")
                 }
                 precondition(closingBrace != index, "Empty \"{}\".")
-                let charsInBraces = withCandidates[index ..< closingBrace]
+                let charsInBraces = withCandidates[index..<closingBrace]
                 precondition(!charsInBraces.contains("{"), "Nested \"{\".")
-                charsInBraces.forEach { charInBrace in
-                    precondition(("1" ... "9").contains(charInBrace), "Invalid character: \"\(charInBrace)\".")
+                for charInBrace in charsInBraces {
+                    precondition(("1"..."9").contains(charInBrace), "Invalid character: \"\(charInBrace)\".")
                 }
                 let candidates = Set(charsInBraces.map { SudokuNumber(number: $0) })
                 cellBuilders.append({ row, column in Cell(row: row, column: column, candidates: candidates) })

@@ -25,7 +25,7 @@ func assertLogicalSolution(
         }
     })
     let actual = logicFunction(board).sorted { $0.row < $1.row || $0.row == $1.row && $0.column < $1.column }
-    actual.forEach { modification in
+    for modification in actual {
         let row = modification.row
         let column = modification.column
         let solution = bruteForceSolution[row, column]

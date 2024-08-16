@@ -47,7 +47,7 @@ func solve(input: Board<SudokuNumber?>) throws -> Board<SudokuNumber> {
             return bruteForceSolution
         }
         modifications = performNextSolution(board: board)
-        modifications.forEach { modification in
+        for modification in modifications {
             let row = modification.row
             let column = modification.column
             guard case .unsolvedCell(let cell) = board[row, column] else {
@@ -56,7 +56,7 @@ func solve(input: Board<SudokuNumber?>) throws -> Board<SudokuNumber> {
             let knownSolution = bruteForceSolution[row, column]
             switch modification {
             case .removeCandidates(let modification):
-                modification.candidates.forEach { candidate in
+                for candidate in modification.candidates {
                     precondition(
                         candidate != knownSolution,
                         "Cannot remove candidate \(candidate) from [\(row), \(column)]"

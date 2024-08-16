@@ -2,7 +2,7 @@ let unitSizeSquareRoot = 3
 let unitSize = unitSizeSquareRoot * unitSizeSquareRoot
 let unitSizeSquared = unitSize * unitSize
 
-struct Board<Element: Equatable> : Equatable {
+struct Board<Element: Equatable>: Equatable {
     private(set) var rows: [[Element]]
     
     init(elements rows: [[Element]]) {
@@ -14,11 +14,11 @@ struct Board<Element: Equatable> : Equatable {
     }
     
     var columns: [[Element]] {
-        (0 ..< unitSize).map { index in rows.map(\.[index]) }
+        (0..<unitSize).map { index in rows.map(\.[index]) }
     }
     
     var blocks: [[Element]] {
-        (0 ..< unitSize).map(getBlock)
+        (0..<unitSize).map(getBlock)
     }
     
     var units: [[Element]] {
@@ -48,13 +48,13 @@ struct Board<Element: Equatable> : Equatable {
     
     func getBlock(blockIndex: Int) -> [Element] {
         precondition(
-            (0 ..< unitSize).contains(blockIndex),
+            (0..<unitSize).contains(blockIndex),
             "blockIndex is \(blockIndex), must be between 0 and \(unitSize - 1)."
         )
         let rowIndex = blockIndex / unitSizeSquareRoot * unitSizeSquareRoot
         let columnIndex = blockIndex % unitSizeSquareRoot * unitSizeSquareRoot
-        return rows[rowIndex ..< rowIndex + unitSizeSquareRoot].flatMap { row in
-            row[columnIndex ..< columnIndex + unitSizeSquareRoot]
+        return rows[rowIndex..<rowIndex + unitSizeSquareRoot].flatMap { row in
+            row[columnIndex..<columnIndex + unitSizeSquareRoot]
         }
     }
     
@@ -83,10 +83,10 @@ struct Board<Element: Equatable> : Equatable {
 extension Board: CustomStringConvertible {
     var description: String {
         func joinRows(fromIndex: Int, toIndex: Int) -> String {
-            rows[fromIndex ..< toIndex]
+            rows[fromIndex..<toIndex]
                 .map { row in
                     func joinCells(fromIndex: Int, toIndex: Int) -> String {
-                        row[fromIndex ..< toIndex].map(String.init(describing:)).joined(separator: " ")
+                        row[fromIndex..<toIndex].map(String.init(describing:)).joined(separator: " ")
                     }
                     
                     let first = joinCells(fromIndex: 0, toIndex: unitSizeSquareRoot)

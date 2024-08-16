@@ -176,13 +176,13 @@ func medusaRule6(board: Board<Cell>) -> [BoardModification] {
 
 private func createConnectedComponents(board: Board<Cell>) -> [UnweightedUniqueElementsGraph<CodableLocatedCandidate>] {
     let graph = UnweightedUniqueElementsGraph<CodableLocatedCandidate>()
-    board.cells.unsolvedCells.filter { $0.candidates.count == 2 }.forEach { cell in
+    for cell in board.cells.unsolvedCells.filter({ $0.candidates.count == 2 }) {
         let candidates = Array(cell.candidates)
         let a = graph.addVertex(CodableLocatedCandidate(cell: cell, candidate: candidates.first!))
         let b = graph.addVertex(CodableLocatedCandidate(cell: cell, candidate: candidates.last!))
         graph.addEdge(fromIndex: a, toIndex: b)
     }
-    SudokuNumber.allCases.forEach { candidate in
+    for candidate in SudokuNumber.allCases {
         board.units
             .map { $0.unsolvedCells.filter { $0.candidates.contains(candidate) } }
             .filter { $0.count == 2 }

@@ -35,7 +35,7 @@ extension Board<SudokuNumber?> {
     init(optionalBoard board: String) {
         precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
         self.init(elements: board.chunks(ofCount: unitSize).map { row in
-            row.map { $0 == "0" ? nil : SudokuNumber(number: $0)}
+            row.map { $0 == "0" ? nil : SudokuNumber(number: $0) }
         })
     }
 }

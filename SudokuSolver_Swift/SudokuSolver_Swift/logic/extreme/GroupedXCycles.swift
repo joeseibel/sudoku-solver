@@ -147,7 +147,7 @@ private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> Weighted
         .map { unit in unit.unsolvedCells.filter { $0.candidates.contains(candidate) } }
         .forEach { withCandidate in
             let strength = withCandidate.count == 2 ? Strength.strong : .weak
-            withCandidate.zipEveryPair().forEach { a, b in
+            for (a, b) in withCandidate.zipEveryPair() {
                 let aIndex = graph.addVertex(.cell(a))
                 let bIndex = graph.addVertex(.cell(b))
                 graph.addEdge(fromIndex: aIndex, toIndex: bIndex, weight: strength)
@@ -171,13 +171,13 @@ private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> Weighted
     
     //Connect groups to cels.
     func connectGroupsToCells(groupIndices: [Int], getUnit: (Int) -> [Cell], getUnitIndex: (Node) -> Int) {
-        groupIndices.forEach { groupIndex in
+        for groupIndex in groupIndices {
             let group = graph.vertexAtIndex(groupIndex)
             let otherCellsInUnit = getUnit(getUnitIndex(group))
                 .unsolvedCells
                 .filter { $0.candidates.contains(candidate) && !group.cells.contains($0) }
             let strength = otherCellsInUnit.count == 1 ? Strength.strong : .weak
-            otherCellsInUnit.forEach { cell in
+            for cell in otherCellsInUnit {
                 graph.addEdge(fromIndex: groupIndex, toIndex: graph.indexOfVertex(.cell(cell))!, weight: strength)
             }
         }
@@ -334,7 +334,7 @@ struct ColumnGroup: Codable, Equatable {
 
 private func validateGroup(cells: [UnsolvedCell]) {
     precondition(
-        (2 ... unitSizeSquareRoot).contains(cells.count),
+        (2...unitSizeSquareRoot).contains(cells.count),
         "Group can only be initialized with 2 or \(unitSizeSquareRoot) cells, but cells.count is \(cells.count)."
     )
     precondition(Set(cells.map(\.block)).count == 1, "Group cells must be in the same block.")

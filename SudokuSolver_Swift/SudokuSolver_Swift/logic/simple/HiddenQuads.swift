@@ -17,7 +17,7 @@ func hiddenQuads(board: Board<Cell>) -> [BoardModification] {
                 let union = cells.reduce(Set()) { $0.union($1.candidates) }
                 return if union.contains(a) && union.contains(b) && union.contains(c) && union.contains(d) {
                     cells.flatMap { cell in
-                        cell.candidates.subtracting([a, b, c, d]).map { candidate in (cell, candidate)}
+                        cell.candidates.subtracting([a, b, c, d]).map { candidate in (cell, candidate) }
                     }
                 } else {
                     []

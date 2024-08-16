@@ -127,11 +127,11 @@ private func buildGraph(board: Board<Cell>) -> WeightedUniqueElementsGraph<Codab
     let graph = WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>()
     
     //Connect cells.
-    board.units.forEach { unit in
-        SudokuNumber.allCases.forEach { candidate in
+    for unit in board.units {
+        for candidate in SudokuNumber.allCases {
             let withCandidates = unit.unsolvedCells.filter { $0.candidates.contains(candidate) }
             let strength = withCandidates.count == 2 ? Strength.strong : .weak
-            withCandidates.zipEveryPair().forEach { a, b in
+            for (a, b) in withCandidates.zipEveryPair() {
                 let aIndex = graph.addVertex(CodableLocatedCandidate(cell: a, candidate: candidate))
                 let bIndex = graph.addVertex(CodableLocatedCandidate(cell: b, candidate: candidate))
                 graph.addEdge(fromIndex: aIndex, toIndex: bIndex, weight: strength)
@@ -140,9 +140,9 @@ private func buildGraph(board: Board<Cell>) -> WeightedUniqueElementsGraph<Codab
     }
     
     //Connect candidates in cells.
-    board.cells.unsolvedCells.forEach { cell in
+    for cell in board.cells.unsolvedCells {
         let strength = cell.candidates.count == 2 ? Strength.strong : .weak
-        cell.candidates.zipEveryPair().forEach { a, b in
+        for (a, b) in cell.candidates.zipEveryPair() {
             let aIndex = graph.addVertex(CodableLocatedCandidate(cell: cell, candidate: a))
             let bIndex = graph.addVertex(CodableLocatedCandidate(cell: cell, candidate: b))
             graph.addEdge(fromIndex: aIndex, toIndex: bIndex, weight: strength)

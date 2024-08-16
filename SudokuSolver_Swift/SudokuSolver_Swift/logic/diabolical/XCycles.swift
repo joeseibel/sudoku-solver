@@ -119,12 +119,12 @@ private extension WeightedUniqueElementsGraph<UnsolvedCell, Strength> {
                 let b = vertexAtIndex(bIndex)
                 return a.isInSameUnit(as: b) && !edgeExists(fromIndex: aIndex, toIndex: bIndex)
             }
-            .forEach { aIndex, bIndex in addEdge(fromIndex: aIndex, toIndex: bIndex, weight: .weak)}
+            .forEach { aIndex, bIndex in addEdge(fromIndex: aIndex, toIndex: bIndex, weight: .weak) }
     }
     
     func additionalWeakLinks(board: Board<Cell>, candidate: SudokuNumber) {
-        board.cells.unsolvedCells.filter { $0.candidates.contains(candidate) && !contains($0) }.forEach { cell in
-            indices.filter { vertexAtIndex($0).isInSameUnit(as: cell) }.forEach { index in
+        for cell in board.cells.unsolvedCells.filter({ $0.candidates.contains(candidate) && !contains($0) }) {
+            for index in indices.filter({ vertexAtIndex($0).isInSameUnit(as: cell) }) {
                 addEdge(fromIndex: index, toIndex: addVertex(cell), weight: .weak)
             }
         }

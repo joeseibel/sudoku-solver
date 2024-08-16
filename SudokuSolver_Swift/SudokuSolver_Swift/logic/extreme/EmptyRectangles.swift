@@ -69,11 +69,11 @@ func emptyRectangles(board: Board<Cell>) -> [BoardModification] {
 }
 
 private func getIntersections(board: Board<Cell>, candidate: SudokuNumber) -> [(Int, Int)] {
-    (0 ..< unitSize).flatMap { row in
+    (0..<unitSize).flatMap { row in
         let rowInBlock = row % unitSizeSquareRoot
         let rectangleRow1 = rowInBlock == 0 ? row + 1 : row - rowInBlock
         let rectangleRow2 = rowInBlock == 2 ? row - 1 : row - rowInBlock + 2
-        return (0 ..< unitSize).filter { column in
+        return (0..<unitSize).filter { column in
             let columnInBlock = column % unitSizeSquareRoot
             let rectangleColumn1 = columnInBlock == 0 ? column + 1 : column - columnInBlock
             let rectangleColumn2 = columnInBlock == 2 ? column - 1 : column - columnInBlock + 2

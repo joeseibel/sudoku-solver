@@ -23,7 +23,7 @@ enum BoardModification: Hashable {
     
     init(cell: UnsolvedCell, candidates: Set<SudokuNumber>) {
         self = .removeCandidates(RemoveCandidates(row: cell.row, column: cell.column, candidates: candidates))
-        candidates.forEach { candidate in
+        for candidate in candidates {
             precondition(
                 cell.candidates.contains(candidate),
                 "\(candidate) is not a candidate for [\(row), \(column)]."
@@ -74,8 +74,8 @@ struct SetValue: Hashable {
 }
 
 private func validateRowAndColumn(row: Int, column: Int) {
-    precondition((0 ..< unitSize).contains(row), "row is \(row), must be between 0 and \(unitSize - 1).")
-    precondition((0 ..< unitSize).contains(column), "column is \(column), must be between 0 and \(unitSize - 1).")
+    precondition((0..<unitSize).contains(row), "row is \(row), must be between 0 and \(unitSize - 1).")
+    precondition((0..<unitSize).contains(column), "column is \(column), must be between 0 and \(unitSize - 1).")
 }
 
 extension Sequence<LocatedCandidate> {
