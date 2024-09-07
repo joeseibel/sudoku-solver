@@ -24,3 +24,23 @@ class BoardTest extends FunSuite:
     val message = "requirement failed: elements(0) size is 0, must be 9."
     interceptMessage[IllegalArgumentException](message)(Board(Vector.fill(UnitSize)(Vector())))
   }
+
+  test("row too low") {
+    val message = "requirement failed: row is -1, must be between 0 and 8."
+    interceptMessage[IllegalArgumentException](message)(RemoveCandidates(-1, 0, 1))
+  }
+
+  test("row too high") {
+    val message = "requirement failed: row is 9, must be between 0 and 8."
+    interceptMessage[IllegalArgumentException](message)(SetValue(9, 0, 1))
+  }
+
+  test("column too low") {
+    val message = "requirement failed: column is -1, must be between 0 and 8."
+    interceptMessage[IllegalArgumentException](message)(SolvedCell(0, -1, SudokuNumber.ONE))
+  }
+
+  test("column too high") {
+    val message = "requirement failed: column is 9, must be between 0 and 8."
+    interceptMessage[IllegalArgumentException](message)(UnsolvedCell(0, 9))
+  }

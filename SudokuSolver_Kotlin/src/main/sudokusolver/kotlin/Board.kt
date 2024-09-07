@@ -151,3 +151,8 @@ fun getBlockIndex(rowIndex: Int, columnIndex: Int): Int =
     rowIndex / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT + columnIndex / UNIT_SIZE_SQUARE_ROOT
 
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)
+
+fun validateRowAndColumn(row: Int, column: Int) {
+    require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
+    require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
+}

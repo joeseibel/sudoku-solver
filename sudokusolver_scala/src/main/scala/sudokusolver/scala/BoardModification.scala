@@ -4,8 +4,7 @@ sealed trait BoardModification extends Ordered[BoardModification]:
   val row: Int
   val column: Int
 
-  require(0 until UnitSize contains row, s"row is $row, must be between 0 and ${UnitSize - 1}.")
-  require(0 until UnitSize contains column, s"column is $column, must be between 0 and ${UnitSize - 1}.")
+  validateRowAndColumn(row, column)
 
   override def compare(that: BoardModification): Int =
     val rowCompare = row.compareTo(that.row)

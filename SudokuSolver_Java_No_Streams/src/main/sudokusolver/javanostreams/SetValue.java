@@ -2,7 +2,7 @@ package sudokusolver.javanostreams;
 
 public record SetValue(int row, int column, SudokuNumber value) implements BoardModification {
     public SetValue {
-        SudokuUtil.validateRowAndColumn(row, column);
+        Board.validateRowAndColumn(row, column);
     }
 
     public SetValue(UnsolvedCell cell, SudokuNumber value) {

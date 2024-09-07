@@ -78,3 +78,7 @@ class Board[+T](elements: Iterable[Iterable[T]]):
 
 def getBlockIndex(rowIndex: Int, columnIndex: Int): Int =
   rowIndex / UnitSizeSquareRoot * UnitSizeSquareRoot + columnIndex / UnitSizeSquareRoot
+
+def validateRowAndColumn(row: Int, column: Int): Unit =
+  require(0 until UnitSize contains row, s"row is $row, must be between 0 and ${UnitSize - 1}.")
+  require(0 until UnitSize contains column, s"column is $column, must be between 0 and ${UnitSize - 1}.")

@@ -29,18 +29,11 @@ sealed class Cell {
     abstract val row: Int
     abstract val column: Int
     val block: Int by lazy { getBlockIndex(row, column) }
-
-    protected fun validateRowAndColumn() {
-        require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
-        require(column in 0 until UNIT_SIZE) {
-            "column is $column, must be between 0 and ${UNIT_SIZE - 1}."
-        }
-    }
 }
 
 data class SolvedCell(override val row: Int, override val column: Int, val value: SudokuNumber) : Cell() {
     init {
-        validateRowAndColumn()
+        validateRowAndColumn(row, column)
     }
 
     override fun toString(): String = value.toString()
@@ -52,7 +45,7 @@ data class UnsolvedCell(
     val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)
 ) : Cell() {
     init {
-        validateRowAndColumn()
+        validateRowAndColumn(row, column)
         require(candidates.isNotEmpty()) { "candidates must not be empty." }
     }
 

@@ -7,38 +7,6 @@ import kotlin.test.assertEquals
 
 internal class CellKtTest {
     @Test
-    fun testCellRowTooLow() {
-        assertEquals(
-            "row is -1, must be between 0 and 8.",
-            assertThrows<IllegalArgumentException> { SolvedCell(-1, 0, SudokuNumber.ONE) }.message
-        )
-    }
-
-    @Test
-    fun testCellRowTooHigh() {
-        assertEquals(
-            "row is 9, must be between 0 and 8.",
-            assertThrows<IllegalArgumentException> { SolvedCell(9, 0, SudokuNumber.ONE) }.message
-        )
-    }
-
-    @Test
-    fun testCellColumnTooLow() {
-        assertEquals(
-            "column is -1, must be between 0 and 8.",
-            assertThrows<IllegalArgumentException> { UnsolvedCell(0, -1) }.message
-        )
-    }
-
-    @Test
-    fun testCellColumnTooHigh() {
-        assertEquals(
-            "column is 9, must be between 0 and 8.",
-            assertThrows<IllegalArgumentException> { UnsolvedCell(0, 9) }.message
-        )
-    }
-
-    @Test
     fun testUnsolvedCellCandidatesAreEmpty() {
         assertEquals(
             "candidates must not be empty.",

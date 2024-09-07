@@ -3,26 +3,6 @@ package sudokusolver.scala
 import munit.FunSuite
 
 class BoardModificationTest extends FunSuite:
-  test("BoardModification row too low") {
-    val message = "requirement failed: row is -1, must be between 0 and 8."
-    interceptMessage[IllegalArgumentException](message)(RemoveCandidates(-1, 0, 1))
-  }
-
-  test("BoardModification row too high") {
-    val message = "requirement failed: row is 9, must be between 0 and 8."
-    interceptMessage[IllegalArgumentException](message)(RemoveCandidates(9, 0, 1))
-  }
-
-  test("BoardModification column too low") {
-    val message = "requirement failed: column is -1, must be between 0 and 8."
-    interceptMessage[IllegalArgumentException](message)(SetValue(0, -1, 1))
-  }
-
-  test("BoardModification column too high") {
-    val message = "requirement failed: column is 9, must be between 0 and 8."
-    interceptMessage[IllegalArgumentException](message)(SetValue(0, 9, 1))
-  }
-
   test("RemoveCandidates candidates are empty") {
     val message = "requirement failed: candidates must not be empty."
     interceptMessage[IllegalArgumentException](message)(RemoveCandidates(0, 0))

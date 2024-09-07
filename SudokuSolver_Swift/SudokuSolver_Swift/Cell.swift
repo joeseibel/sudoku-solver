@@ -137,11 +137,6 @@ extension UnsolvedCell: CustomStringConvertible {
     }
 }
 
-private func validateRowAndColumn(row: Int, column: Int) {
-    precondition((0..<unitSize).contains(row), "row is \(row), must be between 0 and \(unitSize - 1).")
-    precondition((0..<unitSize).contains(column), "column is \(column), must be between 0 and \(unitSize - 1).")
-}
-
 typealias LocatedCandidate = (UnsolvedCell, SudokuNumber)
 
 extension String {

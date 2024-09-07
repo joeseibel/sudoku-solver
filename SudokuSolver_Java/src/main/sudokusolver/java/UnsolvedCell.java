@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 public record UnsolvedCell(int row, int column, EnumSet<SudokuNumber> candidates) implements Cell {
     public UnsolvedCell {
-        SudokuUtil.validateRowAndColumn(row, column);
+        Board.validateRowAndColumn(row, column);
         if (candidates.isEmpty()) {
             throw new IllegalArgumentException("candidates must not be empty.");
         }

@@ -153,7 +153,7 @@ public record Board<T>(List<List<T>> rows) {
 
     public static String toStringWithCandidates(Board<Cell> board) {
         var builder = new StringBuilder();
-        for (var row = board.rows.iterator(); row.hasNext();) {
+        for (var row = board.rows.iterator(); row.hasNext(); ) {
             for (var cell : row.next()) {
                 if (cell instanceof SolvedCell solvedCell) {
                     builder.append(solvedCell.value().toString());
@@ -175,7 +175,7 @@ public record Board<T>(List<List<T>> rows) {
     }
 
     private void joinRows(StringBuilder builder, int fromIndex, int toIndex) {
-        for (var rowIterator = rows.subList(fromIndex, toIndex).iterator(); rowIterator.hasNext();) {
+        for (var rowIterator = rows.subList(fromIndex, toIndex).iterator(); rowIterator.hasNext(); ) {
             var row = rowIterator.next();
             joinCells(builder, row, 0, UNIT_SIZE_SQUARE_ROOT);
             builder.append(" | ");
@@ -189,7 +189,7 @@ public record Board<T>(List<List<T>> rows) {
     }
 
     private void joinCells(StringBuilder builder, List<T> row, int fromIndex, int toIndex) {
-        for (var cell = row.subList(fromIndex, toIndex).iterator(); cell.hasNext();) {
+        for (var cell = row.subList(fromIndex, toIndex).iterator(); cell.hasNext(); ) {
             builder.append(cell.next());
             if (cell.hasNext()) {
                 builder.append(' ');
@@ -199,5 +199,16 @@ public record Board<T>(List<List<T>> rows) {
 
     public static int getBlockIndex(int rowIndex, int columnIndex) {
         return rowIndex / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT + columnIndex / UNIT_SIZE_SQUARE_ROOT;
+    }
+
+    public static void validateRowAndColumn(int row, int column) {
+        if (row < 0 || row >= Board.UNIT_SIZE) {
+            var message = "row is " + row + ", must be between 0 and " + (Board.UNIT_SIZE - 1) + '.';
+            throw new IllegalArgumentException(message);
+        }
+        if (column < 0 || column >= Board.UNIT_SIZE) {
+            var message = "column is " + column + ", must be between 0 and " + (Board.UNIT_SIZE - 1) + '.';
+            throw new IllegalArgumentException(message);
+        }
     }
 }

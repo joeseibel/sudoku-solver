@@ -53,18 +53,13 @@ sealed interface BoardModification : Comparable<BoardModification> {
     }
 }
 
-private fun BoardModification.validateRowAndColumn() {
-    require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
-    require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
-}
-
 data class RemoveCandidates(
     override val row: Int,
     override val column: Int,
     val candidates: EnumSet<SudokuNumber>
 ) : BoardModification {
     init {
-        validateRowAndColumn()
+        validateRowAndColumn(row, column)
         require(candidates.isNotEmpty()) { "candidates must not be empty." }
     }
 
@@ -83,7 +78,7 @@ data class RemoveCandidates(
 
 data class SetValue(override val row: Int, override val column: Int, val value: SudokuNumber) : BoardModification {
     init {
-        validateRowAndColumn()
+        validateRowAndColumn(row, column)
     }
 
     constructor(cell: UnsolvedCell, value: SudokuNumber) : this(cell.row, cell.column, value) {

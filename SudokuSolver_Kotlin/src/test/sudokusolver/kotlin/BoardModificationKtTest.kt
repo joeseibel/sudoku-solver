@@ -7,38 +7,6 @@ import kotlin.test.assertEquals
 
 internal class BoardModificationKtTest {
     @Test
-    fun testBoardModificationRowTooLow() {
-        assertEquals(
-            "row is -1, must be between 0 and 8.",
-            assertThrows<IllegalArgumentException> { RemoveCandidates(-1, 0, 1) }.message
-        )
-    }
-
-    @Test
-    fun testBoardModificationRowTooHigh() {
-        assertEquals(
-            "row is 9, must be between 0 and 8.",
-            assertThrows<IllegalArgumentException> { RemoveCandidates(9, 0, 1) }.message
-        )
-    }
-
-    @Test
-    fun testBoardModificationColumnTooLow() {
-        assertEquals(
-            "column is -1, must be between 0 and 8.",
-            assertThrows<IllegalArgumentException> { SetValue(0, -1, 1) }.message
-        )
-    }
-
-    @Test
-    fun testBoardModificationColumnTooHigh() {
-        assertEquals(
-            "column is 9, must be between 0 and 8.",
-            assertThrows<IllegalArgumentException> { SetValue(0, 9, 1) }.message
-        )
-    }
-
-    @Test
     fun testRemoveCandidatesCandidatesAreEmpty() {
         assertEquals(
             "candidates must not be empty.",
