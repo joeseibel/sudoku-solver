@@ -6,9 +6,9 @@ struct Board<Element: Equatable>: Equatable {
     private(set) var rows: [[Element]]
     
     init(elements rows: [[Element]]) {
-        precondition(rows.count == unitSize, "elements count is \(rows.count), must be \(unitSize).")
+        precondition(rows.count == unitSize, "elements.count is \(rows.count), must be \(unitSize).")
         for (index, row) in rows.enumerated() {
-            precondition(row.count == unitSize, "elements[\(index)] count is \(row.count), must be \(unitSize).")
+            precondition(row.count == unitSize, "elements[\(index)].count is \(row.count), must be \(unitSize).")
         }
         self.rows = rows
     }

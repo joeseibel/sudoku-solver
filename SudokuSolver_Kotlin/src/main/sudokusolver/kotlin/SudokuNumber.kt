@@ -25,13 +25,13 @@ fun sudokuNumber(ch: Char): SudokuNumber =
     }
 
 fun parseOptionalBoard(board: String): Board<SudokuNumber?> {
-    require(board.length == UNIT_SIZE_SQUARED) { "board length is ${board.length}, must be $UNIT_SIZE_SQUARED." }
+    require(board.length == UNIT_SIZE_SQUARED) { "board.length is ${board.length}, must be $UNIT_SIZE_SQUARED." }
     return Board(board.chunked(UNIT_SIZE) { row ->
         row.map { cell -> cell.takeUnless { it == '0' }?.let { sudokuNumber(it) } }
     })
 }
 
 fun parseBoard(board: String): Board<SudokuNumber> {
-    require(board.length == UNIT_SIZE_SQUARED) { "board length is ${board.length}, must be $UNIT_SIZE_SQUARED." }
+    require(board.length == UNIT_SIZE_SQUARED) { "board.length is ${board.length}, must be $UNIT_SIZE_SQUARED." }
     return Board(board.chunked(UNIT_SIZE) { row -> row.map { sudokuNumber(it) } })
 }

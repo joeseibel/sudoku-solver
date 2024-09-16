@@ -26,7 +26,7 @@ internal class BoardKtTest {
     @Test
     fun testAbstractBoardWrongSize() {
         assertEquals(
-            "elements size is 0, must be 9.",
+            "elements.size is 0, must be 9.",
             assertThrows<IllegalArgumentException> { Board(emptyList<List<Any>>()) }.message
         )
     }
@@ -34,7 +34,7 @@ internal class BoardKtTest {
     @Test
     fun testAbstractBoardWrongInnerSize() {
         assertEquals(
-            "elements[0] size is 0, must be 9.",
+            "elements[0].size is 0, must be 9.",
             assertThrows<IllegalArgumentException> { Board(List(UNIT_SIZE) { emptyList<Any>() }) }.message
         )
     }

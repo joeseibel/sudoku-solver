@@ -31,12 +31,12 @@ public record Board<T>(List<List<T>> rows) {
 
     public Board(List<List<T>> rows) {
         if (rows.size() != UNIT_SIZE) {
-            throw new IllegalArgumentException("rows size is " + rows.size() + ", must be " + UNIT_SIZE + '.');
+            throw new IllegalArgumentException("rows.size() is " + rows.size() + ", must be " + UNIT_SIZE + '.');
         }
         IntStream.range(0, rows.size()).forEach(index -> {
             var row = rows.get(index);
             if (row.size() != UNIT_SIZE) {
-                var message = "rows.get(" + index + ") size is " + row.size() + ", must be " + UNIT_SIZE + '.';
+                var message = "rows.get(" + index + ").size() is " + row.size() + ", must be " + UNIT_SIZE + '.';
                 throw new IllegalArgumentException(message);
             }
         });

@@ -16,7 +16,7 @@ internal class SudokuNumberKtTest {
     @Test
     fun testParseOptionalBoardWrongLength() {
         assertEquals(
-            "board length is 0, must be 81.",
+            "board.length is 0, must be 81.",
             assertThrows<IllegalArgumentException> { parseOptionalBoard("") }.message
         )
     }
@@ -24,7 +24,7 @@ internal class SudokuNumberKtTest {
     @Test
     fun testParseBoardWrongLength() {
         assertEquals(
-            "board length is 0, must be 81.",
+            "board.length is 0, must be 81.",
             assertThrows<IllegalArgumentException> { parseBoard("") }.message
         )
     }

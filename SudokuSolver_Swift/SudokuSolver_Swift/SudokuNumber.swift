@@ -33,7 +33,10 @@ extension SudokuNumber: Comparable {
 
 extension Board<SudokuNumber?> {
     init(optionalBoard board: String) {
-        precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
+        precondition(
+            board.count == unitSizeSquared,
+            "optionalBoard.count is \(board.count), must be \(unitSizeSquared)."
+        )
         self.init(elements: board.chunks(ofCount: unitSize).map { row in
             row.map { $0 == "0" ? nil : SudokuNumber(number: $0) }
         })
@@ -42,7 +45,7 @@ extension Board<SudokuNumber?> {
 
 extension Board<SudokuNumber> {
     init(board: String) {
-        precondition(board.count == unitSizeSquared, "board count is \(board.count), must be \(unitSizeSquared).")
+        precondition(board.count == unitSizeSquared, "board.count is \(board.count), must be \(unitSizeSquared).")
         self.init(elements: board.chunks(ofCount: unitSize).map { row in row.map { SudokuNumber(number: $0) } })
     }
 }

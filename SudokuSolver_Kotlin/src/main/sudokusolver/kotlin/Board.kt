@@ -52,9 +52,9 @@ abstract class AbstractBoard<out T> {
 
     protected companion object {
         fun requireSize(elements: List<List<*>>) {
-            require(elements.size == UNIT_SIZE) { "elements size is ${elements.size}, must be $UNIT_SIZE." }
+            require(elements.size == UNIT_SIZE) { "elements.size is ${elements.size}, must be $UNIT_SIZE." }
             elements.forEachIndexed { index, row ->
-                require(row.size == UNIT_SIZE) { "elements[$index] size is ${row.size}, must be $UNIT_SIZE." }
+                require(row.size == UNIT_SIZE) { "elements[$index].size is ${row.size}, must be $UNIT_SIZE." }
             }
         }
     }

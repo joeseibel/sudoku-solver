@@ -9,11 +9,11 @@ class SudokuNumberTest extends FunSuite:
   }
 
   test("Parse optional board wrong length") {
-    val message = "requirement failed: board length is 0, must be 81."
+    val message = "requirement failed: board.length is 0, must be 81."
     interceptMessage[IllegalArgumentException](message)(parseOptionalBoard(""))
   }
 
   test("Parse board wrong length") {
-    val message = "requirement failed: board length is 0, must be 81."
+    val message = "requirement failed: board.length is 0, must be 81."
     interceptMessage[IllegalArgumentException](message)(parseBoard(""))
   }

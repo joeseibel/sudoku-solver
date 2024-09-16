@@ -9,7 +9,7 @@ class BoardTest {
     @Test
     public void testConstructorWrongSize() {
         Assertions.assertEquals(
-                "rows size is 0, must be 9.",
+                "rows.size() is 0, must be 9.",
                 Assertions.assertThrows(
                         IllegalArgumentException.class,
                         () -> new Board<>(Collections.emptyList())
@@ -20,7 +20,7 @@ class BoardTest {
     @Test
     public void testConstructorWrongInnerSize() {
         Assertions.assertEquals(
-                "rows.get(0) size is 0, must be 9.",
+                "rows.get(0).size() is 0, must be 9.",
                 Assertions.assertThrows(
                         IllegalArgumentException.class,
                         () -> new Board<>(Collections.nCopies(Board.UNIT_SIZE, Collections.emptyList()))

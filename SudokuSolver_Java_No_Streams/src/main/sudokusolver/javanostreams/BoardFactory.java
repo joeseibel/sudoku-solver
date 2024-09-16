@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 public class BoardFactory {
     public static Board<Optional<SudokuNumber>> parseOptionalBoard(String board) {
         if (board.length() != Board.UNIT_SIZE_SQUARED) {
-            var message = "board length is " + board.length() + ", must be " + Board.UNIT_SIZE_SQUARED + '.';
+            var message = "board.length() is " + board.length() + ", must be " + Board.UNIT_SIZE_SQUARED + '.';
             throw new IllegalArgumentException(message);
         }
         var boardAsNumbers = new ArrayList<List<Optional<SudokuNumber>>>();
@@ -26,7 +26,7 @@ public class BoardFactory {
 
     public static Board<SudokuNumber> parseBoard(String board) {
         if (board.length() != Board.UNIT_SIZE_SQUARED) {
-            var message = "board length is " + board.length() + ", must be " + Board.UNIT_SIZE_SQUARED + '.';
+            var message = "board.length() is " + board.length() + ", must be " + Board.UNIT_SIZE_SQUARED + '.';
             throw new IllegalArgumentException(message);
         }
         var boardAsNumbers = new ArrayList<List<SudokuNumber>>();

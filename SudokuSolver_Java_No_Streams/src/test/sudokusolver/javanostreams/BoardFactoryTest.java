@@ -7,7 +7,7 @@ class BoardFactoryTest {
     @Test
     public void testParseOptionalBoardWrongLength() {
         Assertions.assertEquals(
-                "board length is 0, must be 81.",
+                "board.length() is 0, must be 81.",
                 Assertions.assertThrows(
                         IllegalArgumentException.class,
                         () -> BoardFactory.parseOptionalBoard("")
@@ -18,7 +18,7 @@ class BoardFactoryTest {
     @Test
     public void testParseBoardWrongLength() {
         Assertions.assertEquals(
-                "board length is 0, must be 81.",
+                "board.length() is 0, must be 81.",
                 Assertions.assertThrows(IllegalArgumentException.class, () -> BoardFactory.parseBoard("")).getMessage()
         );
     }
