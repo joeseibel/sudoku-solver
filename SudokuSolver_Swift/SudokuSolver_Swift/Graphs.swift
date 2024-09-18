@@ -163,7 +163,13 @@ enum Strength: Codable {
     }
 }
 
-extension WeightedEdge<Strength>: Hashable {
+/*
+ * To understand why the retroactive annotation is used, see this Swift proposal:
+ * https://github.com/swiftlang/swift-evolution/blob/main/proposals/0364-retroactive-conformance-warning.md
+ *
+ * If SwiftGraph ever adds its own conformance of WeightedEdge to Hashable, then this extension should be removed.
+ */
+extension WeightedEdge<Strength>: @retroactive Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(u)
         hasher.combine(v)
