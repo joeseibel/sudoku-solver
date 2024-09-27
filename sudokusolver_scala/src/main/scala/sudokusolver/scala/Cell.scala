@@ -76,8 +76,7 @@ def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
           case '{' :: _ => throw IllegalArgumentException("Nested '{'.")
           case '}' :: _ if acc.isEmpty => throw IllegalArgumentException("Empty \"{}\".")
           case '}' :: tail => (acc.map(sudokuNumber).toSet, tail)
-          case ch :: tail if '1' to '9' contains ch => collectCandidates(ch :: acc, tail)
-          case ch :: _ => throw IllegalArgumentException(s"Invalid character: '$ch'.")
+          case ch :: tail => collectCandidates(ch :: acc, tail)
           case Nil => throw IllegalArgumentException("Unmatched '{'.")
 
       val (candidates, next) = collectCandidates(Nil, tail)

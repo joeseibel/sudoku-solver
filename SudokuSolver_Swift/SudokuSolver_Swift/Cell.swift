@@ -210,9 +210,6 @@ extension Board<Cell> {
                 precondition(closingBrace != index, "Empty \"{}\".")
                 let charsInBraces = withCandidates[index..<closingBrace]
                 precondition(!charsInBraces.contains("{"), "Nested \"{\".")
-                for charInBrace in charsInBraces {
-                    precondition(("1"..."9").contains(charInBrace), "Invalid character: \"\(charInBrace)\".")
-                }
                 let candidates = Set(charsInBraces.map { SudokuNumber(number: $0) })
                 cellBuilders.append({ row, column in Cell(row: row, column: column, candidates: candidates) })
                 index = withCandidates.index(after: closingBrace)

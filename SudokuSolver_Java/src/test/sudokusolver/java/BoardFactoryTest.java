@@ -70,7 +70,7 @@ class BoardFactoryTest {
     @Test
     public void testParseCellsWithCandidatesInvalidCharacterInBraces() {
         Assertions.assertEquals(
-                "Invalid character: 'a'.",
+                "ch is 'a', must be between '1' and '9'.",
                 Assertions.assertThrows(
                         IllegalArgumentException.class,
                         () -> BoardFactory.parseCellsWithCandidates("{a}")

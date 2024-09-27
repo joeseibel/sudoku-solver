@@ -97,12 +97,6 @@ public class BoardFactory {
                 if (charsInBrace.indexOf('{') != -1) {
                     throw new IllegalArgumentException("Nested '{'.");
                 }
-                for (int i = 0; i < charsInBrace.length(); i++) {
-                    var charInBrace = charsInBrace.charAt(i);
-                    if (charInBrace < '1' || charInBrace > '9') {
-                        throw new IllegalArgumentException("Invalid character: '" + charInBrace + "'.");
-                    }
-                }
                 var candidates = EnumSet.noneOf(SudokuNumber.class);
                 for (int i = 0; i < charsInBrace.length(); i++) {
                     candidates.add(SudokuNumber.valueOf(charsInBrace.charAt(i)));

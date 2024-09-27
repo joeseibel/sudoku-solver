@@ -29,7 +29,7 @@ class CellTest extends FunSuite:
   }
 
   test("parseCellsWithCandidates invalid character in braces") {
-    val message = "Invalid character: 'a'."
+    val message = "ch is 'a', must be between '1' and '9'."
     interceptMessage[IllegalArgumentException](message)(parseCellsWithCandidates("{a}"))
   }
 

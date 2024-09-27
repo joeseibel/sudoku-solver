@@ -51,7 +51,7 @@ internal class CellKtTest {
     @Test
     fun testParseCellsWithCandidatesInvalidCharacterInBraces() {
         assertEquals(
-            "Invalid character: 'a'.",
+            "ch is 'a', must be between '1' and '9'.",
             assertThrows<IllegalArgumentException> { parseCellsWithCandidates("{a}") }.message
         )
     }
