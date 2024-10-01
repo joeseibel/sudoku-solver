@@ -103,11 +103,6 @@ fun parseCellsWithCandidates(withCandidates: String): Board<Cell> {
     var index = 0
     while (index < withCandidates.length) {
         when (val ch = withCandidates[index]) {
-            in '1'..'9' -> {
-                cellBuilders += { row, column -> SolvedCell(row, column, sudokuNumber(ch)) }
-                index++
-            }
-
             '{' -> {
                 index++
                 val closingBrace = withCandidates.indexOf('}', index)
@@ -121,7 +116,12 @@ fun parseCellsWithCandidates(withCandidates: String): Board<Cell> {
             }
 
             '}' -> throw IllegalArgumentException("Unmatched '}'.")
-            else -> throw IllegalArgumentException("Invalid character: '$ch'.")
+
+            else -> {
+                val value = sudokuNumber(ch)
+                cellBuilders += { row, column -> SolvedCell(row, column, value) }
+                index++
+            }
         }
     }
     require(cellBuilders.size == UNIT_SIZE_SQUARED) {

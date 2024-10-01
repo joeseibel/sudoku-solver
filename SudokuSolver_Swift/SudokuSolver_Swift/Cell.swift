@@ -199,9 +199,6 @@ extension Board<Cell> {
         while index < withCandidates.endIndex {
             let ch = withCandidates[index]
             switch ch {
-            case "1"..."9":
-                cellBuilders.append({ row, column in Cell(row: row, column: column, value: SudokuNumber(number: ch)) })
-                index = withCandidates.index(after: index)
             case "{":
                 index = withCandidates.index(after: index)
                 guard let closingBrace = withCandidates[index...].firstIndex(of: "}") else {
@@ -216,7 +213,9 @@ extension Board<Cell> {
             case "}":
                 preconditionFailure("Unmatched \"}\".")
             default:
-                preconditionFailure("Invalid character: \"\(ch)\".")
+                let value = SudokuNumber(number: ch)
+                cellBuilders.append({ row, column in Cell(row: row, column: column, value: value)})
+                index = withCandidates.index(after: index)
             }
         }
         precondition(

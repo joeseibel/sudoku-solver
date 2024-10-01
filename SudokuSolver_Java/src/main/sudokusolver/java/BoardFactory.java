@@ -81,10 +81,7 @@ public class BoardFactory {
         var index = 0;
         while (index < withCandidates.length()) {
             var ch = withCandidates.charAt(index);
-            if (ch >= '1' && ch <= '9') {
-                cellBuilders.add((row, column) -> new SolvedCell(row, column, SudokuNumber.valueOf(ch)));
-                index++;
-            } else if (ch == '{') {
+            if (ch == '{') {
                 index++;
                 var closingBrace = withCandidates.indexOf('}', index);
                 if (closingBrace == -1) {
@@ -106,7 +103,9 @@ public class BoardFactory {
             } else if (ch == '}') {
                 throw new IllegalArgumentException("Unmatched '}'.");
             } else {
-                throw new IllegalArgumentException("Invalid character: '" + ch + "'.");
+                var value = SudokuNumber.valueOf(ch);
+                cellBuilders.add((row, column) -> new SolvedCell(row, column, value));
+                index++;
             }
         }
         if (cellBuilders.size() != Board.UNIT_SIZE_SQUARED) {

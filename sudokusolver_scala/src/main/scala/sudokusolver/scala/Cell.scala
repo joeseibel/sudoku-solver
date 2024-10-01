@@ -83,10 +83,10 @@ def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
       val builder = (row, column) => UnsolvedCell(row, column, candidates)
       getCellBuilders(builder :: acc, next)
     case '}' :: _ => throw IllegalArgumentException("Unmatched '}'.")
-    case ch :: tail if '1' to '9' contains ch =>
-      val builder = (row, column) => SolvedCell(row, column, sudokuNumber(ch))
+    case ch :: tail =>
+      val value = sudokuNumber(ch)
+      val builder = (row, column) => SolvedCell(row, column, value)
       getCellBuilders(builder :: acc, tail)
-    case ch :: _ => throw IllegalArgumentException(s"Invalid character: '$ch'.")
     case Nil => acc.reverse
 
   val cellBuilders = getCellBuilders(Nil, withCandidates.toList)
