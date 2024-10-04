@@ -90,13 +90,13 @@ public class BoardFactory {
                 if (closingBrace == index) {
                     throw new IllegalArgumentException("Empty \"{}\".");
                 }
-                var charsInBrace = withCandidates.substring(index, closingBrace);
-                if (charsInBrace.indexOf('{') != -1) {
+                var charsInBraces = withCandidates.substring(index, closingBrace);
+                if (charsInBraces.indexOf('{') != -1) {
                     throw new IllegalArgumentException("Nested '{'.");
                 }
                 var candidates = EnumSet.noneOf(SudokuNumber.class);
-                for (int i = 0; i < charsInBrace.length(); i++) {
-                    candidates.add(SudokuNumber.valueOf(charsInBrace.charAt(i)));
+                for (int i = 0; i < charsInBraces.length(); i++) {
+                    candidates.add(SudokuNumber.valueOf(charsInBraces.charAt(i)));
                 }
                 cellBuilders.add((row, column) -> new UnsolvedCell(row, column, candidates));
                 index = closingBrace + 1;
