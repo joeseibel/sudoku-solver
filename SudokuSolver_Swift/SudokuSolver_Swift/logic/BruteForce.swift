@@ -23,7 +23,7 @@ func bruteForce(board: Board<SudokuNumber?>) throws -> Board<SudokuNumber> {
         }
         
         if rowIndex >= unitSize {
-            return trialAndError.mapCells { cell in cell! }
+            return trialAndError.mapCells { $0! }
         } else if trialAndError[rowIndex, columnIndex] != nil {
             return try moveToNextCell()
         } else {

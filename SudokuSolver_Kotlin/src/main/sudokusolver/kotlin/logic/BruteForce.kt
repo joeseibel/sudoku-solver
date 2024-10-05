@@ -48,7 +48,7 @@ fun bruteForce(board: Board<SudokuNumber?>): BruteForceSolution {
         }
 
         return when {
-            rowIndex >= UNIT_SIZE -> SingleSolution(trialAndError.mapCellsToBoard { cell -> cell!! })
+            rowIndex >= UNIT_SIZE -> SingleSolution(trialAndError.mapCellsToBoard { it!! })
             trialAndError[rowIndex, columnIndex] != null -> moveToNextCell()
 
             else -> {
