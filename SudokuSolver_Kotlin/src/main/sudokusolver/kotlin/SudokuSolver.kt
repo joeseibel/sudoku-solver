@@ -77,9 +77,9 @@ fun main(args: Array<String>) {
 sealed interface SolveResult
 object InvalidNoSolutions : SolveResult
 object InvalidMultipleSolutions : SolveResult
-data class Solution(val board: Board<SudokuNumber>) : SolveResult
+class Solution(val board: Board<SudokuNumber>) : SolveResult
 
-data class UnableToSolve(val board: Board<Cell>) : SolveResult {
+class UnableToSolve(board: Board<Cell>) : SolveResult {
     val message: String by lazy {
         """
             |Unable to solve:
