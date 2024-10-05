@@ -28,7 +28,7 @@ object InvalidMultipleSolutions extends SolveResult
 
 case class Solution(board: Board[SudokuNumber]) extends SolveResult
 
-case class UnableToSolve(board: Board[Cell]) extends SolveResult:
+class UnableToSolve(board: Board[Cell]) extends SolveResult:
   lazy val message: String =
     s"""
        |Unable to solve:
