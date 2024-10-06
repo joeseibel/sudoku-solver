@@ -19,7 +19,7 @@ internal class BUGKtTest {
             7563{14}9{14}82
         """.trimIndent().replace("\n", "")
         val expected = listOf(SetValue(3, 7, 2))
-        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
+        assertLogicalSolution(expected, board) { listOf(bug(it)!!) }
     }
 
     @Test
@@ -36,7 +36,7 @@ internal class BUGKtTest {
             157{38}{68}{36}429
         """.trimIndent().replace("\n", "")
         val expected = listOf(SetValue(4, 1, 6))
-        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
+        assertLogicalSolution(expected, board) { listOf(bug(it)!!) }
     }
 
     @Test
@@ -53,7 +53,7 @@ internal class BUGKtTest {
             813647952
         """.trimIndent().replace("\n", "")
         val expected = listOf(SetValue(5, 2, 8))
-        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
+        assertLogicalSolution(expected, board) { listOf(bug(it)!!) }
     }
 
     @Test
@@ -70,7 +70,7 @@ internal class BUGKtTest {
             419782536
         """.trimIndent().replace("\n", "")
         val expected = listOf(SetValue(7, 4, 4))
-        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
+        assertLogicalSolution(expected, board) { listOf(bug(it)!!) }
     }
 
     @Test
@@ -87,7 +87,7 @@ internal class BUGKtTest {
             {89}653427{89}1
         """.trimIndent().replace("\n", "")
         val expected = listOf(SetValue(1, 2, 7))
-        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
+        assertLogicalSolution(expected, board) { listOf(bug(it)!!) }
     }
 
     @Test
@@ -104,7 +104,7 @@ internal class BUGKtTest {
             238195647
         """.trimIndent().replace("\n", "")
         val expected = listOf(SetValue(4, 4, 8))
-        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
+        assertLogicalSolution(expected, board) { listOf(bug(it)!!) }
     }
 
     @Test
@@ -121,7 +121,7 @@ internal class BUGKtTest {
             61{45}7{45}8239
         """.trimIndent().replace("\n", "")
         val expected = listOf(SetValue(7, 1, 2))
-        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
+        assertLogicalSolution(expected, board) { listOf(bug(it)!!) }
     }
 
     @Test
@@ -138,6 +138,6 @@ internal class BUGKtTest {
             561394287
         """.trimIndent().replace("\n", "")
         val expected = listOf(SetValue(0, 4, 4))
-        assertLogicalSolution(expected, board) { listOfNotNull(bug(it)) }
+        assertLogicalSolution(expected, board) { listOf(bug(it)!!) }
     }
 }

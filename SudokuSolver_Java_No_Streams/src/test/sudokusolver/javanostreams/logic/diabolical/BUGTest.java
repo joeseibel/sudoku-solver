@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 import sudokusolver.javanostreams.SetValue;
 import sudokusolver.javanostreams.logic.SudokuAssertions;
 
-import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 class BUGTest {
     @Test
     public void test1() {
@@ -21,11 +21,7 @@ class BUGTest {
                 9{24}8{12}75{13}6{34}
                 7563{14}9{14}82""".replace("\n", "");
         var expected = List.of(new SetValue(3, 7, 2));
-        SudokuAssertions.assertLogicalSolution(
-                expected,
-                board,
-                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList)
-        );
+        SudokuAssertions.assertLogicalSolution(expected, board, b -> List.of(BUG.bug(b).get()));
     }
 
     @Test
@@ -41,11 +37,7 @@ class BUGTest {
                 684{29}{59}{25}137
                 157{38}{68}{36}429""".replace("\n", "");
         var expected = List.of(new SetValue(4, 1, 6));
-        SudokuAssertions.assertLogicalSolution(
-                expected,
-                board,
-                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList)
-        );
+        SudokuAssertions.assertLogicalSolution(expected, board, b -> List.of(BUG.bug(b).get()));
     }
 
     @Test
@@ -61,11 +53,7 @@ class BUGTest {
                 627359814
                 813647952""".replace("\n", "");
         var expected = List.of(new SetValue(5, 2, 8));
-        SudokuAssertions.assertLogicalSolution(
-                expected,
-                board,
-                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList)
-        );
+        SudokuAssertions.assertLogicalSolution(expected, board, b -> List.of(BUG.bug(b).get()));
     }
 
     @Test
@@ -81,11 +69,7 @@ class BUGTest {
                 23{58}9{456}{46}1{48}7
                 419782536""".replace("\n", "");
         var expected = List.of(new SetValue(7, 4, 4));
-        SudokuAssertions.assertLogicalSolution(
-                expected,
-                board,
-                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList)
-        );
+        SudokuAssertions.assertLogicalSolution(expected, board, b -> List.of(BUG.bug(b).get()));
     }
 
     @Test
@@ -101,11 +85,7 @@ class BUGTest {
                 214{89}763{89}5
                 {89}653427{89}1""".replace("\n", "");
         var expected = List.of(new SetValue(1, 2, 7));
-        SudokuAssertions.assertLogicalSolution(
-                expected,
-                board,
-                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList)
-        );
+        SudokuAssertions.assertLogicalSolution(expected, board, b -> List.of(BUG.bug(b).get()));
     }
 
     @Test
@@ -121,11 +101,7 @@ class BUGTest {
                 9{45}6{23}7{24}{35}18
                 238195647""".replace("\n", "");
         var expected = List.of(new SetValue(4, 4, 8));
-        SudokuAssertions.assertLogicalSolution(
-                expected,
-                board,
-                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList)
-        );
+        SudokuAssertions.assertLogicalSolution(expected, board, b -> List.of(BUG.bug(b).get()));
     }
 
     @Test
@@ -141,11 +117,7 @@ class BUGTest {
                 {29}{279}{24}163{78}{48}5
                 61{45}7{45}8239""".replace("\n", "");
         var expected = List.of(new SetValue(7, 1, 2));
-        SudokuAssertions.assertLogicalSolution(
-                expected,
-                board,
-                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList)
-        );
+        SudokuAssertions.assertLogicalSolution(expected, board, b -> List.of(BUG.bug(b).get()));
     }
 
     @Test
@@ -161,10 +133,6 @@ class BUGTest {
                 893527461
                 561394287""".replace("\n", "");
         var expected = List.of(new SetValue(0, 4, 4));
-        SudokuAssertions.assertLogicalSolution(
-                expected,
-                board,
-                b -> BUG.bug(b).map(List::of).orElseGet(Collections::emptyList)
-        );
+        SudokuAssertions.assertLogicalSolution(expected, board, b -> List.of(BUG.bug(b).get()));
     }
 }
