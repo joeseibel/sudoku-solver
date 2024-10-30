@@ -1,10 +1,35 @@
 package sudokusolver.kotlin.logic.tough
 
+import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.SimpleGraph
+import org.jgrapht.graph.builder.GraphBuilder
 import org.junit.jupiter.api.Test
 import sudokusolver.kotlin.RemoveCandidates
+import sudokusolver.kotlin.SudokuNumber
+import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.logic.assertLogicalSolution
+import kotlin.test.assertEquals
 
 internal class SimpleColoringKtTest {
+    @Test
+    fun testToDOT() {
+        val a = UnsolvedCell(0, 0)
+        val b = UnsolvedCell(0, 3)
+        val actual = GraphBuilder(SimpleGraph<UnsolvedCell, DefaultEdge>(DefaultEdge::class.java))
+            .addEdge(a, b)
+            .buildAsUnmodifiable()
+            .toDOT(SudokuNumber.ONE)
+        val expected = """
+            strict graph 1 {
+              1 [ label="[0,0]" ];
+              2 [ label="[0,3]" ];
+              1 -- 2;
+            }
+
+        """.trimIndent()
+        assertEquals(expected, actual)
+    }
+
     @Test
     fun rule2Test1() {
         val board = """

@@ -129,6 +129,10 @@ struct UnsolvedCell: Location, Hashable, Codable {
     func isInSameUnit(as other: UnsolvedCell) -> Bool {
         row == other.row || column == other.column || block == other.block
     }
+    
+    var vertexLabel: String {
+        "[\(row),\(column)]"
+    }
 }
 
 extension UnsolvedCell: CustomStringConvertible {

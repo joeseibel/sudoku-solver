@@ -3,7 +3,6 @@ package sudokusolver.kotlin.logic.diabolical
 import org.jgrapht.Graph
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
-import org.jgrapht.nio.DefaultAttribute
 import org.jgrapht.nio.dot.DOTExporter
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
@@ -13,6 +12,7 @@ import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.Strength
 import sudokusolver.kotlin.StrengthEdge
 import sudokusolver.kotlin.SudokuNumber
+import sudokusolver.kotlin.UNSOLVED_CELL_ATTRIBUTE_PROVIDER
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.alternatingCycleExists
 import sudokusolver.kotlin.getWeakEdgesInAlternatingCycle
@@ -103,9 +103,7 @@ fun Graph<UnsolvedCell, StrengthEdge>.toDOT(candidate: SudokuNumber): String {
     val writer = StringWriter()
     DOTExporter<UnsolvedCell, StrengthEdge>().apply {
         setGraphIdProvider(candidate::toString)
-        setVertexAttributeProvider {
-            mapOf("label" to DefaultAttribute.createAttribute("[${it.row},${it.column}]"))
-        }
+        setVertexAttributeProvider(UNSOLVED_CELL_ATTRIBUTE_PROVIDER)
         setEdgeAttributeProvider(STRENGTH_EDGE_ATTRIBUTE_PROVIDER)
     }.exportGraph(this, writer)
     return writer.toString()

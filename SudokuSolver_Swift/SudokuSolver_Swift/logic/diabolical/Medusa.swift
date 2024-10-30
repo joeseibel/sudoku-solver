@@ -174,6 +174,12 @@ func medusaRule6(board: Board<Cell>) -> [BoardModification] {
     }
 }
 
+extension Graph where V == CodableLocatedCandidate, E == UnweightedEdge {
+    func toDOT() -> String {
+        toDOT(vertexLabelProvider: \.vertexLabel)
+    }
+}
+
 private func createConnectedComponents(board: Board<Cell>) -> [UnweightedUniqueElementsGraph<CodableLocatedCandidate>] {
     let graph = UnweightedUniqueElementsGraph<CodableLocatedCandidate>()
     for cell in board.cells.unsolvedCells.filter({ $0.candidates.count == 2 }) {

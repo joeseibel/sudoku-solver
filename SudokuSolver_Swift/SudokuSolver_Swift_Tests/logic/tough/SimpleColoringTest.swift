@@ -1,6 +1,24 @@
+import SwiftGraph
 import XCTest
 
 final class SimpleColoringTest: XCTestCase {
+    func testToDOT() {
+        let graph = UnweightedUniqueElementsGraph<UnsolvedCell>()
+        let cells = [Cell(row: 0, column: 0), Cell(row: 0, column: 3)].unsolvedCells
+        let a = cells[0]
+        let b = cells[1]
+        let aIndex = graph.addVertex(a)
+        let bIndex = graph.addVertex(b)
+        graph.addEdge(fromIndex: aIndex, toIndex: bIndex)
+        let actual = graph.toDOT(candidate: .one)
+        let expected = """
+            strict graph 1 {
+              "[0,0]" -- "[0,3]"
+            }
+            """
+        XCTAssertEqual(expected, actual)
+    }
+    
     func testRule2Test1() {
         let board = """
             {145}{15}7{25}836{149}{1249}

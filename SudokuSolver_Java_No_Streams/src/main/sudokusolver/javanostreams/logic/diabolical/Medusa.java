@@ -5,6 +5,7 @@ import org.jgrapht.Graphs;
 import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
 import sudokusolver.javanostreams.LocatedCandidate;
@@ -15,6 +16,7 @@ import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 import sudokusolver.javanostreams.VertexColor;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -257,6 +259,14 @@ public class Medusa {
             }
         }
         return modifications;
+    }
+
+    public static String toDOT(Graph<LocatedCandidate, DefaultEdge> graph) {
+        var writer = new StringWriter();
+        var exporter = new DOTExporter<LocatedCandidate, DefaultEdge>();
+        exporter.setVertexAttributeProvider(LocatedCandidate.LOCATED_CANDIDATE_ATTRIBUTE_PROVIDER);
+        exporter.exportGraph(graph, writer);
+        return writer.toString();
     }
 
     private static boolean everyCandidateCanSeeColor(UnsolvedCell cell, List<LocatedCandidate> color) {

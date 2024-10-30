@@ -1,11 +1,37 @@
 package sudokusolver.kotlin.logic.diabolical
 
+import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.SimpleGraph
+import org.jgrapht.graph.builder.GraphBuilder
 import org.junit.jupiter.api.Test
+import sudokusolver.kotlin.LocatedCandidate
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SetValue
+import sudokusolver.kotlin.SudokuNumber
+import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.logic.assertLogicalSolution
+import kotlin.test.assertEquals
 
 internal class MedusaKtTest {
+    @Test
+    fun testToDOT() {
+        val a = UnsolvedCell(0, 0) to SudokuNumber.TWO
+        val b = UnsolvedCell(0, 0) to SudokuNumber.SIX
+        val actual = GraphBuilder(SimpleGraph<LocatedCandidate, DefaultEdge>(DefaultEdge::class.java))
+            .addEdge(a, b)
+            .buildAsUnmodifiable()
+            .toDOT()
+        val expected = """
+            strict graph G {
+              1 [ label="[0,0] : 2" ];
+              2 [ label="[0,0] : 6" ];
+              1 -- 2;
+            }
+
+        """.trimIndent()
+        assertEquals(expected, actual)
+    }
+
     @Test
     fun rule1Test1() {
         val board = """

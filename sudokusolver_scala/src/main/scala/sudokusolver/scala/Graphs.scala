@@ -1,9 +1,9 @@
 package sudokusolver.scala
 
-import scalax.collection.generic.{AbstractGenericUnDiEdge, Edge}
+import scalax.collection.generic.{AbstractGenericUnDiEdge, AnyUnDiEdge, Edge}
 import scalax.collection.immutable.Graph
-import scalax.collection.io.dot.implicits.{toId, toNodeId}
-import scalax.collection.io.dot.{DotAttr, DotEdgeStmt}
+import scalax.collection.io.dot.implicits.toId
+import scalax.collection.io.dot.{DotAttr, DotEdgeStmt, DotRootGraph, Graph2DotExport, Id, NodeId}
 
 import scala.annotation.tailrec
 
@@ -14,7 +14,7 @@ enum VertexColor:
 
   case COLOR_ONE, COLOR_TWO
 
-extension[N, E <: Edge[N]] (graph: Graph[N, E])
+extension [N, E <: Edge[N]](graph: Graph[N, E])
   def colorToMap: Map[N, VertexColor] =
     graph.traverseWithDepth
       .map((vertex, depth) => vertex -> (if depth % 2 == 0 then VertexColor.COLOR_ONE else VertexColor.COLOR_TWO))
@@ -39,12 +39,9 @@ class StrengthEdge[+N](val source: N, val target: N, val strength: Strength)
 
   def map[NN](node_1: NN, node_2: NN): StrengthEdge[NN] = StrengthEdge(node_1, node_2, strength)
 
-  def toDotEdgeStmt(getVertexLabel: N => String): DotEdgeStmt =
-    val sourceLabel = getVertexLabel(source)
-    val targetLabel = getVertexLabel(target)
-    strength match
-      case Strength.STRONG => DotEdgeStmt(sourceLabel, targetLabel)
-      case Strength.WEAK => DotEdgeStmt(sourceLabel, targetLabel, Seq(DotAttr("style", "dashed")))
+  def getEdgeAttributes: Seq[DotAttr] = strength match
+    case Strength.STRONG => Nil
+    case Strength.WEAK => Seq(DotAttr("style", "dashed"))
 
 enum Strength:
   def opposite: Strength = this match
@@ -57,7 +54,19 @@ enum Strength:
 
   case STRONG, WEAK
 
-extension[N] (graph: Graph[N, StrengthEdge[N]])
+extension [N, E <: AnyUnDiEdge[N]](graph: Graph[N, E])
+  def toDOTCommon(
+                   id: Option[Id],
+                   getNodeId: N => NodeId,
+                   getEdgeAttributes: E => Seq[DotAttr] = (edge: E) => Nil
+                 ): String =
+    val dotRoot = DotRootGraph(false, id)
+    graph.toDot(dotRoot, innerEdge => {
+      val edge = innerEdge.outer
+      Some(dotRoot, DotEdgeStmt(getNodeId(edge.source), getNodeId(edge.target), getEdgeAttributes(edge)))
+    })
+
+extension [N](graph: Graph[N, StrengthEdge[N]])
   /*
    * Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The returned graph
    * will either be empty or only contain vertices with a degree of two or more and be connected by at least one strong
@@ -139,7 +148,7 @@ def alternatingCycleExists[N](graph: Graph[N, StrengthEdge[N]], vertex: N, adjac
     alternatingCycleExists(start, adjacentEdgesType.opposite, Set(vertex, start))
   }
 
-extension[N] (edge: Edge[N])
+extension [N](edge: Edge[N])
   private def getOppositeVertex(vertex: N): N =
     val source = edge._1
     val target = edge._2

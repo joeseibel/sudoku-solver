@@ -1,8 +1,7 @@
 package sudokusolver.scala.logic.extreme
 
 import scalax.collection.immutable.Graph
-import scalax.collection.io.dot.implicits.toId
-import scalax.collection.io.dot.{DotRootGraph, Graph2DotExport}
+import scalax.collection.io.dot.implicits.{toId, toNodeId}
 import sudokusolver.scala.*
 
 /*
@@ -106,14 +105,10 @@ def groupedXCyclesRule3(board: Board[Cell]): Seq[RemoveCandidates] =
 
 extension (graph: Graph[Node, StrengthEdge[Node]])
   def toDOT(candidate: SudokuNumber): String =
-    val dotRoot = DotRootGraph(false, Some(candidate.toString))
-    graph.toDot(dotRoot, edge =>
-      val edgeStmt = edge.outer.toDotEdgeStmt {
-        case UnsolvedCell(row, column, _) => s"[$row,$column]"
-        case node: Group => node.cells.map(cell => s"[${cell.row},${cell.column}]").mkString("{", ", ", "}")
-      }
-      Some(dotRoot, edgeStmt)
-    )
+    graph.toDOTCommon(Some(candidate.toString), {
+      case cell: UnsolvedCell => cell.getNodeId
+      case node: Group => node.cells.map(cell => s"[${cell.row},${cell.column}]").mkString("{", ", ", "}")
+    }, _.getEdgeAttributes)
 
 private def buildGraphGroupedXCycles(board: Board[Cell], candidate: SudokuNumber): Graph[Node, StrengthEdge[Node]] =
   //Connect cells.

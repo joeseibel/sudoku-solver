@@ -4,10 +4,10 @@ import org.jgrapht.Graph
 import org.jgrapht.Graphs
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
-import org.jgrapht.nio.DefaultAttribute
 import org.jgrapht.nio.dot.DOTExporter
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
+import sudokusolver.kotlin.LOCATED_CANDIDATE_ATTRIBUTE_PROVIDER
 import sudokusolver.kotlin.LocatedCandidate
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.STRENGTH_EDGE_ATTRIBUTE_PROVIDER
@@ -64,9 +64,7 @@ fun xyChains(board: Board<Cell>): List<RemoveCandidates> {
 fun Graph<LocatedCandidate, StrengthEdge>.toDOT(): String {
     val writer = StringWriter()
     DOTExporter<LocatedCandidate, StrengthEdge>().apply {
-        setVertexAttributeProvider { (cell, candidate) ->
-            mapOf("label" to DefaultAttribute.createAttribute("[${cell.row},${cell.column}] : $candidate"))
-        }
+        setVertexAttributeProvider(LOCATED_CANDIDATE_ATTRIBUTE_PROVIDER)
         setEdgeAttributeProvider(STRENGTH_EDGE_ATTRIBUTE_PROVIDER)
     }.exportGraph(this, writer)
     return writer.toString()

@@ -1,12 +1,35 @@
 package sudokusolver.javanostreams.logic.tough;
 
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.graph.builder.GraphBuilder;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import sudokusolver.javanostreams.RemoveCandidates;
+import sudokusolver.javanostreams.SudokuNumber;
+import sudokusolver.javanostreams.UnsolvedCell;
 import sudokusolver.javanostreams.logic.SudokuAssertions;
 
 import java.util.List;
 
 class SimpleColoringTest {
+    @Test
+    public void testToDOT() {
+        var a = new UnsolvedCell(0, 0);
+        var b = new UnsolvedCell(0, 3);
+        var builder = new GraphBuilder<>(new SimpleGraph<UnsolvedCell, DefaultEdge>(DefaultEdge.class));
+        var graph = builder.addEdge(a, b).build();
+        var actual = SimpleColoring.toDOT(graph, SudokuNumber.ONE);
+        var expected = """
+                strict graph 1 {
+                  1 [ label="[0,0]" ];
+                  2 [ label="[0,3]" ];
+                  1 -- 2;
+                }
+                """;
+        Assertions.assertEquals(expected, actual);
+    }
+
     @Test
     public void rule2Test1() {
         var board = """

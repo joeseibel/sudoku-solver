@@ -1,9 +1,7 @@
 package sudokusolver.scala.logic.diabolical
 
-import scalax.collection.generic.AbstractGenericUnDiEdge
 import scalax.collection.immutable.Graph
-import scalax.collection.io.dot.implicits.{toId, toNodeId}
-import scalax.collection.io.dot.{DotAttr, DotEdgeStmt, DotGraph, DotRootGraph, Graph2DotExport, NodeId}
+import scalax.collection.io.dot.implicits.toId
 import sudokusolver.scala.*
 
 import scala.annotation.tailrec
@@ -96,10 +94,7 @@ extension (graph: Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]])
    * Similar changes have been made to createStrongLinks and addWeakLinks
    */
   def toDOTXCycles(candidate: SudokuNumber): String =
-    val dotRoot = DotRootGraph(false, Some(candidate.toString))
-    graph.toDot(dotRoot, edge =>
-      Some(dotRoot, edge.outer.toDotEdgeStmt(vertex => s"[${vertex.row},${vertex.column}]"))
-    )
+    graph.toDOTCommon(Some(candidate.toString), _.getNodeId, _.getEdgeAttributes)
 
   private def addWeakLinksXCycles(): Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]] =
     val weakEdges = for

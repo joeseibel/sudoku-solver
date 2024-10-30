@@ -1,10 +1,24 @@
 package sudokusolver.scala.logic.diabolical
 
 import munit.FunSuite
-import sudokusolver.scala.{RemoveCandidates, SetValue}
+import scalax.collection.edges.UnDiEdgeImplicits
+import scalax.collection.immutable.Graph
+import sudokusolver.scala.{RemoveCandidates, SetValue, SudokuNumber, UnsolvedCell}
 import sudokusolver.scala.logic.assertLogicalSolution
 
 class MedusaTest extends FunSuite:
+  test("test toDOT") {
+    val a = UnsolvedCell(0, 0) -> SudokuNumber.TWO
+    val b = UnsolvedCell(0, 0) -> SudokuNumber.SIX
+    val graph = Graph.from(Seq(a ~ b))
+    val actual = graph.toDOT.replace("\t", "  ")
+    val expected =
+      """graph {
+        |  "[0,0] : 2" -- "[0,0] : 6"
+        |}""".stripMargin
+    assertEquals(actual, expected)
+  }
+
   test("rule 1 test 1") {
     val board =
       """

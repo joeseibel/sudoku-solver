@@ -62,6 +62,14 @@ enum class Strength {
     abstract fun isCompatibleWith(requiredType: Strength): Boolean
 }
 
+val UNSOLVED_CELL_ATTRIBUTE_PROVIDER: (UnsolvedCell) -> Map<String, Attribute> = {
+    mapOf("label" to DefaultAttribute.createAttribute("[${it.row},${it.column}]"))
+}
+
+val LOCATED_CANDIDATE_ATTRIBUTE_PROVIDER: (LocatedCandidate) -> Map<String, Attribute> = { (cell, candidate) ->
+    mapOf("label" to DefaultAttribute.createAttribute("[${cell.row},${cell.column}] : $candidate"))
+}
+
 val STRENGTH_EDGE_ATTRIBUTE_PROVIDER: (StrengthEdge) -> Map<String, Attribute>? = {
     it.takeIf { it.strength == Strength.WEAK }
         ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }

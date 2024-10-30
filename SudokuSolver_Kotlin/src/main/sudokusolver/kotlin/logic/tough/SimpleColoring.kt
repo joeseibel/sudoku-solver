@@ -5,15 +5,18 @@ import org.jgrapht.alg.connectivity.BiconnectivityInspector
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.graph.builder.GraphBuilder
+import org.jgrapht.nio.dot.DOTExporter
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SudokuNumber
+import sudokusolver.kotlin.UNSOLVED_CELL_ATTRIBUTE_PROVIDER
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.colorToLists
 import sudokusolver.kotlin.colorToMap
 import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.zipEveryPair
+import java.io.StringWriter
 
 /*
  * http://www.sudokuwiki.org/Singles_Chains
@@ -65,6 +68,15 @@ fun simpleColoringRule4(board: Board<Cell>): List<RemoveCandidates> =
                 .map { it to candidate }
         }
     }.mergeToRemoveCandidates()
+
+fun Graph<UnsolvedCell, DefaultEdge>.toDOT(candidate: SudokuNumber): String {
+    val writer = StringWriter()
+    DOTExporter<UnsolvedCell, DefaultEdge>().apply {
+        setGraphIdProvider(candidate::toString)
+        setVertexAttributeProvider(UNSOLVED_CELL_ATTRIBUTE_PROVIDER)
+    }.exportGraph(this, writer)
+    return writer.toString()
+}
 
 private fun createConnectedComponents(
     board: Board<Cell>,

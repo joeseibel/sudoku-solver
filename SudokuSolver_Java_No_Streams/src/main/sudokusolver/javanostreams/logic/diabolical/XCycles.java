@@ -3,7 +3,6 @@ package sudokusolver.javanostreams.logic.diabolical;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.builder.GraphBuilder;
-import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
@@ -18,7 +17,6 @@ import sudokusolver.javanostreams.UnsolvedCell;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
@@ -134,8 +132,7 @@ public class XCycles {
         var writer = new StringWriter();
         var exporter = new DOTExporter<UnsolvedCell, StrengthEdge>();
         exporter.setGraphIdProvider(candidate::toString);
-        exporter.setVertexAttributeProvider(vertex -> Map.of("label",
-                DefaultAttribute.createAttribute("[" + vertex.row() + ',' + vertex.column() + ']')));
+        exporter.setVertexAttributeProvider(UnsolvedCell.UNSOLVED_CELL_ATTRIBUTE_PROVIDER);
         exporter.setEdgeAttributeProvider(Strength.STRENGTH_EDGE_ATTRIBUTE_PROVIDER);
         exporter.exportGraph(graph, writer);
         return writer.toString();

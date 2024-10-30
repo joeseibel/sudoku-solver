@@ -5,6 +5,7 @@ import org.jgrapht.Graphs;
 import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
 import sudokusolver.javanostreams.Removals;
@@ -13,6 +14,7 @@ import sudokusolver.javanostreams.SudokuNumber;
 import sudokusolver.javanostreams.UnsolvedCell;
 import sudokusolver.javanostreams.VertexColor;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -102,6 +104,15 @@ public class SimpleColoring {
             }
         }
         return removals.toList();
+    }
+
+    public static String toDOT(Graph<UnsolvedCell, DefaultEdge> graph, SudokuNumber candidate) {
+        var writer = new StringWriter();
+        var exporter = new DOTExporter<UnsolvedCell, DefaultEdge>();
+        exporter.setGraphIdProvider(candidate::toString);
+        exporter.setVertexAttributeProvider(UnsolvedCell.UNSOLVED_CELL_ATTRIBUTE_PROVIDER);
+        exporter.exportGraph(graph, writer);
+        return writer.toString();
     }
 
     private static Set<Graph<UnsolvedCell, DefaultEdge>> createConnectedComponents(

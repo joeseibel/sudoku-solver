@@ -1,13 +1,37 @@
 package sudokusolver.javanostreams.logic.diabolical;
 
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.graph.builder.GraphBuilder;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import sudokusolver.javanostreams.LocatedCandidate;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SetValue;
+import sudokusolver.javanostreams.SudokuNumber;
+import sudokusolver.javanostreams.UnsolvedCell;
 import sudokusolver.javanostreams.logic.SudokuAssertions;
 
 import java.util.List;
 
 class MedusaTest {
+    @Test
+    public void testToDOT() {
+        var a = new LocatedCandidate(new UnsolvedCell(0, 0), SudokuNumber.TWO);
+        var b = new LocatedCandidate(new UnsolvedCell(0, 0), SudokuNumber.SIX);
+        var builder = new GraphBuilder<>(new SimpleGraph<LocatedCandidate, DefaultEdge>(DefaultEdge.class));
+        var graph = builder.addEdge(a, b).build();
+        var actual = Medusa.toDOT(graph);
+        var expected = """
+                strict graph G {
+                  1 [ label="[0,0] : 2" ];
+                  2 [ label="[0,0] : 6" ];
+                  1 -- 2;
+                }
+                """;
+        Assertions.assertEquals(expected, actual);
+    }
+
     @Test
     public void rule1Test1() {
         var board = """

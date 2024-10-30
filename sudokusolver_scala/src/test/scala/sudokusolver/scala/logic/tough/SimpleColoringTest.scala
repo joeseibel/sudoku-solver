@@ -1,10 +1,24 @@
 package sudokusolver.scala.logic.tough
 
 import munit.FunSuite
-import sudokusolver.scala.RemoveCandidates
+import scalax.collection.edges.UnDiEdgeImplicits
+import scalax.collection.immutable.Graph
+import sudokusolver.scala.{RemoveCandidates, SudokuNumber, UnsolvedCell}
 import sudokusolver.scala.logic.assertLogicalSolution
 
 class SimpleColoringTest extends FunSuite:
+  test("test toDOT") {
+    val a = UnsolvedCell(0, 0)
+    val b = UnsolvedCell(0, 3)
+    val graph = Graph.from(Seq(a ~ b))
+    val actual = graph.toDOT(SudokuNumber.ONE).replace("\t", "  ")
+    val expected =
+      """graph 1 {
+        |  "[0,0]" -- "[0,3]"
+        |}""".stripMargin
+    assertEquals(actual, expected)
+  }
+
   test("rule 2 test 1") {
     val board =
       """

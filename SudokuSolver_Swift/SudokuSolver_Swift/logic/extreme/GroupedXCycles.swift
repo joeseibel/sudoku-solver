@@ -135,7 +135,11 @@ func groupedXCyclesRule3(board: Board<Cell>) -> [BoardModification] {
 
 extension WeightedUniqueElementsGraph<Node, Strength> {
     func toDOT(candidate: SudokuNumber) -> String {
-        toDOT(graphId: String(describing: candidate), vertexLabelProvider: String.init)
+        toDOT(
+            graphId: String(describing: candidate),
+            vertexLabelProvider: String.init,
+            edgeAttributeProvider: \.edgeAttributes
+        )
     }
 }
 

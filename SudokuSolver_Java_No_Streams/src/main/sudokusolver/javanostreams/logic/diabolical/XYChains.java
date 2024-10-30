@@ -4,7 +4,6 @@ import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.builder.GraphBuilder;
-import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /*
@@ -84,12 +82,7 @@ public class XYChains {
     public static String toDOT(Graph<LocatedCandidate, StrengthEdge> graph) {
         var writer = new StringWriter();
         var exporter = new DOTExporter<LocatedCandidate, StrengthEdge>();
-        exporter.setVertexAttributeProvider(locatedCandidate -> {
-            var cell = locatedCandidate.cell();
-            var candidate = locatedCandidate.candidate();
-            var label = "[" + cell.row() + "," + cell.column() + "] : " + candidate;
-            return Map.of("label", DefaultAttribute.createAttribute(label));
-        });
+        exporter.setVertexAttributeProvider(LocatedCandidate.LOCATED_CANDIDATE_ATTRIBUTE_PROVIDER);
         exporter.setEdgeAttributeProvider(Strength.STRENGTH_EDGE_ATTRIBUTE_PROVIDER);
         exporter.exportGraph(graph, writer);
         return writer.toString();
@@ -99,7 +92,7 @@ public class XYChains {
         var builder = new GraphBuilder<>(new SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge.class));
         for (var cell : board.getCells()) {
             if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().size() == 2) {
-                var candidates = ((UnsolvedCell) cell).candidates().toArray(SudokuNumber[]::new);
+                var candidates = unsolved.candidates().toArray(SudokuNumber[]::new);
                 var source = new LocatedCandidate(unsolved, candidates[0]);
                 var target = new LocatedCandidate(unsolved, candidates[1]);
                 builder.addEdge(source, target, new StrengthEdge(Strength.STRONG));

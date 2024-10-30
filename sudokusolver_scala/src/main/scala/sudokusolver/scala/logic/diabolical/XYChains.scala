@@ -1,8 +1,6 @@
 package sudokusolver.scala.logic.diabolical
 
 import scalax.collection.immutable.Graph
-import scalax.collection.io.dot.implicits.{toId, toNodeId}
-import scalax.collection.io.dot.{DotAttr, DotEdgeStmt, DotRootGraph, Graph2DotExport}
 import sudokusolver.scala.*
 
 /*
@@ -53,11 +51,7 @@ extension (graph: Graph[LocatedCandidate, StrengthEdge[LocatedCandidate]])
    *
    * Similar changes have been made to createStrongLinks and addWeakLinks
    */
-  def toDOTXYChains: String =
-    val dotRoot = DotRootGraph(false, None)
-    graph.toDot(dotRoot, edge =>
-      Some(dotRoot, edge.outer.toDotEdgeStmt((cell, candidate) => s"[${cell.row},${cell.column}] : $candidate"))
-    )
+  def toDOTXYChains: String = graph.toDOTCommon(None, _.getNodeId, _.getEdgeAttributes)
 
   def addWeakLinksXYChains(): Graph[LocatedCandidate, StrengthEdge[LocatedCandidate]] =
     val weakEdges = for

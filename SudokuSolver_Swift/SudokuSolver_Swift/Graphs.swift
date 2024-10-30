@@ -35,8 +35,12 @@ extension UnweightedUniqueElementsGraph {
     }
 }
 
-extension Graph where E: WeightedEdgeProtocol, E.Weight == Strength {
-    func toDOT(graphId: String? = nil, vertexLabelProvider getVertexLabel: (V) -> String) -> String {
+extension Graph {
+    func toDOT(
+        graphId: String? = nil,
+        vertexLabelProvider getVertexLabel: (V) -> String,
+        edgeAttributeProvider getEdgeAttributes: (E) -> String? = { _ in nil }
+    ) -> String {
         var result = "strict graph "
         if let graphId {
             result += graphId + " "
@@ -46,8 +50,8 @@ extension Graph where E: WeightedEdgeProtocol, E.Weight == Strength {
             let u = vertexAtIndex(edge.u)
             let v = vertexAtIndex(edge.v)
             result += "  \"\(getVertexLabel(u))\" -- \"\(getVertexLabel(v))\""
-            if edge.weight == .weak {
-                result += " [style = dashed]"
+            if let edgeAttributes = getEdgeAttributes(edge) {
+                result += " " + edgeAttributes
             }
             result += "\n"
         }
@@ -72,6 +76,10 @@ extension Graph where E: WeightedEdgeProtocol, E.Weight == Strength {
 struct CodableLocatedCandidate: Hashable, Codable {
     let cell: UnsolvedCell
     let candidate: SudokuNumber
+    
+    var vertexLabel: String {
+        "[\(cell.row),\(cell.column)] : \(candidate)"
+    }
 }
 
 enum VertexColor {
@@ -159,6 +167,17 @@ enum Strength: Codable {
             true
         case .weak:
             requiredType == .weak
+        }
+    }
+}
+
+extension WeightedEdgeProtocol where Weight == Strength {
+    var edgeAttributes: String? {
+        switch weight {
+        case .strong:
+            nil
+        case .weak:
+            "[style = dashed]"
         }
     }
 }

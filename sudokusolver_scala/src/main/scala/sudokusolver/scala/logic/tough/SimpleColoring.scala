@@ -2,6 +2,7 @@ package sudokusolver.scala.logic.tough
 
 import scalax.collection.edges.{UnDiEdge, UnDiEdgeImplicits}
 import scalax.collection.immutable.Graph
+import scalax.collection.io.dot.implicits.toId
 import sudokusolver.scala.*
 
 /*
@@ -54,6 +55,9 @@ def simpleColoringRule4(board: Board[Cell]): Seq[RemoveCandidates] =
       colorTwo.exists(cell.isInSameUnit)
   yield cell -> candidate
   removals.mergeToRemoveCandidates
+
+extension (graph: Graph[UnsolvedCell, UnDiEdge[UnsolvedCell]])
+  def toDOT(candidate: SudokuNumber): String = graph.toDOTCommon(Some(candidate.toString), _.getNodeId)
 
 private def createConnectedComponents(
                                        board: Board[Cell],

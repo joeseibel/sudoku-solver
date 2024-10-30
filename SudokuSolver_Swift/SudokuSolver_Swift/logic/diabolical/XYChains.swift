@@ -49,7 +49,7 @@ func xyChains(board: Board<Cell>) -> [BoardModification] {
 
 extension Graph where V == CodableLocatedCandidate, E: WeightedEdgeProtocol, E.Weight == Strength {
     func toDOT() -> String {
-        toDOT { "[\($0.cell.row),\($0.cell.column)] : \($0.candidate)" }
+        toDOT(vertexLabelProvider: \.vertexLabel, edgeAttributeProvider: \.edgeAttributes)
     }
 }
 

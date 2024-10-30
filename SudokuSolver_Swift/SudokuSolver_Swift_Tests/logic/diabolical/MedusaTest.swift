@@ -1,6 +1,24 @@
+import SwiftGraph
 import XCTest
 
 final class MedusaTest: XCTestCase {
+    func testToDOT() {
+        let graph = UnweightedUniqueElementsGraph<CodableLocatedCandidate>()
+        let cells = [Cell(row: 0, column: 0), Cell(row: 0, column: 0)].unsolvedCells
+        let a = CodableLocatedCandidate(cell: cells[0], candidate: .two)
+        let b = CodableLocatedCandidate(cell: cells[1], candidate: .six)
+        let aIndex = graph.addVertex(a)
+        let bIndex = graph.addVertex(b)
+        graph.addEdge(fromIndex: aIndex, toIndex: bIndex)
+        let actual = graph.toDOT()
+        let expected = """
+            strict graph {
+              "[0,0] : 2" -- "[0,0] : 6"
+            }
+            """
+        XCTAssertEqual(expected, actual)
+    }
+    
     func testRule1Test1() {
         let board = """
             {17}9382456{17}

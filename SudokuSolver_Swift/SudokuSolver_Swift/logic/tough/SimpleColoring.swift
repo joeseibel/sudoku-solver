@@ -50,6 +50,12 @@ func simpleColoringRule4(board: Board<Cell>) -> [BoardModification] {
     }.mergeToRemoveCandidates()
 }
 
+extension Graph where V == UnsolvedCell, E == UnweightedEdge {
+    func toDOT(candidate: SudokuNumber) -> String {
+        toDOT(graphId: String(describing: candidate), vertexLabelProvider: \.vertexLabel)
+    }
+}
+
 private func createConnectedComponents(
     board: Board<Cell>,
     candidate: SudokuNumber
