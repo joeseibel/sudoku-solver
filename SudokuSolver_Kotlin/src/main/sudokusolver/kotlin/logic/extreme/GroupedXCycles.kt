@@ -8,7 +8,6 @@ import org.jgrapht.nio.dot.DOTExporter
 import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
-import sudokusolver.kotlin.STRENGTH_EDGE_ATTRIBUTE_PROVIDER
 import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.Strength
 import sudokusolver.kotlin.StrengthEdge
@@ -124,7 +123,7 @@ fun Graph<Node, StrengthEdge>.toDOT(candidate: SudokuNumber): String {
     DOTExporter<Node, StrengthEdge>().apply {
         setGraphIdProvider { candidate.toString() }
         setVertexAttributeProvider { mapOf("label" to DefaultAttribute.createAttribute(it.toString())) }
-        setEdgeAttributeProvider(STRENGTH_EDGE_ATTRIBUTE_PROVIDER)
+        setEdgeAttributeProvider { it.edgeAttributes }
     }.exportGraph(this, writer)
     return writer.toString()
 }

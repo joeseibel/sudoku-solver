@@ -1,5 +1,7 @@
 package sudokusolver.kotlin
 
+import org.jgrapht.nio.Attribute
+import org.jgrapht.nio.DefaultAttribute
 import java.util.EnumSet
 
 /*
@@ -52,6 +54,9 @@ data class UnsolvedCell(
     infix fun isInSameUnit(other: UnsolvedCell): Boolean =
         row == other.row || column == other.column || block == other.block
 
+    val vertexAttributes: Map<String, Attribute>
+        get() = mapOf("label" to DefaultAttribute.createAttribute("[$row,$column]"))
+
     override fun toString(): String = "0"
 }
 
@@ -59,6 +64,12 @@ typealias LocatedCandidate = Pair<UnsolvedCell, SudokuNumber>
 
 val LocatedCandidate.candidate: SudokuNumber
     get() = second
+
+val LocatedCandidate.vertexAttributes: Map<String, Attribute>
+    get() {
+        val (cell, candidate) = this
+        return mapOf("label" to DefaultAttribute.createAttribute("[${cell.row},${cell.column}] : $candidate"))
+    }
 
 fun Board<Cell>.toSimpleString(): String =
     cells.joinToString("") { cell ->

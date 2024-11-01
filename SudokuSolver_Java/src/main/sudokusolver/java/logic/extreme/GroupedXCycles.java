@@ -219,7 +219,7 @@ public class GroupedXCycles {
         exporter.setGraphIdProvider(candidate::toString);
         exporter.setVertexAttributeProvider(vertex ->
                 Map.of("label", DefaultAttribute.createAttribute(vertex.toString())));
-        exporter.setEdgeAttributeProvider(Strength.STRENGTH_EDGE_ATTRIBUTE_PROVIDER);
+        exporter.setEdgeAttributeProvider(StrengthEdge::getEdgeAttributes);
         exporter.exportGraph(graph, writer);
         return writer.toString();
     }

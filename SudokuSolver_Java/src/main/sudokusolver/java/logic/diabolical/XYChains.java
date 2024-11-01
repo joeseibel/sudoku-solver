@@ -80,8 +80,8 @@ public class XYChains {
     public static String toDOT(Graph<LocatedCandidate, StrengthEdge> graph) {
         var writer = new StringWriter();
         var exporter = new DOTExporter<LocatedCandidate, StrengthEdge>();
-        exporter.setVertexAttributeProvider(LocatedCandidate.LOCATED_CANDIDATE_ATTRIBUTE_PROVIDER);
-        exporter.setEdgeAttributeProvider(Strength.STRENGTH_EDGE_ATTRIBUTE_PROVIDER);
+        exporter.setVertexAttributeProvider(LocatedCandidate::getVertexAttributes);
+        exporter.setEdgeAttributeProvider(StrengthEdge::getEdgeAttributes);
         exporter.exportGraph(graph, writer);
         return writer.toString();
     }

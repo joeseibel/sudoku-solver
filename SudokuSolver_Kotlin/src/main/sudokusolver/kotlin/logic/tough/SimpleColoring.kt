@@ -10,7 +10,6 @@ import sudokusolver.kotlin.Board
 import sudokusolver.kotlin.Cell
 import sudokusolver.kotlin.RemoveCandidates
 import sudokusolver.kotlin.SudokuNumber
-import sudokusolver.kotlin.UNSOLVED_CELL_ATTRIBUTE_PROVIDER
 import sudokusolver.kotlin.UnsolvedCell
 import sudokusolver.kotlin.colorToLists
 import sudokusolver.kotlin.colorToMap
@@ -73,7 +72,7 @@ fun Graph<UnsolvedCell, DefaultEdge>.toDOT(candidate: SudokuNumber): String {
     val writer = StringWriter()
     DOTExporter<UnsolvedCell, DefaultEdge>().apply {
         setGraphIdProvider(candidate::toString)
-        setVertexAttributeProvider(UNSOLVED_CELL_ATTRIBUTE_PROVIDER)
+        setVertexAttributeProvider { it.vertexAttributes }
     }.exportGraph(this, writer)
     return writer.toString()
 }

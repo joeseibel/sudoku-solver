@@ -2,16 +2,12 @@ package sudokusolver.javanostreams;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
-import org.jgrapht.nio.Attribute;
-import org.jgrapht.nio.DefaultAttribute;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 public enum Strength {
     STRONG {
@@ -37,9 +33,6 @@ public enum Strength {
             return requiredType == WEAK;
         }
     };
-
-    public static final Function<StrengthEdge, Map<String, Attribute>> STRENGTH_EDGE_ATTRIBUTE_PROVIDER = edge ->
-            edge.getStrength() == WEAK ? Map.of("style", DefaultAttribute.createAttribute("dashed")) : null;
 
     public abstract Strength getOpposite();
 

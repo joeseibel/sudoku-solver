@@ -35,7 +35,11 @@ fun <V, E> Graph<V, E>.colorToLists(): Pair<List<V>, List<V>> {
     return breadthFirst.asSequence().partition { breadthFirst.getDepth(it) % 2 == 0 }
 }
 
-class StrengthEdge(val strength: Strength)
+class StrengthEdge(val strength: Strength) {
+    val edgeAttributes: Map<String, Attribute>?
+        get() = takeIf { it.strength == Strength.WEAK }
+            ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
+}
 
 enum class Strength {
     STRONG {
@@ -60,19 +64,6 @@ enum class Strength {
      * check.
      */
     abstract fun isCompatibleWith(requiredType: Strength): Boolean
-}
-
-val UNSOLVED_CELL_ATTRIBUTE_PROVIDER: (UnsolvedCell) -> Map<String, Attribute> = {
-    mapOf("label" to DefaultAttribute.createAttribute("[${it.row},${it.column}]"))
-}
-
-val LOCATED_CANDIDATE_ATTRIBUTE_PROVIDER: (LocatedCandidate) -> Map<String, Attribute> = { (cell, candidate) ->
-    mapOf("label" to DefaultAttribute.createAttribute("[${cell.row},${cell.column}] : $candidate"))
-}
-
-val STRENGTH_EDGE_ATTRIBUTE_PROVIDER: (StrengthEdge) -> Map<String, Attribute>? = {
-    it.takeIf { it.strength == Strength.WEAK }
-        ?.let { mapOf("style" to DefaultAttribute.createAttribute("dashed")) }
 }
 
 /*

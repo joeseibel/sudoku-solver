@@ -132,8 +132,8 @@ public class XCycles {
         var writer = new StringWriter();
         var exporter = new DOTExporter<UnsolvedCell, StrengthEdge>();
         exporter.setGraphIdProvider(candidate::toString);
-        exporter.setVertexAttributeProvider(UnsolvedCell.UNSOLVED_CELL_ATTRIBUTE_PROVIDER);
-        exporter.setEdgeAttributeProvider(Strength.STRENGTH_EDGE_ATTRIBUTE_PROVIDER);
+        exporter.setVertexAttributeProvider(UnsolvedCell::getVertexAttributes);
+        exporter.setEdgeAttributeProvider(StrengthEdge::getEdgeAttributes);
         exporter.exportGraph(graph, writer);
         return writer.toString();
     }

@@ -251,7 +251,7 @@ public class Medusa {
     public static String toDOT(Graph<LocatedCandidate, DefaultEdge> graph) {
         var writer = new StringWriter();
         var exporter = new DOTExporter<LocatedCandidate, DefaultEdge>();
-        exporter.setVertexAttributeProvider(LocatedCandidate.LOCATED_CANDIDATE_ATTRIBUTE_PROVIDER);
+        exporter.setVertexAttributeProvider(LocatedCandidate::getVertexAttributes);
         exporter.exportGraph(graph, writer);
         return writer.toString();
     }

@@ -89,7 +89,7 @@ public class SimpleColoring {
         var writer = new StringWriter();
         var exporter = new DOTExporter<UnsolvedCell, DefaultEdge>();
         exporter.setGraphIdProvider(candidate::toString);
-        exporter.setVertexAttributeProvider(UnsolvedCell.UNSOLVED_CELL_ATTRIBUTE_PROVIDER);
+        exporter.setVertexAttributeProvider(UnsolvedCell::getVertexAttributes);
         exporter.exportGraph(graph, writer);
         return writer.toString();
     }
