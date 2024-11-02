@@ -37,13 +37,13 @@ extension UnweightedUniqueElementsGraph {
 
 extension Graph {
     func toDOT(
-        graphId: String? = nil,
-        vertexLabelProvider getVertexLabel: (V) -> String,
-        edgeAttributeProvider getEdgeAttributes: (E) -> String? = { _ in nil }
+        graphLabel: String? = nil,
+        getVertexLabel: (V) -> String,
+        getEdgeAttributes: (E) -> String? = { _ in nil }
     ) -> String {
         var result = "strict graph "
-        if let graphId {
-            result += graphId + " "
+        if let graphLabel {
+            result += graphLabel + " "
         }
         result += "{\n"
         for edge in edgeList() {

@@ -94,7 +94,7 @@ extension (graph: Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]])
    * Similar changes have been made to createStrongLinks and addWeakLinks
    */
   def toDOTXCycles(candidate: SudokuNumber): String =
-    graph.toDOTCommon(Some(candidate.toString), _.getNodeId, _.getEdgeAttributes)
+    graph.toDOTCommon(Some(candidate.toString), _.getVertexLabel, _.getEdgeAttributes)
 
   private def addWeakLinksXCycles(): Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]] =
     val weakEdges = for

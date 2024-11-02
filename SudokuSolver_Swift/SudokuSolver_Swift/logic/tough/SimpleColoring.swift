@@ -52,7 +52,7 @@ func simpleColoringRule4(board: Board<Cell>) -> [BoardModification] {
 
 extension Graph where V == UnsolvedCell, E == UnweightedEdge {
     func toDOT(candidate: SudokuNumber) -> String {
-        toDOT(graphId: String(describing: candidate), vertexLabelProvider: \.vertexLabel)
+        toDOT(graphLabel: String(describing: candidate), getVertexLabel: \.vertexLabel)
     }
 }
 

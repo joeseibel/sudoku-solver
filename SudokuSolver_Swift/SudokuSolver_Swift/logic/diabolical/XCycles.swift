@@ -90,9 +90,9 @@ func xCyclesRule3(board: Board<Cell>) -> [BoardModification] {
 extension Graph where V == UnsolvedCell, E: WeightedEdgeProtocol, E.Weight == Strength {
     func toDOT(candidate: SudokuNumber) -> String {
         toDOT(
-            graphId: String(describing: candidate),
-            vertexLabelProvider: \.vertexLabel,
-            edgeAttributeProvider: \.edgeAttributes
+            graphLabel: String(describing: candidate),
+            getVertexLabel: \.vertexLabel,
+            getEdgeAttributes: \.edgeAttributes
         )
     }
 }

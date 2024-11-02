@@ -176,7 +176,7 @@ func medusaRule6(board: Board<Cell>) -> [BoardModification] {
 
 extension Graph where V == CodableLocatedCandidate, E == UnweightedEdge {
     func toDOT() -> String {
-        toDOT(vertexLabelProvider: \.vertexLabel)
+        toDOT(getVertexLabel: \.vertexLabel)
     }
 }
 

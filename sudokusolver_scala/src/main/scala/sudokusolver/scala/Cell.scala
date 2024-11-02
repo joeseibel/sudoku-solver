@@ -24,7 +24,7 @@ case class UnsolvedCell(
 
   def isInSameUnit(other: UnsolvedCell): Boolean = row == other.row || column == other.column || block == other.block
 
-  def getNodeId: NodeId = s"[$row,$column]"
+  def getVertexLabel: NodeId = s"[$row,$column]"
 
   override def toString: String = "0"
 
@@ -33,7 +33,7 @@ type LocatedCandidate = (UnsolvedCell, SudokuNumber)
 extension (locatedCandidate: LocatedCandidate)
   def candidate: SudokuNumber = locatedCandidate._2
 
-  def getNodeId: NodeId =
+  def getVertexLabel: NodeId =
     val (cell, candidate) = locatedCandidate
     s"[${cell.row},${cell.column}] : $candidate"
 

@@ -187,7 +187,7 @@ def medusaRule6(board: Board[Cell]): Seq[SetValue] =
   }
 
 extension (graph: Graph[LocatedCandidate, UnDiEdge[LocatedCandidate]])
-  def toDOT: String = graph.toDOTCommon(None, _.getNodeId)
+  def toDOT: String = graph.toDOTCommon(None, _.getVertexLabel)
 
 private def createConnectedComponents(
                                        board: Board[Cell]

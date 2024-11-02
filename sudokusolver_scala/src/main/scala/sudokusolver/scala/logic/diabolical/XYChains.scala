@@ -51,7 +51,7 @@ extension (graph: Graph[LocatedCandidate, StrengthEdge[LocatedCandidate]])
    *
    * Similar changes have been made to createStrongLinks and addWeakLinks
    */
-  def toDOTXYChains: String = graph.toDOTCommon(None, _.getNodeId, _.getEdgeAttributes)
+  def toDOTXYChains: String = graph.toDOTCommon(None, _.getVertexLabel, _.getEdgeAttributes)
 
   def addWeakLinksXYChains(): Graph[LocatedCandidate, StrengthEdge[LocatedCandidate]] =
     val weakEdges = for

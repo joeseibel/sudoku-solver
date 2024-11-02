@@ -56,14 +56,14 @@ enum Strength:
 
 extension [N, E <: AnyUnDiEdge[N]](graph: Graph[N, E])
   def toDOTCommon(
-                   id: Option[Id],
-                   getNodeId: N => NodeId,
+                   graphLabel: Option[Id],
+                   getVertexLabel: N => NodeId,
                    getEdgeAttributes: E => Seq[DotAttr] = (edge: E) => Nil
                  ): String =
-    val dotRoot = DotRootGraph(false, id)
+    val dotRoot = DotRootGraph(false, graphLabel)
     graph.toDot(dotRoot, innerEdge => {
       val edge = innerEdge.outer
-      Some(dotRoot, DotEdgeStmt(getNodeId(edge.source), getNodeId(edge.target), getEdgeAttributes(edge)))
+      Some(dotRoot, DotEdgeStmt(getVertexLabel(edge.source), getVertexLabel(edge.target), getEdgeAttributes(edge)))
     })
 
 extension [N](graph: Graph[N, StrengthEdge[N]])

@@ -106,7 +106,7 @@ def groupedXCyclesRule3(board: Board[Cell]): Seq[RemoveCandidates] =
 extension (graph: Graph[Node, StrengthEdge[Node]])
   def toDOT(candidate: SudokuNumber): String =
     graph.toDOTCommon(Some(candidate.toString), {
-      case cell: UnsolvedCell => cell.getNodeId
+      case cell: UnsolvedCell => cell.getVertexLabel
       case node: Group => node.cells.map(cell => s"[${cell.row},${cell.column}]").mkString("{", ", ", "}")
     }, _.getEdgeAttributes)
 
