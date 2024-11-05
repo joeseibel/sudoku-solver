@@ -107,7 +107,7 @@ extension (graph: Graph[Node, StrengthEdge[Node]])
   def toDOT(candidate: SudokuNumber): String =
     graph.toDOTCommon(Some(candidate.toString), {
       case cell: UnsolvedCell => cell.getVertexLabel
-      case node: Group => node.cells.map(cell => s"[${cell.row},${cell.column}]").mkString("{", ", ", "}")
+      case node: Group => node.cells.map(_.getVertexLabel).mkString("{", ", ", "}")
     }, _.getEdgeAttributes)
 
 private def buildGraphGroupedXCycles(board: Board[Cell], candidate: SudokuNumber): Graph[Node, StrengthEdge[Node]] =

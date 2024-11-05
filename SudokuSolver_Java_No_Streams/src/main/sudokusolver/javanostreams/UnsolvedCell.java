@@ -22,8 +22,12 @@ public record UnsolvedCell(int row, int column, EnumSet<SudokuNumber> candidates
         return row == other.row || column == other.column || block() == other.block();
     }
 
+    public String getVertexLabel() {
+        return "[" + row + ',' + column + ']';
+    }
+
     public Map<String, Attribute> getVertexAttributes() {
-        return Map.of("label", DefaultAttribute.createAttribute("[" + row + ',' + column + ']'));
+        return Map.of("label", DefaultAttribute.createAttribute(getVertexLabel()));
     }
 
     @Override

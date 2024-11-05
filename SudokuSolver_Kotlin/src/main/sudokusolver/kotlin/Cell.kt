@@ -54,8 +54,11 @@ data class UnsolvedCell(
     infix fun isInSameUnit(other: UnsolvedCell): Boolean =
         row == other.row || column == other.column || block == other.block
 
+    val vertexLabel: String
+        get() = "[$row,$column]"
+
     val vertexAttributes: Map<String, Attribute>
-        get() = mapOf("label" to DefaultAttribute.createAttribute("[$row,$column]"))
+        get() = mapOf("label" to DefaultAttribute.createAttribute(vertexLabel))
 
     override fun toString(): String = "0"
 }
@@ -68,7 +71,7 @@ val LocatedCandidate.candidate: SudokuNumber
 val LocatedCandidate.vertexAttributes: Map<String, Attribute>
     get() {
         val (cell, candidate) = this
-        return mapOf("label" to DefaultAttribute.createAttribute("[${cell.row},${cell.column}] : $candidate"))
+        return mapOf("label" to DefaultAttribute.createAttribute("${cell.vertexLabel} : $candidate"))
     }
 
 fun Board<Cell>.toSimpleString(): String =

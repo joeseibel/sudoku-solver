@@ -78,7 +78,7 @@ struct CodableLocatedCandidate: Hashable, Codable {
     let candidate: SudokuNumber
     
     var vertexLabel: String {
-        "[\(cell.row),\(cell.column)] : \(candidate)"
+        "\(cell.vertexLabel) : \(candidate)"
     }
 }
 

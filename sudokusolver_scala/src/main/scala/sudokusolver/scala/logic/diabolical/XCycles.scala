@@ -1,7 +1,7 @@
 package sudokusolver.scala.logic.diabolical
 
 import scalax.collection.immutable.Graph
-import scalax.collection.io.dot.implicits.toId
+import scalax.collection.io.dot.implicits.{toId, toNodeId}
 import sudokusolver.scala.*
 
 import scala.annotation.tailrec

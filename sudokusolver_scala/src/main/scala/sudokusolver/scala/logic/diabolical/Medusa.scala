@@ -2,6 +2,7 @@ package sudokusolver.scala.logic.diabolical
 
 import scalax.collection.edges.{UnDiEdge, UnDiEdgeImplicits}
 import scalax.collection.immutable.Graph
+import scalax.collection.io.dot.implicits.toNodeId
 import sudokusolver.scala.*
 
 /*

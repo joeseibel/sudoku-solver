@@ -359,7 +359,7 @@ public class GroupedXCycles {
 
         @Override
         public String toString() {
-            return "[" + cell.row() + ',' + cell.column() + ']';
+            return cell.getVertexLabel();
         }
     }
 
@@ -406,12 +406,7 @@ public class GroupedXCycles {
             var builder = new StringBuilder();
             builder.append('{');
             for (var iterator = cells.iterator(); iterator.hasNext();) {
-                var cell = iterator.next();
-                builder.append('[');
-                builder.append(cell.row());
-                builder.append(',');
-                builder.append(cell.column());
-                builder.append(']');
+                builder.append(iterator.next().getVertexLabel());
                 if (iterator.hasNext()) {
                     builder.append(", ");
                 }

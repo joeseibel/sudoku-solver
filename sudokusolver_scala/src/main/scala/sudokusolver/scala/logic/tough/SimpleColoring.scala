@@ -2,7 +2,7 @@ package sudokusolver.scala.logic.tough
 
 import scalax.collection.edges.{UnDiEdge, UnDiEdgeImplicits}
 import scalax.collection.immutable.Graph
-import scalax.collection.io.dot.implicits.toId
+import scalax.collection.io.dot.implicits.{toId, toNodeId}
 import sudokusolver.scala.*
 
 /*

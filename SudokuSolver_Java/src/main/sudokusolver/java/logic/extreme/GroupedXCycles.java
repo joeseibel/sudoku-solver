@@ -375,7 +375,7 @@ public class GroupedXCycles {
 
         @Override
         public String toString() {
-            return "[" + cell.row() + ',' + cell.column() + ']';
+            return cell.getVertexLabel();
         }
     }
 
@@ -416,7 +416,7 @@ public class GroupedXCycles {
         @Override
         public String toString() {
             return cells.stream()
-                    .map(cell -> "[" + cell.row() + ',' + cell.column() + ']')
+                    .map(UnsolvedCell::getVertexLabel)
                     .collect(Collectors.joining(", ", "{", "}"));
         }
     }

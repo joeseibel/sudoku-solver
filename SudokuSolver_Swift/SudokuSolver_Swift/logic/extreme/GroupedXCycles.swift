@@ -309,9 +309,9 @@ extension Node: CustomStringConvertible {
     var description: String {
         switch self {
         case .cell(let cell):
-            "[\(cell.row),\(cell.column)]"
+            cell.vertexLabel
         default:
-            "{\(cells.map { "[\($0.row),\($0.column)]" }.joined(separator: ", "))}"
+            "{\(cells.map(\.vertexLabel).joined(separator: ", "))}"
         }
     }
 }

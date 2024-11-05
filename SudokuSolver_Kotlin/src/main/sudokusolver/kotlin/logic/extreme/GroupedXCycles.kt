@@ -207,7 +207,7 @@ data class CellNode(val cell: UnsolvedCell) : Node {
     override val block: Int = cell.block
     override val cells: Set<UnsolvedCell> by lazy { setOf(cell) }
 
-    override fun toString(): String = "[${cell.row},${cell.column}]"
+    override fun toString(): String = cell.vertexLabel
 }
 
 abstract class Group(final override val cells: Set<UnsolvedCell>) : Node {
@@ -222,7 +222,7 @@ abstract class Group(final override val cells: Set<UnsolvedCell>) : Node {
 
     override fun equals(other: Any?): Boolean = this === other || other is Group && cells == other.cells
     override fun hashCode(): Int = cells.hashCode()
-    override fun toString(): String = cells.joinToString(prefix = "{", postfix = "}") { "[${it.row},${it.column}]" }
+    override fun toString(): String = cells.joinToString(prefix = "{", postfix = "}") { it.vertexLabel }
 }
 
 class RowGroup(cells: Set<UnsolvedCell>) : Group(cells) {

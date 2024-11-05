@@ -1,8 +1,5 @@
 package sudokusolver.scala
 
-import scalax.collection.io.dot.NodeId
-import scalax.collection.io.dot.implicits.toNodeId
-
 import scala.annotation.tailrec
 
 sealed trait Cell:
@@ -24,7 +21,7 @@ case class UnsolvedCell(
 
   def isInSameUnit(other: UnsolvedCell): Boolean = row == other.row || column == other.column || block == other.block
 
-  def getVertexLabel: NodeId = s"[$row,$column]"
+  def getVertexLabel: String = s"[$row,$column]"
 
   override def toString: String = "0"
 
@@ -33,9 +30,9 @@ type LocatedCandidate = (UnsolvedCell, SudokuNumber)
 extension (locatedCandidate: LocatedCandidate)
   def candidate: SudokuNumber = locatedCandidate._2
 
-  def getVertexLabel: NodeId =
+  def getVertexLabel: String =
     val (cell, candidate) = locatedCandidate
-    s"[${cell.row},${cell.column}] : $candidate"
+    s"${cell.getVertexLabel} : $candidate"
 
 extension (board: Board[Cell])
   def toSimpleString: String = board.cells.map {
