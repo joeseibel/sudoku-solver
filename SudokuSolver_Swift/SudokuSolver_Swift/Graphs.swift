@@ -1,87 +1,5 @@
 import SwiftGraph
 
-extension Edge {
-    func getOppositeIndex(index: Int) -> Int {
-        if index == u {
-            v
-        } else if index == v {
-            u
-        } else {
-            preconditionFailure("Index not found in edge: \(index)")
-        }
-    }
-}
-
-extension UnweightedUniqueElementsGraph {
-    var connectedComponents: [UnweightedUniqueElementsGraph<V>] {
-        var subgraphs = [UnweightedUniqueElementsGraph<V>]()
-        for startIndex in indices {
-            let startVertex = vertexAtIndex(startIndex)
-            if subgraphs.allSatisfy({ !$0.contains(startVertex) }) {
-                let subgraph = UnweightedUniqueElementsGraph<V>()
-                _ = subgraph.addVertex(startVertex)
-                _ = bfs(fromIndex: startIndex, goalTest: { _ in false }, visitOrder: { $0 }) { edge in
-                    let u = vertexAtIndex(edge.u)
-                    let v = vertexAtIndex(edge.v)
-                    let uIndex = subgraph.indexOfVertex(u)!
-                    let vIndex = subgraph.addVertex(v)
-                    subgraph.addEdge(fromIndex: uIndex, toIndex: vIndex)
-                    return true
-                }
-                subgraphs.append(subgraph)
-            }
-        }
-        return subgraphs
-    }
-}
-
-extension Graph {
-    func toDOT(
-        graphLabel: String? = nil,
-        getVertexLabel: (V) -> String,
-        getEdgeAttributes: (E) -> String? = { _ in nil }
-    ) -> String {
-        var result = "strict graph "
-        if let graphLabel {
-            result += graphLabel + " "
-        }
-        result += "{\n"
-        for edge in edgeList() {
-            let u = vertexAtIndex(edge.u)
-            let v = vertexAtIndex(edge.v)
-            result += "  \"\(getVertexLabel(u))\" -- \"\(getVertexLabel(v))\""
-            if let edgeAttributes = getEdgeAttributes(edge) {
-                result += " " + edgeAttributes
-            }
-            result += "\n"
-        }
-        result += "}"
-        return result
-    }
-}
-
-/*
- * This type is the struct equivalent of LocatedCandidate and exists so that it can be used as a vertex type in graphs.
- *
- * I tried to use LocatedCandidate as a vertex type, but that didn't work for the following reasons:
- *   1. Graph requires the vertex type to be Codable.
- *   2. LocatedCandidate is a tuple type. Specifically, it is a type alias for (UnsolvedCell, SudokuNumber).
- *   3. Swift does not allow protocol conformance to be added to tuples.
- *
- * Therefore, tuple types cannot be used as a vertex type for Graph. The Swift community does seem interested in adding
- * support for this: https://forums.swift.org/t/protocol-conformance-for-tuples-anonymous-structs/24207
- *
- * If protocol conformance for tuples is added to Swift, then CodableLocatedCandidate can be removed.
- */
-struct CodableLocatedCandidate: Hashable, Codable {
-    let cell: UnsolvedCell
-    let candidate: SudokuNumber
-    
-    var vertexLabel: String {
-        "\(cell.vertexLabel) : \(candidate)"
-    }
-}
-
 enum VertexColor {
     case colorOne, colorTwo
     
@@ -302,5 +220,87 @@ func alternatingCycleExists<G: Graph>(
             nextType: adjacentEdgesType.opposite,
             visited: [index, start]
         )
+    }
+}
+
+/*
+ * This type is the struct equivalent of LocatedCandidate and exists so that it can be used as a vertex type in graphs.
+ *
+ * I tried to use LocatedCandidate as a vertex type, but that didn't work for the following reasons:
+ *   1. Graph requires the vertex type to be Codable.
+ *   2. LocatedCandidate is a tuple type. Specifically, it is a type alias for (UnsolvedCell, SudokuNumber).
+ *   3. Swift does not allow protocol conformance to be added to tuples.
+ *
+ * Therefore, tuple types cannot be used as a vertex type for Graph. The Swift community does seem interested in adding
+ * support for this: https://forums.swift.org/t/protocol-conformance-for-tuples-anonymous-structs/24207
+ *
+ * If protocol conformance for tuples is added to Swift, then CodableLocatedCandidate can be removed.
+ */
+struct CodableLocatedCandidate: Hashable, Codable {
+    let cell: UnsolvedCell
+    let candidate: SudokuNumber
+    
+    var vertexLabel: String {
+        "\(cell.vertexLabel) : \(candidate)"
+    }
+}
+
+extension Graph {
+    func toDOT(
+        graphLabel: String? = nil,
+        getVertexLabel: (V) -> String,
+        getEdgeAttributes: (E) -> String? = { _ in nil }
+    ) -> String {
+        var result = "strict graph "
+        if let graphLabel {
+            result += graphLabel + " "
+        }
+        result += "{\n"
+        for edge in edgeList() {
+            let u = vertexAtIndex(edge.u)
+            let v = vertexAtIndex(edge.v)
+            result += "  \"\(getVertexLabel(u))\" -- \"\(getVertexLabel(v))\""
+            if let edgeAttributes = getEdgeAttributes(edge) {
+                result += " " + edgeAttributes
+            }
+            result += "\n"
+        }
+        result += "}"
+        return result
+    }
+}
+
+extension UnweightedUniqueElementsGraph {
+    var connectedComponents: [UnweightedUniqueElementsGraph<V>] {
+        var subgraphs = [UnweightedUniqueElementsGraph<V>]()
+        for startIndex in indices {
+            let startVertex = vertexAtIndex(startIndex)
+            if subgraphs.allSatisfy({ !$0.contains(startVertex) }) {
+                let subgraph = UnweightedUniqueElementsGraph<V>()
+                _ = subgraph.addVertex(startVertex)
+                _ = bfs(fromIndex: startIndex, goalTest: { _ in false }, visitOrder: { $0 }) { edge in
+                    let u = vertexAtIndex(edge.u)
+                    let v = vertexAtIndex(edge.v)
+                    let uIndex = subgraph.indexOfVertex(u)!
+                    let vIndex = subgraph.addVertex(v)
+                    subgraph.addEdge(fromIndex: uIndex, toIndex: vIndex)
+                    return true
+                }
+                subgraphs.append(subgraph)
+            }
+        }
+        return subgraphs
+    }
+}
+
+extension Edge {
+    func getOppositeIndex(index: Int) -> Int {
+        if index == u {
+            v
+        } else if index == v {
+            u
+        } else {
+            preconditionFailure("Index not found in edge: \(index)")
+        }
     }
 }

@@ -54,18 +54,6 @@ enum Strength:
 
   case STRONG, WEAK
 
-extension [N, E <: AnyUnDiEdge[N]](graph: Graph[N, E])
-  def toDOTCommon(
-                   graphLabel: Option[Id],
-                   getVertexLabel: N => NodeId,
-                   getEdgeAttributes: E => Seq[DotAttr] = (edge: E) => Nil
-                 ): String =
-    val dotRoot = DotRootGraph(false, graphLabel)
-    graph.toDot(dotRoot, innerEdge => {
-      val edge = innerEdge.outer
-      Some(dotRoot, DotEdgeStmt(getVertexLabel(edge.source), getVertexLabel(edge.target), getEdgeAttributes(edge)))
-    })
-
 extension [N](graph: Graph[N, StrengthEdge[N]])
   /*
    * Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The returned graph
@@ -147,6 +135,18 @@ def alternatingCycleExists[N](graph: Graph[N, StrengthEdge[N]], vertex: N, adjac
 
     alternatingCycleExists(start, adjacentEdgesType.opposite, Set(vertex, start))
   }
+
+extension [N, E <: AnyUnDiEdge[N]](graph: Graph[N, E])
+  def toDOTCommon(
+                   graphLabel: Option[Id],
+                   getVertexLabel: N => NodeId,
+                   getEdgeAttributes: E => Seq[DotAttr] = (edge: E) => Nil
+                 ): String =
+    val dotRoot = DotRootGraph(false, graphLabel)
+    graph.toDot(dotRoot, innerEdge => {
+      val edge = innerEdge.outer
+      Some(dotRoot, DotEdgeStmt(getVertexLabel(edge.source), getVertexLabel(edge.target), getEdgeAttributes(edge)))
+    })
 
 extension [N](edge: Edge[N])
   private def getOppositeVertex(vertex: N): N =
