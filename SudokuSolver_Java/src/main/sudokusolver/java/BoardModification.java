@@ -2,6 +2,7 @@ package sudokusolver.java;
 
 public sealed interface BoardModification extends Comparable<BoardModification> permits RemoveCandidates, SetValue {
     int row();
+
     int column();
 
     @Override

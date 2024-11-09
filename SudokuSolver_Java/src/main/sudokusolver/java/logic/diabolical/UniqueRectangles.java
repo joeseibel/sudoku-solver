@@ -168,16 +168,14 @@ public class UniqueRectangles {
                     .toList();
             return unit.stream()
                     .filter(cell -> cell.candidates().equals(additionalCandidates))
-                    .findFirst()
-                    .map(pairCell -> unit.stream()
+                    .findFirst().stream().flatMap(pairCell -> unit.stream()
                             .filter(cell -> !cell.equals(pairCell) && !cell.equals(roofA) && !cell.equals(roofB))
                             .flatMap(cell -> {
                                 var removeCandidates = EnumSet.copyOf(cell.candidates());
                                 removeCandidates.retainAll(additionalCandidates);
                                 return removeCandidates.stream()
                                         .map(candidate -> new LocatedCandidate(cell, candidate));
-                            }))
-                    .orElseGet(Stream::empty);
+                            }));
         } else {
             return Stream.empty();
         }

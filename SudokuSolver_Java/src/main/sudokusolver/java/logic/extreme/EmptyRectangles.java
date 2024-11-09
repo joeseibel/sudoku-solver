@@ -107,10 +107,10 @@ public class EmptyRectangles {
             var rectangleRow1 = rowInBlock == 0 ? row + 1 : row - rowInBlock;
             var rectangleRow2 = rowInBlock == 2 ? row - 1 : row - rowInBlock + 2;
             return IntStream.range(0, Board.UNIT_SIZE).filter(column -> {
-               var columnInBlock = column % Board.UNIT_SIZE_SQUARE_ROOT;
-               var rectangleColumn1 = columnInBlock == 0 ? column + 1 : column - columnInBlock;
-               var rectangleColumn2 = columnInBlock == 2 ? column - 1 : column - columnInBlock + 2;
-               //Check that the rectangle is empty.
+                var columnInBlock = column % Board.UNIT_SIZE_SQUARE_ROOT;
+                var rectangleColumn1 = columnInBlock == 0 ? column + 1 : column - columnInBlock;
+                var rectangleColumn2 = columnInBlock == 2 ? column - 1 : column - columnInBlock + 2;
+                //Check that the rectangle is empty.
                 return !hasCandidate(board.get(rectangleRow1, rectangleColumn1), candidate) &&
                         !hasCandidate(board.get(rectangleRow1, rectangleColumn2), candidate) &&
                         !hasCandidate(board.get(rectangleRow2, rectangleColumn1), candidate) &&

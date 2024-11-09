@@ -335,10 +335,15 @@ public class GroupedXCycles {
 
     public interface Node {
         boolean hasRow();
+
         int getRow();
+
         boolean hasColumn();
+
         int getColumn();
+
         int getBlock();
+
         Set<UnsolvedCell> getCells();
     }
 
