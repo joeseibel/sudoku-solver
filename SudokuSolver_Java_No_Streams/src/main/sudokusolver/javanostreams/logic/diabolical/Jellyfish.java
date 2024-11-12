@@ -41,45 +41,17 @@ public class Jellyfish {
             IntFunction<List<Cell>> getOtherUnit,
             ToIntFunction<Cell> getOtherUnitIndex
     ) {
-        for (var i = 0; i < units.size() - 3; i ++) {
-            var unitA = units.get(i);
-            var aWithCandidate = new ArrayList<UnsolvedCell>();
-            for (var cell : unitA) {
-                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
-                    aWithCandidate.add(unsolved);
-                }
-            }
+        for (var i = 0; i < units.size() - 3; i++) {
+            var aWithCandidate = getUnitWithCandidate(candidate, units, i);
             if (aWithCandidate.size() >= 2 && aWithCandidate.size() <= 4) {
                 for (var j = i + 1; j < units.size() - 2; j++) {
-                    var unitB = units.get(j);
-                    var bWithCandidate = new ArrayList<UnsolvedCell>();
-                    for (var cell : unitB) {
-                        if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
-                            bWithCandidate.add(unsolved);
-                        }
-                    }
+                    var bWithCandidate = getUnitWithCandidate(candidate, units, j);
                     if (bWithCandidate.size() >= 2 && bWithCandidate.size() <= 4) {
                         for (var k = j + 1; k < units.size() - 1; k++) {
-                            var unitC = units.get(k);
-                            var cWithCandidate = new ArrayList<UnsolvedCell>();
-                            for (var cell : unitC) {
-                                if (cell instanceof UnsolvedCell unsolved &&
-                                        unsolved.candidates().contains(candidate)
-                                ) {
-                                    cWithCandidate.add(unsolved);
-                                }
-                            }
+                            var cWithCandidate = getUnitWithCandidate(candidate, units, k);
                             if (cWithCandidate.size() >= 2 && cWithCandidate.size() <= 4) {
                                 for (var l = k + 1; l < units.size(); l++) {
-                                    var unitD = units.get(l);
-                                    var dWithCandidate = new ArrayList<UnsolvedCell>();
-                                    for (var cell : unitD) {
-                                        if (cell instanceof UnsolvedCell unsolved &&
-                                                unsolved.candidates().contains(candidate)
-                                        ) {
-                                            dWithCandidate.add(unsolved);
-                                        }
-                                    }
+                                    var dWithCandidate = getUnitWithCandidate(candidate, units, l);
                                     if (dWithCandidate.size() >= 2 && dWithCandidate.size() <= 4) {
                                         var withCandidate = new ArrayList<UnsolvedCell>();
                                         withCandidate.addAll(aWithCandidate);
@@ -111,5 +83,15 @@ public class Jellyfish {
                 }
             }
         }
+    }
+
+    private static List<UnsolvedCell> getUnitWithCandidate(SudokuNumber candidate, List<List<Cell>> units, int index) {
+        var withCandidate = new ArrayList<UnsolvedCell>();
+        for (var cell : units.get(index)) {
+            if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                withCandidate.add(unsolved);
+            }
+        }
+        return withCandidate;
     }
 }

@@ -319,10 +319,15 @@ public class GroupedXCycles {
 
     public interface Node {
         boolean hasRow();
+
         int getRow();
+
         boolean hasColumn();
+
         int getColumn();
+
         int getBlock();
+
         Set<UnsolvedCell> getCells();
     }
 
@@ -405,7 +410,7 @@ public class GroupedXCycles {
         public String toString() {
             var builder = new StringBuilder();
             builder.append('{');
-            for (var iterator = cells.iterator(); iterator.hasNext();) {
+            for (var iterator = cells.iterator(); iterator.hasNext(); ) {
                 builder.append(iterator.next().getVertexLabel());
                 if (iterator.hasNext()) {
                     builder.append(", ");
