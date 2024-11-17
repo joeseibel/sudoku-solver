@@ -1,8 +1,8 @@
 package sudokusolver.scala.logic.extreme
 
 import munit.FunSuite
-import sudokusolver.scala.{RemoveCandidates, SetValue}
 import sudokusolver.scala.logic.assertLogicalSolution
+import sudokusolver.scala.{RemoveCandidates, SetValue}
 
 class AlternatingInferenceChainsTest extends FunSuite:
   test("rule 1 test 1") {

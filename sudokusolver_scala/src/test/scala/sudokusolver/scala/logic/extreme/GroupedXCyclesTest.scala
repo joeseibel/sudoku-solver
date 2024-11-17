@@ -2,7 +2,7 @@ package sudokusolver.scala.logic.extreme
 
 import munit.FunSuite
 import scalax.collection.immutable.Graph
-import sudokusolver.scala.{RemoveCandidates, SetValue, Strength, StrengthEdge, SudokuNumber, UnsolvedCell}
+import sudokusolver.scala.*
 import sudokusolver.scala.logic.assertLogicalSolution
 
 class GroupedXCyclesTest extends FunSuite:

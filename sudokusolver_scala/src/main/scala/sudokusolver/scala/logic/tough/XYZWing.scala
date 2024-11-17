@@ -1,6 +1,6 @@
 package sudokusolver.scala.logic.tough
 
-import sudokusolver.scala.{Board, Cell, RemoveCandidates, UnsolvedCell, mergeToRemoveCandidates, zipEveryPair}
+import sudokusolver.scala.*
 
 /*
  * http://www.sudokuwiki.org/XYZ_Wing

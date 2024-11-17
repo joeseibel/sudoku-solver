@@ -1,6 +1,6 @@
 package sudokusolver.scala
 
-extension[T] (seq: IndexedSeq[T])
+extension [T](seq: IndexedSeq[T])
   def zipEveryPair: IndexedSeq[(T, T)] =
     for
       (first, firstIndex) <- seq.zipWithIndex

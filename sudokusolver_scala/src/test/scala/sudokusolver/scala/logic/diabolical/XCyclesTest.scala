@@ -2,8 +2,8 @@ package sudokusolver.scala.logic.diabolical
 
 import munit.FunSuite
 import scalax.collection.immutable.Graph
-import sudokusolver.scala.logic.assertLogicalSolution
 import sudokusolver.scala.*
+import sudokusolver.scala.logic.assertLogicalSolution
 
 class XCyclesTest extends FunSuite:
   test("test toDOT") {

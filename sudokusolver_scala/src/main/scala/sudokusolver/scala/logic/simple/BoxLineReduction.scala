@@ -1,6 +1,6 @@
 package sudokusolver.scala.logic.simple
 
-import sudokusolver.scala.{Board, Cell, RemoveCandidates, SudokuNumber, UnsolvedCell, mergeToRemoveCandidates}
+import sudokusolver.scala.*
 
 /*
  * http://www.sudokuwiki.org/Intersection_Removal#LBR

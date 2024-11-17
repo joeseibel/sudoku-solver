@@ -3,8 +3,8 @@ package sudokusolver.scala.logic.tough
 import munit.FunSuite
 import scalax.collection.edges.UnDiEdgeImplicits
 import scalax.collection.immutable.Graph
-import sudokusolver.scala.{RemoveCandidates, SudokuNumber, UnsolvedCell}
 import sudokusolver.scala.logic.assertLogicalSolution
+import sudokusolver.scala.{RemoveCandidates, SudokuNumber, UnsolvedCell}
 
 class SimpleColoringTest extends FunSuite:
   test("test toDOT") {

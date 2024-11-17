@@ -3,8 +3,8 @@ package sudokusolver.scala.logic.diabolical
 import munit.FunSuite
 import scalax.collection.edges.UnDiEdgeImplicits
 import scalax.collection.immutable.Graph
-import sudokusolver.scala.{RemoveCandidates, SetValue, SudokuNumber, UnsolvedCell}
 import sudokusolver.scala.logic.assertLogicalSolution
+import sudokusolver.scala.{RemoveCandidates, SetValue, SudokuNumber, UnsolvedCell}
 
 class MedusaTest extends FunSuite:
   test("test toDOT") {

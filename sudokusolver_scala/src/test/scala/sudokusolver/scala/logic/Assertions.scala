@@ -1,8 +1,8 @@
 package sudokusolver.scala.logic
 
 import munit.Assertions.assertEquals
-import sudokusolver.scala.logic.BruteForceSolution.SingleSolution
 import sudokusolver.scala.*
+import sudokusolver.scala.logic.BruteForceSolution.SingleSolution
 
 def assertLogicalSolution[T <: BoardModification](expected: Seq[T],
                                                   withCandidates: String,

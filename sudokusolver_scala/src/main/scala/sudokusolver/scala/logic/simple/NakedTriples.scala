@@ -1,6 +1,6 @@
 package sudokusolver.scala.logic.simple
 
-import sudokusolver.scala.{Board, Cell, RemoveCandidates, UnsolvedCell, mergeToRemoveCandidates, zipEveryTriple}
+import sudokusolver.scala.*
 
 /*
  * http://www.sudokuwiki.org/Naked_Candidates#NT

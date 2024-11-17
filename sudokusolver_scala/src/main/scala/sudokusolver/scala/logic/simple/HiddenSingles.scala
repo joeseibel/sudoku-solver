@@ -1,6 +1,6 @@
 package sudokusolver.scala.logic.simple
 
-import sudokusolver.scala.{Board, Cell, SetValue, SudokuNumber, UnsolvedCell}
+import sudokusolver.scala.*
 
 /*
  * http://www.sudokuwiki.org/Getting_Started

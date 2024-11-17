@@ -1,8 +1,8 @@
 package sudokusolver.scala.logic.diabolical
 
 import munit.FunSuite
-import sudokusolver.scala.{RemoveCandidates, SetValue}
 import sudokusolver.scala.logic.assertLogicalSolution
+import sudokusolver.scala.{RemoveCandidates, SetValue}
 
 class UniqueRectanglesTest extends FunSuite:
   test("type 1 test 1") {

@@ -1,6 +1,6 @@
 package sudokusolver.scala.logic.tough
 
-import sudokusolver.scala.{Board, Cell, RemoveCandidates, UnsolvedCell, mergeToRemoveCandidates, zipEveryTriple}
+import sudokusolver.scala.*
 
 /*
  * http://www.sudokuwiki.org/Y_Wing_Strategy

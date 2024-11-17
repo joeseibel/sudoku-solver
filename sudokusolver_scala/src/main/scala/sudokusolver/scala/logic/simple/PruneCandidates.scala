@@ -1,6 +1,6 @@
 package sudokusolver.scala.logic.simple
 
-import sudokusolver.scala.{Board, Cell, RemoveCandidates, SolvedCell, UnsolvedCell}
+import sudokusolver.scala.*
 
 /*
  * If a cell is solved, then no other cells in the same unit can have that number as a candidate.
