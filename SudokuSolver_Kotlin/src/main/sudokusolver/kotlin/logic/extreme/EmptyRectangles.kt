@@ -63,11 +63,11 @@ fun emptyRectangles(board: Board<Cell>): List<RemoveCandidates> =
     }.mergeToRemoveCandidates()
 
 private fun getIntersections(board: Board<Cell>, candidate: SudokuNumber): List<Pair<Int, Int>> =
-    (0 until UNIT_SIZE).flatMap { row ->
+    (0..<UNIT_SIZE).flatMap { row ->
         val rowInBlock = row % UNIT_SIZE_SQUARE_ROOT
         val rectangleRow1 = if (rowInBlock == 0) row + 1 else row - rowInBlock
         val rectangleRow2 = if (rowInBlock == 2) row - 1 else row - rowInBlock + 2
-        (0 until UNIT_SIZE).filter { column ->
+        (0..<UNIT_SIZE).filter { column ->
             val columnInBlock = column % UNIT_SIZE_SQUARE_ROOT
             val rectangleColumn1 = if (columnInBlock == 0) column + 1 else column - columnInBlock
             val rectangleColumn2 = if (columnInBlock == 2) column - 1 else column - columnInBlock + 2

@@ -122,7 +122,7 @@ fun parseCellsWithCandidates(withCandidates: String): Board<Cell> {
                 val closingBrace = withCandidates.indexOf('}', index)
                 require(closingBrace != -1) { "Unmatched '{'." }
                 require(closingBrace != index) { "Empty \"{}\"." }
-                val charsInBraces = (index until closingBrace).map { withCandidates[it] }
+                val charsInBraces = (index..<closingBrace).map { withCandidates[it] }
                 require('{' !in charsInBraces) { "Nested '{'." }
                 val candidates = charsInBraces.mapTo(EnumSet.noneOf(SudokuNumber::class.java)) { sudokuNumber(it) }
                 cellBuilders += { row, column -> UnsolvedCell(row, column, candidates) }

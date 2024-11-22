@@ -17,7 +17,7 @@ abstract class AbstractBoard<out T> {
     fun getColumn(columnIndex: Int): List<T> = rows.map { row -> row[columnIndex] }
 
     fun getBlock(blockIndex: Int): List<T> {
-        require(blockIndex in 0 until UNIT_SIZE) {
+        require(blockIndex in 0..<UNIT_SIZE) {
             "blockIndex is $blockIndex, must be between 0 and ${UNIT_SIZE - 1}."
         }
         val rowIndex = blockIndex / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT
@@ -68,10 +68,10 @@ class Board<out T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
     }
 
     override val columns: List<List<T>> by lazy {
-        (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } }
+        (0..<UNIT_SIZE).map { index -> rows.map { row -> row[index] } }
     }
 
-    override val blocks: List<List<T>> by lazy { (0 until UNIT_SIZE).map(::getBlock) }
+    override val blocks: List<List<T>> by lazy { (0..<UNIT_SIZE).map(::getBlock) }
     override val units: List<List<T>> by lazy { rows + columns + blocks }
     override val cells: List<T> by lazy { rows.flatten() }
 
@@ -127,10 +127,10 @@ class MutableBoard<T>(elements: Iterable<Iterable<T>>) : AbstractBoard<T>() {
         get() = _rows
 
     override val columns: List<List<T>>
-        get() = (0 until UNIT_SIZE).map { index -> rows.map { row -> row[index] } }
+        get() = (0..<UNIT_SIZE).map { index -> rows.map { row -> row[index] } }
 
     override val blocks: List<List<T>>
-        get() = (0 until UNIT_SIZE).map(::getBlock)
+        get() = (0..<UNIT_SIZE).map(::getBlock)
 
     override val units: List<List<T>>
         get() = rows + columns + blocks
@@ -153,6 +153,6 @@ fun getBlockIndex(rowIndex: Int, columnIndex: Int): Int =
 fun <T> Board<T>.toMutableBoard(): MutableBoard<T> = MutableBoard(rows)
 
 fun validateRowAndColumn(row: Int, column: Int) {
-    require(row in 0 until UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
-    require(column in 0 until UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
+    require(row in 0..<UNIT_SIZE) { "row is $row, must be between 0 and ${UNIT_SIZE - 1}." }
+    require(column in 0..<UNIT_SIZE) { "column is $column, must be between 0 and ${UNIT_SIZE - 1}." }
 }
