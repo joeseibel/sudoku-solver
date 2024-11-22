@@ -19,7 +19,7 @@ import java.util.EnumSet
  */
 fun hiddenQuads(board: Board<Cell>): List<RemoveCandidates> =
     board.units.flatMap { unit ->
-        SudokuNumber.values().zipEveryQuad().mapNotNull { (a, b, c, d) ->
+        SudokuNumber.entries.zipEveryQuad().mapNotNull { (a, b, c, d) ->
             unit.filterIsInstance<UnsolvedCell>()
                 .filter { a in it.candidates || b in it.candidates || c in it.candidates || d in it.candidates }
                 .takeIf { it.size == 4 }

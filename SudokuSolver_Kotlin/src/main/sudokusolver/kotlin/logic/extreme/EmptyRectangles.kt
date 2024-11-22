@@ -34,7 +34,7 @@ import sudokusolver.kotlin.mergeToRemoveCandidates
  * invalidating that block. This means that the candidate cannot be the solution to that cell and can be removed.
  */
 fun emptyRectangles(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
         getIntersections(board, candidate).flatMap { (row, column) ->
             val block = board[row, column].block
 

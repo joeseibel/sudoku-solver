@@ -46,7 +46,7 @@ import sudokusolver.kotlin.mergeToRemoveCandidates
  * as the fin, but different columns.
  */
 fun finnedXWing(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
 
         fun finnedXWing(units: List<List<Cell>>, getOtherUnitIndex: (Cell) -> Int) =
             units.mapNotNull { baseUnit ->

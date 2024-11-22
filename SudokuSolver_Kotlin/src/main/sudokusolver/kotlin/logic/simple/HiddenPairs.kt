@@ -18,7 +18,7 @@ import java.util.EnumSet
  */
 fun hiddenPairs(board: Board<Cell>): List<RemoveCandidates> =
     board.units.flatMap { unit ->
-        SudokuNumber.values().zipEveryPair().mapNotNull { (a, b) ->
+        SudokuNumber.entries.zipEveryPair().mapNotNull { (a, b) ->
             unit.filterIsInstance<UnsolvedCell>()
                 .filter { a in it.candidates }
                 .takeIf { cells ->

@@ -72,7 +72,7 @@ data class RemoveCandidates(
     constructor(row: Int, column: Int, vararg candidates: Int) : this(
         row,
         column,
-        candidates.mapTo(EnumSet.noneOf(SudokuNumber::class.java)) { SudokuNumber.values()[it - 1] }
+        candidates.mapTo(EnumSet.noneOf(SudokuNumber::class.java)) { SudokuNumber.entries[it - 1] }
     )
 }
 
@@ -85,7 +85,7 @@ data class SetValue(override val row: Int, override val column: Int, val value: 
         require(value in cell.candidates) { "$value is not a candidate for [$row, $column]." }
     }
 
-    constructor(row: Int, column: Int, value: Int) : this(row, column, SudokuNumber.values()[value - 1])
+    constructor(row: Int, column: Int, value: Int) : this(row, column, SudokuNumber.entries[value - 1])
 }
 
 /*

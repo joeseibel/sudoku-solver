@@ -31,7 +31,7 @@ import java.io.StringWriter
  * solution. All candidates with that color in that chain can be removed.
  */
 fun simpleColoringRule2(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
         createConnectedComponents(board, candidate).mapNotNull { graph ->
             val colors = graph.colorToMap()
             graph.vertexSet()
@@ -53,7 +53,7 @@ fun simpleColoringRule2(board: Board<Cell>): List<RemoveCandidates> =
  * from the cell outside the chain.
  */
 fun simpleColoringRule4(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
         createConnectedComponents(board, candidate).flatMap { graph ->
             val (colorOne, colorTwo) = graph.colorToLists()
             board.cells

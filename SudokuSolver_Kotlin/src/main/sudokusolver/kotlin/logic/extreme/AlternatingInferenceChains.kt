@@ -117,7 +117,7 @@ private fun buildGraph(board: Board<Cell>): Graph<LocatedCandidate, StrengthEdge
 
     //Connect cells.
     board.units.forEach { unit ->
-        SudokuNumber.values().forEach { candidate ->
+        SudokuNumber.entries.forEach { candidate ->
             val withCandidates = unit.filterIsInstance<UnsolvedCell>().filter { candidate in it.candidates }
             val strength = if (withCandidates.size == 2) Strength.STRONG else Strength.WEAK
             withCandidates.zipEveryPair().forEach { (a, b) ->

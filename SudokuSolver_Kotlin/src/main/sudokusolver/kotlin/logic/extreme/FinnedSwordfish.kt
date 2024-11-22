@@ -36,7 +36,7 @@ import sudokusolver.kotlin.zipEveryPair
  * outside the grid.
  */
 fun finnedSwordfish(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
 
         fun finnedSwordfish(
             units: List<List<Cell>>,

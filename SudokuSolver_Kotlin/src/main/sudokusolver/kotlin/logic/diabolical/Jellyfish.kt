@@ -20,7 +20,7 @@ import sudokusolver.kotlin.zipEveryQuad
  * of the sixteen cells. The candidate can be removed from cells which are in the four rows, but different columns
  */
 fun jellyfish(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
 
         fun jellyfish(units: List<List<Cell>>, getOtherUnit: (Int) -> List<Cell>, getOtherUnitIndex: (Cell) -> Int) =
             units.zipEveryQuad().mapNotNull { (unitA, unitB, unitC, unitD) ->

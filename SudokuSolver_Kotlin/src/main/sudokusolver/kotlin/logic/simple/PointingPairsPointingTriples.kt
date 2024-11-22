@@ -20,7 +20,7 @@ fun pointingPairsPointingTriples(board: Board<Cell>): List<RemoveCandidates> =
     board.blocks.flatMap { block ->
         val unsolved = block.filterIsInstance<UnsolvedCell>()
         val blockIndex = block.first().block
-        SudokuNumber.values().flatMap { candidate ->
+        SudokuNumber.entries.flatMap { candidate ->
             val withCandidate = unsolved.filter { candidate in it.candidates }
 
             fun pointingPairsPointingTriples(getUnit: (Int) -> List<Cell>, getUnitIndex: (Cell) -> Int) =

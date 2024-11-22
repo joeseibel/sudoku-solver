@@ -60,7 +60,7 @@ import java.io.StringWriter
  * the vertices.
  */
 fun groupedXCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().map { candidate ->
+    SudokuNumber.entries.map { candidate ->
         val graph = buildGraph(board, candidate).trim()
         getWeakEdgesInAlternatingCycle(graph).flatMap { edge ->
             val source = graph.getEdgeSource(edge)
@@ -92,7 +92,7 @@ fun groupedXCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
  * any contradiction in the cycle. Therefore, the candidate must be the solution for that vertex.
  */
 fun groupedXCyclesRule2(board: Board<Cell>): List<SetValue> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
         val graph = buildGraph(board, candidate)
         graph.vertexSet()
             .filterIsInstance<CellNode>()
@@ -110,7 +110,7 @@ fun groupedXCyclesRule2(board: Board<Cell>): List<SetValue> =
  * contradiction in the cycle. Therefore, the candidate can be removed from the vertex.
  */
 fun groupedXCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
         val graph = buildGraph(board, candidate)
         graph.vertexSet()
             .filterIsInstance<CellNode>()

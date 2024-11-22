@@ -20,7 +20,7 @@ import sudokusolver.kotlin.zipEveryPair
  * cells which are in the two rows, but different columns.
  */
 fun xWing(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
 
         fun xWing(units: List<List<Cell>>, getOtherUnit: (Int) -> List<Cell>, getOtherUnitIndex: (Cell) -> Int) =
             units.zipEveryPair().mapNotNull { (unitA, unitB) ->

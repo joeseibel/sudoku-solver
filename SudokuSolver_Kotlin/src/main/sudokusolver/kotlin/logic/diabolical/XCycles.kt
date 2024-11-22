@@ -40,7 +40,7 @@ import java.io.StringWriter
  * removed from any other cell which is in the same unit as both vertices of a weak link.
  */
 fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
         val graph = createStrongLinks(board, candidate).addWeakLinks().trim()
         getWeakEdgesInAlternatingCycle(graph).flatMap { edge ->
             val source = graph.getEdgeSource(edge)
@@ -73,7 +73,7 @@ fun xCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
  * cycle. Therefore, the candidate must be the solution for that vertex.
  */
 fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
         val graph = createStrongLinks(board, candidate).addWeakLinks()
         graph.vertexSet()
             .filter { vertex -> alternatingCycleExists(graph, vertex, Strength.STRONG) }
@@ -90,7 +90,7 @@ fun xCyclesRule2(board: Board<Cell>): List<SetValue> =
  * Therefore, the candidate can be removed from the vertex.
  */
 fun xCyclesRule3(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
         val graph = createStrongLinks(board, candidate).addWeakLinks().additionalWeakLinks(board, candidate)
         graph.vertexSet()
             .filter { vertex -> alternatingCycleExists(graph, vertex, Strength.WEAK) }

@@ -17,7 +17,7 @@ import sudokusolver.kotlin.mergeToRemoveCandidates
  * that column. The candidate can be removed from cells which are in the same block, but different columns.
  */
 fun boxLineReduction(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
 
         fun boxLineReduction(units: List<List<Cell>>, getUnitIndex: (Cell) -> Int) =
             units.mapNotNull { unit ->

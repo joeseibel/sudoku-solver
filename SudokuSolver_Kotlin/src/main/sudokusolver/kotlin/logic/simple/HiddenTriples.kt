@@ -19,7 +19,7 @@ import java.util.EnumSet
  */
 fun hiddenTriples(board: Board<Cell>): List<RemoveCandidates> =
     board.units.flatMap { unit ->
-        SudokuNumber.values().zipEveryTriple().mapNotNull { (a, b, c) ->
+        SudokuNumber.entries.zipEveryTriple().mapNotNull { (a, b, c) ->
             unit.filterIsInstance<UnsolvedCell>()
                 .filter { a in it.candidates || b in it.candidates || c in it.candidates }
                 .takeIf { it.size == 3 }

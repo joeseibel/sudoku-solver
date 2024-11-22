@@ -20,7 +20,7 @@ import sudokusolver.kotlin.zipEveryTriple
  * three of the nine cells. The candidate can be removed from cells which are in the three rows, but different columns.
  */
 fun swordfish(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.values().flatMap { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
 
         fun swordfish(units: List<List<Cell>>, getOtherUnit: (Int) -> List<Cell>, getOtherUnitIndex: (Cell) -> Int) =
             units.zipEveryTriple().mapNotNull { (unitA, unitB, unitC) ->

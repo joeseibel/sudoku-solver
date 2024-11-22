@@ -210,7 +210,7 @@ private fun createConnectedComponents(board: Board<Cell>): Set<Graph<LocatedCand
         builder.addEdge(cell to cell.candidates.first(), cell to cell.candidates.last())
     }
     board.units.map { it.filterIsInstance<UnsolvedCell>() }.forEach { unit ->
-        SudokuNumber.values().forEach { candidate ->
+        SudokuNumber.entries.forEach { candidate ->
             unit.filter { candidate in it.candidates }
                 .takeIf { it.size == 2 }
                 ?.let { builder.addEdge(it.first() to candidate, it.last() to candidate) }

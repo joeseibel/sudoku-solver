@@ -14,7 +14,7 @@ import sudokusolver.kotlin.UnsolvedCell
 fun hiddenSingles(board: Board<Cell>): List<SetValue> =
     board.units.flatMap { unit ->
         val unsolved = unit.filterIsInstance<UnsolvedCell>()
-        SudokuNumber.values().mapNotNull { candidate ->
+        SudokuNumber.entries.mapNotNull { candidate ->
             unsolved.singleOrNull { candidate in it.candidates }?.let { SetValue(it, candidate) }
         }
     }.distinct()
