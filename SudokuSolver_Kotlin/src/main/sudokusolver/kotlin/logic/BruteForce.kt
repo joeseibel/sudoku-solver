@@ -10,8 +10,8 @@ import sudokusolver.kotlin.toMutableBoard
 import java.util.EnumSet
 
 sealed interface BruteForceSolution
-object NoSolutions : BruteForceSolution
-object MultipleSolutions : BruteForceSolution
+data object NoSolutions : BruteForceSolution
+data object MultipleSolutions : BruteForceSolution
 data class SingleSolution(val solution: Board<SudokuNumber>) : BruteForceSolution
 
 /*

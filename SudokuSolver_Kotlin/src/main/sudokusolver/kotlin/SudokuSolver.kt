@@ -75,8 +75,8 @@ fun main(args: Array<String>) {
 }
 
 sealed interface SolveResult
-object InvalidNoSolutions : SolveResult
-object InvalidMultipleSolutions : SolveResult
+data object InvalidNoSolutions : SolveResult
+data object InvalidMultipleSolutions : SolveResult
 class Solution(val board: Board<SudokuNumber>) : SolveResult
 
 class UnableToSolve(board: Board<Cell>) : SolveResult {
