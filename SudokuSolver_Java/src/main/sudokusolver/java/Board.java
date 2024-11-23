@@ -118,17 +118,10 @@ public record Board<T>(List<List<T>> rows) {
         return board.rows
                 .stream()
                 .map(row -> row.stream()
-                        .map(cell -> {
-                            if (cell instanceof SolvedCell(_, _, var value)) {
-                                return value.toString();
-                            } else if (cell instanceof UnsolvedCell(_, _, var candidates)) {
-                                var candidatesString = candidates.stream()
-                                        .map(Object::toString)
-                                        .collect(Collectors.joining());
-                                return '{' + candidatesString + '}';
-                            } else {
-                                throw new IllegalStateException("Unexpected cell: " + cell);
-                            }
+                        .map(cell -> switch (cell) {
+                            case SolvedCell(_, _, var value) -> value.toString();
+                            case UnsolvedCell(_, _, var candidates) ->
+                                    '{' + candidates.stream().map(Object::toString).collect(Collectors.joining()) + '}';
                         })
                         .collect(Collectors.joining()))
                 .collect(Collectors.joining("\n"));
