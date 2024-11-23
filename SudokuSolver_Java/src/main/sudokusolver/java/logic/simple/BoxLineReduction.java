@@ -57,7 +57,7 @@ public class BoxLineReduction {
                     .map(Cell::block)
                     .collect(Collectors.toSet());
             if (blockIndices.size() == 1) {
-                var unitIndex = getUnitIndex.applyAsInt(unit.get(0));
+                var unitIndex = getUnitIndex.applyAsInt(unit.getFirst());
                 return board.getBlock(blockIndices.iterator().next())
                         .stream()
                         .filter(UnsolvedCell.class::isInstance)

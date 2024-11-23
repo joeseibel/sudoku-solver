@@ -95,11 +95,11 @@ public class FinnedSwordfish {
                             .collect(Collectors.toSet());
                     if (otherUnitIndices.size() == 3) {
                         return unitsWithCandidate.stream().flatMap(finnedUnit -> {
-                            var finnedUnitIndex = getUnitIndex.applyAsInt(finnedUnit.get(0));
+                            var finnedUnitIndex = getUnitIndex.applyAsInt(finnedUnit.getFirst());
                             var unitIndices = new HashSet<Integer>();
                             unitIndices.add(finnedUnitIndex);
-                            unitIndices.add(getUnitIndex.applyAsInt(baseUnitA.get(0)));
-                            unitIndices.add(getUnitIndex.applyAsInt(baseUnitB.get(0)));
+                            unitIndices.add(getUnitIndex.applyAsInt(baseUnitA.getFirst()));
+                            unitIndices.add(getUnitIndex.applyAsInt(baseUnitB.getFirst()));
                             if (unitIndices.size() == 3) {
                                 var outsideOtherUnitIndices = finnedUnit.stream()
                                         .filter(cell -> !otherUnitIndices.contains(getOtherUnitIndex.applyAsInt(cell)))
@@ -116,7 +116,8 @@ public class FinnedSwordfish {
                                                 .filter(finnedCell -> finnedCell.block() == blockIndex)
                                                 .toList();
                                         if (finnedCells.size() == 1) {
-                                            return getOtherUnit.apply(getOtherUnitIndex.applyAsInt(finnedCells.get(0)))
+                                            return getOtherUnit
+                                                    .apply(getOtherUnitIndex.applyAsInt(finnedCells.getFirst()))
                                                     .stream()
                                                     .filter(UnsolvedCell.class::isInstance)
                                                     .map(UnsolvedCell.class::cast)

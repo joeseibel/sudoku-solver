@@ -35,7 +35,7 @@ public class HiddenUniqueRectangles {
                     var floor = partitioned.get(true);
                     var roof = partitioned.get(false);
                     if (floor.size() == 1) {
-                        return type1(board, rectangle, floor.get(0)).stream();
+                        return type1(board, rectangle, floor.getFirst()).stream();
                     } else if (roof.size() == 2) {
                         return type2(board, roof, rectangle.getCommonCandidates()).stream();
                     } else {
@@ -77,7 +77,7 @@ public class HiddenUniqueRectangles {
                 })
                 .toList();
         if (strongCandidates.size() == 1) {
-            var strongCandidate = strongCandidates.get(0);
+            var strongCandidate = strongCandidates.getFirst();
             var oppositeCell = rectangle.getCells()
                     .stream()
                     .filter(cell -> cell.row() != floor.row() && cell.column() != floor.column())
@@ -114,8 +114,8 @@ public class HiddenUniqueRectangles {
             List<UnsolvedCell> roof,
             EnumSet<SudokuNumber> commonCandidates
     ) {
-        var roofA = roof.get(0);
-        var roofB = roof.get(1);
+        var roofA = roof.getFirst();
+        var roofB = roof.getLast();
         var commonCandidatesArray = commonCandidates.toArray(SudokuNumber[]::new);
         var candidateA = commonCandidatesArray[0];
         var candidateB = commonCandidatesArray[1];

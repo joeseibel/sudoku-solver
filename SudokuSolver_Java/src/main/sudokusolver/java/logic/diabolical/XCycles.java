@@ -168,8 +168,8 @@ public class XCycles {
                         .toList())
                 .filter(withCandidate -> withCandidate.size() == 2)
                 .forEach(withCandidate -> {
-                    var a = withCandidate.get(0);
-                    var b = withCandidate.get(1);
+                    var a = withCandidate.getFirst();
+                    var b = withCandidate.getLast();
                     builder.addEdge(a, b, new StrengthEdge(Strength.STRONG));
                 });
         return builder.build();

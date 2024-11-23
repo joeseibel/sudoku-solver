@@ -101,7 +101,7 @@ public class ExtendedUniqueRectangles {
                     .filter(cell -> !commonCandidates.containsAll(cell.candidates()))
                     .toList();
             if (withAdditionalList.size() == 1) {
-                var withAdditional = withAdditionalList.get(0);
+                var withAdditional = withAdditionalList.getFirst();
                 var removals = EnumSet.copyOf(withAdditional.candidates());
                 removals.retainAll(commonCandidates);
                 return removals.stream().map(candidate -> new LocatedCandidate(withAdditional, candidate));

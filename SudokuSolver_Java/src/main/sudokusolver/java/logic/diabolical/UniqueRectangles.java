@@ -48,7 +48,7 @@ public class UniqueRectangles {
                 .flatMap(rectangle -> Optional.of(rectangle.getRoof())
                         .filter(roof -> roof.size() == 1)
                         .map(roof -> {
-                            var roofCell = roof.get(0);
+                            var roofCell = roof.getFirst();
                             return rectangle.getCommonCandidates()
                                     .stream()
                                     .map(candidate -> new LocatedCandidate(roofCell, candidate));
@@ -71,8 +71,8 @@ public class UniqueRectangles {
                 .flatMap(rectangle -> Optional.of(rectangle.getRoof())
                         .filter(roof -> roof.size() == 2)
                         .map(roof -> {
-                            var roofA = roof.get(0);
-                            var roofB = roof.get(1);
+                            var roofA = roof.getFirst();
+                            var roofB = roof.getLast();
                             if (roofA.candidates().size() == 3 && roofA.candidates().equals(roofB.candidates())) {
                                 var additionalCandidates = EnumSet.copyOf(roofA.candidates());
                                 additionalCandidates.removeAll(rectangle.getCommonCandidates());
@@ -112,8 +112,8 @@ public class UniqueRectangles {
                 .flatMap(rectangle -> Optional.of(rectangle.getRoof())
                         .filter(roof -> roof.size() == 2)
                         .map(roof -> {
-                            var roofA = roof.get(0);
-                            var roofB = roof.get(1);
+                            var roofA = roof.getFirst();
+                            var roofB = roof.getLast();
                             if (roofA.candidates().size() == 3 && roofB.candidates().size() == 3 &&
                                     !roofA.candidates().equals(roofB.candidates())
                             ) {
@@ -195,8 +195,8 @@ public class UniqueRectangles {
                 .flatMap(rectangle -> Optional.of(rectangle.getRoof())
                         .filter(roof -> roof.size() == 2)
                         .map(roof -> {
-                            var roofA = roof.get(0);
-                            var roofB = roof.get(1);
+                            var roofA = roof.getFirst();
+                            var roofB = roof.getLast();
                             var additionalCandidates = EnumSet.copyOf(roofA.candidates());
                             additionalCandidates.addAll(roofB.candidates());
                             additionalCandidates.removeAll(rectangle.getCommonCandidates());
@@ -315,8 +315,8 @@ public class UniqueRectangles {
             ToIntFunction<Cell> getUnitIndex,
             IntFunction<List<Cell>> getUnit
     ) {
-        var roofA = roof.get(0);
-        var roofB = roof.get(1);
+        var roofA = roof.getFirst();
+        var roofB = roof.getLast();
         var indexA = getUnitIndex.applyAsInt(roofA);
         var indexB = getUnitIndex.applyAsInt(roofB);
         if (indexA == indexB) {
@@ -366,8 +366,8 @@ public class UniqueRectangles {
                 .flatMap(rectangle -> Optional.of(rectangle.getFloor())
                         .filter(floor -> floor.size() == 2)
                         .map(floor -> {
-                            var floorA = floor.get(0);
-                            var floorB = floor.get(1);
+                            var floorA = floor.getFirst();
+                            var floorB = floor.getLast();
                             if (floorA.row() != floorB.row() && floorA.column() != floorB.column()) {
                                 return rectangle.getCommonCandidates()
                                         .stream()

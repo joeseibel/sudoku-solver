@@ -286,8 +286,8 @@ public class Medusa {
                         .toList())
                 .filter(unit -> unit.size() == 2)
                 .forEach(unit -> {
-                    var a = new LocatedCandidate(unit.get(0), candidate);
-                    var b = new LocatedCandidate(unit.get(1), candidate);
+                    var a = new LocatedCandidate(unit.getFirst(), candidate);
+                    var b = new LocatedCandidate(unit.getLast(), candidate);
                     Graphs.addEdgeWithVertices(graph, a, b);
                 }));
         return new BiconnectivityInspector<>(graph).getConnectedComponents();

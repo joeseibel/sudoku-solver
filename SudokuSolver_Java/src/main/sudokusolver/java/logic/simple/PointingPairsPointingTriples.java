@@ -62,7 +62,7 @@ public class PointingPairsPointingTriples {
                     .stream()
                     .filter(UnsolvedCell.class::isInstance)
                     .map(UnsolvedCell.class::cast)
-                    .filter(cell -> cell.block() != block.get(0).block() && cell.candidates().contains(candidate))
+                    .filter(cell -> cell.block() != block.getFirst().block() && cell.candidates().contains(candidate))
                     .map(cell -> new LocatedCandidate(cell, candidate));
         } else {
             return Stream.empty();

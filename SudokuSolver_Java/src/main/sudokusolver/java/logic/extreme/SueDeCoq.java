@@ -71,7 +71,7 @@ public class SueDeCoq {
                                     .toList();
                             var otherCellsInBlock = block.stream()
                                     .filter(cell -> getUnitIndex.applyAsInt(cell) !=
-                                            getUnitIndex.applyAsInt(unitByBlock.get(0)))
+                                            getUnitIndex.applyAsInt(unitByBlock.getFirst()))
                                     .toList();
                             if (unitByBlock.size() == 2) {
                                 return getGroupRemovals(unit, otherCellsInUnit, block, otherCellsInBlock, unitByBlock);

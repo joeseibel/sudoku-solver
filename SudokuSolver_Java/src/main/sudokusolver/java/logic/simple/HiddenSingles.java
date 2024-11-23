@@ -27,7 +27,7 @@ public class HiddenSingles {
                         .filter(cell -> cell.candidates().contains(candidate))
                         .toList();
                 if (unsolvedWithCandidate.size() == 1) {
-                    return Stream.of(new SetValue(unsolvedWithCandidate.get(0), candidate));
+                    return Stream.of(new SetValue(unsolvedWithCandidate.getFirst(), candidate));
                 } else {
                     return Stream.empty();
                 }

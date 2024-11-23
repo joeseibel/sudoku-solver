@@ -82,11 +82,11 @@ public class FinnedXWing {
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             if (withCandidate.size() == 2) {
-                var baseUnitCell1 = withCandidate.get(0);
-                var baseUnitCell2 = withCandidate.get(1);
+                var baseUnitCell1 = withCandidate.getFirst();
+                var baseUnitCell2 = withCandidate.getLast();
                 if (baseUnitCell1.block() != baseUnitCell2.block()) {
                     return units.stream()
-                            .filter(finnedUnit -> finnedUnit.get(0).block() != baseUnit.get(0).block())
+                            .filter(finnedUnit -> finnedUnit.getFirst().block() != baseUnit.getFirst().block())
                             .flatMap(finnedUnit -> {
                                 var finnedUnitByBlock = finnedUnit.stream()
                                         .filter(UnsolvedCell.class::isInstance)

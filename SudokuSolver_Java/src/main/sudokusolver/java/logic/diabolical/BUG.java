@@ -28,7 +28,7 @@ public class BUG {
                 .filter(cell -> cell.candidates().size() != 2)
                 .toList();
         if (cellsWithNotTwo.size() == 1) {
-            var cell = cellsWithNotTwo.get(0);
+            var cell = cellsWithNotTwo.getFirst();
             if (cell.candidates().size() == 3) {
                 var row = board.getRow(cell.row())
                         .stream()
@@ -42,7 +42,7 @@ public class BUG {
                                 .count() == 3)
                         .toList();
                 assert candidates.size() == 1 : "There are multiple candidates that appear three times in the row";
-                return Optional.of(new SetValue(cell, candidates.get(0)));
+                return Optional.of(new SetValue(cell, candidates.getFirst()));
             } else {
                 return Optional.empty();
             }

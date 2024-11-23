@@ -49,7 +49,7 @@ public class WXYZWing {
                                         .anyMatch(pair -> !pair.first().isInSameUnit(pair.second())))
                                 .toList();
                         if (nonRestrictedList.size() == 1) {
-                            var nonRestricted = nonRestrictedList.get(0);
+                            var nonRestricted = nonRestrictedList.getFirst();
                             var withCandidate = quadList.stream()
                                     .filter(cell -> cell.candidates().contains(nonRestricted))
                                     .toList();

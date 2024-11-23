@@ -66,13 +66,13 @@ public class XWing {
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             if (aWithCandidate.size() == 2 && bWithCandidate.size() == 2 &&
-                    getOtherUnitIndex.applyAsInt(aWithCandidate.get(0)) ==
-                            getOtherUnitIndex.applyAsInt(bWithCandidate.get(0)) &&
-                    getOtherUnitIndex.applyAsInt(aWithCandidate.get(1)) ==
-                            getOtherUnitIndex.applyAsInt(bWithCandidate.get(1))
+                    getOtherUnitIndex.applyAsInt(aWithCandidate.getFirst()) ==
+                            getOtherUnitIndex.applyAsInt(bWithCandidate.getFirst()) &&
+                    getOtherUnitIndex.applyAsInt(aWithCandidate.getLast()) ==
+                            getOtherUnitIndex.applyAsInt(bWithCandidate.getLast())
             ) {
-                var otherUnitA = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.get(0)));
-                var otherUnitB = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.get(1)));
+                var otherUnitA = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.getFirst()));
+                var otherUnitB = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.getLast()));
                 return Stream.concat(otherUnitA.stream(), otherUnitB.stream())
                         .filter(UnsolvedCell.class::isInstance)
                         .map(UnsolvedCell.class::cast)

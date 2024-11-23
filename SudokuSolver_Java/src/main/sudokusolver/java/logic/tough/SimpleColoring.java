@@ -108,8 +108,8 @@ public class SimpleColoring {
                         .toList())
                 .filter(withCandidate -> withCandidate.size() == 2)
                 .forEach(withCandidate -> {
-                    var a = withCandidate.get(0);
-                    var b = withCandidate.get(1);
+                    var a = withCandidate.getFirst();
+                    var b = withCandidate.getLast();
                     Graphs.addEdgeWithVertices(graph, a, b);
                 });
         return new BiconnectivityInspector<>(graph).getConnectedComponents();

@@ -89,7 +89,7 @@ public class EmptyRectangles {
                             .filter(cell -> hasCandidate(cell, candidate) && !cell.equals(strongLink1))
                             .toList();
                     if (otherUnit.size() == 1) {
-                        var strongLink2 = otherUnit.get(0);
+                        var strongLink2 = otherUnit.getFirst();
                         if (strongLink1.block() != strongLink2.block() &&
                                 board.get(getRemovalRow.applyAsInt(strongLink2),
                                         getRemovalColumn.applyAsInt(strongLink2)) instanceof UnsolvedCell removalCell &&
