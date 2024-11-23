@@ -54,7 +54,7 @@ public class EmptyRectangles {
                             Cell::column,
                             board::getColumn,
                             Cell::row,
-                            cell -> column
+                            _ -> column
                     );
                     var columnRemovals = getRemovals(
                             board,
@@ -63,7 +63,7 @@ public class EmptyRectangles {
                             board.getColumn(column),
                             Cell::row,
                             board::getRow,
-                            cell -> row,
+                            _ -> row,
                             Cell::column
                     );
                     return Stream.concat(rowRemovals, columnRemovals);

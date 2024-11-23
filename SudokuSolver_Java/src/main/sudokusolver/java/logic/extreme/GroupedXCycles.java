@@ -100,7 +100,7 @@ public class GroupedXCycles {
                                         candidate,
                                         source,
                                         target,
-                                        node -> true,
+                                        _ -> true,
                                         Node::getBlock,
                                         board::getBlock
                                 );
