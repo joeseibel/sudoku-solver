@@ -101,8 +101,7 @@ public class SudokuSolver {
                             }
                         });
                         unsolved.candidates().removeAll(removeCandidates.candidates());
-                    } else if (modification instanceof SetValue setValue) {
-                        var value = setValue.value();
+                    } else if (modification instanceof SetValue(_, _, var value)) {
                         if (value != knownSolution) {
                             var message = "Cannot set value " + value + " to [" + row + ", " + column +
                                     "]. Solution is " + knownSolution;

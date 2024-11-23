@@ -109,7 +109,7 @@ public record Board<T>(List<List<T>> rows) {
         return board.rows
                 .stream()
                 .map(row -> row.stream()
-                        .map(cell -> cell instanceof SolvedCell solvedCell ? solvedCell.value().toString() : "0")
+                        .map(cell -> cell instanceof SolvedCell(_, _, var value) ? value.toString() : "0")
                         .collect(Collectors.joining()))
                 .collect(Collectors.joining());
     }
@@ -119,14 +119,13 @@ public record Board<T>(List<List<T>> rows) {
                 .stream()
                 .map(row -> row.stream()
                         .map(cell -> {
-                            if (cell instanceof SolvedCell solvedCell) {
-                                return solvedCell.value().toString();
-                            } else if (cell instanceof UnsolvedCell unsolvedCell) {
-                                var candidates = unsolvedCell.candidates()
-                                        .stream()
+                            if (cell instanceof SolvedCell(_, _, var value)) {
+                                return value.toString();
+                            } else if (cell instanceof UnsolvedCell(_, _, var candidates)) {
+                                var candidatesString = candidates.stream()
                                         .map(Object::toString)
                                         .collect(Collectors.joining());
-                                return '{' + candidates + '}';
+                                return '{' + candidatesString + '}';
                             } else {
                                 throw new IllegalStateException("Unexpected cell: " + cell);
                             }
