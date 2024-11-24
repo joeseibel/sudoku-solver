@@ -126,7 +126,7 @@ public class ExtendedUniqueRectangles {
                 }
             }
             if (withAdditionalList.size() == 1) {
-                var withAdditional = withAdditionalList.get(0);
+                var withAdditional = withAdditionalList.getFirst();
                 var toRemove = EnumSet.copyOf(withAdditional.candidates());
                 toRemove.retainAll(commonCandidates);
                 removals.add(withAdditional, toRemove);

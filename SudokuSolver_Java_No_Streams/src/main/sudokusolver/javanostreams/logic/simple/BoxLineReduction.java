@@ -45,7 +45,7 @@ public class BoxLineReduction {
                 }
             }
             if (blockIndices.size() == 1) {
-                var unitIndex = getUnitIndex.applyAsInt(unit.get(0));
+                var unitIndex = getUnitIndex.applyAsInt(unit.getFirst());
                 for (var cell : board.getBlock(blockIndices.iterator().next())) {
                     if (cell instanceof UnsolvedCell unsolved &&
                             getUnitIndex.applyAsInt(unsolved) != unitIndex &&

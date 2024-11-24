@@ -86,11 +86,11 @@ public class FinnedSwordfish {
                         }
                         if (otherUnitIndices.size() == 3) {
                             for (var finnedUnit : unitsWithCandidate) {
-                                var finnedUnitIndex = getUnitIndex.applyAsInt(finnedUnit.get(0));
+                                var finnedUnitIndex = getUnitIndex.applyAsInt(finnedUnit.getFirst());
                                 var unitIndices = new HashSet<Integer>();
                                 unitIndices.add(finnedUnitIndex);
-                                unitIndices.add(getUnitIndex.applyAsInt(baseUnitA.get(0)));
-                                unitIndices.add(getUnitIndex.applyAsInt(baseUnitB.get(0)));
+                                unitIndices.add(getUnitIndex.applyAsInt(baseUnitA.getFirst()));
+                                unitIndices.add(getUnitIndex.applyAsInt(baseUnitB.getFirst()));
                                 if (unitIndices.size() == 3) {
                                     var outsideOtherUnitIndices = new ArrayList<UnsolvedCell>();
                                     for (var cell : finnedUnit) {
@@ -115,7 +115,7 @@ public class FinnedSwordfish {
                                             }
                                             if (finnedCells.size() == 1) {
                                                 for (var cell : getOtherUnit
-                                                        .apply(getOtherUnitIndex.applyAsInt(finnedCells.get(0)))
+                                                        .apply(getOtherUnitIndex.applyAsInt(finnedCells.getFirst()))
                                                 ) {
                                                     if (cell instanceof UnsolvedCell unsolved &&
                                                             unsolved.candidates().contains(candidate) &&

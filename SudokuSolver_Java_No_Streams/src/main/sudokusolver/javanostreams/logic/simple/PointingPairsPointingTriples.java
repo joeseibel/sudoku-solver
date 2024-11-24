@@ -49,7 +49,7 @@ public class PointingPairsPointingTriples {
         if (unitIndices.size() == 1) {
             for (var cell : getUnit.apply(unitIndices.iterator().next())) {
                 if (cell instanceof UnsolvedCell unsolved &&
-                        unsolved.block() != block.get(0).block() &&
+                        unsolved.block() != block.getFirst().block() &&
                         unsolved.candidates().contains(candidate)
                 ) {
                     removals.add(unsolved, candidate);

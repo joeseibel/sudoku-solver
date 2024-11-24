@@ -57,10 +57,10 @@ public class XWing {
                     }
                 }
                 if (aWithCandidate.size() == 2 && bWithCandidate.size() == 2 &&
-                        getOtherUnitIndex.applyAsInt(aWithCandidate.get(0)) ==
-                                getOtherUnitIndex.applyAsInt(bWithCandidate.get(0)) &&
-                        getOtherUnitIndex.applyAsInt(aWithCandidate.get(1)) ==
-                                getOtherUnitIndex.applyAsInt(bWithCandidate.get(1))
+                        getOtherUnitIndex.applyAsInt(aWithCandidate.getFirst()) ==
+                                getOtherUnitIndex.applyAsInt(bWithCandidate.getFirst()) &&
+                        getOtherUnitIndex.applyAsInt(aWithCandidate.getLast()) ==
+                                getOtherUnitIndex.applyAsInt(bWithCandidate.getLast())
                 ) {
                     for (var cellInUnitA : aWithCandidate) {
                         for (var cell : getOtherUnit.apply(getOtherUnitIndex.applyAsInt(cellInUnitA))) {

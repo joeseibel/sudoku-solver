@@ -76,7 +76,7 @@ public class SueDeCoq {
                 }
                 var otherCellsInBlock = new ArrayList<UnsolvedCell>();
                 for (var cell : block) {
-                    if (getUnitIndex.applyAsInt(cell) != getUnitIndex.applyAsInt(unitByBlock.get(0))) {
+                    if (getUnitIndex.applyAsInt(cell) != getUnitIndex.applyAsInt(unitByBlock.getFirst())) {
                         otherCellsInBlock.add(cell);
                     }
                 }

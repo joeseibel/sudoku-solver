@@ -76,11 +76,11 @@ public class FinnedXWing {
                 }
             }
             if (withCandidate.size() == 2) {
-                var baseUnitCell1 = withCandidate.get(0);
-                var baseUnitCell2 = withCandidate.get(1);
+                var baseUnitCell1 = withCandidate.getFirst();
+                var baseUnitCell2 = withCandidate.getLast();
                 if (baseUnitCell1.block() != baseUnitCell2.block()) {
                     for (var finnedUnit : units) {
-                        if (finnedUnit.get(0).block() != baseUnit.get(0).block()) {
+                        if (finnedUnit.getFirst().block() != baseUnit.getFirst().block()) {
                             var finnedUnitByBlock = new HashMap<Integer, List<UnsolvedCell>>();
                             for (var cell : finnedUnit) {
                                 if (cell instanceof UnsolvedCell unsolved &&

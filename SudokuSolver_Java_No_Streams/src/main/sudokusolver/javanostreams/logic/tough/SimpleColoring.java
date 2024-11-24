@@ -128,8 +128,8 @@ public class SimpleColoring {
                 }
             }
             if (withCandidate.size() == 2) {
-                var a = withCandidate.get(0);
-                var b = withCandidate.get(1);
+                var a = withCandidate.getFirst();
+                var b = withCandidate.getLast();
                 Graphs.addEdgeWithVertices(graph, a, b);
             }
         }

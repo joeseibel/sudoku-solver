@@ -306,8 +306,8 @@ public class Medusa {
                     }
                 }
                 if (withCandidate.size() == 2) {
-                    var a = new LocatedCandidate(withCandidate.get(0), candidate);
-                    var b = new LocatedCandidate(withCandidate.get(1), candidate);
+                    var a = new LocatedCandidate(withCandidate.getFirst(), candidate);
+                    var b = new LocatedCandidate(withCandidate.getLast(), candidate);
                     Graphs.addEdgeWithVertices(graph, a, b);
                 }
             }

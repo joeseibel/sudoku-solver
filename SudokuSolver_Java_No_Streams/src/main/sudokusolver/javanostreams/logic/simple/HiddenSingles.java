@@ -27,7 +27,7 @@ public class HiddenSingles {
                     }
                 }
                 if (withCandidate.size() == 1) {
-                    modifications.add(new SetValue(withCandidate.get(0), candidate));
+                    modifications.add(new SetValue(withCandidate.getFirst(), candidate));
                 }
             }
         }

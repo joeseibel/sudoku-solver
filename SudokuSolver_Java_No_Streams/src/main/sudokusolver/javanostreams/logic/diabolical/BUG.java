@@ -30,7 +30,7 @@ public class BUG {
             }
         }
         if (cellsWithNotTwo.size() == 1) {
-            var cell = cellsWithNotTwo.get(0);
+            var cell = cellsWithNotTwo.getFirst();
             if (cell.candidates().size() == 3) {
                 var row = new ArrayList<UnsolvedCell>();
                 for (var rowCell : board.getRow(cell.row())) {
@@ -51,7 +51,7 @@ public class BUG {
                     }
                 }
                 assert candidates.size() == 1 : "There are multiple candidates that appear three times in the row";
-                return Optional.of(new SetValue(cell, candidates.get(0)));
+                return Optional.of(new SetValue(cell, candidates.getFirst()));
             } else {
                 return Optional.empty();
             }

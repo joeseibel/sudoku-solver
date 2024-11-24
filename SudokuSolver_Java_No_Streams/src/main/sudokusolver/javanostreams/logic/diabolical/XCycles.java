@@ -148,8 +148,8 @@ public class XCycles {
                 }
             }
             if (withCandidate.size() == 2) {
-                var a = withCandidate.get(0);
-                var b = withCandidate.get(1);
+                var a = withCandidate.getFirst();
+                var b = withCandidate.getLast();
                 builder.addEdge(a, b, new StrengthEdge(Strength.STRONG));
             }
         }

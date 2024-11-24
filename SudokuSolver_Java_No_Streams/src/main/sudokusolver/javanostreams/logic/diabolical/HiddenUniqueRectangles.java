@@ -36,7 +36,7 @@ public class HiddenUniqueRectangles {
                 }
             }
             if (floor.size() == 1) {
-                type1(removals, board, rectangle, floor.get(0));
+                type1(removals, board, rectangle, floor.getFirst());
             } else if (roof.size() == 2) {
                 type2(removals, board, roof, rectangle.getCommonCandidates());
             }
@@ -129,8 +129,8 @@ public class HiddenUniqueRectangles {
             List<UnsolvedCell> roof,
             EnumSet<SudokuNumber> commonCandidates
     ) {
-        var roofA = roof.get(0);
-        var roofB = roof.get(1);
+        var roofA = roof.getFirst();
+        var roofB = roof.getLast();
         var commonCandidatesArray = commonCandidates.toArray(SudokuNumber[]::new);
         var candidateA = commonCandidatesArray[0];
         var candidateB = commonCandidatesArray[1];
