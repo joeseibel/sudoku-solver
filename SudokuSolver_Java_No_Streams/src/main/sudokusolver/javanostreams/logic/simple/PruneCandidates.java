@@ -34,8 +34,8 @@ public class PruneCandidates {
 
     private static void collectCandidates(List<Cell> unit, EnumSet<SudokuNumber> toRemove) {
         for (var cell : unit) {
-            if (cell instanceof SolvedCell solved) {
-                toRemove.add(solved.value());
+            if (cell instanceof SolvedCell(_, _, var value)) {
+                toRemove.add(value);
             }
         }
     }

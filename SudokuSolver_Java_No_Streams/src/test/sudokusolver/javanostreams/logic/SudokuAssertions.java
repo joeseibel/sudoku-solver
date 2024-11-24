@@ -31,8 +31,8 @@ public class SudokuAssertions {
             Function<Board<Cell>, List<T>> logicFunction
     ) {
         var optionalBoard = board.mapCells(cell -> {
-            if (cell instanceof SolvedCell solvedCell) {
-                return Optional.of(solvedCell.value());
+            if (cell instanceof SolvedCell(_, _, var value)) {
+                return Optional.of(value);
             } else {
                 return Optional.<SudokuNumber>empty();
             }
@@ -49,17 +49,16 @@ public class SudokuAssertions {
             var row = modification.row();
             var column = modification.column();
             var solution = bruteForceSolution.get(row, column);
-            if (modification instanceof RemoveCandidates removeCandidates) {
+            if (modification instanceof RemoveCandidates(_, _, var candidates)) {
                 Assertions.assertFalse(
-                        removeCandidates.candidates().contains(solution),
+                        candidates.contains(solution),
                         () -> "Cannot remove candidate " + solution + " from [" + row + ", " + column + ']'
                 );
-            } else if (modification instanceof SetValue setValue) {
+            } else if (modification instanceof SetValue(_, _, var value)) {
                 Assertions.assertEquals(
                         solution,
-                        setValue.value(),
-                        () -> "Cannot set value " + setValue.value() + " to [" + row + ", " + column +
-                                "]. Solution is " + solution
+                        value,
+                        () -> "Cannot set value " + value + " to [" + row + ", " + column + "]. Solution is " + solution
                 );
             }
         }

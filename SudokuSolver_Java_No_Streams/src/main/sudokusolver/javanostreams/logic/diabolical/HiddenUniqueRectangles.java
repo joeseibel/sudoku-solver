@@ -153,11 +153,11 @@ public class HiddenUniqueRectangles {
         var unitAWithCandidateACount = 0;
         var unitAWithCandidateBCount = 0;
         for (var cell : getUnit.apply(getUnitIndex.applyAsInt(roofA))) {
-            if (cell instanceof UnsolvedCell unsolved) {
-                if (unsolved.candidates().contains(candidateA)) {
+            if (cell instanceof UnsolvedCell(_, _, var candidates)) {
+                if (candidates.contains(candidateA)) {
                     unitAWithCandidateACount++;
                 }
-                if (unsolved.candidates().contains(candidateB)) {
+                if (candidates.contains(candidateB)) {
                     unitAWithCandidateBCount++;
                 }
             }
@@ -170,11 +170,11 @@ public class HiddenUniqueRectangles {
             var unitBWithCandidateACount = 0;
             var unitBWithCandidateBCount = 0;
             for (var cell : getUnit.apply(getUnitIndex.applyAsInt(roofB))) {
-                if (cell instanceof UnsolvedCell unsolved) {
-                    if (unsolved.candidates().contains(candidateA)) {
+                if (cell instanceof UnsolvedCell(_, _, var candidates)) {
+                    if (candidates.contains(candidateA)) {
                         unitBWithCandidateACount++;
                     }
-                    if (unsolved.candidates().contains(candidateB)) {
+                    if (candidates.contains(candidateB)) {
                         unitBWithCandidateBCount++;
                     }
                 }

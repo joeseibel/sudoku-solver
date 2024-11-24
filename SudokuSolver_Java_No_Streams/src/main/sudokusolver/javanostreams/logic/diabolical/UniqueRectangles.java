@@ -327,7 +327,7 @@ public class UniqueRectangles {
     private static boolean doesNotHaveStrongLink(SudokuNumber candidate, List<Cell> unit) {
         var withCandidateCount = 0;
         for (var cell : unit) {
-            if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+            if (cell instanceof UnsolvedCell(_, _, var candidates) && candidates.contains(candidate)) {
                 withCandidateCount++;
             }
         }

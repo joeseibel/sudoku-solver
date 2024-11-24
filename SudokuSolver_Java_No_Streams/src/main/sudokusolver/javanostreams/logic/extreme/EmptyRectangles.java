@@ -156,10 +156,6 @@ public class EmptyRectangles {
     }
 
     private static boolean hasCandidate(Cell cell, SudokuNumber candidate) {
-        if (cell instanceof UnsolvedCell unsolvedCell) {
-            return unsolvedCell.candidates().contains(candidate);
-        } else {
-            return false;
-        }
+        return cell instanceof UnsolvedCell(_, _, var candidates) && candidates.contains(candidate);
     }
 }

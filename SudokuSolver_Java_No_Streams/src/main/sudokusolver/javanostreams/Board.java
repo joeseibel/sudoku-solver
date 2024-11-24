@@ -145,7 +145,7 @@ public record Board<T>(List<List<T>> rows) {
         var builder = new StringBuilder();
         for (var row : board.rows) {
             for (var cell : row) {
-                builder.append(cell instanceof SolvedCell solvedCell ? solvedCell.value() : '0');
+                builder.append(cell instanceof SolvedCell(_, _, var value) ? value : '0');
             }
         }
         return builder.toString();
@@ -155,11 +155,11 @@ public record Board<T>(List<List<T>> rows) {
         var builder = new StringBuilder();
         for (var row = board.rows.iterator(); row.hasNext(); ) {
             for (var cell : row.next()) {
-                if (cell instanceof SolvedCell solvedCell) {
-                    builder.append(solvedCell.value().toString());
-                } else if (cell instanceof UnsolvedCell unsolvedCell) {
+                if (cell instanceof SolvedCell(_, _, var value)) {
+                    builder.append(value.toString());
+                } else if (cell instanceof UnsolvedCell(_, _, var candidates)) {
                     builder.append('{');
-                    for (var candidate : unsolvedCell.candidates()) {
+                    for (var candidate : candidates) {
                         builder.append(candidate);
                     }
                     builder.append('}');
