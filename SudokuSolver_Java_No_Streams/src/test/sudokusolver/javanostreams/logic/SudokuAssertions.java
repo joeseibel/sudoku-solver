@@ -49,13 +49,12 @@ public class SudokuAssertions {
             var row = modification.row();
             var column = modification.column();
             var solution = bruteForceSolution.get(row, column);
-            if (modification instanceof RemoveCandidates(_, _, var candidates)) {
-                Assertions.assertFalse(
+            switch (modification) {
+                case RemoveCandidates(_, _, var candidates) -> Assertions.assertFalse(
                         candidates.contains(solution),
                         () -> "Cannot remove candidate " + solution + " from [" + row + ", " + column + ']'
                 );
-            } else if (modification instanceof SetValue(_, _, var value)) {
-                Assertions.assertEquals(
+                case SetValue(_, _, var value) -> Assertions.assertEquals(
                         solution,
                         value,
                         () -> "Cannot set value " + value + " to [" + row + ", " + column + "]. Solution is " + solution

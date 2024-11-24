@@ -155,16 +155,15 @@ public record Board<T>(List<List<T>> rows) {
         var builder = new StringBuilder();
         for (var row = board.rows.iterator(); row.hasNext(); ) {
             for (var cell : row.next()) {
-                if (cell instanceof SolvedCell(_, _, var value)) {
-                    builder.append(value.toString());
-                } else if (cell instanceof UnsolvedCell(_, _, var candidates)) {
-                    builder.append('{');
-                    for (var candidate : candidates) {
-                        builder.append(candidate);
+                switch (cell) {
+                    case SolvedCell(_, _, var value) -> builder.append(value.toString());
+                    case UnsolvedCell(_, _, var candidates) -> {
+                        builder.append('{');
+                        for (var candidate : candidates) {
+                            builder.append(candidate);
+                        }
+                        builder.append('}');
                     }
-                    builder.append('}');
-                } else {
-                    throw new IllegalStateException("Unexpected cell: " + cell);
                 }
             }
             if (row.hasNext()) {
