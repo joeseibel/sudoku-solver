@@ -114,7 +114,7 @@ public class SudokuSolver {
                             }
                         }
                     }
-                    case SolvedCell ignored ->
+                    case SolvedCell _ ->
                             throw new IllegalStateException("[" + row + ", " + column + "] is already solved.");
                 }
             });
