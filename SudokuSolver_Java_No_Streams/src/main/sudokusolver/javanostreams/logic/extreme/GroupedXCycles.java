@@ -77,7 +77,7 @@ public class GroupedXCycles {
                 var target = graph.getEdgeTarget(edge);
                 removeFromUnit(removals, candidate, source, target, Node::hasRow, Node::getRow, board::getRow);
                 removeFromUnit(removals, candidate, source, target, Node::hasColumn, Node::getColumn, board::getColumn);
-                removeFromUnit(removals, candidate, source, target, node -> true, Node::getBlock, board::getBlock);
+                removeFromUnit(removals, candidate, source, target, _ -> true, Node::getBlock, board::getBlock);
             }
         }
         return removals.toList();
@@ -250,7 +250,7 @@ public class GroupedXCycles {
             var groupings = new HashMap<Integer, Set<UnsolvedCell>>();
             for (var cell : unit) {
                 if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
-                    groupings.computeIfAbsent(unsolved.block(), key -> new HashSet<>()).add(unsolved);
+                    groupings.computeIfAbsent(unsolved.block(), _ -> new HashSet<>()).add(unsolved);
                 }
             }
             for (var group : groupings.values()) {

@@ -86,7 +86,7 @@ public class FinnedXWing {
                                 if (cell instanceof UnsolvedCell unsolved &&
                                         unsolved.candidates().contains(candidate)
                                 ) {
-                                    finnedUnitByBlock.computeIfAbsent(unsolved.block(), key -> new ArrayList<>())
+                                    finnedUnitByBlock.computeIfAbsent(unsolved.block(), _ -> new ArrayList<>())
                                             .add(unsolved);
                                 }
                             }

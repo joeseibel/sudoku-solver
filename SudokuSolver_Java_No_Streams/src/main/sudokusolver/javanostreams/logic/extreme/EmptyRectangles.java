@@ -53,7 +53,7 @@ public class EmptyRectangles {
                         Cell::column,
                         board::getColumn,
                         Cell::row,
-                        cell -> column
+                        _ -> column
                 );
                 getRemovals(
                         removals,
@@ -63,7 +63,7 @@ public class EmptyRectangles {
                         board.getColumn(column),
                         Cell::row,
                         board::getRow,
-                        cell -> row,
+                        _ -> row,
                         Cell::column
                 );
             }

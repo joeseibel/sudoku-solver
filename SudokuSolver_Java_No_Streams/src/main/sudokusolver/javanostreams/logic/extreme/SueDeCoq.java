@@ -57,7 +57,7 @@ public class SueDeCoq {
             }
             var grouping = new HashMap<Integer, List<UnsolvedCell>>();
             for (var cell : unsolvedUnit) {
-                grouping.computeIfAbsent(cell.block(), key -> new ArrayList<>()).add(cell);
+                grouping.computeIfAbsent(cell.block(), _ -> new ArrayList<>()).add(cell);
             }
             for (var entry : grouping.entrySet()) {
                 var blockIndex = entry.getKey();

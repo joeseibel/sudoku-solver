@@ -15,12 +15,12 @@ public class Removals {
     private final Map<UnsolvedCell, EnumSet<SudokuNumber>> removals = new HashMap<>();
 
     public void add(UnsolvedCell cell, SudokuNumber candidate) {
-        removals.computeIfAbsent(cell, key -> EnumSet.noneOf(SudokuNumber.class)).add(candidate);
+        removals.computeIfAbsent(cell, _ -> EnumSet.noneOf(SudokuNumber.class)).add(candidate);
     }
 
     public void add(UnsolvedCell cell, EnumSet<SudokuNumber> candidates) {
         if (!candidates.isEmpty()) {
-            removals.computeIfAbsent(cell, key -> EnumSet.noneOf(SudokuNumber.class)).addAll(candidates);
+            removals.computeIfAbsent(cell, _ -> EnumSet.noneOf(SudokuNumber.class)).addAll(candidates);
         }
     }
 

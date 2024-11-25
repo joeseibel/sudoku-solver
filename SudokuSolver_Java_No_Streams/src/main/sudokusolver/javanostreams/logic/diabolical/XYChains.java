@@ -47,7 +47,7 @@ public class XYChains {
         addWeakLinks(graph);
         var grouping = new HashMap<SudokuNumber, List<LocatedCandidate>>();
         for (var vertex : graph.vertexSet()) {
-            grouping.computeIfAbsent(vertex.candidate(), key -> new ArrayList<>()).add(vertex);
+            grouping.computeIfAbsent(vertex.candidate(), _ -> new ArrayList<>()).add(vertex);
         }
         for (var entry : grouping.entrySet()) {
             var candidate = entry.getKey();
