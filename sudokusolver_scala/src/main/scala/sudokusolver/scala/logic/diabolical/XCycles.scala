@@ -4,8 +4,6 @@ import scalax.collection.immutable.Graph
 import scalax.collection.io.dot.implicits.{toId, toNodeId}
 import sudokusolver.scala.*
 
-import scala.annotation.tailrec
-
 /*
  * http://www.sudokuwiki.org/X_Cycles
  * http://www.sudokuwiki.org/X_Cycles_Part_2
