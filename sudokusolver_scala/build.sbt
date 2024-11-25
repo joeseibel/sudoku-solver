@@ -1,4 +1,4 @@
-val scala3Version = "3.3.1"
+val scala3Version = "3.5.2"
 
 lazy val root = project
   .in(file("."))
@@ -8,8 +8,8 @@ lazy val root = project
 
     scalaVersion := scala3Version,
 
-    libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
-    libraryDependencies += ("org.scala-graph" %% "graph-core" % "2.0.0").cross(CrossVersion.for3Use2_13),
+    libraryDependencies += "org.scalameta" %% "munit" % "1.0.2" % Test,
+    libraryDependencies += ("org.scala-graph" %% "graph-core" % "2.0.2").cross(CrossVersion.for3Use2_13),
     libraryDependencies += ("org.scala-graph" %% "graph-dot" % "2.0.0").cross(CrossVersion.for3Use2_13),
 
     scalacOptions ++= Seq("-new-syntax", "-deprecation")

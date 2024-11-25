@@ -150,8 +150,8 @@ extension [N, E <: AnyUnDiEdge[N]](graph: Graph[N, E])
 
 extension [N](edge: Edge[N])
   private def getOppositeVertex(vertex: N): N =
-    val source = edge._1
-    val target = edge._2
+    val source = edge.node1
+    val target = edge.node2
     vertex match
       case `source` => target
       case `target` => source
