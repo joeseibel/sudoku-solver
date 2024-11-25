@@ -154,10 +154,10 @@ public class GroupedXCycles {
         for (var candidate : SudokuNumber.values()) {
             var graph = buildGraph(board, candidate);
             for (var vertex : graph.vertexSet()) {
-                if (vertex instanceof CellNode cellNode &&
-                        Strength.alternatingCycleExists(graph, cellNode, Strength.STRONG)
+                if (vertex instanceof CellNode(var cell) &&
+                        Strength.alternatingCycleExists(graph, vertex, Strength.STRONG)
                 ) {
-                    modifications.add(new SetValue(cellNode.cell(), candidate));
+                    modifications.add(new SetValue(cell, candidate));
                 }
             }
         }
@@ -178,10 +178,10 @@ public class GroupedXCycles {
         for (var candidate : SudokuNumber.values()) {
             var graph = buildGraph(board, candidate);
             for (var vertex : graph.vertexSet()) {
-                if (vertex instanceof CellNode cellNode &&
-                        Strength.alternatingCycleExists(graph, cellNode, Strength.WEAK)
+                if (vertex instanceof CellNode(var cell) &&
+                        Strength.alternatingCycleExists(graph, vertex, Strength.WEAK)
                 ) {
-                    removals.add(cellNode.cell(), candidate);
+                    removals.add(cell, candidate);
                 }
             }
         }
