@@ -59,18 +59,7 @@ public class FinnedSwordfish {
             IntFunction<List<Cell>> getOtherUnit,
             BiFunction<Integer, Integer, Cell> getFinnedCell
     ) {
-        var unitsWithCandidate = new ArrayList<List<UnsolvedCell>>();
-        for (var unit : units) {
-            var withCandidate = new ArrayList<UnsolvedCell>();
-            for (var cell : unit) {
-                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
-                    withCandidate.add(unsolved);
-                }
-            }
-            if (!withCandidate.isEmpty()) {
-                unitsWithCandidate.add(withCandidate);
-            }
-        }
+        var unitsWithCandidate = getUnitsWithCandidate(candidate, units);
         for (var i = 0; i < unitsWithCandidate.size() - 1; i++) {
             var baseUnitA = unitsWithCandidate.get(i);
             if (baseUnitA.size() == 2 || baseUnitA.size() == 3) {
@@ -135,5 +124,21 @@ public class FinnedSwordfish {
                 }
             }
         }
+    }
+
+    private static List<List<UnsolvedCell>> getUnitsWithCandidate(SudokuNumber candidate, List<List<Cell>> units) {
+        var unitsWithCandidate = new ArrayList<List<UnsolvedCell>>();
+        for (var unit : units) {
+            var withCandidate = new ArrayList<UnsolvedCell>();
+            for (var cell : unit) {
+                if (cell instanceof UnsolvedCell unsolved && unsolved.candidates().contains(candidate)) {
+                    withCandidate.add(unsolved);
+                }
+            }
+            if (!withCandidate.isEmpty()) {
+                unitsWithCandidate.add(withCandidate);
+            }
+        }
+        return unitsWithCandidate;
     }
 }
