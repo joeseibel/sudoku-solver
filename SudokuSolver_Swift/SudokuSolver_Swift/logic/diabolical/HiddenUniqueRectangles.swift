@@ -34,8 +34,8 @@ private func type1(board: Board<Cell>, rectangle: Rectangle, floor: UnsolvedCell
     let column = board.getColumn(columnIndex: floor.column).unsolvedCells
     let strongCandidates = rectangle.commonCandidates
         .filter { candidate in
-            row.filter { $0.candidates.contains(candidate) }.count == 2 &&
-                column.filter { $0.candidates.contains(candidate) }.count == 2
+            row.count { $0.candidates.contains(candidate) } == 2 &&
+                column.count { $0.candidates.contains(candidate) } == 2
         }
     if let strongCandidate = strongCandidates.first, strongCandidates.count == 1 {
         let oppositeCell = rectangle.cells.first { $0.row != floor.row && $0.column != floor.column }!
@@ -71,13 +71,13 @@ private func type2(board: Board<Cell>, roof: [UnsolvedCell], commonCandidates: S
     func getRemoval(getUnitIndex: (UnsolvedCell) -> Int, getUnit: (Int) -> [Cell]) -> LocatedCandidate? {
         let unitA = getUnit(getUnitIndex(roofA)).unsolvedCells
         let unitB = getUnit(getUnitIndex(roofB)).unsolvedCells
-        return if unitA.filter({ $0.candidates.contains(candidateA) }).count == 2 {
+        return if unitA.count(where: { $0.candidates.contains(candidateA) }) == 2 {
             (roofB, candidateB)
-        } else if unitA.filter({ $0.candidates.contains(candidateB) }).count == 2 {
+        } else if unitA.count(where: { $0.candidates.contains(candidateB) }) == 2 {
             (roofB, candidateA)
-        } else if unitB.filter({ $0.candidates.contains(candidateA) }).count == 2 {
+        } else if unitB.count(where: { $0.candidates.contains(candidateA) }) == 2 {
             (roofA, candidateB)
-        } else if unitB.filter({ $0.candidates.contains(candidateB) }).count == 2 {
+        } else if unitB.count(where: { $0.candidates.contains(candidateB) }) == 2 {
             (roofA, candidateA)
         } else {
             nil

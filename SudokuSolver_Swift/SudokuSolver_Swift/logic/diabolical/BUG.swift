@@ -14,8 +14,7 @@ func bug(board: Board<Cell>) -> BoardModification? {
     let cells = board.cells.unsolvedCells.filter { $0.candidates.count != 2 }
     if let cell = cells.first, cells.count == 1 && cell.candidates.count == 3 {
         let row = board.getRow(rowIndex: cell.row).unsolvedCells
-        let candidate = cell.candidates
-            .first { candidate in row.filter { $0.candidates.contains(candidate) }.count == 3 }!
+        let candidate = cell.candidates.first { candidate in row.count { $0.candidates.contains(candidate) } == 3 }!
         return BoardModification(cell: cell, value: candidate)
     } else {
         return nil

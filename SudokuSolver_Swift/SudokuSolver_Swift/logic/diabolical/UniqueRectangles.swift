@@ -181,7 +181,7 @@ func uniqueRectanglesType4(board: Board<Cell>) -> [BoardModification] {
                     let unit = getUnit(indexA).unsolvedCells
                     
                     func searchUnit(search: SudokuNumber, removal: SudokuNumber) -> [LocatedCandidate] {
-                        unit.filter { $0.candidates.contains(search) }.count == 2 ? roof.map { ($0, removal) } : []
+                        unit.count { $0.candidates.contains(search) } == 2 ? roof.map { ($0, removal) } : []
                     }
                     
                     return searchUnit(search: commonCandidateA, removal: commonCandidateB) +
@@ -223,7 +223,7 @@ func uniqueRectanglesType5(board: Board<Cell>) -> [BoardModification] {
                     .first { candidate in
                         
                         func hasStrongLink(unit: [Cell]) -> Bool {
-                            unit.unsolvedCells.filter { $0.candidates.contains(candidate) }.count == 2
+                            unit.unsolvedCells.count { $0.candidates.contains(candidate) } == 2
                         }
                         
                         return floor.allSatisfy {
