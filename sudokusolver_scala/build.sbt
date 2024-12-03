@@ -8,7 +8,7 @@ lazy val root = project
 
     scalaVersion := scala3Version,
 
-    libraryDependencies += "org.scalameta" %% "munit" % "1.0.2" % Test,
+    libraryDependencies += "org.scalameta" %% "munit" % "1.0.3" % Test,
     libraryDependencies += ("org.scala-graph" %% "graph-core" % "2.0.2").cross(CrossVersion.for3Use2_13),
     libraryDependencies += ("org.scala-graph" %% "graph-dot" % "2.0.0").cross(CrossVersion.for3Use2_13),
 
