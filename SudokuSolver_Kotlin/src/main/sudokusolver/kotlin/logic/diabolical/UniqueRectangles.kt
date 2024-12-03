@@ -101,7 +101,7 @@ fun uniqueRectanglesType3(board: Board<Cell>): List<RemoveCandidates> =
                                         enumIntersect(cell.candidates, additionalCandidates).map { cell to it }
                                     }
                             }
-                            ?: emptyList()
+                            .orEmpty()
                     } else {
                         emptyList()
                     }

@@ -60,5 +60,5 @@ private fun getRemovals(
     } else {
         null
     }
-    return removals ?: emptyList()
+    return removals.orEmpty()
 }

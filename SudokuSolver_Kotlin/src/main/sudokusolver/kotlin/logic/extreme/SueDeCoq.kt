@@ -65,7 +65,7 @@ fun sueDeCoq(board: Board<Cell>): List<RemoveCandidates> {
                                     }
                             }
                         }
-                        ?: emptyList()
+                        .orEmpty()
 
                 when (unitByBlock.size) {
                     2 -> getGroupRemovals(unitByBlock)

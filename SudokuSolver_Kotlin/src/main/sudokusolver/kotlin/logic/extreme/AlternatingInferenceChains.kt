@@ -65,7 +65,7 @@ fun alternatingInferenceChainsRule1(board: Board<Cell>): List<RemoveCandidates> 
                     ?.filter { sourceCandidate in it.candidates }
                     ?.let { it - sourceCell - targetCell }
                     ?.map { it to sourceCandidate }
-                    ?: emptyList()
+                    .orEmpty()
 
             val rowRemovals = removeFromUnit(sourceCell.row, targetCell.row, board::getRow)
             val columnRemovals = removeFromUnit(sourceCell.column, targetCell.column, board::getColumn)

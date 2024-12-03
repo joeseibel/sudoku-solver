@@ -31,7 +31,7 @@ fun pointingPairsPointingTriples(board: Board<Cell>): List<RemoveCandidates> =
                     ?.filterIsInstance<UnsolvedCell>()
                     ?.filter { it.block != blockIndex && candidate in it.candidates }
                     ?.map { it to candidate }
-                    ?: emptyList()
+                    .orEmpty()
 
             val rowModifications = pointingPairsPointingTriples(board::getRow, Cell::row)
             val columnModifications = pointingPairsPointingTriples(board::getColumn, Cell::column)

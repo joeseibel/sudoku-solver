@@ -130,7 +130,7 @@ private fun <V> getAlternatingCycleWeakEdges(
                     )
                 }
                 .firstOrNull { it.isNotEmpty() }
-                ?: emptyList()
+                .orEmpty()
         }
     }
 

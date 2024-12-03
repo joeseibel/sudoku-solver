@@ -193,7 +193,7 @@ fun medusaRule6(board: Board<Cell>): List<SetValue> =
                 }
             }
             ?.map { (coloredCell, coloredCandidate) -> SetValue(coloredCell, coloredCandidate) }
-            ?: emptyList()
+            .orEmpty()
     }
 
 fun Graph<LocatedCandidate, DefaultEdge>.toDOT(): String {

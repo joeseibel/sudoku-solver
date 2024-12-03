@@ -73,7 +73,7 @@ fun groupedXCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
                     ?.filter { candidate in it.candidates }
                     ?.let { it - source.cells - target.cells }
                     ?.map { it to candidate }
-                    ?: emptyList()
+                    .orEmpty()
 
             val rowRemovals = removeFromUnit(source.row, target.row, board::getRow)
             val columnRemovals = removeFromUnit(source.column, target.column, board::getColumn)
