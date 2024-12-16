@@ -1,3 +1,7 @@
+mod sudoku_number;
+
+use sudoku_number::SudokuNumber;
+
 fn main() {
     println!("Hello, Sudoku Solver!");
     println!("{:?}", SudokuNumber::One);
@@ -9,18 +13,4 @@ fn main() {
     println!("{:?}", SudokuNumber::Seven);
     println!("{:?}", SudokuNumber::Eight);
     println!("{:?}", SudokuNumber::Nine);
-}
-
-// TODO: Remove Debug trait after removing println! statements from main.
-#[derive(Debug)]
-enum SudokuNumber {
-    One,
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
 }
