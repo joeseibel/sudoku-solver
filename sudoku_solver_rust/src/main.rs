@@ -1,5 +1,7 @@
+mod board;
 mod sudoku_number;
 
+use board::Board;
 use sudoku_number::SudokuNumber;
 
 fn main() {
@@ -22,5 +24,9 @@ fn main() {
     println!("{:?}", SudokuNumber::from_digit('7'));
     println!("{:?}", SudokuNumber::from_digit('8'));
     println!("{:?}", SudokuNumber::from_digit('9'));
-    println!("{:?}", SudokuNumber::from_digit('x'));
+
+    let row = [0; 9];
+    let rows = [row; 9];
+    let board = Board::new(rows);
+    println!("{:?}", board);
 }
