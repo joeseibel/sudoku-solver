@@ -1,5 +1,6 @@
 const UNIT_SIZE_SQUARE_ROOT: usize = 3;
-const UNIT_SIZE: usize = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
+pub const UNIT_SIZE: usize = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
+pub const UNIT_SIZE_SQUARED: usize = UNIT_SIZE * UNIT_SIZE;
 
 // TODO: Remove Debug trait after removing println! statements from main.
 #[derive(Debug)]
