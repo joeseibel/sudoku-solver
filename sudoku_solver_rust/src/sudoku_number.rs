@@ -54,7 +54,7 @@ pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
     let chars: Vec<_> = board.chars().collect();
     if chars.len() != UNIT_SIZE_SQUARED {
         panic!(
-            "board.chars().count() is {}, must be {UNIT_SIZE_SQUARED}",
+            "board.chars().count() is {}, must be {UNIT_SIZE_SQUARED}.",
             chars.len()
         );
     }
@@ -71,4 +71,21 @@ pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
         board_as_numbers.push(row_as_numbers.try_into().expect(EXPECT_MESSAGE));
     }
     Board::new(board_as_numbers.try_into().expect(EXPECT_MESSAGE))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic(expected = "ch is 'a', must be between '1' and '9'.")]
+    fn test_from_digit_unexpected_char() {
+        SudokuNumber::from_digit('a');
+    }
+
+    #[test]
+    #[should_panic(expected = "board.chars().count() is 0, must be 81.")]
+    fn test_parse_optional_board_wrong_length() {
+        parse_optional_board("");
+    }
 }
