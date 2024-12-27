@@ -73,6 +73,31 @@ pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
     Board::new(board_as_numbers.try_into().expect(EXPECT_MESSAGE))
 }
 
+// TODO: Refactor after reading about Iterators and Closures.
+// TODO: Consider implementing TryFrom. Also look at FromStr.
+fn parse_board(board: &str) -> Board<SudokuNumber> {
+    use crate::board::{UNIT_SIZE, UNIT_SIZE_SQUARED};
+
+    const EXPECT_MESSAGE: &str = "This should not happen because the size is already checked.";
+
+    let chars: Vec<_> = board.chars().collect();
+    if chars.len() != UNIT_SIZE_SQUARED {
+        panic!(
+            "board.chars().count() is {}, must be {UNIT_SIZE_SQUARED}.",
+            chars.len()
+        );
+    }
+    let mut board_as_numbers = Vec::new();
+    for row in 0..UNIT_SIZE {
+        let mut row_as_numbers = Vec::new();
+        for column in 0..UNIT_SIZE {
+            row_as_numbers.push(SudokuNumber::from_digit(chars[row * UNIT_SIZE + column]));
+        }
+        board_as_numbers.push(row_as_numbers.try_into().expect(EXPECT_MESSAGE));
+    }
+    Board::new(board_as_numbers.try_into().expect(EXPECT_MESSAGE))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -87,5 +112,11 @@ mod tests {
     #[should_panic(expected = "board.chars().count() is 0, must be 81.")]
     fn test_parse_optional_board_wrong_length() {
         parse_optional_board("");
+    }
+
+    #[test]
+    #[should_panic(expected = "board.chars().count() is 0, must be 81.")]
+    fn test_parse_board_wrong_length() {
+        parse_board("");
     }
 }
