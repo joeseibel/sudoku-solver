@@ -2,6 +2,22 @@ enum BruteForceError: Error {
     case noSolutions, multipleSolutions
 }
 
+/*
+ * Recursively tries every number for each unsolved cell looking for a solution.
+ *
+ * Motivation for implementing a brute force solution:
+ *
+ * The purpose of this solver is to go through the exercise of implementing various logical solutions. Why implement
+ * brute force if I only care about logical solutions? The first reason is to check the correctness of the logical
+ * solutions. When solving a board, the first thing that is done is to get the brute force solution. After that, any
+ * logical modifications will be checked against the brute force solution. If a logical solution tries to set an
+ * incorrect value to a cell or remove a candidate from a cell which is the known solution, then execution will halt
+ * with a runtime error.
+ *
+ * The second reason for implementing brute force is to check for the number of solutions for a board before trying the
+ * logical solutions. If a board cannot be solved or if it has multiple solutions, then I don't bother with the logical
+ * solutions. The logical solutions are written assuming that they are operating on a board with only one solution.
+ */
 func bruteForce(board: Board<SudokuNumber?>) throws -> Board<SudokuNumber> {
     if !board.cells.contains(nil) {
         let filledBoard = board.mapCells { $0! }
