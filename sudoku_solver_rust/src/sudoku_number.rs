@@ -44,7 +44,6 @@ impl SudokuNumber {
     }
 }
 
-// TODO: Refactor after reading about Iterators and Closures.
 // TODO: Consider implementing TryFrom. Also look at FromStr.
 pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
     use crate::board::{UNIT_SIZE, UNIT_SIZE_SQUARED};
@@ -58,22 +57,26 @@ pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
             chars.len()
         );
     }
-    let mut board_as_numbers = Vec::new();
-    for row in 0..UNIT_SIZE {
-        let mut row_as_numbers = Vec::new();
-        for column in 0..UNIT_SIZE {
-            let number = match chars[row * UNIT_SIZE + column] {
-                '0' => None,
-                ch => Some(SudokuNumber::from_digit(ch)),
-            };
-            row_as_numbers.push(number);
-        }
-        board_as_numbers.push(row_as_numbers.try_into().expect(EXPECT_MESSAGE));
-    }
-    Board::new(board_as_numbers.try_into().expect(EXPECT_MESSAGE))
+    let chunks = chars.chunks_exact(UNIT_SIZE);
+    assert!(chunks.remainder().is_empty(), "{EXPECT_MESSAGE}");
+    let rows = chunks
+        .map(|row| {
+            row.iter()
+                .copied()
+                .map(|cell| match cell {
+                    '0' => None,
+                    _ => Some(SudokuNumber::from_digit(cell)),
+                })
+                .collect::<Vec<_>>()
+                .try_into()
+                .expect(EXPECT_MESSAGE)
+        })
+        .collect::<Vec<_>>()
+        .try_into()
+        .expect(EXPECT_MESSAGE);
+    Board::new(rows)
 }
 
-// TODO: Refactor after reading about Iterators and Closures.
 // TODO: Consider implementing TryFrom. Also look at FromStr.
 fn parse_board(board: &str) -> Board<SudokuNumber> {
     use crate::board::{UNIT_SIZE, UNIT_SIZE_SQUARED};
@@ -87,15 +90,21 @@ fn parse_board(board: &str) -> Board<SudokuNumber> {
             chars.len()
         );
     }
-    let mut board_as_numbers = Vec::new();
-    for row in 0..UNIT_SIZE {
-        let mut row_as_numbers = Vec::new();
-        for column in 0..UNIT_SIZE {
-            row_as_numbers.push(SudokuNumber::from_digit(chars[row * UNIT_SIZE + column]));
-        }
-        board_as_numbers.push(row_as_numbers.try_into().expect(EXPECT_MESSAGE));
-    }
-    Board::new(board_as_numbers.try_into().expect(EXPECT_MESSAGE))
+    let chunks = chars.chunks_exact(UNIT_SIZE);
+    assert!(chunks.remainder().is_empty(), "{EXPECT_MESSAGE}");
+    let rows = chunks
+        .map(|row| {
+            row.iter()
+                .copied()
+                .map(SudokuNumber::from_digit)
+                .collect::<Vec<_>>()
+                .try_into()
+                .expect(EXPECT_MESSAGE)
+        })
+        .collect::<Vec<_>>()
+        .try_into()
+        .expect(EXPECT_MESSAGE);
+    Board::new(rows)
 }
 
 #[cfg(test)]
