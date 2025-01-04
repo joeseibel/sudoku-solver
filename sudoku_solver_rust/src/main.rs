@@ -38,4 +38,9 @@ fn main() {
     let rows: Vec<Vec<_>> = board.rows().map(Iterator::collect).collect();
     println!("rows:");
     println!("{rows:?}");
+    println!();
+
+    let columns: Vec<Vec<_>> = board.columns().map(Iterator::collect).collect();
+    println!("columns:");
+    println!("{columns:?}");
 }
