@@ -48,4 +48,9 @@ fn main() {
     let first_block: Vec<_> = board.get_block(0).collect();
     println!("first block:");
     println!("{first_block:?}");
+    println!();
+
+    let blocks: Vec<Vec<_>> = board.blocks().map(Iterator::collect).collect();
+    println!("blocks:");
+    println!("{blocks:?}");
 }

@@ -34,6 +34,10 @@ impl<T> Board<T> {
         (0..UNIT_SIZE).map(|index| self.rows.iter().map(move |row| &row[index]))
     }
 
+    pub fn blocks(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
+        (0..UNIT_SIZE).map(|index| self.get_block(index))
+    }
+
     pub fn get_block(&self, block_index: usize) -> impl Iterator<Item = &T> {
         if block_index >= UNIT_SIZE {
             panic!(
