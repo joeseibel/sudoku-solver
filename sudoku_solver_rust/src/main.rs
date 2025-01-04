@@ -33,4 +33,9 @@ fn main() {
     let board = "004007830000050470720030695080700300649513728007008010470080060016040007005276100";
     let board = sudoku_number::parse_optional_board(board);
     println!("{:?}", board);
+    println!();
+
+    let rows: Vec<Vec<_>> = board.rows().map(Iterator::collect).collect();
+    println!("rows:");
+    println!("{rows:?}");
 }
