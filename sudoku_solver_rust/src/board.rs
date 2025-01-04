@@ -33,4 +33,31 @@ impl<T> Board<T> {
     pub fn columns(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
         (0..UNIT_SIZE).map(|index| self.rows.iter().map(move |row| &row[index]))
     }
+
+    pub fn get_block(&self, block_index: usize) -> impl Iterator<Item = &T> {
+        if block_index >= UNIT_SIZE {
+            panic!(
+                "block_index is {block_index}, must be between 0 and {}.",
+                UNIT_SIZE - 1
+            );
+        }
+        let row_index = block_index / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
+        let column_index = block_index % UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
+        self.rows
+            .iter()
+            .skip(row_index)
+            .take(UNIT_SIZE_SQUARE_ROOT)
+            .flat_map(move |row| &row[column_index..column_index + UNIT_SIZE_SQUARE_ROOT])
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic(expected = "block_index is 9, must be between 0 and 8.")]
+    fn test_board_get_block_index_too_high() {
+        _ = Board::new([[0; UNIT_SIZE]; UNIT_SIZE]).get_block(9);
+    }
 }
