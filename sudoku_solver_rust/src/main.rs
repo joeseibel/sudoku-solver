@@ -78,4 +78,7 @@ fn main() {
     println!();
 
     println!("Block index: {}", board::get_block_index(8, 3));
+    println!();
+
+    println!("Individual cell: {:?}", mapped[(3, 7)]);
 }

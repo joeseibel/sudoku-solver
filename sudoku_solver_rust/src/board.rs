@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, ops::Index};
 
 const UNIT_SIZE_SQUARE_ROOT: usize = 3;
 pub const UNIT_SIZE: usize = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
@@ -80,6 +80,15 @@ impl<T> Board<T> {
                 .expect(EXPECT_MESSAGE)
         });
         Board::new(rows.collect::<Vec<_>>().try_into().expect(EXPECT_MESSAGE))
+    }
+}
+
+impl<T> Index<(usize, usize)> for Board<T> {
+    type Output = T;
+
+    fn index(&self, index: (usize, usize)) -> &Self::Output {
+        let (row_index, column_index) = index;
+        &self.rows[row_index][column_index]
     }
 }
 
