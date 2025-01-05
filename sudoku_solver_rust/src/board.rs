@@ -1,4 +1,7 @@
-use std::{fmt::Debug, ops::Index};
+use std::{
+    fmt::Debug,
+    ops::{Index, IndexMut},
+};
 
 const UNIT_SIZE_SQUARE_ROOT: usize = 3;
 pub const UNIT_SIZE: usize = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
@@ -89,6 +92,13 @@ impl<T> Index<(usize, usize)> for Board<T> {
     fn index(&self, index: (usize, usize)) -> &Self::Output {
         let (row_index, column_index) = index;
         &self.rows[row_index][column_index]
+    }
+}
+
+impl<T> IndexMut<(usize, usize)> for Board<T> {
+    fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
+        let (row_index, column_index) = index;
+        &mut self.rows[row_index][column_index]
     }
 }
 
