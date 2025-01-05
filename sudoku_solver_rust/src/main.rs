@@ -75,4 +75,7 @@ fn main() {
     let column: Vec<_> = mapped.get_column(3).collect();
     println!("column:");
     println!("{column:?}");
+    println!();
+
+    println!("Block index: {}", board::get_block_index(8, 3));
 }

@@ -83,6 +83,10 @@ impl<T> Board<T> {
     }
 }
 
+pub fn get_block_index(row_index: usize, column_index: usize) -> usize {
+    row_index / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT + column_index / UNIT_SIZE_SQUARE_ROOT
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
