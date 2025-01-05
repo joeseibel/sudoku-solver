@@ -44,6 +44,10 @@ impl<T> Board<T> {
         self.rows.as_flattened().iter()
     }
 
+    pub fn get_row(&self, row_index: usize) -> impl Iterator<Item = &T> {
+        self.rows[row_index].iter()
+    }
+
     pub fn get_block(&self, block_index: usize) -> impl Iterator<Item = &T> {
         if block_index >= UNIT_SIZE {
             panic!(

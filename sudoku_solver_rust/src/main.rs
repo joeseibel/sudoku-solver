@@ -66,4 +66,8 @@ fn main() {
     println!("mapped:");
     println!("{mapped:?}");
     println!();
+
+    let row: Vec<_> = mapped.get_row(5).collect();
+    println!("row:");
+    println!("{row:?}");
 }
