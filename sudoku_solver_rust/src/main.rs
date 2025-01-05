@@ -58,4 +58,12 @@ fn main() {
     let cells: Vec<_> = board.cells().collect();
     println!("cells:");
     println!("{cells:?}");
+    println!();
+
+    let board = "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
+    let board = sudoku_number::parse_optional_board(board);
+    let mapped = board.map_cells(|cell| cell.unwrap());
+    println!("mapped:");
+    println!("{mapped:?}");
+    println!();
 }

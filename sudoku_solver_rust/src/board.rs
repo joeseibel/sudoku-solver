@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 const UNIT_SIZE_SQUARE_ROOT: usize = 3;
 pub const UNIT_SIZE: usize = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
 pub const UNIT_SIZE_SQUARED: usize = UNIT_SIZE * UNIT_SIZE;
@@ -56,6 +58,19 @@ impl<T> Board<T> {
             .skip(row_index)
             .take(UNIT_SIZE_SQUARE_ROOT)
             .flat_map(move |row| &row[column_index..column_index + UNIT_SIZE_SQUARE_ROOT])
+    }
+
+    pub fn map_cells<B: Debug>(&self, mut f: impl FnMut(&T) -> B) -> Board<B> {
+        const EXPECT_MESSAGE: &str =
+            "This should not happen because the original board already has a valid size.";
+
+        let rows = self.rows().map(|row| {
+            row.map(&mut f)
+                .collect::<Vec<_>>()
+                .try_into()
+                .expect(EXPECT_MESSAGE)
+        });
+        Board::new(rows.collect::<Vec<_>>().try_into().expect(EXPECT_MESSAGE))
     }
 }
 

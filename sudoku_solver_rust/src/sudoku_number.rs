@@ -1,7 +1,7 @@
 use crate::board::Board;
 
 // TODO: Remove Debug trait after removing println! statements from main.
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum SudokuNumber {
     One,
     Two,
