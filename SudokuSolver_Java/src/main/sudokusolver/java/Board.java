@@ -68,12 +68,12 @@ public record Board<T>(List<List<T>> rows) {
         return rows.get(rowIndex).get(columnIndex);
     }
 
-    public List<T> getRow(int rowIndex) {
-        return rows.get(rowIndex);
-    }
-
     public void set(int rowIndex, int columnIndex, T element) {
         rows.get(rowIndex).set(columnIndex, element);
+    }
+
+    public List<T> getRow(int rowIndex) {
+        return rows.get(rowIndex);
     }
 
     public List<T> getColumn(int columnIndex) {
