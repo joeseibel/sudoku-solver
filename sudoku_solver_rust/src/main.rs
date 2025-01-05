@@ -70,4 +70,9 @@ fn main() {
     let row: Vec<_> = mapped.get_row(5).collect();
     println!("row:");
     println!("{row:?}");
+    println!();
+
+    let column: Vec<_> = mapped.get_column(3).collect();
+    println!("column:");
+    println!("{column:?}");
 }

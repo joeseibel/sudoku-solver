@@ -48,6 +48,11 @@ impl<T> Board<T> {
         self.rows[row_index].iter()
     }
 
+    pub fn get_column(&self, column_index: usize) -> impl Iterator<Item = &T> {
+        self.rows()
+            .map(move |mut row| row.nth(column_index).unwrap())
+    }
+
     pub fn get_block(&self, block_index: usize) -> impl Iterator<Item = &T> {
         if block_index >= UNIT_SIZE {
             panic!(
