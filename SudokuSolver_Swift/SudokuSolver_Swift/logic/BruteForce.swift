@@ -27,6 +27,7 @@ func bruteForce(board: Board<SudokuNumber?>) throws -> Board<SudokuNumber> {
             throw BruteForceError.noSolutions
         }
     }
+    
     var trialAndError = board
     
     func bruteForce(rowIndex: Int, columnIndex: Int) throws -> Board<SudokuNumber> {
