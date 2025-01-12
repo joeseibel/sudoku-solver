@@ -1,7 +1,8 @@
 use crate::board::Board;
+use strum_macros::EnumIter;
 
 // TODO: Remove Debug trait after removing println! statements from main.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, EnumIter, Eq, Hash, PartialEq)]
 pub enum SudokuNumber {
     One,
     Two,
@@ -78,7 +79,7 @@ pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
 }
 
 // TODO: Consider implementing TryFrom. Also look at FromStr.
-fn parse_board(board: &str) -> Board<SudokuNumber> {
+pub fn parse_board(board: &str) -> Board<SudokuNumber> {
     use crate::board::{UNIT_SIZE, UNIT_SIZE_SQUARED};
 
     const EXPECT_MESSAGE: &str = "This should not happen because the size is already checked.";

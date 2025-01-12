@@ -1,7 +1,9 @@
 mod board;
+mod logic;
 mod sudoku_number;
 
 use board::Board;
+use logic::brute_force;
 use sudoku_number::SudokuNumber;
 
 fn main() {
@@ -83,4 +85,9 @@ fn main() {
     println!("Individual cell: {:?}", mapped[(3, 7)]);
     mapped[(3, 7)] = SudokuNumber::One;
     println!("After setting: {:?}", mapped[(3, 7)]);
+    println!();
+
+    let brute_force_solution = brute_force::brute_force(&board);
+    println!("brute force: ");
+    println!("{brute_force_solution:?}");
 }
