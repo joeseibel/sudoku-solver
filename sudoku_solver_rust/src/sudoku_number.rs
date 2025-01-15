@@ -49,8 +49,6 @@ impl SudokuNumber {
 pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
     use crate::board::{UNIT_SIZE, UNIT_SIZE_SQUARED};
 
-    const EXPECT_MESSAGE: &str = "This should not happen because the size is already checked.";
-
     let chars: Vec<_> = board.chars().collect();
     if chars.len() != UNIT_SIZE_SQUARED {
         panic!(
@@ -59,7 +57,7 @@ pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
         );
     }
     let chunks = chars.chunks_exact(UNIT_SIZE);
-    assert!(chunks.remainder().is_empty(), "{EXPECT_MESSAGE}");
+    assert!(chunks.remainder().is_empty());
     let rows = chunks
         .map(|row| {
             row.iter()
@@ -70,19 +68,17 @@ pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
                 })
                 .collect::<Vec<_>>()
                 .try_into()
-                .expect(EXPECT_MESSAGE)
+                .unwrap()
         })
         .collect::<Vec<_>>()
         .try_into()
-        .expect(EXPECT_MESSAGE);
+        .unwrap();
     Board::new(rows)
 }
 
 // TODO: Consider implementing TryFrom. Also look at FromStr.
 pub fn parse_board(board: &str) -> Board<SudokuNumber> {
     use crate::board::{UNIT_SIZE, UNIT_SIZE_SQUARED};
-
-    const EXPECT_MESSAGE: &str = "This should not happen because the size is already checked.";
 
     let chars: Vec<_> = board.chars().collect();
     if chars.len() != UNIT_SIZE_SQUARED {
@@ -92,7 +88,7 @@ pub fn parse_board(board: &str) -> Board<SudokuNumber> {
         );
     }
     let chunks = chars.chunks_exact(UNIT_SIZE);
-    assert!(chunks.remainder().is_empty(), "{EXPECT_MESSAGE}");
+    assert!(chunks.remainder().is_empty());
     let rows = chunks
         .map(|row| {
             row.iter()
@@ -100,11 +96,11 @@ pub fn parse_board(board: &str) -> Board<SudokuNumber> {
                 .map(SudokuNumber::from_digit)
                 .collect::<Vec<_>>()
                 .try_into()
-                .expect(EXPECT_MESSAGE)
+                .unwrap()
         })
         .collect::<Vec<_>>()
         .try_into()
-        .expect(EXPECT_MESSAGE);
+        .unwrap();
     Board::new(rows)
 }
 

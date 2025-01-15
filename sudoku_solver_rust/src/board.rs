@@ -73,16 +73,10 @@ impl<T> Board<T> {
     }
 
     pub fn map_cells<B: Debug>(&self, mut f: impl FnMut(&T) -> B) -> Board<B> {
-        const EXPECT_MESSAGE: &str =
-            "This should not happen because the original board already has a valid size.";
-
-        let rows = self.rows().map(|row| {
-            row.map(&mut f)
-                .collect::<Vec<_>>()
-                .try_into()
-                .expect(EXPECT_MESSAGE)
-        });
-        Board::new(rows.collect::<Vec<_>>().try_into().expect(EXPECT_MESSAGE))
+        let rows = self
+            .rows()
+            .map(|row| row.map(&mut f).collect::<Vec<_>>().try_into().unwrap());
+        Board::new(rows.collect::<Vec<_>>().try_into().unwrap())
     }
 }
 
