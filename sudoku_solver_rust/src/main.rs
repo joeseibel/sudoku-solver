@@ -91,4 +91,11 @@ fn main() {
     let brute_force_solution = brute_force::brute_force(&board);
     println!("brute force: ");
     println!("{brute_force_solution:?}");
+    println!();
+
+    let simple =
+        "000105000140000670080002400063070010900000003010090520007200080026000035000409000";
+    let simple = cell::parse_simple_cells(simple);
+    println!("simple: ");
+    println!("{simple:?}");
 }

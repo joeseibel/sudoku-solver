@@ -1,4 +1,7 @@
-use crate::{board, sudoku_number::SudokuNumber};
+use crate::{
+    board::{self, Board},
+    sudoku_number::SudokuNumber,
+};
 use std::collections::HashSet;
 use strum::IntoEnumIterator;
 
@@ -7,7 +10,8 @@ use strum::IntoEnumIterator;
 //
 // There is interest in the Rust community in changing this, but it might be a while before we see this change. See the
 // following Rust issue: https://github.com/rust-lang/lang-team/issues/122
-enum Cell {
+#[derive(Debug)]
+pub enum Cell {
     SolvedCell(SolvedCell),
     UnsolvedCell(UnsolvedCell),
 }
@@ -28,6 +32,7 @@ impl Cell {
     }
 }
 
+#[derive(Debug)]
 struct SolvedCell {
     row: usize,
     column: usize,
@@ -41,6 +46,7 @@ impl SolvedCell {
     }
 }
 
+#[derive(Debug)]
 struct UnsolvedCell {
     row: usize,
     column: usize,
@@ -58,5 +64,50 @@ impl UnsolvedCell {
             column,
             candidates,
         }
+    }
+}
+
+// TODO: Consider implementing TryFrom. Also look at FromStr.
+pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
+    let chars: Vec<_> = simple_board.chars().collect();
+    if chars.len() != board::UNIT_SIZE_SQUARED {
+        panic!(
+            "simple_board.chars().count() is {}, must be {}.",
+            chars.len(),
+            board::UNIT_SIZE_SQUARED
+        );
+    }
+    let chunks = chars.chunks_exact(board::UNIT_SIZE);
+    assert!(chunks.remainder().is_empty());
+    let rows: [[Cell; board::UNIT_SIZE]; board::UNIT_SIZE] = chunks
+        .enumerate()
+        .map(|(row_index, row)| {
+            row.iter()
+                .enumerate()
+                .map(|(column_index, &cell)| {
+                    if cell == '0' {
+                        Cell::new_unsolved(row_index, column_index)
+                    } else {
+                        Cell::new_solved(row_index, column_index, SudokuNumber::from_digit(cell))
+                    }
+                })
+                .collect::<Vec<_>>()
+                .try_into()
+                .unwrap()
+        })
+        .collect::<Vec<_>>()
+        .try_into()
+        .unwrap();
+    Board::new(rows)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic(expected = "simple_board.chars().count() is 0, must be 81.")]
+    fn test_parse_simple_cells_wrong_length() {
+        parse_simple_cells("");
     }
 }
