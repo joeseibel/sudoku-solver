@@ -1,5 +1,5 @@
 use crate::{
-    board::{self, Board, UNIT_SIZE},
+    board::{self, Board},
     sudoku_number::SudokuNumber,
 };
 use std::collections::HashSet;
@@ -48,14 +48,14 @@ pub fn brute_force(
             row_index: usize,
             column_index: usize,
         ) -> Result<Board<SudokuNumber>, BruteForceError> {
-            if column_index + 1 >= UNIT_SIZE {
+            if column_index + 1 >= board::UNIT_SIZE {
                 brute_force(trial_and_error, row_index + 1, 0)
             } else {
                 brute_force(trial_and_error, row_index, column_index + 1)
             }
         }
 
-        if row_index >= UNIT_SIZE {
+        if row_index >= board::UNIT_SIZE {
             Ok(trial_and_error.map_cells(|cell| cell.unwrap()))
         } else if trial_and_error[(row_index, column_index)].is_some() {
             move_to_next_cell(trial_and_error, row_index, column_index)
@@ -99,22 +99,21 @@ pub fn brute_force(
 fn is_solved(board: &Board<SudokuNumber>) -> bool {
     let rows_solved = board
         .rows()
-        .all(|row| row.collect::<HashSet<_>>().len() == UNIT_SIZE);
+        .all(|row| row.collect::<HashSet<_>>().len() == board::UNIT_SIZE);
     let columns_solved = board
         .columns()
-        .all(|column| column.collect::<HashSet<_>>().len() == UNIT_SIZE);
+        .all(|column| column.collect::<HashSet<_>>().len() == board::UNIT_SIZE);
     let blocks_solved = board
         .blocks()
-        .all(|block| block.collect::<HashSet<_>>().len() == UNIT_SIZE);
+        .all(|block| block.collect::<HashSet<_>>().len() == board::UNIT_SIZE);
 
     rows_solved && columns_solved && blocks_solved
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::sudoku_number::{parse_board, parse_optional_board};
-
     use super::*;
+    use crate::sudoku_number::{parse_board, parse_optional_board};
 
     #[test]
     fn test_brute_force_single_solution() {

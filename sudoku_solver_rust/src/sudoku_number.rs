@@ -1,4 +1,4 @@
-use crate::board::Board;
+use crate::board::{self, Board};
 use strum_macros::EnumIter;
 
 // TODO: Remove Debug trait after removing println! statements from main.
@@ -47,16 +47,15 @@ impl SudokuNumber {
 
 // TODO: Consider implementing TryFrom. Also look at FromStr.
 pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
-    use crate::board::{UNIT_SIZE, UNIT_SIZE_SQUARED};
-
     let chars: Vec<_> = board.chars().collect();
-    if chars.len() != UNIT_SIZE_SQUARED {
+    if chars.len() != board::UNIT_SIZE_SQUARED {
         panic!(
-            "board.chars().count() is {}, must be {UNIT_SIZE_SQUARED}.",
-            chars.len()
+            "board.chars().count() is {}, must be {}.",
+            chars.len(),
+            board::UNIT_SIZE_SQUARED
         );
     }
-    let chunks = chars.chunks_exact(UNIT_SIZE);
+    let chunks = chars.chunks_exact(board::UNIT_SIZE);
     assert!(chunks.remainder().is_empty());
     let rows = chunks
         .map(|row| {
@@ -78,16 +77,15 @@ pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
 
 // TODO: Consider implementing TryFrom. Also look at FromStr.
 pub fn parse_board(board: &str) -> Board<SudokuNumber> {
-    use crate::board::{UNIT_SIZE, UNIT_SIZE_SQUARED};
-
     let chars: Vec<_> = board.chars().collect();
-    if chars.len() != UNIT_SIZE_SQUARED {
+    if chars.len() != board::UNIT_SIZE_SQUARED {
         panic!(
-            "board.chars().count() is {}, must be {UNIT_SIZE_SQUARED}.",
-            chars.len()
+            "board.chars().count() is {}, must be {}.",
+            chars.len(),
+            board::UNIT_SIZE_SQUARED
         );
     }
-    let chunks = chars.chunks_exact(UNIT_SIZE);
+    let chunks = chars.chunks_exact(board::UNIT_SIZE);
     assert!(chunks.remainder().is_empty());
     let rows = chunks
         .map(|row| {
