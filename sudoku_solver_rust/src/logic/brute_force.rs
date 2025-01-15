@@ -71,7 +71,7 @@ pub fn brute_force(
                 .copied()
                 .collect();
             let valid = SudokuNumber::iter().filter(|number| !invalid.contains(number));
-            let mut single_solution: Option<Board<SudokuNumber>> = None;
+            let mut single_solution = None;
             for guess in valid {
                 trial_and_error[(row_index, column_index)] = Some(guess);
                 match move_to_next_cell(trial_and_error, row_index, column_index) {
