@@ -100,6 +100,18 @@ pub fn get_block_index(row_index: usize, column_index: usize) -> usize {
     row_index / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT + column_index / UNIT_SIZE_SQUARE_ROOT
 }
 
+pub fn validate_row_and_column(row: usize, column: usize) {
+    if row >= UNIT_SIZE {
+        panic!("row is {row}, must be between 0 and {}.", UNIT_SIZE - 1);
+    }
+    if column >= UNIT_SIZE {
+        panic!(
+            "column is {column}, must be between 0 and {}.",
+            UNIT_SIZE - 1
+        );
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -109,4 +121,6 @@ mod tests {
     fn test_board_get_block_index_too_high() {
         _ = Board::new([[0; UNIT_SIZE]; UNIT_SIZE]).get_block(9);
     }
+
+    //TODO: Test validate_row_and_column after creating Cell and BoardModification.
 }
