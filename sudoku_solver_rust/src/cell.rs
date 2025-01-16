@@ -50,6 +50,7 @@ impl SolvedCell {
 struct UnsolvedCell {
     row: usize,
     column: usize,
+    block: usize,
     candidates: HashSet<SudokuNumber>,
 }
 
@@ -62,8 +63,21 @@ impl UnsolvedCell {
         UnsolvedCell {
             row,
             column,
+            block: board::get_block_index(row, column),
             candidates,
         }
+    }
+
+    fn row(&self) -> usize {
+        self.row
+    }
+
+    fn column(&self) -> usize {
+        self.column
+    }
+
+    fn block(&self) -> usize {
+        self.block
     }
 }
 
