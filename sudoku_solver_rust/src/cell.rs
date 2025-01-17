@@ -20,11 +20,11 @@ impl Cell {
     // TODO: Cell, SolvedCell, and UnsolvedCell constructors currently follow the pattern in Swift. Review to see if
     // this pattern makes sense in Rust.
     fn new_solved(row: usize, column: usize, value: SudokuNumber) -> Self {
-        Cell::SolvedCell(SolvedCell::new(row, column, value))
+        Self::SolvedCell(SolvedCell::new(row, column, value))
     }
 
     fn new_unsolved(row: usize, column: usize) -> Self {
-        Cell::UnsolvedCell(UnsolvedCell::new(
+        Self::UnsolvedCell(UnsolvedCell::new(
             row,
             column,
             SudokuNumber::iter().collect(),
@@ -42,7 +42,7 @@ struct SolvedCell {
 impl SolvedCell {
     fn new(row: usize, column: usize, value: SudokuNumber) -> Self {
         board::validate_row_and_column(row, column);
-        SolvedCell { row, column, value }
+        Self { row, column, value }
     }
 }
 
@@ -60,7 +60,7 @@ impl UnsolvedCell {
         if candidates.is_empty() {
             panic!("candidates must not be empty.");
         }
-        UnsolvedCell {
+        Self {
             row,
             column,
             block: board::get_block_index(row, column),
