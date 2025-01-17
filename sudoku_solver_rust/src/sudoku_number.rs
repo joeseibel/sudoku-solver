@@ -2,6 +2,7 @@ use crate::board::{self, Board};
 use strum_macros::EnumIter;
 
 // TODO: Remove Debug trait after removing println! statements from main.
+// TODO: Look into EnumIter vs VariantArray
 #[derive(Clone, Copy, Debug, EnumIter, Eq, Hash, PartialEq)]
 pub enum SudokuNumber {
     One,

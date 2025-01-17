@@ -47,7 +47,7 @@ impl SolvedCell {
 }
 
 #[derive(Debug)]
-struct UnsolvedCell {
+pub struct UnsolvedCell {
     row: usize,
     column: usize,
     block: usize,
@@ -68,16 +68,35 @@ impl UnsolvedCell {
         }
     }
 
-    fn row(&self) -> usize {
+    pub fn row(&self) -> usize {
         self.row
     }
 
-    fn column(&self) -> usize {
+    pub fn column(&self) -> usize {
         self.column
     }
 
     fn block(&self) -> usize {
         self.block
+    }
+
+    // After some consideration, I decided to return a reference to the candidates HashSet. In total, I considered three
+    // options for exposing the set of candidates:
+    //
+    // 1. Make the candidates field public and allow direct access to the candidates HashSet. While this was the
+    //    simpliest option, I didn't want to allow callers to mutate candidates. If a caller were to empty the
+    //    candidates HashSet, then the UnsolvedCell would be in an invalid state.
+    // 2. Return an Iterator. This would be consistent with the methods on Board that return Iterators, but it would
+    //    make checking if a candidate is in the set less efficient. It is better to call HashSet::contains than
+    //    Iterator::any.
+    // 3. Return a reference to the candidates HashSet. This prevents mutation while allowing callers to call
+    //    HashSet::contains.
+    //
+    // This process of consideration is probably obvious for experienced Rust users, but it was useful to document my
+    // thought process here as I learn Rust. This level of consideration for which type I return here isn't necessary in
+    // other languages, so it takes a little getting used to in Rust.
+    pub fn candidates(&self) -> &HashSet<SudokuNumber> {
+        &self.candidates
     }
 }
 
