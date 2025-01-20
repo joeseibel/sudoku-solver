@@ -3,7 +3,8 @@ use std::collections::HashSet;
 use strum::IntoEnumIterator;
 
 // The use of Rust's enum follows the same pattern that was used for Cell.
-enum BoardModification {
+#[derive(Debug, PartialEq)]
+pub enum BoardModification {
     RemoveCandidates(RemoveCandidates),
     SetValue(SetValue),
 }
@@ -11,12 +12,12 @@ enum BoardModification {
 impl BoardModification {
     // TODO: BoardModification, RemoveCandidates, and SetValue constructors currently follow the pattern in Swift.
     // Review to see if this pattern makes sense in Rust.
-    fn new_remove_candidates_with_cell(
-        cell: UnsolvedCell,
+    pub fn new_remove_candidates_with_cell(
+        cell: &UnsolvedCell,
         candidates: HashSet<SudokuNumber>,
     ) -> Self {
         for candidate in &candidates {
-            if cell.candidates().contains(candidate) {
+            if !cell.candidates().contains(candidate) {
                 // TODO: Implement Display for SudokuNumber and remove ':?' from this panic call.
                 panic!(
                     "{candidate:?} is not a candidate for [{}, {}].",
@@ -29,7 +30,11 @@ impl BoardModification {
     }
 
     // TODO: Look into macros for varargs.
-    fn new_remove_candidates_with_indices(row: usize, column: usize, candidates: &[usize]) -> Self {
+    pub fn new_remove_candidates_with_indices(
+        row: usize,
+        column: usize,
+        candidates: &[usize],
+    ) -> Self {
         let all_candidates: Vec<_> = SudokuNumber::iter().collect();
         let candidates: HashSet<_> = candidates
             .iter()
@@ -37,9 +42,24 @@ impl BoardModification {
             .collect();
         Self::RemoveCandidates(RemoveCandidates::new(row, column, candidates))
     }
+
+    pub fn row(&self) -> usize {
+        match self {
+            BoardModification::RemoveCandidates(remove_candidates) => remove_candidates.row,
+            BoardModification::SetValue(set_value) => set_value.row,
+        }
+    }
+
+    pub fn column(&self) -> usize {
+        match self {
+            BoardModification::RemoveCandidates(remove_candidates) => remove_candidates.column,
+            BoardModification::SetValue(set_value) => set_value.column,
+        }
+    }
 }
 
-struct RemoveCandidates {
+#[derive(Debug, PartialEq)]
+pub struct RemoveCandidates {
     row: usize,
     column: usize,
     candidates: HashSet<SudokuNumber>,
@@ -57,6 +77,21 @@ impl RemoveCandidates {
             candidates,
         }
     }
+
+    pub fn candidates(&self) -> &HashSet<SudokuNumber> {
+        &self.candidates
+    }
 }
 
-struct SetValue {}
+#[derive(Debug, PartialEq)]
+pub struct SetValue {
+    row: usize,
+    column: usize,
+    value: SudokuNumber,
+}
+
+impl SetValue {
+    pub fn value(&self) -> SudokuNumber {
+        self.value
+    }
+}

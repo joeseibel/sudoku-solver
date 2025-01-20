@@ -33,7 +33,7 @@ impl Cell {
 }
 
 #[derive(Debug)]
-struct SolvedCell {
+pub struct SolvedCell {
     row: usize,
     column: usize,
     value: SudokuNumber,
@@ -43,6 +43,10 @@ impl SolvedCell {
     fn new(row: usize, column: usize, value: SudokuNumber) -> Self {
         board::validate_row_and_column(row, column);
         Self { row, column, value }
+    }
+
+    pub fn value(&self) -> SudokuNumber {
+        self.value
     }
 }
 
@@ -76,7 +80,7 @@ impl UnsolvedCell {
         self.column
     }
 
-    fn block(&self) -> usize {
+    pub fn block(&self) -> usize {
         self.block
     }
 

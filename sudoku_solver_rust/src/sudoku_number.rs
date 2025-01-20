@@ -1,4 +1,5 @@
 use crate::board::{self, Board};
+use std::fmt;
 use strum_macros::EnumIter;
 
 // TODO: Remove Debug trait after removing println! statements from main.
@@ -43,6 +44,12 @@ impl SudokuNumber {
             '9' => Self::Nine,
             _ => panic!("ch is '{ch}', must be between '1' and '9'."),
         }
+    }
+}
+
+impl fmt::Display for SudokuNumber {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", *self as usize + 1)
     }
 }
 
