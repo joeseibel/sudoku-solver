@@ -37,7 +37,7 @@ func assertLogicalSolution(
      * let a = BoardModification(row: 0, column: 0, candidates: 1, 2, 3)
      * let b = BoardModification(row: 0, column: 0, candidates: 4, 5, 6)
      *
-     * In this case, none of the basic comparison operations whould yield true. a is not equal to b because the
+     * In this case, none of the basic comparison operations would yield true. a is not equal to b because the
      * candidates differ. a is neither less than b nor greater than b because their row and column indices are the same.
      * This case violates Comparable's contract.
      */
