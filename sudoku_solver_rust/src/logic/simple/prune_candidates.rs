@@ -112,7 +112,11 @@ mod tests {
         });
         let brute_force_solution = brute_force::brute_force(&optional_board).unwrap();
         let mut actual = prune_candidates(&board);
-        // TODO: Write comments about why I'm not using sort_unstable and not implementing Ord for BoardModification.
+        // Why am I using sort_unstable_by_key instead of sort_unstable and implementing Ord for BoardModification?
+        // In short, implementing Ord for BoardModification would lead to PartialOrd and PartialEq disagreeing with each
+        // other. I want to sort BoardModifications by the row and column indices only while ignoring other fields.
+        // However, I want equality to check all fields, as that is useful in unit tests. Having a different standard of
+        // equality between PartialOrd and PartialEq breaks the contract of PartialOrd.
         // TODO: Look at other implementations.
         actual.sort_unstable_by_key(|modification| (modification.row(), modification.column()));
         for modification in &actual {
