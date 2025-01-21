@@ -138,6 +138,40 @@ pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
     Board::new(rows)
 }
 
+// Here I follow Rust's Extension Trait pattern: https://rust-lang.github.io/rfcs/0445-extension-trait-conventions.html
+//
+// On the surface, it looks as if Rust would support extension methods like Swift. However, this is not the case. Swift
+// was designed with extensions in mind and it is possible to extend many kinds of types in Swift including Protocols.
+// However, Rust does not allow me to implement new methods for the trait Iterator. The solution is a little bit of a
+// hack that has become a Rust pattern.
+//
+// Even though I can't implement a new method directly on the trait Iterator, I can create a new trait, IteratorCellExt,
+// with the new methods. The magic happens in the impl block where I implement IteratorCellExt for any type that
+// implements Iterator in which the Item is a reference to a Cell.
+//
+// It took some time to figure out this pattern. It also feels a little clunky in Rust. The extension methods in Kotlin,
+// Scala, and Swift have cleaner syntax.
+pub trait IteratorCellExt<'a> {
+    fn solved_cells(self) -> impl Iterator<Item = &'a SolvedCell>;
+    fn unsolved_cells(self) -> impl Iterator<Item = &'a UnsolvedCell>;
+}
+
+impl<'a, I: Iterator<Item = &'a Cell>> IteratorCellExt<'a> for I {
+    fn solved_cells(self) -> impl Iterator<Item = &'a SolvedCell> {
+        self.flat_map(|cell| match cell {
+            Cell::SolvedCell(solved_cell) => Some(solved_cell),
+            Cell::UnsolvedCell(_) => None,
+        })
+    }
+
+    fn unsolved_cells(self) -> impl Iterator<Item = &'a UnsolvedCell> {
+        self.flat_map(|cell| match cell {
+            Cell::SolvedCell(_) => None,
+            Cell::UnsolvedCell(unsolved_cell) => Some(unsolved_cell),
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

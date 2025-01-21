@@ -1,7 +1,7 @@
 use crate::{
     board::Board,
     board_modification::BoardModification,
-    cell::{Cell, SolvedCell},
+    cell::{Cell, IteratorCellExt, SolvedCell},
 };
 use std::collections::HashSet;
 
@@ -11,11 +11,7 @@ use std::collections::HashSet;
 fn prune_candidates(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .cells()
-        // TODO: Create unsolved_cells() method.
-        .flat_map(|cell| match cell {
-            Cell::SolvedCell(_) => None,
-            Cell::UnsolvedCell(unsolved_cell) => Some(unsolved_cell),
-        })
+        .unsolved_cells()
         .flat_map(|cell| {
             let same_row = board.get_row(cell.row());
             let same_column = board.get_column(cell.column());
@@ -23,11 +19,7 @@ fn prune_candidates(board: &Board<Cell>) -> Vec<BoardModification> {
             let visible_values = same_row
                 .chain(same_column)
                 .chain(same_block)
-                // TODO: Create solved_cells() method.
-                .flat_map(|cell| match cell {
-                    Cell::SolvedCell(solved_cell) => Some(solved_cell),
-                    Cell::UnsolvedCell(_) => None,
-                })
+                .solved_cells()
                 .map(SolvedCell::value)
                 .collect();
             let to_remove: HashSet<_> = cell
