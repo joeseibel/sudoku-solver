@@ -11,7 +11,7 @@ import sudokusolver.javanostreams.SolvedCell;
 import sudokusolver.javanostreams.SudokuNumber;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -44,7 +44,19 @@ public class SudokuAssertions {
             throw new RuntimeException(e);
         }
         var actual = new ArrayList<>(logicFunction.apply(board));
-        Collections.sort(actual);
+        /*
+         * Note: this comparator imposes orderings that are inconsistent with equals.
+         *
+         * Why am I using List.sort(Comparator) instead of Collections.sort(List) and having BoardModification implement
+         * Comparable? In short, implementing Comparable for BoardModification would lead to BoardModification's natural
+         * ordering being inconsistent with equals which is discouraged by Comparable. I want to sort BoardModifications
+         * by the row and column indices only while ignoring other fields. However, I want equality to check all fields,
+         * as that is useful in unit tests. While not a strict requirement, Comparable strongly recommends that natural
+         * orderings be consistent with equals. Even though this recommendation also exists for Comparator, I am only
+         * creating and using the custom Comparator here with the List.sort(Comparator) method, so its usage is limited
+         * and doesn't apply generally to BoardModification.
+         */
+        actual.sort(Comparator.comparingInt(BoardModification::row).thenComparingInt(BoardModification::column));
         for (var modification : actual) {
             var row = modification.row();
             var column = modification.column();
