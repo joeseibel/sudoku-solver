@@ -1,14 +1,10 @@
 package sudokusolver.scala
 
-sealed trait BoardModification extends Ordered[BoardModification]:
+sealed trait BoardModification:
   val row: Int
   val column: Int
 
   validateRowAndColumn(row, column)
-
-  override def compare(that: BoardModification): Int =
-    val rowCompare = row.compareTo(that.row)
-    if rowCompare != 0 then rowCompare else column.compareTo(that.column)
 
 case class RemoveCandidates(override val row: Int, override val column: Int, candidates: Set[SudokuNumber])
   extends BoardModification:
