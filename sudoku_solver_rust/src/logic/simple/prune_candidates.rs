@@ -117,7 +117,6 @@ mod tests {
         // other. I want to sort BoardModifications by the row and column indices only while ignoring other fields.
         // However, I want equality to check all fields, as that is useful in unit tests. Having a different standard of
         // equality between PartialOrd and PartialEq breaks the contract of PartialOrd.
-        // TODO: Look at other implementations.
         actual.sort_unstable_by_key(|modification| (modification.row(), modification.column()));
         for modification in &actual {
             let row = modification.row();
