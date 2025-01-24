@@ -18,9 +18,8 @@ impl BoardModification {
     ) -> Self {
         for candidate in &candidates {
             if !cell.candidates().contains(candidate) {
-                // TODO: Implement Display for SudokuNumber and remove ':?' from this panic call.
                 panic!(
-                    "{candidate:?} is not a candidate for [{}, {}].",
+                    "{candidate} is not a candidate for [{}, {}].",
                     cell.row(),
                     cell.column()
                 );
