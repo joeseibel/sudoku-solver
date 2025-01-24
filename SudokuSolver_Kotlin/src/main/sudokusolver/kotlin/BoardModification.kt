@@ -43,14 +43,9 @@ import java.util.EnumSet
  * advantage of simplifying the tests and having simpler debugging. The reason that I rejected this approach was to make
  * it easier to add parallelism to the logic functions at some point in the future.
  */
-sealed interface BoardModification : Comparable<BoardModification> {
+sealed interface BoardModification {
     val row: Int
     val column: Int
-
-    override fun compareTo(other: BoardModification): Int {
-        val rowCompare = row.compareTo(other.row)
-        return if (rowCompare != 0) rowCompare else column.compareTo(other.column)
-    }
 }
 
 data class RemoveCandidates(

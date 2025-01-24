@@ -25,7 +25,18 @@ internal inline fun <T : BoardModification> assertLogicalSolution(
     logicFunction: (Board<Cell>) -> List<T>
 ) {
     val bruteForceSolution = (bruteForce(board.mapCells { (it as? SolvedCell)?.value }) as SingleSolution).solution
-    val actual = logicFunction(board).sorted()
+    /*
+     * Why am I using sortedWith(Comparator) instead of sorted() and having BoardModification implement Comparable? In
+     * short, implementing Comparable for BoardModification would lead to BoardModification's natural ordering being
+     * inconsistent with equals. I want to sort BoardModifications by the row and column indices only while ignoring
+     * other fields. However, I want equality to check all fields, as that is useful in unit tests. Even though the
+     * documentation for kotlin.Comparable is silent on this issue, kotlin.Comparable maps to java.lang.Comparable when
+     * compiled and the documentation for java.lang.Comparable strongly recommends that natural orderings be consistent
+     * with equals. Even though this recommendation also exists for java.lang.Comparator (kotlin.Comparator maps to
+     * java.lang.Comparator), I am only creating and using the custom Comparator here with the sortedWith(Comparator)
+     * method, so its usage is limited and doesn't apply generally to BoardModification.
+     */
+    val actual = logicFunction(board).sortedWith(compareBy({ it.row }, { it.column }))
     actual.forEach { modification ->
         val row = modification.row
         val column = modification.column
