@@ -1,6 +1,6 @@
 use crate::{board, cell::UnsolvedCell, sudoku_number::SudokuNumber};
 use std::collections::HashSet;
-use strum::IntoEnumIterator;
+use strum::VariantArray;
 
 // The use of Rust's enum follows the same pattern that was used for Cell.
 #[derive(Debug, PartialEq)]
@@ -34,10 +34,9 @@ impl BoardModification {
         column: usize,
         candidates: &[usize],
     ) -> Self {
-        let all_candidates: Vec<_> = SudokuNumber::iter().collect();
         let candidates: HashSet<_> = candidates
             .iter()
-            .map(|candidate| all_candidates[candidate - 1])
+            .map(|candidate| SudokuNumber::VARIANTS[candidate - 1])
             .collect();
         Self::RemoveCandidates(RemoveCandidates::new(row, column, candidates))
     }
