@@ -85,10 +85,9 @@ pub fn brute_force(
                 }
             }
             trial_and_error[(row_index, column_index)] = None;
-            if let Some(single_solution) = single_solution {
-                Ok(single_solution)
-            } else {
-                Err(BruteForceError::NoSolutions)
+            match single_solution {
+                Some(single_solution) => Ok(single_solution),
+                None => Err(BruteForceError::NoSolutions),
             }
         }
     }

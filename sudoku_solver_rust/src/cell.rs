@@ -121,12 +121,9 @@ pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
         .map(|(row_index, row)| {
             row.iter()
                 .enumerate()
-                .map(|(column_index, &cell)| {
-                    if cell == '0' {
-                        Cell::new_unsolved(row_index, column_index)
-                    } else {
-                        Cell::new_solved(row_index, column_index, SudokuNumber::from_digit(cell))
-                    }
+                .map(|(column_index, &cell)| match cell {
+                    '0' => Cell::new_unsolved(row_index, column_index),
+                    _ => Cell::new_solved(row_index, column_index, SudokuNumber::from_digit(cell)),
                 })
                 .collect::<Vec<_>>()
                 .try_into()
