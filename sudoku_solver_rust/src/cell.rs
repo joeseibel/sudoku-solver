@@ -30,6 +30,14 @@ impl Cell {
             SudokuNumber::iter().collect(),
         ))
     }
+
+    fn new_unsolved_with_candidates(
+        row: usize,
+        column: usize,
+        candidates: HashSet<SudokuNumber>,
+    ) -> Self {
+        Self::UnsolvedCell(UnsolvedCell::new(row, column, candidates))
+    }
 }
 
 #[derive(Debug)]
@@ -135,6 +143,71 @@ pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
     Board::new(rows)
 }
 
+// TODO: Consider implementing TryFrom. Also look at FromStr.
+fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
+    let chars: Vec<_> = with_candidates.chars().collect();
+    let mut cell_builders: Vec<Box<dyn Fn(usize, usize) -> Cell>> = vec![];
+    let mut index = 0;
+    while index < chars.len() {
+        match chars[index] {
+            '{' => {
+                index += 1;
+                let closing_brace = chars[index..]
+                    .iter()
+                    .position(|&ch| ch == '}')
+                    .map(|position| position + index)
+                    .expect("Unmatched '{'.");
+                if closing_brace == index {
+                    panic!("Empty \"{{}}\".");
+                }
+                let chars_in_braces = &chars[index..closing_brace];
+                if chars_in_braces.contains(&'{') {
+                    panic!("Nested '{{'.");
+                }
+                let candidates: HashSet<_> = chars_in_braces
+                    .iter()
+                    .map(|&ch| SudokuNumber::from_digit(ch))
+                    .collect();
+                cell_builders.push(Box::new(move |row, column| {
+                    Cell::new_unsolved_with_candidates(row, column, candidates.clone())
+                }));
+                index = closing_brace + 1;
+            }
+            '}' => panic!("Unmatched '}}'."),
+            ch => {
+                let value = SudokuNumber::from_digit(ch);
+                cell_builders.push(Box::new(move |row, column| {
+                    Cell::new_solved(row, column, value)
+                }));
+                index += 1;
+            }
+        }
+    }
+    if cell_builders.len() != board::UNIT_SIZE_SQUARED {
+        panic!(
+            "Found {} cells, required {}.",
+            cell_builders.len(),
+            board::UNIT_SIZE_SQUARED
+        );
+    }
+    let chunks = cell_builders.chunks_exact(board::UNIT_SIZE);
+    assert!(chunks.remainder().is_empty());
+    let rows = chunks
+        .enumerate()
+        .map(|(row_index, row)| {
+            row.iter()
+                .enumerate()
+                .map(|(column_index, cell)| cell(row_index, column_index))
+                .collect::<Vec<_>>()
+                .try_into()
+                .unwrap()
+        })
+        .collect::<Vec<_>>()
+        .try_into()
+        .unwrap();
+    Board::new(rows)
+}
+
 // Here I follow Rust's Extension Trait pattern: https://rust-lang.github.io/rfcs/0445-extension-trait-conventions.html
 //
 // On the surface, it looks as if Rust would support extension methods like Swift. However, this is not the case. Swift
@@ -177,5 +250,47 @@ mod tests {
     #[should_panic(expected = "simple_board.chars().count() is 0, must be 81.")]
     fn test_parse_simple_cells_wrong_length() {
         parse_simple_cells("");
+    }
+
+    #[test]
+    #[should_panic(expected = "Unmatched '{'.")]
+    fn test_parse_cells_with_candidates_unmatched_opening_brace() {
+        parse_cells_with_candidates("{");
+    }
+
+    #[test]
+    #[should_panic(expected = "Empty \"{}\".")]
+    fn test_parse_cells_with_candidates_empty_braces() {
+        parse_cells_with_candidates("{}");
+    }
+
+    #[test]
+    #[should_panic(expected = "Nested '{'.")]
+    fn test_parse_cells_with_candidates_nested_brace() {
+        parse_cells_with_candidates("{{}");
+    }
+
+    #[test]
+    #[should_panic(expected = "ch is 'a', must be between '1' and '9'.")]
+    fn test_parse_cells_with_candidates_invalid_character_in_braces() {
+        parse_cells_with_candidates("{a}");
+    }
+
+    #[test]
+    #[should_panic(expected = "Unmatched '}'.")]
+    fn test_parse_cells_with_candidates_unmatched_closing_brace() {
+        parse_cells_with_candidates("}");
+    }
+
+    #[test]
+    #[should_panic(expected = "ch is 'a', must be between '1' and '9'.")]
+    fn test_parse_cells_with_candidates_invalid_character() {
+        parse_cells_with_candidates("a");
+    }
+
+    #[test]
+    #[should_panic(expected = "Found 0 cells, required 81.")]
+    fn test_parse_cells_with_candidates_wrong_length() {
+        parse_cells_with_candidates("");
     }
 }
