@@ -41,6 +41,25 @@ impl BoardModification {
         Self::RemoveCandidates(RemoveCandidates::new(row, column, candidates))
     }
 
+    fn new_set_value_with_cell(cell: &UnsolvedCell, value: SudokuNumber) -> Self {
+        if !cell.candidates().contains(&value) {
+            panic!(
+                "{value} is not a candidate for [{}, {}].",
+                cell.row(),
+                cell.column()
+            );
+        }
+        Self::SetValue(SetValue::new(cell.row(), cell.column(), value))
+    }
+
+    fn new_set_value_with_indices(row: usize, column: usize, value: usize) -> Self {
+        Self::SetValue(SetValue::new(
+            row,
+            column,
+            SudokuNumber::VARIANTS[value - 1],
+        ))
+    }
+
     pub fn row(&self) -> usize {
         match self {
             BoardModification::RemoveCandidates(remove_candidates) => remove_candidates.row,
@@ -89,6 +108,11 @@ pub struct SetValue {
 }
 
 impl SetValue {
+    fn new(row: usize, column: usize, value: SudokuNumber) -> Self {
+        board::validate_row_and_column(row, column);
+        Self { row, column, value }
+    }
+
     pub fn value(&self) -> SudokuNumber {
         self.value
     }
