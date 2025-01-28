@@ -144,7 +144,7 @@ pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
 }
 
 // TODO: Consider implementing TryFrom. Also look at FromStr.
-fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
+pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
     let chars: Vec<_> = with_candidates.chars().collect();
     let mut cell_builders: Vec<Box<dyn Fn(usize, usize) -> Cell>> = vec![];
     let mut index = 0;

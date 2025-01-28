@@ -41,7 +41,7 @@ impl BoardModification {
         Self::RemoveCandidates(RemoveCandidates::new(row, column, candidates))
     }
 
-    fn new_set_value_with_cell(cell: &UnsolvedCell, value: SudokuNumber) -> Self {
+    pub fn new_set_value_with_cell(cell: &UnsolvedCell, value: SudokuNumber) -> Self {
         if !cell.candidates().contains(&value) {
             panic!(
                 "{value} is not a candidate for [{}, {}].",
@@ -52,7 +52,7 @@ impl BoardModification {
         Self::SetValue(SetValue::new(cell.row(), cell.column(), value))
     }
 
-    fn new_set_value_with_indices(row: usize, column: usize, value: usize) -> Self {
+    pub fn new_set_value_with_indices(row: usize, column: usize, value: usize) -> Self {
         Self::SetValue(SetValue::new(
             row,
             column,
