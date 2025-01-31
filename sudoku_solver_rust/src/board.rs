@@ -43,6 +43,28 @@ impl<T> Board<T> {
         (0..UNIT_SIZE).map(|index| self.get_block(index))
     }
 
+    pub fn units(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
+        // The implementation of this method was a bit of a surprise. I naively thought that I could implement units in
+        // a manner similar to the other languages. Originally, I tried doing this:
+        //
+        //   self.rows().chain(self.columns()).chain(self.blocks())
+        //
+        // To my surprise, the previous line would not compile. The problem is that when chaining together two
+        // Iterators, the Item types of the two Iterators must be the same. In this case, they were not the same, even
+        // though they appeared to be. The Item type for rows(), columns(), and blocks() are all
+        // impl Iterator<Item = &T>>, so on the surface these look like the same types. However, when compiling, the
+        // actual types for each impl Iterator<...> are different. The complier error message explains this by saying,
+        // "distinct uses of `impl Trait` result in different opaque types."
+        //
+        // I solved this by collecting each inner Iterator into a Vec, chaining the outer Iterators, then converting
+        // each inner Vec back into an Iterator. At the moment, I can't think of a way of implementing units without
+        // converting inner Iterators to Vecs, then back to Iterators.
+        let rows = self.rows().map(Iterator::collect);
+        let columns = self.columns().map(Iterator::collect);
+        let blocks = self.blocks().map(Iterator::collect);
+        rows.chain(columns).chain(blocks).map(Vec::into_iter)
+    }
+
     pub fn cells(&self) -> impl Iterator<Item = &T> {
         self.rows.as_flattened().iter()
     }
