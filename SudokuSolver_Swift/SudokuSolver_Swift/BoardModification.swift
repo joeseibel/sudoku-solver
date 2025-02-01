@@ -74,6 +74,11 @@ struct SetValue: Hashable {
 }
 
 extension Sequence<LocatedCandidate> {
+    /*
+     * The receiver represents a list of numbers that should be removed from specific cells. This helper function allows
+     * the logic functions to focus on simply marking the numbers to be removed, then at the end use this function to
+     * produce at most one RemoveCandidates per cell.
+     */
     func mergeToRemoveCandidates() -> [BoardModification] {
         Dictionary(grouping: self, by: { cell, _ in cell })
             .mapValues { $0.map { _, candidate in candidate } }
