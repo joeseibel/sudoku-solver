@@ -1,9 +1,9 @@
 use crate::{board, cell::UnsolvedCell, sudoku_number::SudokuNumber};
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 use strum::VariantArray;
 
 // The use of Rust's enum follows the same pattern that was used for Cell.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Eq, Hash, PartialEq)]
 pub enum BoardModification {
     RemoveCandidates(RemoveCandidates),
     SetValue(SetValue),
@@ -14,7 +14,7 @@ impl BoardModification {
     // Review to see if this pattern makes sense in Rust.
     pub fn new_remove_candidates_with_cell(
         cell: &UnsolvedCell,
-        candidates: HashSet<SudokuNumber>,
+        candidates: BTreeSet<SudokuNumber>,
     ) -> Self {
         for candidate in &candidates {
             if !cell.candidates().contains(candidate) {
@@ -34,7 +34,7 @@ impl BoardModification {
         column: usize,
         candidates: &[usize],
     ) -> Self {
-        let candidates: HashSet<_> = candidates
+        let candidates: BTreeSet<_> = candidates
             .iter()
             .map(|candidate| SudokuNumber::VARIANTS[candidate - 1])
             .collect();
@@ -75,15 +75,37 @@ impl BoardModification {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Eq, Hash, PartialEq)]
 pub struct RemoveCandidates {
     row: usize,
     column: usize,
-    candidates: HashSet<SudokuNumber>,
+    // Why am I using a BTreeSet instead of a HashSet? This was required so that RemoveCandidates could derive Hash.
+    //
+    // This requirement started with the need to store BoardModifications in a HashSet (The Hidden Singles logical
+    // solution puts BoardModifications into a HashSet to remove duplicates). In order to put BoardModifications in a
+    // HashSet, BoardModifications must implement Hash which also means that RemoveCandidates must implement Hash.
+    //
+    // However, I was surprised to discover that HashSet does not implement Hash itself! If it did, then candidates
+    // could be a HashSet of SudokuNumber instead of a BTreeSet. Rust is the first langauge I've encountered that
+    // doesn't allow HashSets to be hashed. This seems to have caused a bit of confusion online:
+    // https://users.rust-lang.org/t/hashmap-hashset-not-implemented-hash/63173
+    // https://users.rust-lang.org/t/hash-not-implemented-why-cant-it-be-derived/92416
+    // https://internals.rust-lang.org/t/implementing-hash-for-hashset-hashmap/3817
+    // and many more... It seems like there is some uncertainty of how to hash a HashSet since the order of elements are
+    // semantically insignificant for a HashSet, but are significant when hashing.
+    //
+    // In JVM languages, this is not a problem because all objects are hashable by virtue of java.lang.Object having the
+    // method hashCode(). java.util.AbstractSet overrides hashCode() and simply sums up the hash codes of each of the
+    // elements, thus order doesn't matter. In Swift, the struct Set conforms to the protocol Hashable, so this is also
+    // not a problem in Swift. Rust is unique here and I haven't yet dug into the full details to really know why.
+    //
+    // While HashSet doesn't implement Hash, BTreeSet does. This problem is solved by simply using a BTreeSet instead of
+    // a HashSet, but oh boy has this caused a lot of confusion.
+    candidates: BTreeSet<SudokuNumber>,
 }
 
 impl RemoveCandidates {
-    fn new(row: usize, column: usize, candidates: HashSet<SudokuNumber>) -> Self {
+    fn new(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> Self {
         board::validate_row_and_column(row, column);
         if candidates.is_empty() {
             panic!("candidates must not be empty.");
@@ -95,12 +117,12 @@ impl RemoveCandidates {
         }
     }
 
-    pub fn candidates(&self) -> &HashSet<SudokuNumber> {
+    pub fn candidates(&self) -> &BTreeSet<SudokuNumber> {
         &self.candidates
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Eq, Hash, PartialEq)]
 pub struct SetValue {
     row: usize,
     column: usize,

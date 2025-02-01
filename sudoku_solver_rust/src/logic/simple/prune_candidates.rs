@@ -3,7 +3,7 @@ use crate::{
     board_modification::BoardModification,
     cell::{Cell, IteratorCellExt, SolvedCell},
 };
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 
 // If a cell is solved, then no other cells in the same unit can have that number as a candidate.
 //
@@ -22,7 +22,7 @@ fn prune_candidates(board: &Board<Cell>) -> Vec<BoardModification> {
                 .solved_cells()
                 .map(SolvedCell::value)
                 .collect();
-            let to_remove: HashSet<_> = cell
+            let to_remove: BTreeSet<_> = cell
                 .candidates()
                 .intersection(&visible_values)
                 .copied()
