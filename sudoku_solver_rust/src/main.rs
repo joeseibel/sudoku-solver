@@ -1,6 +1,7 @@
 mod board;
 mod board_modification;
 mod cell;
+mod collections;
 mod logic;
 mod sudoku_number;
 
