@@ -1,4 +1,9 @@
-use crate::{board, cell::UnsolvedCell, sudoku_number::SudokuNumber};
+use crate::{
+    board,
+    cell::{LocatedCandidate, UnsolvedCell},
+    sudoku_number::SudokuNumber,
+};
+use itertools::Itertools;
 use std::collections::BTreeSet;
 use strum::VariantArray;
 
@@ -137,5 +142,28 @@ impl SetValue {
 
     pub fn value(&self) -> SudokuNumber {
         self.value
+    }
+}
+
+trait IteratorRemoveCandidatesExt {
+    fn merge_to_remove_candidates(self) -> Vec<BoardModification>;
+}
+
+impl<'a, I: Iterator<Item = LocatedCandidate<'a>>> IteratorRemoveCandidatesExt for I {
+    // The receiver represents a list of numbers that should be removed from specific cells. This helper function allows
+    // the logic functions to focus on simply marking the numbers to be removed, then at the end use this function to
+    // produce at most one RemoveCandidates per cell.
+    //
+    // TODO: Look at implementing FromIterator so that collect can be called instead of this method.
+    fn merge_to_remove_candidates(self) -> Vec<BoardModification> {
+        self.into_group_map()
+            .into_iter()
+            .map(|(cell, candidates)| {
+                BoardModification::new_remove_candidates_with_cell(
+                    cell,
+                    candidates.into_iter().collect(),
+                )
+            })
+            .collect()
     }
 }

@@ -112,6 +112,8 @@ impl UnsolvedCell {
     }
 }
 
+pub type LocatedCandidate<'a> = (&'a UnsolvedCell, SudokuNumber);
+
 // TODO: Consider implementing TryFrom. Also look at FromStr.
 pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
     let chars: Vec<_> = simple_board.chars().collect();
