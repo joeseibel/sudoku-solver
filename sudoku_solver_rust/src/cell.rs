@@ -2,7 +2,7 @@ use crate::{
     board::{self, Board},
     sudoku_number::SudokuNumber,
 };
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 use strum::IntoEnumIterator;
 
 // Rust enums suffer from the same problem as Swift enums. That is, the enum variants are not types themselves. For
@@ -34,7 +34,7 @@ impl Cell {
     fn new_unsolved_with_candidates(
         row: usize,
         column: usize,
-        candidates: HashSet<SudokuNumber>,
+        candidates: BTreeSet<SudokuNumber>,
     ) -> Self {
         Self::UnsolvedCell(UnsolvedCell::new(row, column, candidates))
     }
@@ -58,16 +58,16 @@ impl SolvedCell {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, Hash, PartialEq)]
 pub struct UnsolvedCell {
     row: usize,
     column: usize,
     block: usize,
-    candidates: HashSet<SudokuNumber>,
+    candidates: BTreeSet<SudokuNumber>,
 }
 
 impl UnsolvedCell {
-    fn new(row: usize, column: usize, candidates: HashSet<SudokuNumber>) -> Self {
+    fn new(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> Self {
         board::validate_row_and_column(row, column);
         if candidates.is_empty() {
             panic!("candidates must not be empty.");
@@ -92,22 +92,22 @@ impl UnsolvedCell {
         self.block
     }
 
-    // After some consideration, I decided to return a reference to the candidates HashSet. In total, I considered three
-    // options for exposing the set of candidates:
+    // After some consideration, I decided to return a reference to the candidates BTreeSet. In total, I considered
+    // three options for exposing the set of candidates:
     //
-    // 1. Make the candidates field public and allow direct access to the candidates HashSet. While this was the
+    // 1. Make the candidates field public and allow direct access to the candidates BTreeSet. While this was the
     //    simpliest option, I didn't want to allow callers to mutate candidates. If a caller were to empty the
-    //    candidates HashSet, then the UnsolvedCell would be in an invalid state.
+    //    candidates BTreeSet, then the UnsolvedCell would be in an invalid state.
     // 2. Return an Iterator. This would be consistent with the methods on Board that return Iterators, but it would
-    //    make checking if a candidate is in the set less efficient. It is better to call HashSet::contains than
+    //    make checking if a candidate is in the set less efficient. It is better to call BTreeSet::contains than
     //    Iterator::any.
-    // 3. Return a reference to the candidates HashSet. This prevents mutation while allowing callers to call
-    //    HashSet::contains.
+    // 3. Return a reference to the candidates BTreeSet. This prevents mutation while allowing callers to call
+    //    BTreeSet::contains.
     //
     // This process of consideration is probably obvious for experienced Rust users, but it was useful to document my
     // thought process here as I learn Rust. This level of consideration for which type I return here isn't necessary in
     // other languages, so it takes a little getting used to in Rust.
-    pub fn candidates(&self) -> &HashSet<SudokuNumber> {
+    pub fn candidates(&self) -> &BTreeSet<SudokuNumber> {
         &self.candidates
     }
 }
@@ -164,7 +164,7 @@ pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
                 if chars_in_braces.contains(&'{') {
                     panic!("Nested '{{'.");
                 }
-                let candidates: HashSet<_> = chars_in_braces
+                let candidates: BTreeSet<_> = chars_in_braces
                     .iter()
                     .map(|&ch| SudokuNumber::from_digit(ch))
                     .collect();
