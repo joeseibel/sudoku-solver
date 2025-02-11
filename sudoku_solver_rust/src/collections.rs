@@ -1,4 +1,4 @@
-trait IteratorZipExt<'a, T: 'a> {
+pub trait IteratorZipExt<'a, T: 'a> {
     fn zip_every_pair(self) -> impl Iterator<Item = (&'a T, &'a T)>;
 }
 

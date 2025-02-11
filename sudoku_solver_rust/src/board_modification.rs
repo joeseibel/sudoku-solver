@@ -145,7 +145,7 @@ impl SetValue {
     }
 }
 
-trait IteratorRemoveCandidatesExt {
+pub trait IteratorRemoveCandidatesExt {
     fn merge_to_remove_candidates(self) -> Vec<BoardModification>;
 }
 
