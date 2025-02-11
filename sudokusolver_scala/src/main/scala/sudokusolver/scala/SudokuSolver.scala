@@ -43,7 +43,7 @@ class UnableToSolve(board: Board[Cell]) extends SolveResult:
 /*
  * The Scala version of solve was written to be purely functional. Unlike the Kotlin or Java implementations, it does
  * not contain any 'var' declarations or mutable collections. Loops have mostly been replaced with tail recursion and
- * pattern matching has be used where applicable.
+ * pattern matching has been used where applicable.
  */
 def solve(input: Board[Option[SudokuNumber]]): SolveResult = bruteForce(input) match
   case NoSolutions => InvalidNoSolutions
