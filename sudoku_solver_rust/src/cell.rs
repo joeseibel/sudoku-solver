@@ -225,10 +225,10 @@ pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
 // Scala, and Swift have cleaner syntax.
 pub trait IteratorCellExt<'a> {
     fn solved_cells(self) -> impl Iterator<Item = &'a SolvedCell>;
-    fn unsolved_cells(self) -> impl Iterator<Item = &'a UnsolvedCell>;
+    fn unsolved_cells(self) -> impl Iterator<Item = &'a UnsolvedCell> + Clone;
 }
 
-impl<'a, I: Iterator<Item = &'a Cell>> IteratorCellExt<'a> for I {
+impl<'a, I: Iterator<Item = &'a Cell> + Clone> IteratorCellExt<'a> for I {
     fn solved_cells(self) -> impl Iterator<Item = &'a SolvedCell> {
         self.flat_map(|cell| match cell {
             Cell::SolvedCell(solved_cell) => Some(solved_cell),
@@ -236,7 +236,7 @@ impl<'a, I: Iterator<Item = &'a Cell>> IteratorCellExt<'a> for I {
         })
     }
 
-    fn unsolved_cells(self) -> impl Iterator<Item = &'a UnsolvedCell> {
+    fn unsolved_cells(self) -> impl Iterator<Item = &'a UnsolvedCell> + Clone {
         self.flat_map(|cell| match cell {
             Cell::SolvedCell(_) => None,
             Cell::UnsolvedCell(unsolved_cell) => Some(unsolved_cell),

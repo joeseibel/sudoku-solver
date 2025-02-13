@@ -31,7 +31,7 @@ impl<T> Board<T> {
     // only consumed once. Methods like collect take ownership of the Iterator so that it cannot be used after
     // collecting. This is different in Java in which the compiler can't prevent multiple consumptions of a Stream. Java
     // instead throws an IllegalStateException if a Stream is operated on after closing.
-    pub fn rows(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
+    pub fn rows(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> + Clone {
         self.rows.iter().map(|row| row.iter())
     }
 
@@ -43,7 +43,7 @@ impl<T> Board<T> {
         (0..UNIT_SIZE).map(|index| self.get_block(index))
     }
 
-    pub fn units(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
+    pub fn units(&self) -> impl Iterator<Item = impl Iterator<Item = &T> + Clone> {
         // The implementation of this method was a bit of a surprise. I naively thought that I could implement units in
         // a manner similar to the other languages. Originally, I tried doing this:
         //
@@ -65,20 +65,20 @@ impl<T> Board<T> {
         rows.chain(columns).chain(blocks).map(Vec::into_iter)
     }
 
-    pub fn cells(&self) -> impl Iterator<Item = &T> {
+    pub fn cells(&self) -> impl Iterator<Item = &T> + Clone {
         self.rows.as_flattened().iter()
     }
 
-    pub fn get_row(&self, row_index: usize) -> impl Iterator<Item = &T> {
+    pub fn get_row(&self, row_index: usize) -> impl Iterator<Item = &T> + Clone {
         self.rows[row_index].iter()
     }
 
-    pub fn get_column(&self, column_index: usize) -> impl Iterator<Item = &T> {
+    pub fn get_column(&self, column_index: usize) -> impl Iterator<Item = &T> + Clone {
         self.rows()
             .map(move |mut row| row.nth(column_index).unwrap())
     }
 
-    pub fn get_block(&self, block_index: usize) -> impl Iterator<Item = &T> {
+    pub fn get_block(&self, block_index: usize) -> impl Iterator<Item = &T> + Clone {
         if block_index >= UNIT_SIZE {
             panic!(
                 "block_index is {block_index}, must be between 0 and {}.",
