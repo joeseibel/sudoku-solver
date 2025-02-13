@@ -15,7 +15,6 @@ fn naked_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
-            let unit = unit.collect::<Vec<_>>().into_iter();
             unit.clone()
                 .unsolved_cells()
                 .filter(|cell| cell.candidates().len() == 2)
