@@ -11,7 +11,7 @@ use crate::{
 // two cells. The two candidates can be removed from every other cell in the unit.
 //
 // TODO: Should this return a Vec or an Iterator?
-fn naked_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
+pub fn naked_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {

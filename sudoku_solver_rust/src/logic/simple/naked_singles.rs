@@ -9,7 +9,7 @@ use crate::{
 // If an unsolved cell has exactly one candidate, then the candidate must be placed in that cell.
 //
 // TODO: Should this return a Vec or an Iterator?
-fn naked_singles(board: &Board<Cell>) -> Vec<BoardModification> {
+pub fn naked_singles(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .cells()
         .unsolved_cells()

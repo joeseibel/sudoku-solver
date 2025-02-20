@@ -1,5 +1,6 @@
+use crate::board;
 use std::{
-    fmt::Debug,
+    fmt::{self, Debug, Display},
     ops::{Index, IndexMut},
 };
 
@@ -100,6 +101,20 @@ impl<T> Board<T> {
             .map(|row| row.map(&mut f).collect::<Vec<_>>().try_into().unwrap());
         Board::new(rows.collect::<Vec<_>>().try_into().unwrap())
     }
+
+    pub fn map_cells_indexed<B: Debug>(
+        &self,
+        mut f: impl FnMut(usize, usize, &T) -> B,
+    ) -> Board<B> {
+        let rows = self.rows().enumerate().map(|(row_index, row)| {
+            row.enumerate()
+                .map(|(column_index, cell)| f(row_index, column_index, cell))
+                .collect::<Vec<_>>()
+                .try_into()
+                .unwrap()
+        });
+        Board::new(rows.collect::<Vec<_>>().try_into().unwrap())
+    }
 }
 
 impl<T> Index<(usize, usize)> for Board<T> {
@@ -115,6 +130,30 @@ impl<T> IndexMut<(usize, usize)> for Board<T> {
     fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
         let (row_index, column_index) = index;
         &mut self.rows[row_index][column_index]
+    }
+}
+
+impl<T: Display> Display for Board<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // TODO: This was written to minimize allocations. Consider rewriting in a functional manner with joining.
+        for (row_index, row) in self.rows().enumerate() {
+            for (column_index, cell) in row.enumerate() {
+                write!(f, "{cell}")?;
+                if column_index < board::UNIT_SIZE - 1 {
+                    write!(f, " ")?;
+                    if (column_index + 1) % board::UNIT_SIZE_SQUARE_ROOT == 0 {
+                        write!(f, "| ")?;
+                    }
+                }
+            }
+            if row_index < board::UNIT_SIZE - 1 {
+                writeln!(f)?;
+                if (row_index + 1) % board::UNIT_SIZE_SQUARE_ROOT == 0 {
+                    writeln!(f, "------+-------+------")?;
+                }
+            }
+        }
+        Ok(())
     }
 }
 

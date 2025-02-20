@@ -2,7 +2,11 @@ use crate::{
     board::{self, Board},
     sudoku_number::SudokuNumber,
 };
-use std::collections::BTreeSet;
+use itertools::Itertools;
+use std::{
+    collections::BTreeSet,
+    fmt::{self, Display},
+};
 use strum::IntoEnumIterator;
 
 // Rust enums suffer from the same problem as Swift enums. That is, the enum variants are not types themselves. For
@@ -19,7 +23,7 @@ pub enum Cell {
 impl Cell {
     // TODO: Cell, SolvedCell, and UnsolvedCell constructors currently follow the pattern in Swift. Review to see if
     // this pattern makes sense in Rust.
-    fn new_solved(row: usize, column: usize, value: SudokuNumber) -> Self {
+    pub fn new_solved(row: usize, column: usize, value: SudokuNumber) -> Self {
         Self::SolvedCell(SolvedCell::new(row, column, value))
     }
 
@@ -40,6 +44,15 @@ impl Cell {
     }
 }
 
+impl Display for Cell {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::SolvedCell(cell) => write!(f, "{cell}"),
+            Self::UnsolvedCell(cell) => write!(f, "{cell}"),
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct SolvedCell {
     row: usize,
@@ -55,6 +68,12 @@ impl SolvedCell {
 
     pub fn value(&self) -> SudokuNumber {
         self.value
+    }
+}
+
+impl Display for SolvedCell {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.value)
     }
 }
 
@@ -110,9 +129,56 @@ impl UnsolvedCell {
     pub fn candidates(&self) -> &BTreeSet<SudokuNumber> {
         &self.candidates
     }
+
+    // TODO: Would it be better to have a more restrictive method such as remove_candidate?
+    pub fn candidates_mut(&mut self) -> &mut BTreeSet<SudokuNumber> {
+        &mut self.candidates
+    }
+}
+
+impl Display for UnsolvedCell {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "0")
+    }
 }
 
 pub type LocatedCandidate<'a> = (&'a UnsolvedCell, SudokuNumber);
+
+impl Board<Cell> {
+    // TODO: For all implementations, could we simply call cell.toString()?
+    pub fn to_simple_string(&self) -> String {
+        // TODO: Should this be rewritten to limit allocations?
+        self.cells()
+            .map(|cell| match cell {
+                Cell::SolvedCell(cell) => cell.value().to_string(),
+                Cell::UnsolvedCell(_) => String::from('0'),
+            })
+            .join("")
+    }
+
+    pub fn to_string_with_candidates(&self) -> String {
+        // TODO: Should this be rewritten to limit allocations?
+        self.rows()
+            .map(|row| {
+                row.map(|cell| match cell {
+                    Cell::SolvedCell(cell) => cell.value().to_string(),
+                    Cell::UnsolvedCell(cell) => {
+                        format!("{{{}}}", cell.candidates().iter().join(""))
+                    }
+                })
+                .join("")
+            })
+            .join("\n")
+    }
+}
+
+// TODO: Look at implementing From.
+pub fn create_cell_board(board: &Board<Option<SudokuNumber>>) -> Board<Cell> {
+    board.map_cells_indexed(|row, column, &cell| match cell {
+        Some(cell) => Cell::new_solved(row, column, cell),
+        None => Cell::new_unsolved(row, column),
+    })
+}
 
 // TODO: Consider implementing TryFrom. Also look at FromStr.
 pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {

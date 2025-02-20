@@ -12,7 +12,7 @@ use strum::IntoEnumIterator;
 // If a candidate exists in only one cell in a unit, then the candidate must be placed in that cell.
 //
 // TODO: Should this return a Vec or an Iterator?
-fn hidden_singles(board: &Board<Cell>) -> Vec<BoardModification> {
+pub fn hidden_singles(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {

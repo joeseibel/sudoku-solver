@@ -1,5 +1,5 @@
-mod hidden_singles;
-mod naked_pairs;
-mod naked_singles;
-mod naked_triples;
-mod prune_candidates;
+pub mod hidden_singles;
+pub mod naked_pairs;
+pub mod naked_singles;
+pub mod naked_triples;
+pub mod prune_candidates;

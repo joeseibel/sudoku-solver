@@ -11,7 +11,7 @@ use std::collections::BTreeSet;
 //
 // If a unit has three unsolved cells with a total of three candidates among them, then those three candidates must be
 // placed in those three cells. The three candidates can be removed from every other cell in the unit.
-fn naked_triples(board: &Board<Cell>) -> Vec<BoardModification> {
+pub fn naked_triples(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
