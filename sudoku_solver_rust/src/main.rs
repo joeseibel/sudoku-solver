@@ -17,6 +17,7 @@ use std::env;
 use sudoku_number::SudokuNumber;
 
 // TODO: Consider using clap.
+// TODO: Does it make sense for main to return Result?
 fn main() {
     let args: Vec<_> = env::args().collect();
     if args.len() != 2 {
