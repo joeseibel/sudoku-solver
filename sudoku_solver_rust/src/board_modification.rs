@@ -167,3 +167,49 @@ impl<'a, I: Iterator<Item = LocatedCandidate<'a>>> IteratorRemoveCandidatesExt f
             .collect()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::cell::IteratorCellExt;
+    use crate::{cell::Cell, sudoku_number::SudokuNumber};
+    use std::{collections::BTreeSet, iter::once};
+
+    #[test]
+    #[should_panic(expected = "candidates must not be empty.")]
+    fn test_remove_candidates_candidates_are_empty() {
+        BoardModification::new_remove_candidates_with_indices(0, 0, &[]);
+    }
+
+    #[test]
+    #[should_panic(expected = "1 is not a candidate for [0, 0].")]
+    fn test_remove_candidates_not_a_candidate_for_cell() {
+        BoardModification::new_remove_candidates_with_cell(
+            once(&Cell::new_unsolved_with_candidates(
+                0,
+                0,
+                BTreeSet::from([SudokuNumber::Two]),
+            ))
+            .unsolved_cells()
+            .next()
+            .unwrap(),
+            BTreeSet::from([SudokuNumber::One]),
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "1 is not a candidate for [0, 0].")]
+    fn test_set_value_not_a_candidate_for_cell() {
+        BoardModification::new_set_value_with_cell(
+            once(&Cell::new_unsolved_with_candidates(
+                0,
+                0,
+                BTreeSet::from([SudokuNumber::Two]),
+            ))
+            .unsolved_cells()
+            .next()
+            .unwrap(),
+            SudokuNumber::One,
+        );
+    }
+}

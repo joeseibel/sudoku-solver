@@ -27,7 +27,7 @@ impl Cell {
         Self::SolvedCell(SolvedCell::new(row, column, value))
     }
 
-    fn new_unsolved(row: usize, column: usize) -> Self {
+    pub fn new_unsolved(row: usize, column: usize) -> Self {
         Self::UnsolvedCell(UnsolvedCell::new(
             row,
             column,
@@ -35,7 +35,7 @@ impl Cell {
         ))
     }
 
-    fn new_unsolved_with_candidates(
+    pub fn new_unsolved_with_candidates(
         row: usize,
         column: usize,
         candidates: BTreeSet<SudokuNumber>,
@@ -313,6 +313,12 @@ impl<'a, I: Iterator<Item = &'a Cell> + Clone> IteratorCellExt<'a> for I {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    #[should_panic(expected = "candidates must not be empty.")]
+    fn test_unsolved_cell_candidates_are_empty() {
+        Cell::new_unsolved_with_candidates(0, 0, BTreeSet::new());
+    }
 
     #[test]
     #[should_panic(expected = "simple_board.chars().count() is 0, must be 81.")]
