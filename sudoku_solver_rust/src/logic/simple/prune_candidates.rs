@@ -6,8 +6,6 @@ use crate::{
 use std::collections::BTreeSet;
 
 // If a cell is solved, then no other cells in the same unit can have that number as a candidate.
-//
-// TODO: Should this return a Vec or an Iterator?
 pub fn prune_candidates(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .cells()

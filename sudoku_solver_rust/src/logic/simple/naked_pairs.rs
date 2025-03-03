@@ -9,8 +9,6 @@ use crate::{
 //
 // If a pair of unsolved cells in a unit has the same two candidates, then those two candidates must be placed in those
 // two cells. The two candidates can be removed from every other cell in the unit.
-//
-// TODO: Should this return a Vec or an Iterator?
 pub fn naked_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
