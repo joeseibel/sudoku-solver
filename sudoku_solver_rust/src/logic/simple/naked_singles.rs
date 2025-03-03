@@ -39,7 +39,6 @@ mod tests {
             {48}26{78}{18}{178}{179}35\
             {358}{35}{158}4{13568}9{127}{6}{1267}\
         ";
-        // TODO: Should this be Vec? What type should expected be?
         let expected = vec![
             BoardModification::new_set_value_with_indices(0, 7, 9),
             BoardModification::new_set_value_with_indices(8, 7, 6),
