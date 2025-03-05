@@ -35,7 +35,7 @@ pub fn naked_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{cell, logic::brute_force};
+    use crate::logic::assertions;
 
     #[test]
     fn test1() {
@@ -50,7 +50,7 @@ mod tests {
             {18}{168}39{12567}{2567}4{12568}{1256}\
             24{168}{15}3{56}7{1568}9\
         ";
-        let expected = vec![
+        let expected = [
             BoardModification::new_remove_candidates_with_indices(0, 3, &[1]),
             BoardModification::new_remove_candidates_with_indices(0, 4, &[1, 6]),
             BoardModification::new_remove_candidates_with_indices(0, 5, &[6]),
@@ -61,39 +61,7 @@ mod tests {
             BoardModification::new_remove_candidates_with_indices(5, 4, &[8]),
             BoardModification::new_remove_candidates_with_indices(5, 8, &[5]),
         ];
-
-        // TODO: Factor out to assert_logical_solution
-        let board = cell::parse_cells_with_candidates(board);
-        let optional_board = board.map_cells(|cell| match cell {
-            Cell::SolvedCell(solved_cell) => Some(solved_cell.value()),
-            Cell::UnsolvedCell(_) => None,
-        });
-        let brute_force_solution = brute_force::brute_force(&optional_board).unwrap();
-        let mut actual = naked_pairs(&board);
-        // Why am I using sort_unstable_by_key instead of sort_unstable and implementing Ord for BoardModification?
-        // In short, implementing Ord for BoardModification would lead to PartialOrd and PartialEq disagreeing with each
-        // other. I want to sort BoardModifications by the row and column indices only while ignoring other fields.
-        // However, I want equality to check all fields, as that is useful in unit tests. Having a different standard of
-        // equality between PartialOrd and PartialEq breaks the contract of PartialOrd.
-        actual.sort_unstable_by_key(|modification| (modification.row(), modification.column()));
-        for modification in &actual {
-            let row = modification.row();
-            let column = modification.column();
-            let solution = brute_force_solution[(row, column)];
-            match modification {
-                BoardModification::RemoveCandidates(remove_candidates) => assert!(
-                    !remove_candidates.candidates().contains(&solution),
-                    "Cannot remove candidate {solution} from [{row}, {column}]"
-                ),
-                BoardModification::SetValue(set_value) => assert_eq!(
-                    solution,
-                    set_value.value(),
-                    "Cannot set value {} to [{row}, {column}]. Solution is {solution}",
-                    set_value.value()
-                ),
-            }
-        }
-        assert_eq!(expected, actual);
+        assertions::assert_logical_solution(&expected, board, naked_pairs);
     }
 
     #[test]
@@ -109,7 +77,7 @@ mod tests {
             2{47}{789}{37}{378}{689}{346}15\
             {47}1{789}{37}5{689}{346}2{34}\
         ";
-        let expected = vec![
+        let expected = [
             BoardModification::new_remove_candidates_with_indices(0, 3, &[7]),
             BoardModification::new_remove_candidates_with_indices(1, 3, &[7]),
             BoardModification::new_remove_candidates_with_indices(1, 5, &[1, 2]),
@@ -118,38 +86,6 @@ mod tests {
             BoardModification::new_remove_candidates_with_indices(7, 4, &[3, 7]),
             BoardModification::new_remove_candidates_with_indices(8, 2, &[7]),
         ];
-
-        // TODO: Factor out to assert_logical_solution
-        let board = cell::parse_cells_with_candidates(board);
-        let optional_board = board.map_cells(|cell| match cell {
-            Cell::SolvedCell(solved_cell) => Some(solved_cell.value()),
-            Cell::UnsolvedCell(_) => None,
-        });
-        let brute_force_solution = brute_force::brute_force(&optional_board).unwrap();
-        let mut actual = naked_pairs(&board);
-        // Why am I using sort_unstable_by_key instead of sort_unstable and implementing Ord for BoardModification?
-        // In short, implementing Ord for BoardModification would lead to PartialOrd and PartialEq disagreeing with each
-        // other. I want to sort BoardModifications by the row and column indices only while ignoring other fields.
-        // However, I want equality to check all fields, as that is useful in unit tests. Having a different standard of
-        // equality between PartialOrd and PartialEq breaks the contract of PartialOrd.
-        actual.sort_unstable_by_key(|modification| (modification.row(), modification.column()));
-        for modification in &actual {
-            let row = modification.row();
-            let column = modification.column();
-            let solution = brute_force_solution[(row, column)];
-            match modification {
-                BoardModification::RemoveCandidates(remove_candidates) => assert!(
-                    !remove_candidates.candidates().contains(&solution),
-                    "Cannot remove candidate {solution} from [{row}, {column}]"
-                ),
-                BoardModification::SetValue(set_value) => assert_eq!(
-                    solution,
-                    set_value.value(),
-                    "Cannot set value {} to [{row}, {column}]. Solution is {solution}",
-                    set_value.value()
-                ),
-            }
-        }
-        assert_eq!(expected, actual);
+        assertions::assert_logical_solution(&expected, board, naked_pairs);
     }
 }
