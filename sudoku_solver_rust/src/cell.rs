@@ -20,30 +20,6 @@ pub enum Cell {
     UnsolvedCell(UnsolvedCell),
 }
 
-impl Cell {
-    // TODO: Cell, SolvedCell, and UnsolvedCell constructors currently follow the pattern in Swift. Review to see if
-    // this pattern makes sense in Rust.
-    pub fn new_solved(row: usize, column: usize, value: SudokuNumber) -> Self {
-        Self::SolvedCell(SolvedCell::new(row, column, value))
-    }
-
-    pub fn new_unsolved(row: usize, column: usize) -> Self {
-        Self::UnsolvedCell(UnsolvedCell::new(
-            row,
-            column,
-            SudokuNumber::iter().collect(),
-        ))
-    }
-
-    pub fn new_unsolved_with_candidates(
-        row: usize,
-        column: usize,
-        candidates: BTreeSet<SudokuNumber>,
-    ) -> Self {
-        Self::UnsolvedCell(UnsolvedCell::new(row, column, candidates))
-    }
-}
-
 impl Display for Cell {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -61,9 +37,9 @@ pub struct SolvedCell {
 }
 
 impl SolvedCell {
-    fn new(row: usize, column: usize, value: SudokuNumber) -> Self {
+    pub fn new(row: usize, column: usize, value: SudokuNumber) -> Cell {
         board::validate_row_and_column(row, column);
-        Self { row, column, value }
+        Cell::SolvedCell(Self { row, column, value })
     }
 
     pub fn value(&self) -> SudokuNumber {
@@ -86,17 +62,21 @@ pub struct UnsolvedCell {
 }
 
 impl UnsolvedCell {
-    fn new(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> Self {
+    pub fn new(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> Cell {
         board::validate_row_and_column(row, column);
         if candidates.is_empty() {
             panic!("candidates must not be empty.");
         }
-        Self {
+        Cell::UnsolvedCell(Self {
             row,
             column,
             block: board::get_block_index(row, column),
             candidates,
-        }
+        })
+    }
+
+    pub fn with_all_candidates(row: usize, column: usize) -> Cell {
+        Self::new(row, column, SudokuNumber::iter().collect())
     }
 
     pub fn row(&self) -> usize {
@@ -175,8 +155,8 @@ impl Board<Cell> {
 // TODO: Look at implementing From.
 pub fn create_cell_board(board: &Board<Option<SudokuNumber>>) -> Board<Cell> {
     board.map_cells_indexed(|row, column, &cell| match cell {
-        Some(cell) => Cell::new_solved(row, column, cell),
-        None => Cell::new_unsolved(row, column),
+        Some(cell) => SolvedCell::new(row, column, cell),
+        None => UnsolvedCell::with_all_candidates(row, column),
     })
 }
 
@@ -198,8 +178,8 @@ pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
             row.iter()
                 .enumerate()
                 .map(|(column_index, &cell)| match cell {
-                    '0' => Cell::new_unsolved(row_index, column_index),
-                    _ => Cell::new_solved(row_index, column_index, SudokuNumber::from_digit(cell)),
+                    '0' => UnsolvedCell::with_all_candidates(row_index, column_index),
+                    _ => SolvedCell::new(row_index, column_index, SudokuNumber::from_digit(cell)),
                 })
                 .collect::<Vec<_>>()
                 .try_into()
@@ -237,7 +217,7 @@ pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
                     .map(|&ch| SudokuNumber::from_digit(ch))
                     .collect();
                 cell_builders.push(Box::new(move |row, column| {
-                    Cell::new_unsolved_with_candidates(row, column, candidates.clone())
+                    UnsolvedCell::new(row, column, candidates.clone())
                 }));
                 index = closing_brace + 1;
             }
@@ -245,7 +225,7 @@ pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
             ch => {
                 let value = SudokuNumber::from_digit(ch);
                 cell_builders.push(Box::new(move |row, column| {
-                    Cell::new_solved(row, column, value)
+                    SolvedCell::new(row, column, value)
                 }));
                 index += 1;
             }
@@ -317,7 +297,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "candidates must not be empty.")]
     fn test_unsolved_cell_candidates_are_empty() {
-        Cell::new_unsolved_with_candidates(0, 0, BTreeSet::new());
+        UnsolvedCell::new(0, 0, BTreeSet::new());
     }
 
     #[test]

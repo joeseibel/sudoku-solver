@@ -185,7 +185,7 @@ mod tests {
     #[should_panic(expected = "1 is not a candidate for [0, 0].")]
     fn test_remove_candidates_not_a_candidate_for_cell() {
         BoardModification::new_remove_candidates_with_cell(
-            once(&Cell::new_unsolved_with_candidates(
+            once(&UnsolvedCell::new(
                 0,
                 0,
                 BTreeSet::from([SudokuNumber::Two]),
@@ -201,7 +201,7 @@ mod tests {
     #[should_panic(expected = "1 is not a candidate for [0, 0].")]
     fn test_set_value_not_a_candidate_for_cell() {
         BoardModification::new_set_value_with_cell(
-            once(&Cell::new_unsolved_with_candidates(
+            once(&UnsolvedCell::new(
                 0,
                 0,
                 BTreeSet::from([SudokuNumber::Two]),

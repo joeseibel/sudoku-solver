@@ -176,7 +176,11 @@ pub fn validate_row_and_column(row: usize, column: usize) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{board_modification::BoardModification, cell::Cell, sudoku_number::SudokuNumber};
+    use crate::{
+        board_modification::BoardModification,
+        cell::{SolvedCell, UnsolvedCell},
+        sudoku_number::SudokuNumber,
+    };
 
     #[test]
     #[should_panic(expected = "block_index is 9, must be between 0 and 8.")]
@@ -199,12 +203,12 @@ mod tests {
     #[test]
     #[should_panic(expected = "column is 9, must be between 0 and 8.")]
     fn test_solved_cell_column_too_high() {
-        Cell::new_solved(0, 9, SudokuNumber::One);
+        SolvedCell::new(0, 9, SudokuNumber::One);
     }
 
     #[test]
     #[should_panic(expected = "column is 9, must be between 0 and 8.")]
     fn test_unsolved_cell_column_too_high() {
-        Cell::new_unsolved(0, 9);
+        UnsolvedCell::with_all_candidates(0, 9);
     }
 }

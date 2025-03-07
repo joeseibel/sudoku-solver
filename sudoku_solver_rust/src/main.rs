@@ -7,7 +7,7 @@ mod sudoku_number;
 
 use board::Board;
 use board_modification::BoardModification;
-use cell::{Cell, IteratorCellExt};
+use cell::{Cell, IteratorCellExt, SolvedCell};
 use indoc::formatdoc;
 use logic::{
     brute_force::{self, BruteForceError},
@@ -102,7 +102,7 @@ fn solve(input: Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, Solv
                             if value != known_solution {
                                 panic!("Cannot set value {value} to [{row}, {column}]. Solution is {known_solution}");
                             }
-                            board[(row, column)] = Cell::new_solved(row, column, value);
+                            board[(row, column)] = SolvedCell::new(row, column, value);
                         }
                     }
                 }
