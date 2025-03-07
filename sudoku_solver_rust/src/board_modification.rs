@@ -15,24 +15,6 @@ pub enum BoardModification {
 }
 
 impl BoardModification {
-    // TODO: BoardModification, RemoveCandidates, and SetValue constructors currently follow the pattern in Swift.
-    // Review to see if this pattern makes sense in Rust.
-    pub fn new_remove_candidates_with_cell(
-        cell: &UnsolvedCell,
-        candidates: BTreeSet<SudokuNumber>,
-    ) -> Self {
-        for candidate in &candidates {
-            if !cell.candidates().contains(candidate) {
-                panic!(
-                    "{candidate} is not a candidate for [{}, {}].",
-                    cell.row(),
-                    cell.column()
-                );
-            }
-        }
-        Self::RemoveCandidates(RemoveCandidates::new(cell.row(), cell.column(), candidates))
-    }
-
     // TODO: Look into macros for varargs.
     pub fn new_remove_candidates_with_indices(
         row: usize,
@@ -43,26 +25,7 @@ impl BoardModification {
             .iter()
             .map(|candidate| SudokuNumber::VARIANTS[candidate - 1])
             .collect();
-        Self::RemoveCandidates(RemoveCandidates::new(row, column, candidates))
-    }
-
-    pub fn new_set_value_with_cell(cell: &UnsolvedCell, value: SudokuNumber) -> Self {
-        if !cell.candidates().contains(&value) {
-            panic!(
-                "{value} is not a candidate for [{}, {}].",
-                cell.row(),
-                cell.column()
-            );
-        }
-        Self::SetValue(SetValue::new(cell.row(), cell.column(), value))
-    }
-
-    pub fn new_set_value_with_indices(row: usize, column: usize, value: usize) -> Self {
-        Self::SetValue(SetValue::new(
-            row,
-            column,
-            SudokuNumber::VARIANTS[value - 1],
-        ))
+        RemoveCandidates::new(row, column, candidates)
     }
 
     pub fn row(&self) -> usize {
@@ -110,16 +73,29 @@ pub struct RemoveCandidates {
 }
 
 impl RemoveCandidates {
-    fn new(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> Self {
+    pub fn new(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> BoardModification {
         board::validate_row_and_column(row, column);
         if candidates.is_empty() {
             panic!("candidates must not be empty.");
         }
-        Self {
+        BoardModification::RemoveCandidates(Self {
             row,
             column,
             candidates,
+        })
+    }
+
+    pub fn from_cell(cell: &UnsolvedCell, candidates: BTreeSet<SudokuNumber>) -> BoardModification {
+        for candidate in &candidates {
+            if !cell.candidates().contains(candidate) {
+                panic!(
+                    "{candidate} is not a candidate for [{}, {}].",
+                    cell.row(),
+                    cell.column()
+                );
+            }
         }
+        Self::new(cell.row(), cell.column(), candidates)
     }
 
     pub fn candidates(&self) -> &BTreeSet<SudokuNumber> {
@@ -135,9 +111,24 @@ pub struct SetValue {
 }
 
 impl SetValue {
-    fn new(row: usize, column: usize, value: SudokuNumber) -> Self {
+    fn with_validation(row: usize, column: usize, value: SudokuNumber) -> BoardModification {
         board::validate_row_and_column(row, column);
-        Self { row, column, value }
+        BoardModification::SetValue(Self { row, column, value })
+    }
+
+    pub fn new(row: usize, column: usize, value: usize) -> BoardModification {
+        Self::with_validation(row, column, SudokuNumber::VARIANTS[value - 1])
+    }
+
+    pub fn from_cell(cell: &UnsolvedCell, value: SudokuNumber) -> BoardModification {
+        if !cell.candidates().contains(&value) {
+            panic!(
+                "{value} is not a candidate for [{}, {}].",
+                cell.row(),
+                cell.column()
+            )
+        }
+        Self::with_validation(cell.row(), cell.column(), value)
     }
 
     pub fn value(&self) -> SudokuNumber {
@@ -159,10 +150,7 @@ impl<'a, I: Iterator<Item = LocatedCandidate<'a>>> IteratorRemoveCandidatesExt f
         self.into_group_map()
             .into_iter()
             .map(|(cell, candidates)| {
-                BoardModification::new_remove_candidates_with_cell(
-                    cell,
-                    candidates.into_iter().collect(),
-                )
+                RemoveCandidates::from_cell(cell, candidates.into_iter().collect())
             })
             .collect()
     }
@@ -172,7 +160,7 @@ impl<'a, I: Iterator<Item = LocatedCandidate<'a>>> IteratorRemoveCandidatesExt f
 mod tests {
     use super::*;
     use crate::cell::IteratorCellExt;
-    use crate::{cell::Cell, sudoku_number::SudokuNumber};
+    use crate::sudoku_number::SudokuNumber;
     use std::{collections::BTreeSet, iter::once};
 
     #[test]
@@ -184,7 +172,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "1 is not a candidate for [0, 0].")]
     fn test_remove_candidates_not_a_candidate_for_cell() {
-        BoardModification::new_remove_candidates_with_cell(
+        RemoveCandidates::from_cell(
             once(&UnsolvedCell::new(
                 0,
                 0,
@@ -200,7 +188,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "1 is not a candidate for [0, 0].")]
     fn test_set_value_not_a_candidate_for_cell() {
-        BoardModification::new_set_value_with_cell(
+        SetValue::from_cell(
             once(&UnsolvedCell::new(
                 0,
                 0,

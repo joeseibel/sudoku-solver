@@ -1,6 +1,6 @@
 use crate::{
     board::Board,
-    board_modification::BoardModification,
+    board_modification::{BoardModification, SetValue},
     cell::{Cell, IteratorCellExt},
     sudoku_number::SudokuNumber,
 };
@@ -21,7 +21,7 @@ pub fn hidden_singles(board: &Board<Cell>) -> Vec<BoardModification> {
                     .filter(|cell| cell.candidates().contains(&candidate));
                 match with_candidate.next() {
                     Some(cell) if with_candidate.next().is_none() => {
-                        Some(BoardModification::new_set_value_with_cell(cell, candidate))
+                        Some(SetValue::from_cell(cell, candidate))
                     }
                     _ => None,
                 }
@@ -51,15 +51,15 @@ mod tests {
             91{35}{357}6{357}{358}{458}2\
         ";
         let expected = [
-            BoardModification::new_set_value_with_indices(0, 1, 4),
-            BoardModification::new_set_value_with_indices(0, 2, 6),
-            BoardModification::new_set_value_with_indices(1, 3, 3),
-            BoardModification::new_set_value_with_indices(1, 8, 4),
-            BoardModification::new_set_value_with_indices(2, 1, 7),
-            BoardModification::new_set_value_with_indices(6, 7, 6),
-            BoardModification::new_set_value_with_indices(7, 0, 8),
-            BoardModification::new_set_value_with_indices(7, 8, 7),
-            BoardModification::new_set_value_with_indices(8, 7, 4),
+            SetValue::new(0, 1, 4),
+            SetValue::new(0, 2, 6),
+            SetValue::new(1, 3, 3),
+            SetValue::new(1, 8, 4),
+            SetValue::new(2, 1, 7),
+            SetValue::new(6, 7, 6),
+            SetValue::new(7, 0, 8),
+            SetValue::new(7, 8, 7),
+            SetValue::new(8, 7, 4),
         ];
         assertions::assert_logical_solution(&expected, board, hidden_singles);
     }

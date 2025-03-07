@@ -1,6 +1,6 @@
 use crate::{
     board::Board,
-    board_modification::BoardModification,
+    board_modification::{BoardModification, SetValue},
     cell::{Cell, IteratorCellExt},
 };
 
@@ -12,12 +12,7 @@ pub fn naked_singles(board: &Board<Cell>) -> Vec<BoardModification> {
         .cells()
         .unsolved_cells()
         .filter(|cell| cell.candidates().len() == 1)
-        .map(|cell| {
-            BoardModification::new_set_value_with_cell(
-                cell,
-                *cell.candidates().iter().next().unwrap(),
-            )
-        })
+        .map(|cell| SetValue::from_cell(cell, *cell.candidates().iter().next().unwrap()))
         .collect()
 }
 
@@ -39,10 +34,7 @@ mod tests {
             {48}26{78}{18}{178}{179}35\
             {358}{35}{158}4{13568}9{127}{6}{1267}\
         ";
-        let expected = [
-            BoardModification::new_set_value_with_indices(0, 7, 9),
-            BoardModification::new_set_value_with_indices(8, 7, 6),
-        ];
+        let expected = [SetValue::new(0, 7, 9), SetValue::new(8, 7, 6)];
         assertions::assert_logical_solution(&expected, board, naked_singles);
     }
 }

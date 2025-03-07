@@ -177,7 +177,7 @@ pub fn validate_row_and_column(row: usize, column: usize) {
 mod tests {
     use super::*;
     use crate::{
-        board_modification::BoardModification,
+        board_modification::{BoardModification, SetValue},
         cell::{SolvedCell, UnsolvedCell},
         sudoku_number::SudokuNumber,
     };
@@ -197,7 +197,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "row is 9, must be between 0 and 8.")]
     fn test_set_value_row_too_high() {
-        BoardModification::new_set_value_with_indices(9, 0, 1);
+        SetValue::new(9, 0, 1);
     }
 
     #[test]

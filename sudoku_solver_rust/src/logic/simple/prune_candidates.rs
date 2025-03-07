@@ -1,6 +1,6 @@
 use crate::{
     board::Board,
-    board_modification::BoardModification,
+    board_modification::{BoardModification, RemoveCandidates},
     cell::{Cell, IteratorCellExt, SolvedCell},
 };
 use std::collections::BTreeSet;
@@ -28,9 +28,7 @@ pub fn prune_candidates(board: &Board<Cell>) -> Vec<BoardModification> {
             if to_remove.is_empty() {
                 None
             } else {
-                Some(BoardModification::new_remove_candidates_with_cell(
-                    cell, to_remove,
-                ))
+                Some(RemoveCandidates::from_cell(cell, to_remove))
             }
         })
         .collect()
