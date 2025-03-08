@@ -157,8 +157,6 @@ impl<'a, I: Iterator<Item = LocatedCandidate<'a>>> IteratorRemoveCandidatesExt f
     // The receiver represents a list of numbers that should be removed from specific cells. This helper function allows
     // the logic functions to focus on simply marking the numbers to be removed, then at the end use this function to
     // produce at most one RemoveCandidates per cell.
-    //
-    // TODO: Look at implementing FromIterator so that collect can be called instead of this method.
     fn merge_to_remove_candidates(self) -> Vec<BoardModification> {
         self.into_group_map()
             .into_iter()
