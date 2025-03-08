@@ -62,9 +62,7 @@ pub struct RemoveCandidates {
 impl RemoveCandidates {
     pub fn new(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> BoardModification {
         board::validate_row_and_column(row, column);
-        if candidates.is_empty() {
-            panic!("candidates must not be empty.");
-        }
+        RemoveCandidates::validate_candidates(&candidates);
         BoardModification::RemoveCandidates(Self {
             row,
             column,
@@ -73,6 +71,7 @@ impl RemoveCandidates {
     }
 
     pub fn from_cell(cell: &UnsolvedCell, candidates: BTreeSet<SudokuNumber>) -> BoardModification {
+        RemoveCandidates::validate_candidates(&candidates);
         for candidate in &candidates {
             if !cell.candidates().contains(candidate) {
                 panic!(
@@ -82,11 +81,21 @@ impl RemoveCandidates {
                 );
             }
         }
-        Self::new(cell.row(), cell.column(), candidates)
+        BoardModification::RemoveCandidates(Self {
+            row: cell.row(),
+            column: cell.column(),
+            candidates,
+        })
     }
 
     pub fn candidates(&self) -> &BTreeSet<SudokuNumber> {
         &self.candidates
+    }
+
+    fn validate_candidates(candidates: &BTreeSet<SudokuNumber>) {
+        if candidates.is_empty() {
+            panic!("candidates must not be empty.");
+        }
     }
 }
 
@@ -111,13 +120,13 @@ pub struct SetValue {
 }
 
 impl SetValue {
-    fn with_validation(row: usize, column: usize, value: SudokuNumber) -> BoardModification {
-        board::validate_row_and_column(row, column);
-        BoardModification::SetValue(Self { row, column, value })
-    }
-
     pub fn new(row: usize, column: usize, value: usize) -> BoardModification {
-        Self::with_validation(row, column, SudokuNumber::VARIANTS[value - 1])
+        board::validate_row_and_column(row, column);
+        BoardModification::SetValue(Self {
+            row,
+            column,
+            value: SudokuNumber::VARIANTS[value - 1],
+        })
     }
 
     pub fn from_cell(cell: &UnsolvedCell, value: SudokuNumber) -> BoardModification {
@@ -128,7 +137,11 @@ impl SetValue {
                 cell.column()
             )
         }
-        Self::with_validation(cell.row(), cell.column(), value)
+        BoardModification::SetValue(Self {
+            row: cell.row(),
+            column: cell.column(),
+            value,
+        })
     }
 
     pub fn value(&self) -> SudokuNumber {
@@ -165,8 +178,20 @@ mod tests {
 
     #[test]
     #[should_panic(expected = "candidates must not be empty.")]
-    fn test_remove_candidates_candidates_are_empty() {
+    fn test_remove_candidates_new_candidates_are_empty() {
         RemoveCandidates::new(0, 0, BTreeSet::new());
+    }
+
+    #[test]
+    #[should_panic(expected = "candidates must not be empty.")]
+    fn test_remove_candidates_from_cell_candidates_are_empty() {
+        RemoveCandidates::from_cell(
+            once(&UnsolvedCell::with_all_candidates(0, 0))
+                .unsolved_cells()
+                .next()
+                .unwrap(),
+            BTreeSet::new(),
+        );
     }
 
     #[test]
