@@ -35,7 +35,7 @@ pub fn naked_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::logic::assertions;
+    use crate::{logic::assertions, remove_candidates};
 
     #[test]
     fn test1() {
@@ -51,15 +51,15 @@ mod tests {
             24{168}{15}3{56}7{1568}9\
         ";
         let expected = [
-            BoardModification::new_remove_candidates_with_indices(0, 3, &[1]),
-            BoardModification::new_remove_candidates_with_indices(0, 4, &[1, 6]),
-            BoardModification::new_remove_candidates_with_indices(0, 5, &[6]),
-            BoardModification::new_remove_candidates_with_indices(2, 0, &[1, 7]),
-            BoardModification::new_remove_candidates_with_indices(2, 4, &[6, 7]),
-            BoardModification::new_remove_candidates_with_indices(3, 4, &[8]),
-            BoardModification::new_remove_candidates_with_indices(3, 7, &[5, 8]),
-            BoardModification::new_remove_candidates_with_indices(5, 4, &[8]),
-            BoardModification::new_remove_candidates_with_indices(5, 8, &[5]),
+            remove_candidates!(0, 3, 1),
+            remove_candidates!(0, 4, 1, 6),
+            remove_candidates!(0, 5, 6),
+            remove_candidates!(2, 0, 1, 7),
+            remove_candidates!(2, 4, 6, 7),
+            remove_candidates!(3, 4, 8),
+            remove_candidates!(3, 7, 5, 8),
+            remove_candidates!(5, 4, 8),
+            remove_candidates!(5, 8, 5),
         ];
         assertions::assert_logical_solution(&expected, board, naked_pairs);
     }
@@ -78,13 +78,13 @@ mod tests {
             {47}1{789}{37}5{689}{346}2{34}\
         ";
         let expected = [
-            BoardModification::new_remove_candidates_with_indices(0, 3, &[7]),
-            BoardModification::new_remove_candidates_with_indices(1, 3, &[7]),
-            BoardModification::new_remove_candidates_with_indices(1, 5, &[1, 2]),
-            BoardModification::new_remove_candidates_with_indices(2, 3, &[7]),
-            BoardModification::new_remove_candidates_with_indices(7, 2, &[7]),
-            BoardModification::new_remove_candidates_with_indices(7, 4, &[3, 7]),
-            BoardModification::new_remove_candidates_with_indices(8, 2, &[7]),
+            remove_candidates!(0, 3, 7),
+            remove_candidates!(1, 3, 7),
+            remove_candidates!(1, 5, 1, 2),
+            remove_candidates!(2, 3, 7),
+            remove_candidates!(7, 2, 7),
+            remove_candidates!(7, 4, 3, 7),
+            remove_candidates!(8, 2, 7),
         ];
         assertions::assert_logical_solution(&expected, board, naked_pairs);
     }

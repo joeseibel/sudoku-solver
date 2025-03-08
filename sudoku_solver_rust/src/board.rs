@@ -177,8 +177,9 @@ pub fn validate_row_and_column(row: usize, column: usize) {
 mod tests {
     use super::*;
     use crate::{
-        board_modification::{BoardModification, SetValue},
+        board_modification::SetValue,
         cell::{SolvedCell, UnsolvedCell},
+        remove_candidates,
         sudoku_number::SudokuNumber,
     };
 
@@ -191,7 +192,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "row is 9, must be between 0 and 8.")]
     fn test_remove_candidates_row_too_high() {
-        BoardModification::new_remove_candidates_with_indices(9, 0, &[1]);
+        remove_candidates!(9, 0, 1);
     }
 
     #[test]

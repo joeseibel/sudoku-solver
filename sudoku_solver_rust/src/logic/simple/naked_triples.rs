@@ -49,7 +49,7 @@ pub fn naked_triples(board: &Board<Cell>) -> Vec<BoardModification> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::logic::assertions;
+    use crate::{logic::assertions, remove_candidates};
 
     #[test]
     fn test1() {
@@ -65,10 +65,10 @@ mod tests {
             13{59}642{589}7{58}\
         ";
         let expected = [
-            BoardModification::new_remove_candidates_with_indices(4, 0, &[5, 9]),
-            BoardModification::new_remove_candidates_with_indices(4, 2, &[5, 9]),
-            BoardModification::new_remove_candidates_with_indices(4, 6, &[5, 8, 9]),
-            BoardModification::new_remove_candidates_with_indices(4, 7, &[5, 8, 9]),
+            remove_candidates!(4, 0, 5, 9),
+            remove_candidates!(4, 2, 5, 9),
+            remove_candidates!(4, 6, 5, 8, 9),
+            remove_candidates!(4, 7, 5, 8, 9),
         ];
         assertions::assert_logical_solution(&expected, board, naked_triples);
     }
@@ -87,15 +87,15 @@ mod tests {
             4{15}{15}928637\
         ";
         let expected = [
-            BoardModification::new_remove_candidates_with_indices(3, 1, &[1, 8]),
-            BoardModification::new_remove_candidates_with_indices(3, 2, &[1, 8]),
-            BoardModification::new_remove_candidates_with_indices(3, 6, &[8]),
-            BoardModification::new_remove_candidates_with_indices(3, 7, &[2, 8]),
-            BoardModification::new_remove_candidates_with_indices(4, 2, &[1, 5]),
-            BoardModification::new_remove_candidates_with_indices(5, 1, &[1, 5, 8]),
-            BoardModification::new_remove_candidates_with_indices(5, 2, &[1, 5, 8]),
-            BoardModification::new_remove_candidates_with_indices(5, 6, &[8]),
-            BoardModification::new_remove_candidates_with_indices(5, 7, &[2, 8]),
+            remove_candidates!(3, 1, 1, 8),
+            remove_candidates!(3, 2, 1, 8),
+            remove_candidates!(3, 6, 8),
+            remove_candidates!(3, 7, 2, 8),
+            remove_candidates!(4, 2, 1, 5),
+            remove_candidates!(5, 1, 1, 5, 8),
+            remove_candidates!(5, 2, 1, 5, 8),
+            remove_candidates!(5, 6, 8),
+            remove_candidates!(5, 7, 2, 8),
         ];
         assertions::assert_logical_solution(&expected, board, naked_triples);
     }

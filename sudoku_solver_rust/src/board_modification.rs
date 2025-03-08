@@ -15,19 +15,6 @@ pub enum BoardModification {
 }
 
 impl BoardModification {
-    // TODO: Look into macros for varargs.
-    pub fn new_remove_candidates_with_indices(
-        row: usize,
-        column: usize,
-        candidates: &[usize],
-    ) -> Self {
-        let candidates: BTreeSet<_> = candidates
-            .iter()
-            .map(|candidate| SudokuNumber::VARIANTS[candidate - 1])
-            .collect();
-        RemoveCandidates::new(row, column, candidates)
-    }
-
     pub fn row(&self) -> usize {
         match self {
             BoardModification::RemoveCandidates(remove_candidates) => remove_candidates.row,
@@ -103,6 +90,19 @@ impl RemoveCandidates {
     }
 }
 
+#[macro_export]
+macro_rules! remove_candidates {
+    ($row:expr, $column:expr, $($candidate:expr),+ $(,)?) => {{
+        use crate::{board_modification::RemoveCandidates, sudoku_number::SudokuNumber};
+        use std::collections::BTreeSet;
+        use strum::VariantArray;
+
+        let mut candidates = BTreeSet::new();
+        $(candidates.insert(SudokuNumber::VARIANTS[$candidate - 1]);)+
+        RemoveCandidates::new($row, $column, candidates)
+    }};
+}
+
 #[derive(Debug, Eq, Hash, PartialEq)]
 pub struct SetValue {
     row: usize,
@@ -166,7 +166,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "candidates must not be empty.")]
     fn test_remove_candidates_candidates_are_empty() {
-        BoardModification::new_remove_candidates_with_indices(0, 0, &[]);
+        RemoveCandidates::new(0, 0, BTreeSet::new());
     }
 
     #[test]
