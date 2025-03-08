@@ -177,11 +177,11 @@ pub fn validate_row_and_column(row: usize, column: usize) {
 mod tests {
     use super::*;
     use crate::{
-        board_modification::SetValue,
+        board_modification::{RemoveCandidates, SetValue},
         cell::{SolvedCell, UnsolvedCell},
-        remove_candidates,
         sudoku_number::SudokuNumber,
     };
+    use std::collections::BTreeSet;
 
     #[test]
     #[should_panic(expected = "block_index is 9, must be between 0 and 8.")]
@@ -191,25 +191,35 @@ mod tests {
 
     #[test]
     #[should_panic(expected = "row is 9, must be between 0 and 8.")]
-    fn test_remove_candidates_row_too_high() {
-        remove_candidates!(9, 0, 1);
+    fn test_remove_candidates_new_row_too_high() {
+        let mut candidates = BTreeSet::new();
+        candidates.insert(SudokuNumber::One);
+        RemoveCandidates::new(9, 0, candidates);
     }
 
     #[test]
     #[should_panic(expected = "row is 9, must be between 0 and 8.")]
-    fn test_set_value_row_too_high() {
+    fn test_set_value_new_row_too_high() {
         SetValue::new(9, 0, 1);
     }
 
     #[test]
     #[should_panic(expected = "column is 9, must be between 0 and 8.")]
-    fn test_solved_cell_column_too_high() {
+    fn test_solved_cell_new_column_too_high() {
         SolvedCell::new(0, 9, SudokuNumber::One);
     }
 
     #[test]
     #[should_panic(expected = "column is 9, must be between 0 and 8.")]
-    fn test_unsolved_cell_column_too_high() {
+    fn test_unsolved_cell_new_column_too_high() {
+        let mut candidates = BTreeSet::new();
+        candidates.insert(SudokuNumber::One);
+        UnsolvedCell::new(0, 9, candidates);
+    }
+
+    #[test]
+    #[should_panic(expected = "column is 9, must be between 0 and 8.")]
+    fn test_unsolved_cell_with_all_candidates_column_too_high() {
         UnsolvedCell::with_all_candidates(0, 9);
     }
 }
