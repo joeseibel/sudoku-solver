@@ -110,9 +110,8 @@ impl UnsolvedCell {
         &self.candidates
     }
 
-    // TODO: Would it be better to have a more restrictive method such as remove_candidate?
-    pub fn candidates_mut(&mut self) -> &mut BTreeSet<SudokuNumber> {
-        &mut self.candidates
+    pub fn remove_candidate(&mut self, candidate: &SudokuNumber) {
+        self.candidates.remove(candidate);
     }
 }
 

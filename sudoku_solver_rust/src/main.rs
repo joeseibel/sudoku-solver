@@ -94,7 +94,7 @@ fn solve(input: Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, Solv
                                 if !cell.candidates().contains(&candidate) {
                                     panic!("{candidate} is not a candidate of [{row}, {column}]");
                                 }
-                                cell.candidates_mut().remove(&candidate);
+                                cell.remove_candidate(&candidate);
                             }
                         }
                         BoardModification::SetValue(modification) => {
