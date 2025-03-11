@@ -125,12 +125,10 @@ pub type LocatedCandidate<'a> = (&'a UnsolvedCell, SudokuNumber);
 
 impl Board<Cell> {
     pub fn to_simple_string(&self) -> String {
-        // TODO: Should this be rewritten to limit allocations?
         self.cells().join("")
     }
 
     pub fn to_string_with_candidates(&self) -> String {
-        // TODO: Should this be rewritten to limit allocations?
         self.rows()
             .map(|row| {
                 row.map(|cell| match cell {
