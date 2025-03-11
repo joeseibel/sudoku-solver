@@ -134,7 +134,6 @@ impl<T> IndexMut<(usize, usize)> for Board<T> {
 
 impl<T: Display> Display for Board<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // TODO: This was written to minimize allocations. Consider rewriting in a functional manner with joining.
         for (row_index, row) in self.rows().enumerate() {
             for (column_index, cell) in row.enumerate() {
                 write!(f, "{cell}")?;
