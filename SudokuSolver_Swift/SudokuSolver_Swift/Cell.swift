@@ -145,16 +145,7 @@ typealias LocatedCandidate = (UnsolvedCell, SudokuNumber)
 
 extension String {
     init(simpleBoard: Board<Cell>) {
-        self = simpleBoard.cells
-            .map { cell in
-                switch cell {
-                case .solvedCell(let cell):
-                    String(describing: cell.value)
-                case .unsolvedCell(_):
-                    "0"
-                }
-            }
-            .joined()
+        self = simpleBoard.cells.map(String.init).joined()
     }
     
     init(withCandidates: Board<Cell>) {

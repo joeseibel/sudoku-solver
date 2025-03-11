@@ -74,13 +74,7 @@ val LocatedCandidate.vertexAttributes: Map<String, Attribute>
         return mapOf("label" to DefaultAttribute.createAttribute("${cell.vertexLabel} : $candidate"))
     }
 
-fun Board<Cell>.toSimpleString(): String =
-    cells.joinToString("") { cell ->
-        when (cell) {
-            is SolvedCell -> cell.value.toString()
-            is UnsolvedCell -> "0"
-        }
-    }
+fun Board<Cell>.toSimpleString(): String = cells.joinToString("")
 
 fun Board<Cell>.toStringWithCandidates(): String =
     rows.joinToString("\n") { row ->

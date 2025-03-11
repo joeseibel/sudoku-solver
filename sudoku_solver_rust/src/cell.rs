@@ -124,15 +124,9 @@ impl Display for UnsolvedCell {
 pub type LocatedCandidate<'a> = (&'a UnsolvedCell, SudokuNumber);
 
 impl Board<Cell> {
-    // TODO: For all implementations, could we simply call cell.toString()?
     pub fn to_simple_string(&self) -> String {
         // TODO: Should this be rewritten to limit allocations?
-        self.cells()
-            .map(|cell| match cell {
-                Cell::SolvedCell(cell) => cell.value().to_string(),
-                Cell::UnsolvedCell(_) => String::from('0'),
-            })
-            .join("")
+        self.cells().join("")
     }
 
     pub fn to_string_with_candidates(&self) -> String {

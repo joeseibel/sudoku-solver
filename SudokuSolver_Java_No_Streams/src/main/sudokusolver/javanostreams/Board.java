@@ -143,10 +143,8 @@ public record Board<T>(List<List<T>> rows) {
 
     public static String toSimpleString(Board<Cell> board) {
         var builder = new StringBuilder();
-        for (var row : board.rows) {
-            for (var cell : row) {
-                builder.append(cell instanceof SolvedCell(_, _, var value) ? value : '0');
-            }
+        for (var cell : board.getCells()) {
+            builder.append(cell);
         }
         return builder.toString();
     }

@@ -3,6 +3,7 @@ package sudokusolver.java;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -106,12 +107,7 @@ public record Board<T>(List<List<T>> rows) {
     }
 
     public static String toSimpleString(Board<Cell> board) {
-        return board.rows
-                .stream()
-                .map(row -> row.stream()
-                        .map(cell -> cell instanceof SolvedCell(_, _, var value) ? value.toString() : "0")
-                        .collect(Collectors.joining()))
-                .collect(Collectors.joining());
+        return board.getCells().stream().map(Objects::toString).collect(Collectors.joining());
     }
 
     public static String toStringWithCandidates(Board<Cell> board) {

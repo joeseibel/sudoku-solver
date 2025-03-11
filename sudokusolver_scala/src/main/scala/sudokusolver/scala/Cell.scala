@@ -35,10 +35,7 @@ extension (locatedCandidate: LocatedCandidate)
     s"${cell.getVertexLabel} : $candidate"
 
 extension (board: Board[Cell])
-  def toSimpleString: String = board.cells.map {
-    case SolvedCell(_, _, value) => value.toString
-    case UnsolvedCell(_, _, _) => "0"
-  }.mkString
+  def toSimpleString: String = board.cells.mkString
 
   def toStringWithCandidates: String = board.rows.map { row =>
     row.map {
