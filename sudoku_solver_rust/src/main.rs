@@ -113,7 +113,6 @@ fn solve(input: Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, Solv
     }
 }
 
-// TODO: What should this return? Should it return an Iterator?
 fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
     let solutions = vec![
         prune_candidates::prune_candidates,
