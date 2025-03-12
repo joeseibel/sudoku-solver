@@ -44,7 +44,6 @@ fn main() {
 
 #[derive(Debug, PartialEq)]
 enum SolverError {
-    //TODO: Is it better to wrap BruteForceError?
     NoSolutions,
     MultipleSolutions,
     UnableToSolve(String),
