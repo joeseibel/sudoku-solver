@@ -42,7 +42,6 @@ fn main() {
     }
 }
 
-// TODO: Is it better to implement Display for SolverError? And for the other languages?
 #[derive(Debug, PartialEq)]
 enum SolverError {
     //TODO: Is it better to wrap BruteForceError?
