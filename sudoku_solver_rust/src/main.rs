@@ -50,7 +50,6 @@ enum SolverError {
 }
 
 impl SolverError {
-    // TODO: Is there a better name for this?
     fn new_unable_to_solve(board: &Board<Cell>) -> SolverError {
         SolverError::UnableToSolve(formatdoc! {"
             Unable to solve:
