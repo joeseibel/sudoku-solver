@@ -62,51 +62,54 @@ impl SolverError {
     }
 }
 
+impl From<BruteForceError> for SolverError {
+    fn from(value: BruteForceError) -> Self {
+        match value {
+            BruteForceError::NoSolutions => Self::NoSolutions,
+            BruteForceError::MultipleSolutions => Self::MultipleSolutions,
+        }
+    }
+}
+
 fn solve(input: Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, SolverError> {
-    // TODO: Can we use '?' for NoSolutions and MultipleSolutions?
-    match brute_force::brute_force(&input) {
-        Ok(brute_force_solution) => {
-            let mut board = cell::create_cell_board(&input);
-            loop {
-                if board.cells().unsolved_cells().next().is_none() {
-                    return Ok(brute_force_solution);
-                }
-                let modifications = perform_next_solution(&board);
-                if modifications.is_empty() {
-                    return Err(SolverError::new_unable_to_solve(&board));
-                }
-                for modification in modifications {
-                    let row = modification.row();
-                    let column = modification.column();
-                    let Cell::UnsolvedCell(ref mut cell) = board[(row, column)] else {
-                        panic!("[{row}, {column}] is already solved.");
-                    };
-                    let known_solution = brute_force_solution[(row, column)];
-                    match modification {
-                        BoardModification::RemoveCandidates(modification) => {
-                            for &candidate in modification.candidates() {
-                                if candidate == known_solution {
-                                    panic!("Cannot remove candidate {candidate} from [{row}, {column}]");
-                                }
-                                if !cell.candidates().contains(&candidate) {
-                                    panic!("{candidate} is not a candidate of [{row}, {column}]");
-                                }
-                                cell.remove_candidate(&candidate);
-                            }
+    let brute_force_solution = brute_force::brute_force(&input)?;
+    let mut board = cell::create_cell_board(&input);
+    loop {
+        if board.cells().unsolved_cells().next().is_none() {
+            return Ok(brute_force_solution);
+        }
+        let modifications = perform_next_solution(&board);
+        if modifications.is_empty() {
+            return Err(SolverError::new_unable_to_solve(&board));
+        }
+        for modification in modifications {
+            let row = modification.row();
+            let column = modification.column();
+            let Cell::UnsolvedCell(ref mut cell) = board[(row, column)] else {
+                panic!("[{row}, {column}] is already solved.");
+            };
+            let known_solution = brute_force_solution[(row, column)];
+            match modification {
+                BoardModification::RemoveCandidates(modification) => {
+                    for &candidate in modification.candidates() {
+                        if candidate == known_solution {
+                            panic!("Cannot remove candidate {candidate} from [{row}, {column}]");
                         }
-                        BoardModification::SetValue(modification) => {
-                            let value = modification.value();
-                            if value != known_solution {
-                                panic!("Cannot set value {value} to [{row}, {column}]. Solution is {known_solution}");
-                            }
-                            board[(row, column)] = SolvedCell::new(row, column, value);
+                        if !cell.candidates().contains(&candidate) {
+                            panic!("{candidate} is not a candidate of [{row}, {column}]");
                         }
+                        cell.remove_candidate(&candidate);
                     }
+                }
+                BoardModification::SetValue(modification) => {
+                    let value = modification.value();
+                    if value != known_solution {
+                        panic!("Cannot set value {value} to [{row}, {column}]. Solution is {known_solution}");
+                    }
+                    board[(row, column)] = SolvedCell::new(row, column, value);
                 }
             }
         }
-        Err(BruteForceError::NoSolutions) => return Err(SolverError::NoSolutions),
-        Err(BruteForceError::MultipleSolutions) => return Err(SolverError::MultipleSolutions),
     }
 }
 
