@@ -8,37 +8,41 @@ mod sudoku_number;
 use board::Board;
 use board_modification::BoardModification;
 use cell::{Cell, IteratorCellExt, SolvedCell};
+use clap::Parser;
 use indoc::formatdoc;
 use logic::{
     brute_force::{self, BruteForceError},
     simple::{hidden_singles, naked_pairs, naked_singles, naked_triples, prune_candidates},
 };
-use std::env;
 use sudoku_number::SudokuNumber;
 
-// TODO: Consider using clap.
 // TODO: Does it make sense for main to return Result?
 fn main() {
-    let args: Vec<_> = env::args().collect();
-    if args.len() != 2 {
-        println!("usage: sudoku_solver_rust board");
+    let board = Arguments::parse().board;
+    match solve(sudoku_number::parse_optional_board(&board)) {
+        Ok(solution) => println!("{solution}"),
+        Err(SolverError::NoSolutions) => println!("No Solutions"),
+        Err(SolverError::MultipleSolutions) => println!("Multiple Solutions"),
+        Err(SolverError::UnableToSolve(message)) => println!("{message}"),
+    }
+}
+
+#[derive(Parser)]
+struct Arguments {
+    #[arg(value_parser = valid_board)]
+    board: String,
+}
+
+fn valid_board(board: &str) -> Result<String, String> {
+    if board.len() == board::UNIT_SIZE_SQUARED
+        && board.chars().all(|cell| ('0'..='9').contains(&cell))
+    {
+        Ok(board.to_owned())
     } else {
-        let board = &args[1];
-        if board.len() != board::UNIT_SIZE_SQUARED
-            || board.chars().any(|cell| !('0'..='9').contains(&cell))
-        {
-            println!(
-                "board must be {} numbers with blanks expressed as 0",
-                board::UNIT_SIZE_SQUARED
-            );
-        } else {
-            match solve(sudoku_number::parse_optional_board(board)) {
-                Ok(solution) => println!("{solution}"),
-                Err(SolverError::NoSolutions) => println!("No Solutions"),
-                Err(SolverError::MultipleSolutions) => println!("Multiple Solutions"),
-                Err(SolverError::UnableToSolve(message)) => println!("{message}"),
-            }
-        }
+        Err(format!(
+            "board must be {} numbers with blanks expressed as 0",
+            board::UNIT_SIZE_SQUARED
+        ))
     }
 }
 
