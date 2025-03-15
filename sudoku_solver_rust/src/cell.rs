@@ -170,7 +170,7 @@ pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
                 .enumerate()
                 .map(|(column_index, &cell)| match cell {
                     '0' => UnsolvedCell::with_all_candidates(row_index, column_index),
-                    _ => SolvedCell::new(row_index, column_index, SudokuNumber::from_digit(cell)),
+                    _ => SolvedCell::new(row_index, column_index, cell.try_into().unwrap()),
                 })
                 .collect::<Vec<_>>()
                 .try_into()
@@ -205,7 +205,7 @@ pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
                 }
                 let candidates: BTreeSet<_> = chars_in_braces
                     .iter()
-                    .map(|&ch| SudokuNumber::from_digit(ch))
+                    .map(|&ch| ch.try_into().unwrap())
                     .collect();
                 cell_builders.push(Box::new(move |row, column| {
                     UnsolvedCell::new(row, column, candidates.clone())
@@ -214,7 +214,7 @@ pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
             }
             '}' => panic!("Unmatched '}}'."),
             ch => {
-                let value = SudokuNumber::from_digit(ch);
+                let value = ch.try_into().unwrap();
                 cell_builders.push(Box::new(move |row, column| {
                     SolvedCell::new(row, column, value)
                 }));
@@ -316,7 +316,9 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "ch is 'a', must be between '1' and '9'.")]
+    #[should_panic(
+        expected = "called `Result::unwrap()` on an `Err` value: \"char is 'a', must be between '1' and '9'.\""
+    )]
     fn test_parse_cells_with_candidates_invalid_character_in_braces() {
         parse_cells_with_candidates("{a}");
     }
@@ -328,7 +330,9 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "ch is 'a', must be between '1' and '9'.")]
+    #[should_panic(
+        expected = "called `Result::unwrap()` on an `Err` value: \"char is 'a', must be between '1' and '9'.\""
+    )]
     fn test_parse_cells_with_candidates_invalid_character() {
         parse_cells_with_candidates("a");
     }

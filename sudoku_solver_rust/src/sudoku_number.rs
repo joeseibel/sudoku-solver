@@ -15,32 +15,21 @@ pub enum SudokuNumber {
     Nine,
 }
 
-impl SudokuNumber {
-    // I considered using From or TryFrom for this conversion, but neither seemed to be a good fit.
-    //
-    // From is not appropriate because this conversion can fail. It is only valid for the characters '1' through '9' and
-    // panics otherwise.
-    //
-    // TryFrom almost fits, but not quite. When using TryFrom, the return type is a Result, so returning an error is
-    // more appropriate than panicing. In the case of this conversion, panic is a better fit than returning Result since
-    // a value outside of '1' through '9' is considered to be a programmer error. The code that calls this conversion
-    // should ensure that only valid values are passed in. If a Result were to be returned, there is no reasonable way
-    // to recover other than for the callers to panic themselves. Therefore, TryFrom doesn't fit because it really makes
-    // sense to panic here and a return value of Result doesn't make much sense.
-    //
-    // TODO: Reconsider TryFrom.
-    pub fn from_digit(ch: char) -> Self {
-        match ch {
-            '1' => Self::One,
-            '2' => Self::Two,
-            '3' => Self::Three,
-            '4' => Self::Four,
-            '5' => Self::Five,
-            '6' => Self::Six,
-            '7' => Self::Seven,
-            '8' => Self::Eight,
-            '9' => Self::Nine,
-            _ => panic!("ch is '{ch}', must be between '1' and '9'."),
+impl TryFrom<char> for SudokuNumber {
+    type Error = String;
+
+    fn try_from(value: char) -> Result<Self, Self::Error> {
+        match value {
+            '1' => Ok(Self::One),
+            '2' => Ok(Self::Two),
+            '3' => Ok(Self::Three),
+            '4' => Ok(Self::Four),
+            '5' => Ok(Self::Five),
+            '6' => Ok(Self::Six),
+            '7' => Ok(Self::Seven),
+            '8' => Ok(Self::Eight),
+            '9' => Ok(Self::Nine),
+            _ => Err(format!("char is '{value}', must be between '1' and '9'.")),
         }
     }
 }
@@ -69,7 +58,7 @@ pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
                 .copied()
                 .map(|cell| match cell {
                     '0' => None,
-                    _ => Some(SudokuNumber::from_digit(cell)),
+                    _ => Some(cell.try_into().unwrap()),
                 })
                 .collect::<Vec<_>>()
                 .try_into()
@@ -97,7 +86,7 @@ pub fn parse_board(board: &str) -> Board<SudokuNumber> {
         .map(|row| {
             row.iter()
                 .copied()
-                .map(SudokuNumber::from_digit)
+                .map(|cell| cell.try_into().unwrap())
                 .collect::<Vec<_>>()
                 .try_into()
                 .unwrap()
@@ -113,9 +102,11 @@ mod tests {
     use super::*;
 
     #[test]
-    #[should_panic(expected = "ch is 'a', must be between '1' and '9'.")]
-    fn test_from_digit_unexpected_char() {
-        SudokuNumber::from_digit('a');
+    fn test_try_from_unexpected_char() {
+        assert_eq!(
+            "char is 'a', must be between '1' and '9'.",
+            SudokuNumber::try_from('a').unwrap_err()
+        );
     }
 
     #[test]
