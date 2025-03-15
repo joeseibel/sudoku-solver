@@ -122,7 +122,7 @@ mod tests {
             "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
         assert_eq!(
             Ok(sudoku_number::parse_board(expected)),
-            brute_force(&sudoku_number::parse_optional_board(board))
+            brute_force(&board.parse().unwrap())
         );
     }
 
@@ -132,7 +132,7 @@ mod tests {
             "710040560230615080000800100050020008600781005900060020006008000080473056045090010";
         assert_eq!(
             Err(BruteForceError::NoSolutions),
-            brute_force(&sudoku_number::parse_optional_board(board))
+            brute_force(&board.parse().unwrap())
         );
     }
 
@@ -142,7 +142,7 @@ mod tests {
             "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
         assert_eq!(
             Err(BruteForceError::MultipleSolutions),
-            brute_force(&sudoku_number::parse_optional_board(board))
+            brute_force(&board.parse().unwrap())
         );
     }
 
@@ -152,7 +152,7 @@ mod tests {
             "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
         assert_eq!(
             Ok(sudoku_number::parse_board(board)),
-            brute_force(&sudoku_number::parse_optional_board(board))
+            brute_force(&board.parse().unwrap())
         );
     }
 
@@ -162,7 +162,7 @@ mod tests {
             "817942563234615789569837142451329678623781495978564321796158234182473956345296818";
         assert_eq!(
             Err(BruteForceError::NoSolutions),
-            brute_force(&sudoku_number::parse_optional_board(board))
+            brute_force(&board.parse().unwrap())
         );
     }
 }

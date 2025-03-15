@@ -18,7 +18,7 @@ use sudoku_number::SudokuNumber;
 
 fn main() {
     let board = Arguments::parse().board;
-    match solve(sudoku_number::parse_optional_board(&board)) {
+    match solve(board.parse().unwrap()) {
         Ok(solution) => println!("{solution}"),
         Err(SolverError::NoSolutions) => println!("No Solutions"),
         Err(SolverError::MultipleSolutions) => println!("Multiple Solutions"),
@@ -152,12 +152,7 @@ mod tests {
             7 9 6 | 1 5 8 | 2 3 4
             1 8 2 | 4 7 3 | 9 5 6
             3 4 5 | 2 9 6 | 8 1 7"};
-        assert_eq!(
-            expected,
-            solve(sudoku_number::parse_optional_board(board))
-                .unwrap()
-                .to_string()
-        );
+        assert_eq!(expected, solve(board.parse().unwrap()).unwrap().to_string());
     }
 
     // TODO: Uncomment after implementing Alternating Inference Chains.
@@ -191,10 +186,7 @@ mod tests {
     //         47{23}{139}8{159}{259}6{39}
     //         {2389}16{39}4{59}{25}{58}7
     //         {38}{39}52761{48}{349}"};
-    //     assert_eq!(
-    //         SolverError::UnableToSolve(String::from(expected)),
-    //         solve(sudoku_number::parse_optional_board(board)).unwrap_err()
-    //     );
+    //     assert_eq!(SolverError::UnableToSolve(String::from(expected)), solve(board.parse().unwrap()).unwrap_err());
     // }
 
     #[test]
@@ -203,7 +195,7 @@ mod tests {
             "710040560230615080000800100050020008600781005900060020006008000080473056045090010";
         assert_eq!(
             SolverError::NoSolutions,
-            solve(sudoku_number::parse_optional_board(board)).unwrap_err()
+            solve(board.parse().unwrap()).unwrap_err()
         );
     }
 
@@ -213,7 +205,7 @@ mod tests {
             "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
         assert_eq!(
             SolverError::MultipleSolutions,
-            solve(sudoku_number::parse_optional_board(board)).unwrap_err()
+            solve(board.parse().unwrap()).unwrap_err()
         );
     }
 }

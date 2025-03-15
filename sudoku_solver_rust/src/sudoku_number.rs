@@ -1,5 +1,5 @@
 use crate::board::{self, Board};
-use std::fmt;
+use std::{fmt, str::FromStr};
 use strum_macros::{EnumIter, VariantArray};
 
 #[derive(Clone, Copy, Debug, EnumIter, Eq, Hash, Ord, PartialEq, PartialOrd, VariantArray)]
@@ -40,34 +40,37 @@ impl fmt::Display for SudokuNumber {
     }
 }
 
-// TODO: Consider implementing TryFrom. Also look at FromStr.
-pub fn parse_optional_board(board: &str) -> Board<Option<SudokuNumber>> {
-    let chars: Vec<_> = board.chars().collect();
-    if chars.len() != board::UNIT_SIZE_SQUARED {
-        panic!(
-            "board.chars().count() is {}, must be {}.",
-            chars.len(),
-            board::UNIT_SIZE_SQUARED
-        );
+impl FromStr for Board<Option<SudokuNumber>> {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let chars: Vec<_> = s.chars().collect();
+        if chars.len() != board::UNIT_SIZE_SQUARED {
+            return Err(format!(
+                "str.chars().count() is {}, must be {}.",
+                chars.len(),
+                board::UNIT_SIZE_SQUARED
+            ));
+        }
+        let chunks = chars.chunks_exact(board::UNIT_SIZE);
+        assert!(chunks.remainder().is_empty());
+        let rows = chunks
+            .map(|row| {
+                row.iter()
+                    .copied()
+                    .map(|cell| match cell {
+                        '0' => None,
+                        _ => Some(cell.try_into()),
+                    })
+                    .map(Option::transpose)
+                    .collect::<Result<Vec<_>, _>>()
+                    .map(|row| row.try_into().unwrap())
+            })
+            .collect::<Result<Vec<_>, _>>()?
+            .try_into()
+            .unwrap();
+        Ok(Self::new(rows))
     }
-    let chunks = chars.chunks_exact(board::UNIT_SIZE);
-    assert!(chunks.remainder().is_empty());
-    let rows = chunks
-        .map(|row| {
-            row.iter()
-                .copied()
-                .map(|cell| match cell {
-                    '0' => None,
-                    _ => Some(cell.try_into().unwrap()),
-                })
-                .collect::<Vec<_>>()
-                .try_into()
-                .unwrap()
-        })
-        .collect::<Vec<_>>()
-        .try_into()
-        .unwrap();
-    Board::new(rows)
 }
 
 // TODO: Consider implementing TryFrom. Also look at FromStr.
@@ -110,9 +113,11 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "board.chars().count() is 0, must be 81.")]
     fn test_parse_optional_board_wrong_length() {
-        parse_optional_board("");
+        assert_eq!(
+            "str.chars().count() is 0, must be 81.",
+            "".parse::<Board<Option<SudokuNumber>>>().unwrap_err()
+        );
     }
 
     #[test]
