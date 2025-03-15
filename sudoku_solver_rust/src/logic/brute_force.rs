@@ -112,7 +112,7 @@ fn is_solved(board: &Board<SudokuNumber>) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::sudoku_number::{parse_board, parse_optional_board};
+    use crate::sudoku_number;
 
     #[test]
     fn test_brute_force_single_solution() {
@@ -121,8 +121,8 @@ mod tests {
         let expected =
             "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
         assert_eq!(
-            Ok(parse_board(expected)),
-            brute_force(&parse_optional_board(board))
+            Ok(sudoku_number::parse_board(expected)),
+            brute_force(&sudoku_number::parse_optional_board(board))
         );
     }
 
@@ -132,7 +132,7 @@ mod tests {
             "710040560230615080000800100050020008600781005900060020006008000080473056045090010";
         assert_eq!(
             Err(BruteForceError::NoSolutions),
-            brute_force(&parse_optional_board(board))
+            brute_force(&sudoku_number::parse_optional_board(board))
         );
     }
 
@@ -142,7 +142,7 @@ mod tests {
             "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
         assert_eq!(
             Err(BruteForceError::MultipleSolutions),
-            brute_force(&parse_optional_board(board))
+            brute_force(&sudoku_number::parse_optional_board(board))
         );
     }
 
@@ -151,8 +151,8 @@ mod tests {
         let board =
             "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
         assert_eq!(
-            Ok(parse_board(board)),
-            brute_force(&parse_optional_board(board))
+            Ok(sudoku_number::parse_board(board)),
+            brute_force(&sudoku_number::parse_optional_board(board))
         );
     }
 
@@ -162,7 +162,7 @@ mod tests {
             "817942563234615789569837142451329678623781495978564321796158234182473956345296818";
         assert_eq!(
             Err(BruteForceError::NoSolutions),
-            brute_force(&parse_optional_board(board))
+            brute_force(&sudoku_number::parse_optional_board(board))
         );
     }
 }
