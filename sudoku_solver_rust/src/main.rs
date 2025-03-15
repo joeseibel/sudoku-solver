@@ -16,7 +16,6 @@ use logic::{
 };
 use sudoku_number::SudokuNumber;
 
-// TODO: Does it make sense for main to return Result?
 fn main() {
     let board = Arguments::parse().board;
     match solve(sudoku_number::parse_optional_board(&board)) {
