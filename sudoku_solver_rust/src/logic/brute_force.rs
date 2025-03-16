@@ -121,7 +121,7 @@ mod tests {
         let expected =
             "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
         assert_eq!(
-            Ok(sudoku_number::parse_board(expected)),
+            Ok(expected.parse().unwrap()),
             brute_force(&board.parse().unwrap())
         );
     }
@@ -151,7 +151,7 @@ mod tests {
         let board =
             "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
         assert_eq!(
-            Ok(sudoku_number::parse_board(board)),
+            Ok(board.parse().unwrap()),
             brute_force(&board.parse().unwrap())
         );
     }

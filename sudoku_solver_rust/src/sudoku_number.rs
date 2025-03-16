@@ -73,31 +73,33 @@ impl FromStr for Board<Option<SudokuNumber>> {
     }
 }
 
-// TODO: Consider implementing TryFrom. Also look at FromStr.
-pub fn parse_board(board: &str) -> Board<SudokuNumber> {
-    let chars: Vec<_> = board.chars().collect();
-    if chars.len() != board::UNIT_SIZE_SQUARED {
-        panic!(
-            "board.chars().count() is {}, must be {}.",
-            chars.len(),
-            board::UNIT_SIZE_SQUARED
-        );
+impl FromStr for Board<SudokuNumber> {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let chars: Vec<_> = s.chars().collect();
+        if chars.len() != board::UNIT_SIZE_SQUARED {
+            return Err(format!(
+                "str.chars().count() is {}, must be {}.",
+                chars.len(),
+                board::UNIT_SIZE_SQUARED
+            ));
+        }
+        let chunks = chars.chunks_exact(board::UNIT_SIZE);
+        assert!(chunks.remainder().is_empty());
+        let rows = chunks
+            .map(|row| -> Result<[SudokuNumber; 9], String> {
+                row.iter()
+                    .copied()
+                    .map(TryInto::try_into)
+                    .collect::<Result<Vec<_>, _>>()
+                    .map(|row| row.try_into().unwrap())
+            })
+            .collect::<Result<Vec<_>, _>>()?
+            .try_into()
+            .unwrap();
+        Ok(Self::new(rows))
     }
-    let chunks = chars.chunks_exact(board::UNIT_SIZE);
-    assert!(chunks.remainder().is_empty());
-    let rows = chunks
-        .map(|row| {
-            row.iter()
-                .copied()
-                .map(|cell| cell.try_into().unwrap())
-                .collect::<Vec<_>>()
-                .try_into()
-                .unwrap()
-        })
-        .collect::<Vec<_>>()
-        .try_into()
-        .unwrap();
-    Board::new(rows)
 }
 
 #[cfg(test)]
@@ -121,8 +123,10 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "board.chars().count() is 0, must be 81.")]
     fn test_parse_board_wrong_length() {
-        parse_board("");
+        assert_eq!(
+            "str.chars().count() is 0, must be 81.",
+            "".parse::<Board<SudokuNumber>>().unwrap_err()
+        );
     }
 }
