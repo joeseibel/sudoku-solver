@@ -143,12 +143,13 @@ impl Board<Cell> {
     }
 }
 
-// TODO: Look at implementing From.
-pub fn create_cell_board(board: &Board<Option<SudokuNumber>>) -> Board<Cell> {
-    board.map_cells_indexed(|row, column, &cell| match cell {
-        Some(cell) => SolvedCell::new(row, column, cell),
-        None => UnsolvedCell::with_all_candidates(row, column),
-    })
+impl From<&Board<Option<SudokuNumber>>> for Board<Cell> {
+    fn from(value: &Board<Option<SudokuNumber>>) -> Self {
+        value.map_cells_indexed(|row, column, &cell| match cell {
+            Some(cell) => SolvedCell::new(row, column, cell),
+            None => UnsolvedCell::with_all_candidates(row, column),
+        })
+    }
 }
 
 // TODO: Consider implementing TryFrom. Also look at FromStr.

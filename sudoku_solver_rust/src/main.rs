@@ -76,7 +76,7 @@ impl From<BruteForceError> for SolverError {
 
 fn solve(input: Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, SolverError> {
     let brute_force_solution = brute_force::brute_force(&input)?;
-    let mut board = cell::create_cell_board(&input);
+    let mut board = Board::<Cell>::from(&input);
     loop {
         if board.cells().unsolved_cells().next().is_none() {
             return Ok(brute_force_solution);
