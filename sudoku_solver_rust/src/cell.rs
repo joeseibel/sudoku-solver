@@ -6,6 +6,7 @@ use itertools::Itertools;
 use std::{
     collections::BTreeSet,
     fmt::{self, Display},
+    str::FromStr,
 };
 use strum::IntoEnumIterator;
 
@@ -152,35 +153,43 @@ impl From<&Board<Option<SudokuNumber>>> for Board<Cell> {
     }
 }
 
-// TODO: Consider implementing TryFrom. Also look at FromStr.
-pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
-    let chars: Vec<_> = simple_board.chars().collect();
-    if chars.len() != board::UNIT_SIZE_SQUARED {
-        panic!(
-            "simple_board.chars().count() is {}, must be {}.",
-            chars.len(),
-            board::UNIT_SIZE_SQUARED
-        );
-    }
-    let chunks = chars.chunks_exact(board::UNIT_SIZE);
-    assert!(chunks.remainder().is_empty());
-    let rows: [[Cell; board::UNIT_SIZE]; board::UNIT_SIZE] = chunks
-        .enumerate()
-        .map(|(row_index, row)| {
-            row.iter()
+impl FromStr for Board<Cell> {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let chars: Vec<_> = s.chars().collect();
+        if chars.contains(&'{') || chars.contains(&'}') {
+            todo!()
+        } else {
+            if chars.len() != board::UNIT_SIZE_SQUARED {
+                return Err(format!(
+                    "str.chars().count() is {}, must be {}.",
+                    chars.len(),
+                    board::UNIT_SIZE_SQUARED
+                ));
+            }
+            let chunks = chars.chunks_exact(board::UNIT_SIZE);
+            assert!(chunks.remainder().is_empty());
+            let rows = chunks
                 .enumerate()
-                .map(|(column_index, &cell)| match cell {
-                    '0' => UnsolvedCell::with_all_candidates(row_index, column_index),
-                    _ => SolvedCell::new(row_index, column_index, cell.try_into().unwrap()),
+                .map(|(row_index, row)| {
+                    row.iter()
+                        .enumerate()
+                        .map(|(column_index, &cell)| match cell {
+                            '0' => Ok(UnsolvedCell::with_all_candidates(row_index, column_index)),
+                            _ => cell
+                                .try_into()
+                                .map(|cell| SolvedCell::new(row_index, column_index, cell)),
+                        })
+                        .collect::<Result<Vec<_>, _>>()
+                        .map(|row| row.try_into().unwrap())
                 })
-                .collect::<Vec<_>>()
+                .collect::<Result<Vec<_>, _>>()?
                 .try_into()
-                .unwrap()
-        })
-        .collect::<Vec<_>>()
-        .try_into()
-        .unwrap();
-    Board::new(rows)
+                .unwrap();
+            Ok(Board::new(rows))
+        }
+    }
 }
 
 // TODO: Consider implementing TryFrom. Also look at FromStr.
@@ -293,9 +302,11 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "simple_board.chars().count() is 0, must be 81.")]
     fn test_parse_simple_cells_wrong_length() {
-        parse_simple_cells("");
+        assert_eq!(
+            "str.chars().count() is 0, must be 81.",
+            "".parse::<Board<Cell>>().unwrap_err()
+        );
     }
 
     #[test]
