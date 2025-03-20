@@ -17,7 +17,7 @@ mod assertions {
     ) {
         assert_logical_solution_with_parsed(
             expected,
-            &cell::parse_cells_with_candidates(with_candidates),
+            &with_candidates.parse().unwrap(),
             logic_function,
         );
     }

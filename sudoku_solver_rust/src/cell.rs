@@ -159,7 +159,66 @@ impl FromStr for Board<Cell> {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let chars: Vec<_> = s.chars().collect();
         if chars.contains(&'{') || chars.contains(&'}') {
-            todo!()
+            let mut cell_builders: Vec<Box<dyn Fn(usize, usize) -> Cell>> = vec![];
+            let mut index = 0;
+            while index < chars.len() {
+                match chars[index] {
+                    '{' => {
+                        index += 1;
+                        let closing_brace = chars[index..]
+                            .iter()
+                            .position(|&ch| ch == '}')
+                            .map(|position| position + index)
+                            .ok_or("Unmatched '{'.")?;
+                        if closing_brace == index {
+                            return Err("Empty \"{}\".".into());
+                        }
+                        let chars_in_braces = &chars[index..closing_brace];
+                        if chars_in_braces.contains(&'{') {
+                            return Err("Nested '{'.".into());
+                        }
+                        let candidates = chars_in_braces
+                            .iter()
+                            .map(|&ch| ch.try_into())
+                            .collect::<Result<BTreeSet<_>, _>>()?;
+                        cell_builders.push(Box::new(move |row, column| {
+                            UnsolvedCell::new(row, column, candidates.clone())
+                        }));
+                        index = closing_brace + 1;
+                    }
+                    '}' => return Err("Unmatched '}'.".into()),
+                    ch => {
+                        let value = ch.try_into()?;
+                        cell_builders.push(Box::new(move |row, column| {
+                            SolvedCell::new(row, column, value)
+                        }));
+                        index += 1;
+                    }
+                }
+            }
+            if cell_builders.len() != board::UNIT_SIZE_SQUARED {
+                return Err(format!(
+                    "Found {} cells, required {}.",
+                    cell_builders.len(),
+                    board::UNIT_SIZE_SQUARED
+                ));
+            }
+            let chunks = cell_builders.chunks_exact(board::UNIT_SIZE);
+            assert!(chunks.remainder().is_empty());
+            let rows = chunks
+                .enumerate()
+                .map(|(row_index, row)| {
+                    row.iter()
+                        .enumerate()
+                        .map(|(column_index, cell)| cell(row_index, column_index))
+                        .collect::<Vec<_>>()
+                        .try_into()
+                        .unwrap()
+                })
+                .collect::<Vec<_>>()
+                .try_into()
+                .unwrap();
+            Ok(Board::new(rows))
         } else {
             if chars.len() != board::UNIT_SIZE_SQUARED {
                 return Err(format!(
@@ -190,71 +249,6 @@ impl FromStr for Board<Cell> {
             Ok(Board::new(rows))
         }
     }
-}
-
-// TODO: Consider implementing TryFrom. Also look at FromStr.
-pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
-    let chars: Vec<_> = with_candidates.chars().collect();
-    let mut cell_builders: Vec<Box<dyn Fn(usize, usize) -> Cell>> = vec![];
-    let mut index = 0;
-    while index < chars.len() {
-        match chars[index] {
-            '{' => {
-                index += 1;
-                let closing_brace = chars[index..]
-                    .iter()
-                    .position(|&ch| ch == '}')
-                    .map(|position| position + index)
-                    .expect("Unmatched '{'.");
-                if closing_brace == index {
-                    panic!("Empty \"{{}}\".");
-                }
-                let chars_in_braces = &chars[index..closing_brace];
-                if chars_in_braces.contains(&'{') {
-                    panic!("Nested '{{'.");
-                }
-                let candidates: BTreeSet<_> = chars_in_braces
-                    .iter()
-                    .map(|&ch| ch.try_into().unwrap())
-                    .collect();
-                cell_builders.push(Box::new(move |row, column| {
-                    UnsolvedCell::new(row, column, candidates.clone())
-                }));
-                index = closing_brace + 1;
-            }
-            '}' => panic!("Unmatched '}}'."),
-            ch => {
-                let value = ch.try_into().unwrap();
-                cell_builders.push(Box::new(move |row, column| {
-                    SolvedCell::new(row, column, value)
-                }));
-                index += 1;
-            }
-        }
-    }
-    if cell_builders.len() != board::UNIT_SIZE_SQUARED {
-        panic!(
-            "Found {} cells, required {}.",
-            cell_builders.len(),
-            board::UNIT_SIZE_SQUARED
-        );
-    }
-    let chunks = cell_builders.chunks_exact(board::UNIT_SIZE);
-    assert!(chunks.remainder().is_empty());
-    let rows = chunks
-        .enumerate()
-        .map(|(row_index, row)| {
-            row.iter()
-                .enumerate()
-                .map(|(column_index, cell)| cell(row_index, column_index))
-                .collect::<Vec<_>>()
-                .try_into()
-                .unwrap()
-        })
-        .collect::<Vec<_>>()
-        .try_into()
-        .unwrap();
-    Board::new(rows)
 }
 
 // Here I follow Rust's Extension Trait pattern: https://rust-lang.github.io/rfcs/0445-extension-trait-conventions.html
@@ -310,48 +304,46 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "Unmatched '{'.")]
     fn test_parse_cells_with_candidates_unmatched_opening_brace() {
-        parse_cells_with_candidates("{");
+        assert_eq!("Unmatched '{'.", "{".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
-    #[should_panic(expected = "Empty \"{}\".")]
     fn test_parse_cells_with_candidates_empty_braces() {
-        parse_cells_with_candidates("{}");
+        assert_eq!("Empty \"{}\".", "{}".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
-    #[should_panic(expected = "Nested '{'.")]
     fn test_parse_cells_with_candidates_nested_brace() {
-        parse_cells_with_candidates("{{}");
+        assert_eq!("Nested '{'.", "{{}".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
-    #[should_panic(
-        expected = "called `Result::unwrap()` on an `Err` value: \"char is 'a', must be between '1' and '9'.\""
-    )]
     fn test_parse_cells_with_candidates_invalid_character_in_braces() {
-        parse_cells_with_candidates("{a}");
+        assert_eq!(
+            "char is 'a', must be between '1' and '9'.",
+            "{a}".parse::<Board<Cell>>().unwrap_err()
+        );
     }
 
     #[test]
-    #[should_panic(expected = "Unmatched '}'.")]
     fn test_parse_cells_with_candidates_unmatched_closing_brace() {
-        parse_cells_with_candidates("}");
+        assert_eq!("Unmatched '}'.", "}".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
-    #[should_panic(
-        expected = "called `Result::unwrap()` on an `Err` value: \"char is 'a', must be between '1' and '9'.\""
-    )]
     fn test_parse_cells_with_candidates_invalid_character() {
-        parse_cells_with_candidates("a");
+        assert_eq!(
+            "char is 'a', must be between '1' and '9'.",
+            "a{".parse::<Board<Cell>>().unwrap_err()
+        );
     }
 
     #[test]
-    #[should_panic(expected = "Found 0 cells, required 81.")]
     fn test_parse_cells_with_candidates_wrong_length() {
-        parse_cells_with_candidates("");
+        assert_eq!(
+            "Found 1 cells, required 81.",
+            "{1}".parse::<Board<Cell>>().unwrap_err()
+        );
     }
 }
