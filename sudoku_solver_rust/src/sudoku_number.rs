@@ -19,6 +19,14 @@ impl TryFrom<char> for SudokuNumber {
     type Error = String;
 
     fn try_from(value: char) -> Result<Self, Self::Error> {
+        Self::try_from(&value)
+    }
+}
+
+impl TryFrom<&char> for SudokuNumber {
+    type Error = String;
+
+    fn try_from(value: &char) -> Result<Self, Self::Error> {
         match value {
             '1' => Ok(Self::One),
             '2' => Ok(Self::Two),
@@ -57,7 +65,6 @@ impl FromStr for Board<Option<SudokuNumber>> {
         let rows = chunks
             .map(|row| {
                 row.iter()
-                    .copied()
                     .map(|cell| match cell {
                         '0' => None,
                         _ => Some(cell.try_into()),
@@ -90,7 +97,6 @@ impl FromStr for Board<SudokuNumber> {
         let rows = chunks
             .map(|row| -> Result<[SudokuNumber; 9], String> {
                 row.iter()
-                    .copied()
                     .map(TryInto::try_into)
                     .collect::<Result<Vec<_>, _>>()
                     .map(|row| row.try_into().unwrap())

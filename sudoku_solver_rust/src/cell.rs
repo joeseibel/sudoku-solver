@@ -181,7 +181,7 @@ fn parse_simple_cells(chars: &[char]) -> Result<Board<Cell>, String> {
         .map(|(row_index, row)| {
             row.iter()
                 .enumerate()
-                .map(|(column_index, &cell)| match cell {
+                .map(|(column_index, cell)| match cell {
                     '0' => Ok(UnsolvedCell::with_all_candidates(row_index, column_index)),
                     _ => cell
                         .try_into()
@@ -217,7 +217,7 @@ fn parse_cells_with_candidates(chars: &[char]) -> Result<Board<Cell>, String> {
                 }
                 let candidates = chars_in_braces
                     .iter()
-                    .map(|&ch| ch.try_into())
+                    .map(|ch| ch.try_into())
                     .collect::<Result<BTreeSet<_>, _>>()?;
                 cell_builders.push(Box::new(move |row, column| {
                     UnsolvedCell::new(row, column, candidates.clone())
