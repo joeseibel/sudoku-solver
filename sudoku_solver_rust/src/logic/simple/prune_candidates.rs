@@ -100,7 +100,7 @@ mod tests {
         ];
         assertions::assert_logical_solution_with_parsed(
             &expected,
-            &cell::parse_simple_cells(board),
+            &board.parse().unwrap(),
             prune_candidates,
         );
     }

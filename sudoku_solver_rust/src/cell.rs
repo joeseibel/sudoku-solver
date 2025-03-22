@@ -6,6 +6,7 @@ use itertools::Itertools;
 use std::{
     collections::BTreeSet,
     fmt::{self, Display},
+    str::FromStr,
 };
 use strum::IntoEnumIterator;
 
@@ -143,48 +144,59 @@ impl Board<Cell> {
     }
 }
 
-// TODO: Look at implementing From.
-pub fn create_cell_board(board: &Board<Option<SudokuNumber>>) -> Board<Cell> {
-    board.map_cells_indexed(|row, column, &cell| match cell {
-        Some(cell) => SolvedCell::new(row, column, cell),
-        None => UnsolvedCell::with_all_candidates(row, column),
-    })
+impl From<&Board<Option<SudokuNumber>>> for Board<Cell> {
+    fn from(value: &Board<Option<SudokuNumber>>) -> Self {
+        value.map_cells_indexed(|row, column, &cell| match cell {
+            Some(cell) => SolvedCell::new(row, column, cell),
+            None => UnsolvedCell::with_all_candidates(row, column),
+        })
+    }
 }
 
-// TODO: Consider implementing TryFrom. Also look at FromStr.
-pub fn parse_simple_cells(simple_board: &str) -> Board<Cell> {
-    let chars: Vec<_> = simple_board.chars().collect();
+impl FromStr for Board<Cell> {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let chars: Vec<_> = s.chars().collect();
+        if chars.contains(&'{') || chars.contains(&'}') {
+            parse_cells_with_candidates(&chars)
+        } else {
+            parse_simple_cells(&chars)
+        }
+    }
+}
+
+fn parse_simple_cells(chars: &[char]) -> Result<Board<Cell>, String> {
     if chars.len() != board::UNIT_SIZE_SQUARED {
-        panic!(
-            "simple_board.chars().count() is {}, must be {}.",
+        return Err(format!(
+            "str.chars().count() is {}, must be {}.",
             chars.len(),
             board::UNIT_SIZE_SQUARED
-        );
+        ));
     }
     let chunks = chars.chunks_exact(board::UNIT_SIZE);
     assert!(chunks.remainder().is_empty());
-    let rows: [[Cell; board::UNIT_SIZE]; board::UNIT_SIZE] = chunks
+    let rows = chunks
         .enumerate()
         .map(|(row_index, row)| {
             row.iter()
                 .enumerate()
-                .map(|(column_index, &cell)| match cell {
-                    '0' => UnsolvedCell::with_all_candidates(row_index, column_index),
-                    _ => SolvedCell::new(row_index, column_index, SudokuNumber::from_digit(cell)),
+                .map(|(column_index, cell)| match cell {
+                    '0' => Ok(UnsolvedCell::with_all_candidates(row_index, column_index)),
+                    _ => cell
+                        .try_into()
+                        .map(|cell| SolvedCell::new(row_index, column_index, cell)),
                 })
-                .collect::<Vec<_>>()
-                .try_into()
-                .unwrap()
+                .collect::<Result<Vec<_>, _>>()
+                .map(|row| row.try_into().unwrap())
         })
-        .collect::<Vec<_>>()
+        .collect::<Result<Vec<_>, _>>()?
         .try_into()
         .unwrap();
-    Board::new(rows)
+    Ok(Board::new(rows))
 }
 
-// TODO: Consider implementing TryFrom. Also look at FromStr.
-pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
-    let chars: Vec<_> = with_candidates.chars().collect();
+fn parse_cells_with_candidates(chars: &[char]) -> Result<Board<Cell>, String> {
     let mut cell_builders: Vec<Box<dyn Fn(usize, usize) -> Cell>> = vec![];
     let mut index = 0;
     while index < chars.len() {
@@ -195,26 +207,26 @@ pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
                     .iter()
                     .position(|&ch| ch == '}')
                     .map(|position| position + index)
-                    .expect("Unmatched '{'.");
+                    .ok_or("Unmatched '{'.")?;
                 if closing_brace == index {
-                    panic!("Empty \"{{}}\".");
+                    return Err("Empty \"{}\".".into());
                 }
                 let chars_in_braces = &chars[index..closing_brace];
                 if chars_in_braces.contains(&'{') {
-                    panic!("Nested '{{'.");
+                    return Err("Nested '{'.".into());
                 }
-                let candidates: BTreeSet<_> = chars_in_braces
+                let candidates = chars_in_braces
                     .iter()
-                    .map(|&ch| SudokuNumber::from_digit(ch))
-                    .collect();
+                    .map(|ch| ch.try_into())
+                    .collect::<Result<BTreeSet<_>, _>>()?;
                 cell_builders.push(Box::new(move |row, column| {
                     UnsolvedCell::new(row, column, candidates.clone())
                 }));
                 index = closing_brace + 1;
             }
-            '}' => panic!("Unmatched '}}'."),
+            '}' => return Err("Unmatched '}'.".into()),
             ch => {
-                let value = SudokuNumber::from_digit(ch);
+                let value = ch.try_into()?;
                 cell_builders.push(Box::new(move |row, column| {
                     SolvedCell::new(row, column, value)
                 }));
@@ -223,11 +235,11 @@ pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
         }
     }
     if cell_builders.len() != board::UNIT_SIZE_SQUARED {
-        panic!(
+        return Err(format!(
             "Found {} cells, required {}.",
             cell_builders.len(),
             board::UNIT_SIZE_SQUARED
-        );
+        ));
     }
     let chunks = cell_builders.chunks_exact(board::UNIT_SIZE);
     assert!(chunks.remainder().is_empty());
@@ -244,7 +256,7 @@ pub fn parse_cells_with_candidates(with_candidates: &str) -> Board<Cell> {
         .collect::<Vec<_>>()
         .try_into()
         .unwrap();
-    Board::new(rows)
+    Ok(Board::new(rows))
 }
 
 // Here I follow Rust's Extension Trait pattern: https://rust-lang.github.io/rfcs/0445-extension-trait-conventions.html
@@ -292,50 +304,54 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "simple_board.chars().count() is 0, must be 81.")]
     fn test_parse_simple_cells_wrong_length() {
-        parse_simple_cells("");
+        assert_eq!(
+            "str.chars().count() is 0, must be 81.",
+            "".parse::<Board<Cell>>().unwrap_err()
+        );
     }
 
     #[test]
-    #[should_panic(expected = "Unmatched '{'.")]
     fn test_parse_cells_with_candidates_unmatched_opening_brace() {
-        parse_cells_with_candidates("{");
+        assert_eq!("Unmatched '{'.", "{".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
-    #[should_panic(expected = "Empty \"{}\".")]
     fn test_parse_cells_with_candidates_empty_braces() {
-        parse_cells_with_candidates("{}");
+        assert_eq!("Empty \"{}\".", "{}".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
-    #[should_panic(expected = "Nested '{'.")]
     fn test_parse_cells_with_candidates_nested_brace() {
-        parse_cells_with_candidates("{{}");
+        assert_eq!("Nested '{'.", "{{}".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
-    #[should_panic(expected = "ch is 'a', must be between '1' and '9'.")]
     fn test_parse_cells_with_candidates_invalid_character_in_braces() {
-        parse_cells_with_candidates("{a}");
+        assert_eq!(
+            "char is 'a', must be between '1' and '9'.",
+            "{a}".parse::<Board<Cell>>().unwrap_err()
+        );
     }
 
     #[test]
-    #[should_panic(expected = "Unmatched '}'.")]
     fn test_parse_cells_with_candidates_unmatched_closing_brace() {
-        parse_cells_with_candidates("}");
+        assert_eq!("Unmatched '}'.", "}".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
-    #[should_panic(expected = "ch is 'a', must be between '1' and '9'.")]
     fn test_parse_cells_with_candidates_invalid_character() {
-        parse_cells_with_candidates("a");
+        assert_eq!(
+            "char is 'a', must be between '1' and '9'.",
+            "a{".parse::<Board<Cell>>().unwrap_err()
+        );
     }
 
     #[test]
-    #[should_panic(expected = "Found 0 cells, required 81.")]
     fn test_parse_cells_with_candidates_wrong_length() {
-        parse_cells_with_candidates("");
+        assert_eq!(
+            "Found 1 cells, required 81.",
+            "{1}".parse::<Board<Cell>>().unwrap_err()
+        );
     }
 }
