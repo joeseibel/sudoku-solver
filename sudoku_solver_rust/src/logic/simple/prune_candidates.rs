@@ -37,7 +37,7 @@ pub fn prune_candidates(board: &Board<Cell>) -> Vec<BoardModification> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{cell, logic::assertions, remove_candidates};
+    use crate::{logic::assertions, remove_candidates};
 
     #[test]
     fn test() {

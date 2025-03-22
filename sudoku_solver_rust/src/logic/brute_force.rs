@@ -112,7 +112,6 @@ fn is_solved(board: &Board<SudokuNumber>) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::sudoku_number;
 
     #[test]
     fn test_brute_force_single_solution() {
