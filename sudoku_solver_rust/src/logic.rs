@@ -4,10 +4,7 @@ pub mod simple;
 #[cfg(test)]
 mod assertions {
     use crate::{
-        board::Board,
-        board_modification::BoardModification,
-        cell::{self, Cell},
-        logic::brute_force,
+        board::Board, board_modification::BoardModification, cell::Cell, logic::brute_force,
     };
 
     pub fn assert_logical_solution(

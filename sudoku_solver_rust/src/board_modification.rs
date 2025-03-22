@@ -171,8 +171,7 @@ impl<'a, I: Iterator<Item = LocatedCandidate<'a>>> IteratorRemoveCandidatesExt f
 mod tests {
     use super::*;
     use crate::cell::IteratorCellExt;
-    use crate::sudoku_number::SudokuNumber;
-    use std::{collections::BTreeSet, iter::once};
+    use std::iter::once;
 
     #[test]
     #[should_panic(expected = "candidates must not be empty.")]
