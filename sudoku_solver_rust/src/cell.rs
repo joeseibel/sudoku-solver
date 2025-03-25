@@ -32,15 +32,14 @@ impl Display for Cell {
 
 #[derive(Debug)]
 pub struct SolvedCell {
-    row: usize,
-    column: usize,
     value: SudokuNumber,
 }
 
 impl SolvedCell {
+    // TODO: Either add row and column to SolvedCell when needed or remove row and column from this method.
     pub fn new(row: usize, column: usize, value: SudokuNumber) -> Cell {
         board::validate_row_and_column(row, column);
-        Cell::SolvedCell(Self { row, column, value })
+        Cell::SolvedCell(Self { value })
     }
 
     pub fn value(&self) -> SudokuNumber {
