@@ -1,11 +1,9 @@
 use crate::{
-    board,
     cell::{LocatedCandidate, UnsolvedCell},
     sudoku_number::SudokuNumber,
 };
 use itertools::Itertools;
 use std::collections::BTreeSet;
-use strum::VariantArray;
 
 // The use of Rust's enum follows the same pattern that was used for Cell.
 #[derive(Debug, Eq, Hash, PartialEq)]
@@ -60,16 +58,6 @@ pub struct RemoveCandidates {
 }
 
 impl RemoveCandidates {
-    pub fn new(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> BoardModification {
-        board::validate_row_and_column(row, column);
-        RemoveCandidates::validate_candidates(&candidates);
-        BoardModification::RemoveCandidates(Self {
-            row,
-            column,
-            candidates,
-        })
-    }
-
     pub fn from_cell(cell: &UnsolvedCell, candidates: BTreeSet<SudokuNumber>) -> BoardModification {
         RemoveCandidates::validate_candidates(&candidates);
         for candidate in &candidates {
@@ -99,19 +87,6 @@ impl RemoveCandidates {
     }
 }
 
-#[macro_export]
-macro_rules! remove_candidates {
-    ($row:expr, $column:expr, $($candidate:expr),+ $(,)?) => {{
-        use crate::{board_modification::RemoveCandidates, sudoku_number::SudokuNumber};
-        use std::collections::BTreeSet;
-        use strum::VariantArray;
-
-        let mut candidates = BTreeSet::new();
-        $(candidates.insert(SudokuNumber::VARIANTS[$candidate - 1]);)+
-        RemoveCandidates::new($row, $column, candidates)
-    }};
-}
-
 #[derive(Debug, Eq, Hash, PartialEq)]
 pub struct SetValue {
     row: usize,
@@ -120,15 +95,6 @@ pub struct SetValue {
 }
 
 impl SetValue {
-    pub fn new(row: usize, column: usize, value: usize) -> BoardModification {
-        board::validate_row_and_column(row, column);
-        BoardModification::SetValue(Self {
-            row,
-            column,
-            value: SudokuNumber::VARIANTS[value - 1],
-        })
-    }
-
     pub fn from_cell(cell: &UnsolvedCell, value: SudokuNumber) -> BoardModification {
         if !cell.candidates().contains(&value) {
             panic!(
@@ -170,8 +136,50 @@ impl<'a, I: Iterator<Item = LocatedCandidate<'a>>> IteratorRemoveCandidatesExt f
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::board;
     use crate::cell::IteratorCellExt;
     use std::iter::once;
+    use strum::VariantArray;
+
+    impl RemoveCandidates {
+        pub fn new(
+            row: usize,
+            column: usize,
+            candidates: BTreeSet<SudokuNumber>,
+        ) -> BoardModification {
+            board::validate_row_and_column(row, column);
+            RemoveCandidates::validate_candidates(&candidates);
+            BoardModification::RemoveCandidates(Self {
+                row,
+                column,
+                candidates,
+            })
+        }
+    }
+
+    #[macro_export]
+    macro_rules! remove_candidates {
+        ($row:expr, $column:expr, $($candidate:expr),+ $(,)?) => {{
+            use crate::{board_modification::RemoveCandidates, sudoku_number::SudokuNumber};
+            use std::collections::BTreeSet;
+            use strum::VariantArray;
+
+            let mut candidates = BTreeSet::new();
+            $(candidates.insert(SudokuNumber::VARIANTS[$candidate - 1]);)+
+            RemoveCandidates::new($row, $column, candidates)
+        }};
+    }
+
+    impl SetValue {
+        pub fn new(row: usize, column: usize, value: usize) -> BoardModification {
+            board::validate_row_and_column(row, column);
+            BoardModification::SetValue(Self {
+                row,
+                column,
+                value: SudokuNumber::VARIANTS[value - 1],
+            })
+        }
+    }
 
     #[test]
     #[should_panic(expected = "candidates must not be empty.")]
