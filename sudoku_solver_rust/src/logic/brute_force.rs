@@ -79,7 +79,7 @@ pub fn brute_force(
                         single_solution = Some(intermediate_solution)
                     }
                     Ok(_) | Err(BruteForceError::MultipleSolutions) => {
-                        return Err(BruteForceError::MultipleSolutions)
+                        return Err(BruteForceError::MultipleSolutions);
                     }
                     Err(BruteForceError::NoSolutions) => (),
                 }
