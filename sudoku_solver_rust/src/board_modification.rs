@@ -142,7 +142,7 @@ mod tests {
     use strum::VariantArray;
 
     impl RemoveCandidates {
-        pub fn new(
+        pub fn from_indices(
             row: usize,
             column: usize,
             candidates: BTreeSet<SudokuNumber>,
@@ -166,12 +166,12 @@ mod tests {
 
             let mut candidates = BTreeSet::new();
             $(candidates.insert(SudokuNumber::VARIANTS[$candidate - 1]);)+
-            RemoveCandidates::new($row, $column, candidates)
+            RemoveCandidates::from_indices($row, $column, candidates)
         }};
     }
 
     impl SetValue {
-        pub fn new(row: usize, column: usize, value: usize) -> BoardModification {
+        pub fn from_indices(row: usize, column: usize, value: usize) -> BoardModification {
             board::validate_row_and_column(row, column);
             BoardModification::SetValue(Self {
                 row,
@@ -184,7 +184,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "candidates must not be empty.")]
     fn test_remove_candidates_new_candidates_are_empty() {
-        RemoveCandidates::new(0, 0, BTreeSet::new());
+        RemoveCandidates::from_indices(0, 0, BTreeSet::new());
     }
 
     #[test]

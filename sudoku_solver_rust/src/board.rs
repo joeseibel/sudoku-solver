@@ -192,13 +192,13 @@ mod tests {
     fn test_remove_candidates_new_row_too_high() {
         let mut candidates = BTreeSet::new();
         candidates.insert(SudokuNumber::One);
-        RemoveCandidates::new(9, 0, candidates);
+        RemoveCandidates::from_indices(9, 0, candidates);
     }
 
     #[test]
     #[should_panic(expected = "row is 9, must be between 0 and 8.")]
     fn test_set_value_new_row_too_high() {
-        SetValue::new(9, 0, 1);
+        SetValue::from_indices(9, 0, 1);
     }
 
     #[test]

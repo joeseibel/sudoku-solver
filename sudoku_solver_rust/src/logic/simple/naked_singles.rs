@@ -34,7 +34,10 @@ mod tests {
             {48}26{78}{18}{178}{179}35\
             {358}{35}{158}4{13568}9{127}{6}{1267}\
         ";
-        let expected = [SetValue::new(0, 7, 9), SetValue::new(8, 7, 6)];
+        let expected = [
+            SetValue::from_indices(0, 7, 9),
+            SetValue::from_indices(8, 7, 6),
+        ];
         assertions::assert_logical_solution(&expected, board, naked_singles);
     }
 }

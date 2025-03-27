@@ -51,15 +51,15 @@ mod tests {
             91{35}{357}6{357}{358}{458}2\
         ";
         let expected = [
-            SetValue::new(0, 1, 4),
-            SetValue::new(0, 2, 6),
-            SetValue::new(1, 3, 3),
-            SetValue::new(1, 8, 4),
-            SetValue::new(2, 1, 7),
-            SetValue::new(6, 7, 6),
-            SetValue::new(7, 0, 8),
-            SetValue::new(7, 8, 7),
-            SetValue::new(8, 7, 4),
+            SetValue::from_indices(0, 1, 4),
+            SetValue::from_indices(0, 2, 6),
+            SetValue::from_indices(1, 3, 3),
+            SetValue::from_indices(1, 8, 4),
+            SetValue::from_indices(2, 1, 7),
+            SetValue::from_indices(6, 7, 6),
+            SetValue::from_indices(7, 0, 8),
+            SetValue::from_indices(7, 8, 7),
+            SetValue::from_indices(8, 7, 4),
         ];
         assertions::assert_logical_solution(&expected, board, hidden_singles);
     }
