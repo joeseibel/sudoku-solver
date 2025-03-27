@@ -37,7 +37,7 @@ pub struct SolvedCell {
 
 impl SolvedCell {
     // TODO: Either add row and column to SolvedCell when needed or remove row and column from this method.
-    pub fn new(row: usize, column: usize, value: SudokuNumber) -> Cell {
+    pub fn from_indices(row: usize, column: usize, value: SudokuNumber) -> Cell {
         board::validate_row_and_column(row, column);
         Cell::SolvedCell(Self { value })
     }
@@ -62,7 +62,7 @@ pub struct UnsolvedCell {
 }
 
 impl UnsolvedCell {
-    pub fn new(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> Cell {
+    pub fn from_indices(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> Cell {
         board::validate_row_and_column(row, column);
         if candidates.is_empty() {
             panic!("candidates must not be empty.");
@@ -76,7 +76,7 @@ impl UnsolvedCell {
     }
 
     pub fn with_all_candidates(row: usize, column: usize) -> Cell {
-        Self::new(row, column, SudokuNumber::iter().collect())
+        Self::from_indices(row, column, SudokuNumber::iter().collect())
     }
 
     pub fn row(&self) -> usize {
@@ -146,7 +146,7 @@ impl Board<Cell> {
 impl From<&Board<Option<SudokuNumber>>> for Board<Cell> {
     fn from(value: &Board<Option<SudokuNumber>>) -> Self {
         value.map_cells_indexed(|row, column, &cell| match cell {
-            Some(cell) => SolvedCell::new(row, column, cell),
+            Some(cell) => SolvedCell::from_indices(row, column, cell),
             None => UnsolvedCell::with_all_candidates(row, column),
         })
     }
@@ -184,7 +184,7 @@ fn parse_simple_cells(chars: &[char]) -> Result<Board<Cell>, String> {
                     '0' => Ok(UnsolvedCell::with_all_candidates(row_index, column_index)),
                     _ => cell
                         .try_into()
-                        .map(|cell| SolvedCell::new(row_index, column_index, cell)),
+                        .map(|cell| SolvedCell::from_indices(row_index, column_index, cell)),
                 })
                 .collect::<Result<Vec<_>, _>>()
                 .map(|row| row.try_into().unwrap())
@@ -219,7 +219,7 @@ fn parse_cells_with_candidates(chars: &[char]) -> Result<Board<Cell>, String> {
                     .map(|ch| ch.try_into())
                     .collect::<Result<BTreeSet<_>, _>>()?;
                 cell_builders.push(Box::new(move |row, column| {
-                    UnsolvedCell::new(row, column, candidates.clone())
+                    UnsolvedCell::from_indices(row, column, candidates.clone())
                 }));
                 index = closing_brace + 1;
             }
@@ -227,7 +227,7 @@ fn parse_cells_with_candidates(chars: &[char]) -> Result<Board<Cell>, String> {
             ch => {
                 let value = ch.try_into()?;
                 cell_builders.push(Box::new(move |row, column| {
-                    SolvedCell::new(row, column, value)
+                    SolvedCell::from_indices(row, column, value)
                 }));
                 index += 1;
             }
@@ -299,7 +299,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "candidates must not be empty.")]
     fn test_unsolved_cell_candidates_are_empty() {
-        UnsolvedCell::new(0, 0, BTreeSet::new());
+        UnsolvedCell::from_indices(0, 0, BTreeSet::new());
     }
 
     #[test]

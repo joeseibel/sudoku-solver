@@ -204,7 +204,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "column is 9, must be between 0 and 8.")]
     fn test_solved_cell_new_column_too_high() {
-        SolvedCell::new(0, 9, SudokuNumber::One);
+        SolvedCell::from_indices(0, 9, SudokuNumber::One);
     }
 
     #[test]
@@ -212,7 +212,7 @@ mod tests {
     fn test_unsolved_cell_new_column_too_high() {
         let mut candidates = BTreeSet::new();
         candidates.insert(SudokuNumber::One);
-        UnsolvedCell::new(0, 9, candidates);
+        UnsolvedCell::from_indices(0, 9, candidates);
     }
 
     #[test]

@@ -203,7 +203,7 @@ mod tests {
     #[should_panic(expected = "1 is not a candidate for [0, 0].")]
     fn test_remove_candidates_not_a_candidate_for_cell() {
         RemoveCandidates::from_cell(
-            once(&UnsolvedCell::new(
+            once(&UnsolvedCell::from_indices(
                 0,
                 0,
                 BTreeSet::from([SudokuNumber::Two]),
@@ -219,7 +219,7 @@ mod tests {
     #[should_panic(expected = "1 is not a candidate for [0, 0].")]
     fn test_set_value_not_a_candidate_for_cell() {
         SetValue::from_cell(
-            once(&UnsolvedCell::new(
+            once(&UnsolvedCell::from_indices(
                 0,
                 0,
                 BTreeSet::from([SudokuNumber::Two]),

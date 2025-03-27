@@ -109,7 +109,7 @@ fn solve(input: Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, Solv
                     if value != known_solution {
                         panic!("Cannot set value {value} to [{row}, {column}]. Solution is {known_solution}");
                     }
-                    board[(row, column)] = SolvedCell::new(row, column, value);
+                    board[(row, column)] = SolvedCell::from_indices(row, column, value);
                 }
             }
         }
