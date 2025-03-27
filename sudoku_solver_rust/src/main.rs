@@ -33,9 +33,7 @@ struct Arguments {
 }
 
 fn valid_board(board: &str) -> Result<String, String> {
-    if board.len() == board::UNIT_SIZE_SQUARED
-        && board.chars().all(|cell| ('0'..='9').contains(&cell))
-    {
+    if board.len() == board::UNIT_SIZE_SQUARED && board.chars().all(|cell| cell.is_ascii_digit()) {
         Ok(board.to_owned())
     } else {
         Err(format!(
