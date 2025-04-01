@@ -159,7 +159,7 @@ mod tests {
 
     #[macro_export]
     macro_rules! remove_candidates {
-        ($row:expr_2021, $column:expr_2021, $($candidate:expr_2021),+ $(,)?) => {{
+        ($row:expr, $column:expr, $($candidate:expr),+ $(,)?) => {{
             use $crate::{board_modification::RemoveCandidates, sudoku_number::SudokuNumber};
             use std::collections::BTreeSet;
             use strum::VariantArray;
