@@ -3,7 +3,6 @@ use crate::{
     board_modification::{BoardModification, IteratorRemoveCandidatesExt},
     cell::{Cell, IteratorCellExt},
     collections::IteratorZipExt,
-    sudoku_number::SudokuNumber,
 };
 use std::collections::BTreeSet;
 
@@ -19,7 +18,7 @@ pub fn naked_triples(board: &Board<Cell>) -> Vec<BoardModification> {
                 .unsolved_cells()
                 .zip_every_triple()
                 .flat_map(move |(a, b, c)| {
-                    let mut union_of_candidates: BTreeSet<SudokuNumber> = BTreeSet::new();
+                    let mut union_of_candidates = BTreeSet::new();
                     union_of_candidates.extend(a.candidates());
                     union_of_candidates.extend(b.candidates());
                     union_of_candidates.extend(c.candidates());
