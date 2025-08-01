@@ -121,6 +121,7 @@ fn solve(input: Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, Solv
 
 fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
     let solutions = [
+        //Start of simple solutions.
         prune_candidates::prune_candidates,
         naked_singles::naked_singles,
         hidden_singles::hidden_singles,
