@@ -13,8 +13,8 @@ use indoc::formatdoc;
 use logic::{
     brute_force::{self, BruteForceError},
     simple::{
-        hidden_pairs, hidden_singles, hidden_triples, naked_pairs, naked_quads, naked_singles,
-        naked_triples, prune_candidates,
+        hidden_pairs, hidden_quads, hidden_singles, hidden_triples, naked_pairs, naked_quads,
+        naked_singles, naked_triples, prune_candidates,
     },
 };
 use sudoku_number::SudokuNumber;
@@ -129,6 +129,7 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         hidden_pairs::hidden_pairs,
         hidden_triples::hidden_triples,
         naked_quads::naked_quads,
+        hidden_quads::hidden_quads,
     ];
     solutions
         .iter()

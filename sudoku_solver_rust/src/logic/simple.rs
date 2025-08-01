@@ -1,4 +1,5 @@
 pub mod hidden_pairs;
+pub mod hidden_quads;
 pub mod hidden_singles;
 pub mod hidden_triples;
 pub mod naked_pairs;
