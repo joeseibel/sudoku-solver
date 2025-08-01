@@ -32,7 +32,7 @@ pub fn hidden_triples(board: &Board<Cell>) -> Vec<BoardModification> {
                         })
                         .collect();
                     if cells.len() == 3 {
-                        let mut union: BTreeSet<SudokuNumber> = BTreeSet::new();
+                        let mut union = BTreeSet::<SudokuNumber>::new();
                         union.extend(cells[0].candidates());
                         union.extend(cells[1].candidates());
                         union.extend(cells[2].candidates());
