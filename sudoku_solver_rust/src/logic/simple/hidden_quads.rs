@@ -68,7 +68,7 @@ mod tests {
     use crate::{logic::assertions, remove_candidates};
 
     #[test]
-    fn test1() {
+    fn test_1() {
         let board = "\
             65{139}{13}87{19}24\
             {278}{28}{1378}649{18}5{37}\
@@ -85,7 +85,7 @@ mod tests {
     }
 
     #[test]
-    fn test2() {
+    fn test_2() {
         let board = "\
             9{37}15{28}{28}{37}46\
             425{367}9{367}{37}81\
