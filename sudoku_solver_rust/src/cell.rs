@@ -21,6 +21,15 @@ pub enum Cell {
     UnsolvedCell(UnsolvedCell),
 }
 
+impl Cell {
+    pub fn block(&self) -> usize {
+        match self {
+            Self::SolvedCell(cell) => cell.block,
+            Self::UnsolvedCell(cell) => cell.block(),
+        }
+    }
+}
+
 impl Display for Cell {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -32,14 +41,17 @@ impl Display for Cell {
 
 #[derive(Debug)]
 pub struct SolvedCell {
+    block: usize,
     value: SudokuNumber,
 }
 
 impl SolvedCell {
-    // TODO: Either add row and column to SolvedCell when needed or remove row and column from this method.
     pub fn from_indices(row: usize, column: usize, value: SudokuNumber) -> Cell {
         board::validate_row_and_column(row, column);
-        Cell::SolvedCell(Self { value })
+        Cell::SolvedCell(Self {
+            block: board::get_block_index(row, column),
+            value,
+        })
     }
 
     pub fn value(&self) -> SudokuNumber {

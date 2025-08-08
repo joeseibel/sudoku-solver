@@ -39,7 +39,7 @@ impl<T> Board<T> {
         (0..UNIT_SIZE).map(|index| self.rows.iter().map(move |row| &row[index]))
     }
 
-    pub fn blocks(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
+    pub fn blocks(&self) -> impl Iterator<Item = impl Iterator<Item = &T> + Clone> {
         (0..UNIT_SIZE).map(|index| self.get_block(index))
     }
 
