@@ -1,7 +1,7 @@
 use crate::{
     board::Board,
     board_modification::{BoardModification, IteratorRemoveCandidatesExt},
-    cell::{Cell, IteratorCellExt, LocatedCandidate, UnsolvedCell},
+    cell::{Cell, IteratorCellExt, LocatedCandidate, Location, UnsolvedCell},
     sudoku_number::SudokuNumber,
 };
 use std::collections::HashSet;
@@ -60,14 +60,14 @@ pub fn pointing_pairs_pointing_triples(board: &Board<Cell>) -> Vec<BoardModifica
                     candidate,
                     with_candidate.clone(),
                     |index| board.get_row(index),
-                    UnsolvedCell::row,
+                    Location::row,
                 );
                 let column_modifications = pointing_pairs_pointing_triples(
                     block_index,
                     candidate,
                     with_candidate,
                     |index| board.get_column(index),
-                    UnsolvedCell::column,
+                    Location::column,
                 );
                 row_modifications.chain(column_modifications)
             })

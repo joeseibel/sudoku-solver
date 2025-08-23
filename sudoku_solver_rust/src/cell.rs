@@ -30,6 +30,22 @@ impl Cell {
     }
 }
 
+impl Location for Cell {
+    fn row(&self) -> usize {
+        match self {
+            Self::SolvedCell(cell) => cell.row,
+            Self::UnsolvedCell(cell) => cell.row,
+        }
+    }
+
+    fn column(&self) -> usize {
+        match self {
+            Self::SolvedCell(cell) => cell.column,
+            Self::UnsolvedCell(cell) => cell.column,
+        }
+    }
+}
+
 impl Display for Cell {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -39,8 +55,19 @@ impl Display for Cell {
     }
 }
 
+// Some of the logical solutions require the ability to get the row or column from a Cell or UnsolvedCell. Since Cell,
+// SolvedCell, and UnsolvedCell are all independent types, I decided to create this Location trait so that the row and
+// column values can be retrieved regardless of whether the cell is a Cell or an UnsolvedCel. Currently, SolvedCell does
+// not implement Location because that functionality has not been needed.
+pub trait Location {
+    fn row(&self) -> usize;
+    fn column(&self) -> usize;
+}
+
 #[derive(Debug)]
 pub struct SolvedCell {
+    row: usize,
+    column: usize,
     block: usize,
     value: SudokuNumber,
 }
@@ -49,6 +76,8 @@ impl SolvedCell {
     pub fn from_indices(row: usize, column: usize, value: SudokuNumber) -> Cell {
         board::validate_row_and_column(row, column);
         Cell::SolvedCell(Self {
+            row,
+            column,
             block: board::get_block_index(row, column),
             value,
         })
@@ -91,14 +120,6 @@ impl UnsolvedCell {
         Self::from_indices(row, column, SudokuNumber::iter().collect())
     }
 
-    pub fn row(&self) -> usize {
-        self.row
-    }
-
-    pub fn column(&self) -> usize {
-        self.column
-    }
-
     pub fn block(&self) -> usize {
         self.block
     }
@@ -124,6 +145,16 @@ impl UnsolvedCell {
 
     pub fn remove_candidate(&mut self, candidate: &SudokuNumber) {
         self.candidates.remove(candidate);
+    }
+}
+
+impl Location for UnsolvedCell {
+    fn row(&self) -> usize {
+        self.row
+    }
+
+    fn column(&self) -> usize {
+        self.column
     }
 }
 

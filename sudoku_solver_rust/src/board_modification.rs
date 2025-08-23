@@ -1,5 +1,5 @@
 use crate::{
-    cell::{LocatedCandidate, UnsolvedCell},
+    cell::{LocatedCandidate, Location, UnsolvedCell},
     sudoku_number::SudokuNumber,
 };
 use itertools::Itertools;

@@ -1,3 +1,4 @@
+pub mod box_line_reduction;
 pub mod hidden_pairs;
 pub mod hidden_quads;
 pub mod hidden_singles;

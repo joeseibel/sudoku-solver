@@ -1,7 +1,7 @@
 use crate::{
     board::Board,
     board_modification::{BoardModification, RemoveCandidates},
-    cell::{Cell, IteratorCellExt, SolvedCell},
+    cell::{Cell, IteratorCellExt, Location, SolvedCell},
 };
 use std::collections::BTreeSet;
 

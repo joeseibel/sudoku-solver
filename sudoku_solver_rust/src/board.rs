@@ -31,11 +31,11 @@ impl<T> Board<T> {
     // only consumed once. Methods like collect take ownership of the Iterator so that it cannot be used after
     // collecting. This is different in Java in which the compiler can't prevent multiple consumptions of a Stream. Java
     // instead throws an IllegalStateException if a Stream is operated on after closing.
-    pub fn rows(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> + Clone {
+    pub fn rows(&self) -> impl Iterator<Item = impl Iterator<Item = &T> + Clone> + Clone {
         self.rows.iter().map(|row| row.iter())
     }
 
-    pub fn columns(&self) -> impl Iterator<Item = impl Iterator<Item = &T>> {
+    pub fn columns(&self) -> impl Iterator<Item = impl Iterator<Item = &T> + Clone> {
         (0..UNIT_SIZE).map(|index| self.rows.iter().map(move |row| &row[index]))
     }
 
