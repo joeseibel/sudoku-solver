@@ -21,7 +21,7 @@ import sudokusolver.scala.*
 def simpleColoringRule2(board: Board[Cell]): Seq[RemoveCandidates] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
     createConnectedComponents(board, candidate).flatMap { graph =>
-      val colors = colorToMap(graph)
+      val colors = graph.colorToMap
       val colorToRemove = graph.nodes
         .toIndexedSeq
         .zipEveryPair
@@ -47,7 +47,7 @@ def simpleColoringRule4(board: Board[Cell]): Seq[RemoveCandidates] =
   val removals = for
     candidate <- SudokuNumber.values.toSeq
     graph <- createConnectedComponents(board, candidate)
-    (colorOne, colorTwo) = colorToLists(graph)
+    (colorOne, colorTwo) = graph.colorToLists
     cell <- board.cells.collect { case cell: UnsolvedCell => cell }
     if cell.candidates.contains(candidate) &&
       !graph.contains(cell) &&
