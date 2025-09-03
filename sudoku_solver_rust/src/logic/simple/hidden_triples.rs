@@ -8,12 +8,10 @@ use crate::{
 use std::collections::BTreeSet;
 use strum::VariantArray;
 
-/*
- * http://www.sudokuwiki.org/Hidden_Candidates#HT
- *
- * If three candidates exist across three cells in a unit, then those three candidates must be placed in those three
- * cells. All other candidates can be removed from those three cells.
- */
+// http://www.sudokuwiki.org/Hidden_Candidates#HT
+//
+// If three candidates exist across three cells in a unit, then those three candidates must be placed in those three
+// cells. All other candidates can be removed from those three cells.
 pub fn hidden_triples(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()

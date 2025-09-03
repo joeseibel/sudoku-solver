@@ -7,15 +7,13 @@ use crate::{
 use std::collections::HashSet;
 use strum::IntoEnumIterator;
 
-/*
- * http://www.sudokuwiki.org/Intersection_Removal#IR
- *
- * For a given block, if a candidate appears in only one row, then the candidate for that row must be placed in that
- * block. The candidate can be removed from cells which are in the same row, but different blocks.
- *
- * For a given block, if a candidate appears in only one column, then the candidate for that column must be placed in
- * that block. The candidate can be removed from cells which are in the same column, but different blocks.
- */
+// http://www.sudokuwiki.org/Intersection_Removal#IR
+//
+// For a given block, if a candidate appears in only one row, then the candidate for that row must be placed in that
+// block. The candidate can be removed from cells which are in the same row, but different blocks.
+//
+// For a given block, if a candidate appears in only one column, then the candidate for that column must be placed in
+// that block. The candidate can be removed from cells which are in the same column, but different blocks.
 pub fn pointing_pairs_pointing_triples(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .blocks()
