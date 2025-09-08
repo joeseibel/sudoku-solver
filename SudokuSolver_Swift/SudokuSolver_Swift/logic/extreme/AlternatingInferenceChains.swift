@@ -126,7 +126,7 @@ func alternatingInferenceChainsRule3(board: Board<Cell>) -> [BoardModification] 
 private func buildGraph(board: Board<Cell>) -> WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength> {
     let graph = WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>()
     
-    //Connect cells.
+    // Connect cells.
     for unit in board.units {
         for candidate in SudokuNumber.allCases {
             let withCandidates = unit.unsolvedCells.filter { $0.candidates.contains(candidate) }
@@ -139,7 +139,7 @@ private func buildGraph(board: Board<Cell>) -> WeightedUniqueElementsGraph<Codab
         }
     }
     
-    //Connect candidates in cells.
+    // Connect candidates in cells.
     for cell in board.cells.unsolvedCells {
         let strength = cell.candidates.count == 2 ? Strength.strong : .weak
         for (a, b) in cell.candidates.zipEveryPair() {

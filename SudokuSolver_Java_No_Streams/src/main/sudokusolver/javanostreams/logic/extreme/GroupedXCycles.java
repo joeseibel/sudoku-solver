@@ -202,7 +202,7 @@ public class GroupedXCycles {
     public static Graph<Node, StrengthEdge> buildGraph(Board<Cell> board, SudokuNumber candidate) {
         var builder = new GraphBuilder<>(new SimpleGraph<Node, StrengthEdge>(StrengthEdge.class));
 
-        //Connect cells.
+        // Connect cells.
         for (var unit : board.getUnits()) {
             var withCandidate = new ArrayList<UnsolvedCell>();
             for (var cell : unit) {
@@ -220,19 +220,19 @@ public class GroupedXCycles {
             }
         }
 
-        //Add groups.
+        // Add groups.
         var rowGroups = createGroups(candidate, board.rows(), RowGroup::new);
         var columnGroups = createGroups(candidate, board.getColumns(), ColumnGroup::new);
         var groups = new ArrayList<Group>(rowGroups);
         groups.addAll(columnGroups);
         builder.addVertices(groups.toArray(Node[]::new));
 
-        //Connect groups to cells.
+        // Connect groups to cells.
         connectGroupsToCells(candidate, builder, rowGroups, board::getRow, Node::getRow);
         connectGroupsToCells(candidate, builder, columnGroups, board::getColumn, Node::getColumn);
         connectGroupsToCells(candidate, builder, groups, board::getBlock, Node::getBlock);
 
-        //Connect groups to groups.
+        // Connect groups to groups.
         connectGroupsToGroups(candidate, builder, rowGroups, board::getRow, Node::getRow);
         connectGroupsToGroups(candidate, builder, columnGroups, board::getColumn, Node::getColumn);
         connectGroupsToGroups(candidate, builder, groups, board::getBlock, Node::getBlock);

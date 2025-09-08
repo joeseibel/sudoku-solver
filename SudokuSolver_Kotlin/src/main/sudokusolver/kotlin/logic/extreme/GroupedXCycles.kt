@@ -131,7 +131,7 @@ fun Graph<Node, StrengthEdge>.toDOT(candidate: SudokuNumber): String {
 private fun buildGraph(board: Board<Cell>, candidate: SudokuNumber): Graph<Node, StrengthEdge> {
     val builder = GraphBuilder(SimpleGraph<Node, StrengthEdge>(StrengthEdge::class.java))
 
-    //Connect cells.
+    // Connect cells.
     board.units
         .map { unit -> unit.filterIsInstance<UnsolvedCell>().filter { candidate in it.candidates } }
         .forEach { withCandidate ->
@@ -141,7 +141,7 @@ private fun buildGraph(board: Board<Cell>, candidate: SudokuNumber): Graph<Node,
             }
         }
 
-    //Add groups.
+    // Add groups.
     fun <G : Group> createGroups(units: List<List<Cell>>, groupConstructor: (Set<UnsolvedCell>) -> G) =
         units.flatMap { unit ->
             unit.filterIsInstance<UnsolvedCell>()
@@ -157,7 +157,7 @@ private fun buildGraph(board: Board<Cell>, candidate: SudokuNumber): Graph<Node,
     val groups = rowGroups + columnGroups
     builder.addVertices(*groups.toTypedArray())
 
-    //Connect groups to cells.
+    // Connect groups to cells.
     fun <G : Group> connectGroupsToCells(groups: List<G>, getUnit: (Int) -> List<Cell>, getUnitIndex: (G) -> Int) {
         groups.forEach { group ->
             val otherCellsInUnit = getUnit(getUnitIndex(group))
@@ -173,7 +173,7 @@ private fun buildGraph(board: Board<Cell>, candidate: SudokuNumber): Graph<Node,
     connectGroupsToCells(columnGroups, board::getColumn, ColumnGroup::column)
     connectGroupsToCells(groups, board::getBlock, Group::block)
 
-    //Connect groups to groups.
+    // Connect groups to groups.
     fun <G : Group> connectGroupsToGroups(groups: List<G>, getUnit: (Int) -> List<Cell>, getUnitIndex: (G) -> Int) {
         groups.zipEveryPair()
             .filter { (a, b) -> getUnitIndex(a) == getUnitIndex(b) && (a.cells intersect b.cells).isEmpty() }

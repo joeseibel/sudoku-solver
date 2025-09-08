@@ -83,7 +83,7 @@ func solve(input: Board<SudokuNumber?>) throws -> Board<SudokuNumber> {
 
 private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
     let solutions = [
-        //Start of simple solutions.
+        // Start of simple solutions.
         pruneCandidates,
         nakedSingles,
         hiddenSingles,
@@ -95,14 +95,14 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         hiddenQuads,
         pointingPairsPointingTriples,
         boxLineReduction,
-        //Start of tough solutions.
+        // Start of tough solutions.
         xWing,
         simpleColoringRule2,
         simpleColoringRule4,
         yWing,
         swordfish,
         xyzWing,
-        //Start of diabolical solutions.
+        // Start of diabolical solutions.
         xCyclesRule1,
         xCyclesRule2,
         xCyclesRule3,
@@ -125,7 +125,7 @@ private func performNextSolution(board: Board<Cell>) -> [BoardModification] {
         hiddenUniqueRectangles,
         wxyzWing,
         alignedPairExclusion,
-        //Start of extreme solutions.
+        // Start of extreme solutions.
         groupedXCyclesRule1,
         groupedXCyclesRule2,
         groupedXCyclesRule3,

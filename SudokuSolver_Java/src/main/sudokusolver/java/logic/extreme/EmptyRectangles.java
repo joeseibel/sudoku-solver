@@ -110,12 +110,12 @@ public class EmptyRectangles {
                 var columnInBlock = column % Board.UNIT_SIZE_SQUARE_ROOT;
                 var rectangleColumn1 = columnInBlock == 0 ? column + 1 : column - columnInBlock;
                 var rectangleColumn2 = columnInBlock == 2 ? column - 1 : column - columnInBlock + 2;
-                //Check that the rectangle is empty.
+                // Check that the rectangle is empty.
                 return !hasCandidate(board.get(rectangleRow1, rectangleColumn1), candidate) &&
                         !hasCandidate(board.get(rectangleRow1, rectangleColumn2), candidate) &&
                         !hasCandidate(board.get(rectangleRow2, rectangleColumn1), candidate) &&
                         !hasCandidate(board.get(rectangleRow2, rectangleColumn2), candidate) &&
-                        //Check that at least one cell in the same block and row as the intersection has the candidate.
+                        // Check that at least one cell in the same block and row as the intersection has the candidate.
                         (hasCandidate(board.get(row, rectangleColumn1), candidate) ||
                                 hasCandidate(board.get(row, rectangleColumn2), candidate)) &&
                         /*

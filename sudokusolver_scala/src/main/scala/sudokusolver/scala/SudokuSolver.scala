@@ -84,7 +84,7 @@ def solve(input: Board[Option[SudokuNumber]]): SolveResult = bruteForce(input) m
 
 private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
   val solutions = LazyList(
-    //Start of simple solutions.
+    // Start of simple solutions.
     pruneCandidates,
     nakedSingles,
     hiddenSingles,
@@ -96,14 +96,14 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     hiddenQuads,
     pointingPairsPointingTriples,
     boxLineReduction,
-    //Start of tough solutions.
+    // Start of tough solutions.
     xWing,
     simpleColoringRule2,
     simpleColoringRule4,
     yWing,
     swordfish,
     xyzWing,
-    //Start of diabolical solutions.
+    // Start of diabolical solutions.
     xCyclesRule1,
     xCyclesRule2,
     xCyclesRule3,
@@ -126,7 +126,7 @@ private def performNextSolution(board: Board[Cell]): Seq[BoardModification] =
     hiddenUniqueRectangles,
     wxyzWing,
     alignedPairExclusion,
-    //Start of extreme solutions.
+    // Start of extreme solutions.
     groupedXCyclesRule1,
     groupedXCyclesRule2,
     groupedXCyclesRule3,

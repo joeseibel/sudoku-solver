@@ -77,15 +77,15 @@ private func getIntersections(board: Board<Cell>, candidate: SudokuNumber) -> [(
             let columnInBlock = column % unitSizeSquareRoot
             let rectangleColumn1 = columnInBlock == 0 ? column + 1 : column - columnInBlock
             let rectangleColumn2 = columnInBlock == 2 ? column - 1 : column - columnInBlock + 2
-            //Check that the rectangle is empty.
+            // Check that the rectangle is empty.
             return !board[rectangleRow1, rectangleColumn1].has(candidate: candidate) &&
                 !board[rectangleRow1, rectangleColumn2].has(candidate: candidate) &&
                 !board[rectangleRow2, rectangleColumn1].has(candidate: candidate) &&
                 !board[rectangleRow2, rectangleColumn2].has(candidate: candidate) &&
-                //Check that at least one cell in the same block and row as the intersection has the candidate.
+                // Check that at least one cell in the same block and row as the intersection has the candidate.
                 (board[row, rectangleColumn1].has(candidate: candidate) ||
                     board[row, rectangleColumn2].has(candidate: candidate)) &&
-                //Check that at least one cell in the same block and column as the intersection has the candidate.
+                // Check that at least one cell in the same block and column as the intersection has the candidate.
                 (board[rectangleRow1, column].has(candidate: candidate) ||
                     board[rectangleRow2, column].has(candidate: candidate))
         }.map { column in (row, column) }

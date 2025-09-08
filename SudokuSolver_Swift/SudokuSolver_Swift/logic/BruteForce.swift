@@ -62,7 +62,7 @@ func bruteForce(board: Board<SudokuNumber?>) throws -> Board<SudokuNumber> {
                         throw BruteForceError.multipleSolutions
                     }
                 } catch BruteForceError.noSolutions {
-                    //Ignore.
+                    // Ignore.
                 }
             }
             trialAndError[rowIndex, columnIndex] = nil

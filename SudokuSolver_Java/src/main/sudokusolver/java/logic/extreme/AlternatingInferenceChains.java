@@ -166,7 +166,7 @@ public class AlternatingInferenceChains {
     private static Graph<LocatedCandidate, StrengthEdge> buildGraph(Board<Cell> board) {
         var builder = new GraphBuilder<>(new SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge.class));
 
-        //Connect cells.
+        // Connect cells.
         board.getUnits().forEach(unit -> Arrays.stream(SudokuNumber.values()).forEach(candidate -> {
             var withCandidates = unit.stream()
                     .filter(UnsolvedCell.class::isInstance)
@@ -185,7 +185,7 @@ public class AlternatingInferenceChains {
             });
         }));
 
-        //Connect candidates in cells.
+        // Connect candidates in cells.
         board.getCells().stream().filter(UnsolvedCell.class::isInstance).map(UnsolvedCell.class::cast).forEach(cell -> {
             var strength = cell.candidates().size() == 2 ? Strength.STRONG : Strength.WEAK;
             cell.candidates().stream().collect(Pair.zipEveryPair()).forEach(pair -> {

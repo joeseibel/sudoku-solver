@@ -146,7 +146,7 @@ extension WeightedUniqueElementsGraph<Node, Strength> {
 private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> WeightedUniqueElementsGraph<Node, Strength> {
     let graph = WeightedUniqueElementsGraph<Node, Strength>()
     
-    //Connect cells.
+    // Connect cells.
     board.units
         .map { unit in unit.unsolvedCells.filter { $0.candidates.contains(candidate) } }
         .forEach { withCandidate in
@@ -158,7 +158,7 @@ private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> Weighted
             }
         }
     
-    //Add groups.
+    // Add groups.
     func createGroups(units: [[Cell]], groupConstructor: ([UnsolvedCell]) -> Node) -> [Node] {
         units.flatMap { unit in
             Dictionary(grouping: unit.unsolvedCells.filter { $0.candidates.contains(candidate) }, by: \.block)
@@ -173,7 +173,7 @@ private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> Weighted
         .map(graph.addVertex)
     let groupIndices = rowGroupIndices + columnGroupIndices
     
-    //Connect groups to cels.
+    // Connect groups to cels.
     func connectGroupsToCells(groupIndices: [Int], getUnit: (Int) -> [Cell], getUnitIndex: (Node) -> Int) {
         for groupIndex in groupIndices {
             let group = graph.vertexAtIndex(groupIndex)
@@ -191,7 +191,7 @@ private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> Weighted
     connectGroupsToCells(groupIndices: columnGroupIndices, getUnit: board.getColumn, getUnitIndex: \.column!)
     connectGroupsToCells(groupIndices: groupIndices, getUnit: board.getBlock, getUnitIndex: \.block)
     
-    //Connect groups to groups.
+    // Connect groups to groups.
     func connectGroupsToGroups(groupIndices: [Int], getUnit: (Int) -> [Cell], getUnitIndex: (Node) -> Int) {
         for (aIndex, bIndex) in groupIndices.zipEveryPair() {
             let a = graph.vertexAtIndex(aIndex)

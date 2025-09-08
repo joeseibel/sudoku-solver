@@ -111,7 +111,7 @@ extension (graph: Graph[Node, StrengthEdge[Node]])
     }, _.getEdgeAttributes)
 
 private def buildGraphGroupedXCycles(board: Board[Cell], candidate: SudokuNumber): Graph[Node, StrengthEdge[Node]] =
-  //Connect cells.
+  // Connect cells.
   val cellEdges = for
     unit <- board.units
     withCandidate = unit.collect { case cell: UnsolvedCell if cell.candidates.contains(candidate) => cell }
@@ -119,7 +119,7 @@ private def buildGraphGroupedXCycles(board: Board[Cell], candidate: SudokuNumber
     (a, b) <- withCandidate.zipEveryPair
   yield StrengthEdge(a, b, strength)
 
-  //Add groups.
+  // Add groups.
   def createGroups[G <: Group](units: IndexedSeq[Seq[Cell]], groupConstructor: Set[UnsolvedCell] => G) =
     units.flatMap { unit =>
       unit.collect { case cell: UnsolvedCell if cell.candidates.contains(candidate) => cell }
@@ -133,7 +133,7 @@ private def buildGraphGroupedXCycles(board: Board[Cell], candidate: SudokuNumber
   val columnGroups = createGroups(board.columns, ColumnGroup(_))
   val groups = rowGroups ++ columnGroups
 
-  //Connect groups to cells.
+  // Connect groups to cells.
   def connectGroupsToCells[G <: Group](groups: Seq[G], getUnit: Int => Seq[Cell], getUnitIndex: G => Int) =
     groups.flatMap { group =>
       val otherCellsInUnit = getUnit(getUnitIndex(group)).collect { case cell: UnsolvedCell
@@ -147,7 +147,7 @@ private def buildGraphGroupedXCycles(board: Board[Cell], candidate: SudokuNumber
   val columnGroupsAndCellEdges = connectGroupsToCells(columnGroups, board.getColumn, _.column)
   val groupsAndCellEdges = connectGroupsToCells(groups, board.getBlock, _.block)
 
-  //Connect groups to groups.
+  // Connect groups to groups.
   def connectGroupsToGroups[G <: Group](groups: IndexedSeq[G], getUnit: Int => Seq[Cell], getUnitIndex: G => Int) =
     for
       (a, b) <- groups.zipEveryPair

@@ -150,7 +150,7 @@ public class AlternatingInferenceChains {
     private static Graph<LocatedCandidate, StrengthEdge> buildGraph(Board<Cell> board) {
         var builder = new GraphBuilder<>(new SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge.class));
 
-        //Connect cells.
+        // Connect cells.
         for (var unit : board.getUnits()) {
             for (var candidate : SudokuNumber.values()) {
                 var withCandidates = new ArrayList<UnsolvedCell>();
@@ -174,7 +174,7 @@ public class AlternatingInferenceChains {
             }
         }
 
-        //Connect candidates in cells.
+        // Connect candidates in cells.
         for (var cell : board.getCells()) {
             if (cell instanceof UnsolvedCell unsolved) {
                 var candidates = unsolved.candidates().toArray(SudokuNumber[]::new);

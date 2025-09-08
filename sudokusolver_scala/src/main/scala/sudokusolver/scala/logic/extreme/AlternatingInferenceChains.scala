@@ -91,7 +91,7 @@ def alternatingInferenceChainsRule3(board: Board[Cell]): Seq[RemoveCandidates] =
   graph.nodes.toSeq.map(_.outer).filter(alternatingCycleExistsAIC(graph, _, Strength.WEAK)).mergeToRemoveCandidates
 
 private def buildGraphAIC(board: Board[Cell]): Graph[LocatedCandidate, StrengthEdge[LocatedCandidate]] =
-  //Connect cells.
+  // Connect cells.
   val cellEdges = for
     unit <- board.units
     candidate <- SudokuNumber.values
@@ -100,7 +100,7 @@ private def buildGraphAIC(board: Board[Cell]): Graph[LocatedCandidate, StrengthE
     (a, b) <- withCandidate.zipEveryPair
   yield StrengthEdge(a -> candidate, b -> candidate, strength)
 
-  //Connect candidates in cells.
+  // Connect candidates in cells.
   val candidateEdges = board.cells.collect { case cell: UnsolvedCell => cell }.flatMap { cell =>
     val strength = if cell.candidates.size == 2 then Strength.STRONG else Strength.WEAK
     cell.candidates.toIndexedSeq.zipEveryPair.map((a, b) => StrengthEdge(cell -> a, cell -> b, strength))

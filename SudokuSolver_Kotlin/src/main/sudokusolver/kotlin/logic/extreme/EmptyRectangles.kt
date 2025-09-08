@@ -71,14 +71,14 @@ private fun getIntersections(board: Board<Cell>, candidate: SudokuNumber): List<
             val columnInBlock = column % UNIT_SIZE_SQUARE_ROOT
             val rectangleColumn1 = if (columnInBlock == 0) column + 1 else column - columnInBlock
             val rectangleColumn2 = if (columnInBlock == 2) column - 1 else column - columnInBlock + 2
-            //Check that the rectangle is empty.
+            // Check that the rectangle is empty.
             candidate !in board[rectangleRow1, rectangleColumn1] &&
                     candidate !in board[rectangleRow1, rectangleColumn2] &&
                     candidate !in board[rectangleRow2, rectangleColumn1] &&
                     candidate !in board[rectangleRow2, rectangleColumn2] &&
-                    //Check that at least one cell in the same block and row as the intersection has the candidate.
+                    // Check that at least one cell in the same block and row as the intersection has the candidate.
                     (candidate in board[row, rectangleColumn1] || candidate in board[row, rectangleColumn2]) &&
-                    //Check that at least one cell in the same block and column as the intersection has the candidate.
+                    // Check that at least one cell in the same block and column as the intersection has the candidate.
                     (candidate in board[rectangleRow1, column] || candidate in board[rectangleRow2, column])
         }.map { column -> row to column }
     }

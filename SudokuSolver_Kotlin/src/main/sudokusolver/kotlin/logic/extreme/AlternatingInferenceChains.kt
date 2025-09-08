@@ -115,7 +115,7 @@ fun alternatingInferenceChainsRule3(board: Board<Cell>): List<RemoveCandidates> 
 private fun buildGraph(board: Board<Cell>): Graph<LocatedCandidate, StrengthEdge> {
     val builder = GraphBuilder(SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge::class.java))
 
-    //Connect cells.
+    // Connect cells.
     board.units.forEach { unit ->
         SudokuNumber.entries.forEach { candidate ->
             val withCandidates = unit.filterIsInstance<UnsolvedCell>().filter { candidate in it.candidates }
@@ -126,7 +126,7 @@ private fun buildGraph(board: Board<Cell>): Graph<LocatedCandidate, StrengthEdge
         }
     }
 
-    //Connect candidates in cells.
+    // Connect candidates in cells.
     board.cells.filterIsInstance<UnsolvedCell>().forEach { cell ->
         val strength = if (cell.candidates.size == 2) Strength.STRONG else Strength.WEAK
         cell.candidates.toList().zipEveryPair().forEach { (a, b) ->

@@ -43,7 +43,7 @@ import java.util.function.Function;
 
 public class SudokuSolver {
     private static final List<Function<Board<Cell>, List<? extends BoardModification>>> SOLUTIONS = List.of(
-            //Start of simple solutions.
+            // Start of simple solutions.
             PruneCandidates::pruneCandidates,
             NakedSingles::nakedSingles,
             HiddenSingles::hiddenSingles,
@@ -55,14 +55,14 @@ public class SudokuSolver {
             HiddenQuads::hiddenQuads,
             PointingPairsPointingTriples::pointingPairsPointingTriples,
             BoxLineReduction::boxLineReduction,
-            //Start of tough solutions.
+            // Start of tough solutions.
             XWing::xWing,
             SimpleColoring::simpleColoringRule2,
             SimpleColoring::simpleColoringRule4,
             YWing::yWing,
             Swordfish::swordfish,
             XYZWing::xyzWing,
-            //Start of diabolical solutions.
+            // Start of diabolical solutions.
             XCycles::xCyclesRule1,
             XCycles::xCyclesRule2,
             XCycles::xCyclesRule3,
@@ -85,7 +85,7 @@ public class SudokuSolver {
             HiddenUniqueRectangles::hiddenUniqueRectangles,
             WXYZWing::wxyzWing,
             AlignedPairExclusion::alignedPairExclusion,
-            //Start of extreme solutions.
+            // Start of extreme solutions.
             GroupedXCycles::groupedXCyclesRule1,
             GroupedXCycles::groupedXCyclesRule2,
             GroupedXCycles::groupedXCyclesRule3,

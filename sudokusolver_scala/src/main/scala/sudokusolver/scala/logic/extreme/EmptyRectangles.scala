@@ -65,14 +65,14 @@ private def getIntersections(board: Board[Cell], candidate: SudokuNumber): Seq[(
     columnInBlock = column % UnitSizeSquareRoot
     rectangleColumn1 = if columnInBlock == 0 then column + 1 else column - columnInBlock
     rectangleColumn2 = if columnInBlock == 2 then column - 1 else column - columnInBlock + 2
-    //Check that the rectangle is empty.
+    // Check that the rectangle is empty.
     if !board(rectangleRow1, rectangleColumn1).hasCandidate(candidate) &&
       !board(rectangleRow1, rectangleColumn2).hasCandidate(candidate) &&
       !board(rectangleRow2, rectangleColumn1).hasCandidate(candidate) &&
       !board(rectangleRow2, rectangleColumn2).hasCandidate(candidate) &&
-      //Check that at least one cell in the same block and row as the intersection has the candidate.
+      // Check that at least one cell in the same block and row as the intersection has the candidate.
       (board(row, rectangleColumn1).hasCandidate(candidate) || board(row, rectangleColumn2).hasCandidate(candidate)) &&
-      //Check that at least one cell in the same block and column as the intersection has the candidate.
+      // Check that at least one cell in the same block and column as the intersection has the candidate.
       (board(rectangleRow1, column).hasCandidate(candidate) || board(rectangleRow2, column).hasCandidate(candidate))
   yield row -> column
 

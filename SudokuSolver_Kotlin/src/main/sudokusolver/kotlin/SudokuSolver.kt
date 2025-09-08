@@ -155,7 +155,7 @@ fun solve(input: Board<SudokuNumber?>): SolveResult {
 }
 
 private fun performNextSolution(board: Board<Cell>): List<BoardModification> =
-    //Start of simple solutions.
+    // Start of simple solutions.
     pruneCandidates(board)
         .ifEmpty { nakedSingles(board) }
         .ifEmpty { hiddenSingles(board) }
@@ -167,14 +167,14 @@ private fun performNextSolution(board: Board<Cell>): List<BoardModification> =
         .ifEmpty { hiddenQuads(board) }
         .ifEmpty { pointingPairsPointingTriples(board) }
         .ifEmpty { boxLineReduction(board) }
-        //Start of tough solutions.
+        // Start of tough solutions.
         .ifEmpty { xWing(board) }
         .ifEmpty { simpleColoringRule2(board) }
         .ifEmpty { simpleColoringRule4(board) }
         .ifEmpty { yWing(board) }
         .ifEmpty { swordfish(board) }
         .ifEmpty { xyzWing(board) }
-        //Start of diabolical solutions.
+        // Start of diabolical solutions.
         .ifEmpty { xCyclesRule1(board) }
         .ifEmpty { xCyclesRule2(board) }
         .ifEmpty { xCyclesRule3(board) }
@@ -197,7 +197,7 @@ private fun performNextSolution(board: Board<Cell>): List<BoardModification> =
         .ifEmpty { hiddenUniqueRectangles(board) }
         .ifEmpty { wxyzWing(board) }
         .ifEmpty { alignedPairExclusion(board) }
-        //Start of extreme solutions.
+        // Start of extreme solutions.
         .ifEmpty { groupedXCyclesRule1(board) }
         .ifEmpty { groupedXCyclesRule2(board) }
         .ifEmpty { groupedXCyclesRule3(board) }
