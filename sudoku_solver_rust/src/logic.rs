@@ -1,5 +1,6 @@
 pub mod brute_force;
 pub mod simple;
+pub mod tough;
 
 #[cfg(test)]
 mod assertions {

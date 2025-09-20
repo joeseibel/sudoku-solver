@@ -17,6 +17,7 @@ use logic::{
         naked_pairs, naked_quads, naked_singles, naked_triples, pointing_pairs_pointing_triples,
         prune_candidates,
     },
+    tough::x_wing,
 };
 use sudoku_number::SudokuNumber;
 
@@ -134,6 +135,8 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         hidden_quads::hidden_quads,
         pointing_pairs_pointing_triples::pointing_pairs_pointing_triples,
         box_line_reduction::box_line_reduction,
+        // Start of tough solutions.
+        x_wing::x_wing,
     ];
     solutions
         .iter()

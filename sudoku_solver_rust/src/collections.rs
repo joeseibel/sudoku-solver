@@ -1,3 +1,19 @@
+pub trait IteratorZipExtOwned<T> {
+    fn zip_every_pair(self) -> impl Iterator<Item = (T, T)>;
+}
+
+impl<T: Clone, I: Iterator<Item = T> + Clone> IteratorZipExtOwned<T> for I {
+    fn zip_every_pair(self) -> impl Iterator<Item = (T, T)> {
+        self.clone()
+            .enumerate()
+            .flat_map(move |(first_index, first)| {
+                self.clone()
+                    .skip(first_index + 1)
+                    .map(move |second| (first.clone(), second))
+            })
+    }
+}
+
 pub trait IteratorZipExt<'a, T: 'a> {
     fn zip_every_pair(self) -> impl Iterator<Item = (&'a T, &'a T)>;
     fn zip_every_triple(self) -> impl Iterator<Item = (&'a T, &'a T, &'a T)>;
