@@ -2,7 +2,7 @@ use crate::{
     board::Board,
     board_modification::{BoardModification, IteratorRemoveCandidatesExt},
     cell::{Cell, IteratorCellExt},
-    collections::IteratorZipExt,
+    collections::IteratorZipExtRef,
 };
 
 // http://www.sudokuwiki.org/Naked_Candidates#NP

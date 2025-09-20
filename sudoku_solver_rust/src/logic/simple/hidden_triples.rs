@@ -2,7 +2,7 @@ use crate::{
     board::Board,
     board_modification::{BoardModification, IteratorRemoveCandidatesExt},
     cell::{Cell, IteratorCellExt},
-    collections::IteratorZipExt,
+    collections::IteratorZipExtRef,
     sudoku_number::SudokuNumber,
 };
 use std::collections::BTreeSet;

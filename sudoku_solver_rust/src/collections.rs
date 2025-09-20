@@ -14,13 +14,13 @@ impl<T: Clone, I: Iterator<Item = T> + Clone> IteratorZipExtOwned<T> for I {
     }
 }
 
-pub trait IteratorZipExt<'a, T: 'a> {
+pub trait IteratorZipExtRef<'a, T: 'a> {
     fn zip_every_pair(self) -> impl Iterator<Item = (&'a T, &'a T)>;
     fn zip_every_triple(self) -> impl Iterator<Item = (&'a T, &'a T, &'a T)>;
     fn zip_every_quad(self) -> impl Iterator<Item = (&'a T, &'a T, &'a T, &'a T)>;
 }
 
-impl<'a, T: 'a, I: Iterator<Item = &'a T> + Clone> IteratorZipExt<'a, T> for I {
+impl<'a, T: 'a, I: Iterator<Item = &'a T> + Clone> IteratorZipExtRef<'a, T> for I {
     fn zip_every_pair(self) -> impl Iterator<Item = (&'a T, &'a T)> {
         self.clone()
             .enumerate()
