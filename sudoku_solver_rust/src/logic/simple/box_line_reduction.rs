@@ -89,7 +89,7 @@ mod tests {
             remove_candidates!(1, 8, 4),
             remove_candidates!(2, 8, 4),
         ];
-        assertions::assert_logical_solution(&expected, board, box_line_reduction)
+        assertions::assert_logical_solution(&expected, board, box_line_reduction);
     }
 
     #[test]
@@ -119,6 +119,6 @@ mod tests {
             remove_candidates!(8, 2, 1, 3),
             remove_candidates!(8, 4, 7),
         ];
-        assertions::assert_logical_solution(&expected, board, box_line_reduction)
+        assertions::assert_logical_solution(&expected, board, box_line_reduction);
     }
 }
