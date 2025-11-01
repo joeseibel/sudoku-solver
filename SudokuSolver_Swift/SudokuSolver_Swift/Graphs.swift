@@ -278,17 +278,24 @@ extension UnweightedUniqueElementsGraph {
             if subgraphs.allSatisfy({ !$0.contains(startVertex) }) {
                 let subgraph = UnweightedUniqueElementsGraph<V>()
                 _ = subgraph.addVertex(startVertex)
-                _ = bfs(fromIndex: startIndex, goalTest: { _ in false }, visitOrder: { $0 }) { edge in
+                _ = traverseBfs(fromIndex: startIndex, goalTest: { _ in false }, visitOrder: { $0 }) { edge in
                     let u = vertexAtIndex(edge.u)
                     let v = vertexAtIndex(edge.v)
                     let uIndex = subgraph.indexOfVertex(u)!
-                    let vIndex = subgraph.addVertex(v)
-                    subgraph.addEdge(fromIndex: uIndex, toIndex: vIndex)
-                    return true
+                    if let vIndex = subgraph.indexOfVertex(v) {
+                        subgraph.addEdge(fromIndex: uIndex, toIndex: vIndex)
+                        return false
+                    } else {
+                        let vIndex = subgraph.addVertex(v)
+                        subgraph.addEdge(fromIndex: uIndex, toIndex: vIndex)
+                        return true
+                    }
                 }
                 subgraphs.append(subgraph)
             }
         }
+        precondition(vertexCount == subgraphs.map(\.vertexCount).reduce(0, +))
+        precondition(edgeCount == subgraphs.map(\.edgeCount).reduce(0, +))
         return subgraphs
     }
 }
