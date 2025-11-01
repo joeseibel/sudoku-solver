@@ -146,6 +146,14 @@ impl UnsolvedCell {
     pub fn remove_candidate(&mut self, candidate: &SudokuNumber) {
         self.candidates.remove(candidate);
     }
+
+    pub fn is_in_same_unit(&self, other: &UnsolvedCell) -> bool {
+        self.row == other.row || self.column == other.column || self.block == other.block
+    }
+
+    pub fn vertex_label(&self) -> String {
+        format!("[{},{}]", self.row, self.column)
+    }
 }
 
 impl Location for UnsolvedCell {
