@@ -7,17 +7,15 @@ use crate::{
 };
 use strum::IntoEnumIterator;
 
-/*
- * http://www.sudokuwiki.org/X_Wing_Strategy
- *
- * For a pair of rows, if a candidate appears in only two columns of both rows and the columns are the same, forming a
- * rectangle, then the candidate must be placed in opposite corners of the rectangle. The candidate can be removed from
- * cells which are in the two columns, but different rows.
- *
- * For a pair of columns, if a candidate appears in only two rows of both columns and the rows are the same, forming a
- * rectangle, then the candidate must be placed in opposite corners of the rectangle. The candidate can be removed from
- * cells which are in the two rows, but different columns.
- */
+// http://www.sudokuwiki.org/X_Wing_Strategy
+//
+// For a pair of rows, if a candidate appears in only two columns of both rows and the columns are the same, forming a
+// rectangle, then the candidate must be placed in opposite corners of the rectangle. The candidate can be removed from
+// cells which are in the two columns, but different rows.
+//
+// For a pair of columns, if a candidate appears in only two rows of both columns and the rows are the same, forming a
+// rectangle, then the candidate must be placed in opposite corners of the rectangle. The candidate can be removed from
+// cells which are in the two rows, but different columns.
 pub fn x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter().flat_map(|candidate| {
 
