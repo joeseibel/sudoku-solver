@@ -205,7 +205,6 @@ fn connected_components<'a>(
                 });
             subgraph
         });
-
     let mut node_count = 0;
     let mut edge_count = 0;
     for subgraph in components.clone() {
@@ -214,7 +213,6 @@ fn connected_components<'a>(
     }
     assert_eq!(graph.node_count(), node_count);
     assert_eq!(graph.edge_count(), edge_count);
-
     components
 }
 
