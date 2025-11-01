@@ -160,8 +160,6 @@ fn color_to_lists(graph: &UnGraph<&UnsolvedCell, ()>) -> (Vec<NodeIndex>, Vec<No
     (color_one, color_two)
 }
 
-// TODO: Consider adding comments to explain the steps that this does. Also, why I need to collect to a Vec in the
-//       midst of the functional flow?
 fn connected_components<'a>(
     graph: &UnGraph<&'a UnsolvedCell, ()>,
 ) -> impl Iterator<Item = UnGraph<&'a UnsolvedCell, ()>> {
