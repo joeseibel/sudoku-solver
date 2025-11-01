@@ -259,7 +259,7 @@ fn parse_cells_with_candidates(chars: &[char]) -> Result<Board<Cell>, String> {
                     .map(|position| position + index)
                     .ok_or("Unmatched '{'.")?;
                 if closing_brace == index {
-                    return Err("Empty \"{}\".".into());
+                    return Err(r#"Empty "{}"."#.into());
                 }
                 let chars_in_braces = &chars[index..closing_brace];
                 if chars_in_braces.contains(&'{') {
@@ -368,7 +368,7 @@ mod tests {
 
     #[test]
     fn test_parse_cells_with_candidates_empty_braces() {
-        assert_eq!("Empty \"{}\".", "{}".parse::<Board<Cell>>().unwrap_err());
+        assert_eq!(r#"Empty "{}"."#, "{}".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
