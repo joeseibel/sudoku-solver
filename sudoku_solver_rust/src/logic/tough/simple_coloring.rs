@@ -129,34 +129,32 @@ impl VertexColor {
 
 fn color_to_map(graph: &UnGraph<&UnsolvedCell, ()>) -> HashMap<NodeIndex, VertexColor> {
     let mut colors = HashMap::new();
-    let start_node = graph.node_indices().next();
-    if let Some(start_node) = start_node {
+    if let start_node_option @ Some(start_node) = graph.node_indices().next() {
         colors.insert(start_node, VertexColor::ColorOne);
+        visit::depth_first_search(graph, start_node_option, |event| {
+            if let DfsEvent::TreeEdge(a, b) = event {
+                colors.insert(b, colors[&a].opposite());
+            }
+        });
     }
-    visit::depth_first_search(graph, start_node, |event| {
-        if let DfsEvent::TreeEdge(a, b) = event {
-            colors.insert(b, colors[&a].opposite());
-        }
-    });
     colors
 }
 
 fn color_to_lists(graph: &UnGraph<&UnsolvedCell, ()>) -> (Vec<NodeIndex>, Vec<NodeIndex>) {
     let mut color_one = Vec::new();
     let mut color_two = Vec::new();
-    let start_node = graph.node_indices().next();
-    if let Some(start_node) = start_node {
+    if let start_node_option @ Some(start_node) = graph.node_indices().next() {
         color_one.push(start_node);
-    }
-    visit::depth_first_search(graph, start_node, |event| {
-        if let DfsEvent::TreeEdge(a, b) = event {
-            if color_one.contains(&a) {
-                color_two.push(b);
-            } else {
-                color_one.push(b);
+        visit::depth_first_search(graph, start_node_option, |event| {
+            if let DfsEvent::TreeEdge(a, b) = event {
+                if color_one.contains(&a) {
+                    color_two.push(b);
+                } else {
+                    color_one.push(b);
+                }
             }
-        }
-    });
+        });
+    }
     (color_one, color_two)
 }
 
