@@ -6,10 +6,9 @@ use crate::{
     sudoku_number::SudokuNumber,
 };
 use petgraph::{
-    Graph,
     algo::scc::tarjan_scc,
     dot::{Config, Dot},
-    graph::{NodeIndex, UnGraph},
+    prelude::{GraphMap, UnGraphMap},
     visit::{self, DfsEvent},
 };
 use std::collections::HashMap;
@@ -29,23 +28,24 @@ use strum::IntoEnumIterator;
 pub fn simple_coloring_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
-            create_connected_components(board, candidate).flat_map(move |graph| {
-                let colors = color_to_map(&graph);
-                graph
-                    .node_indices()
-                    .zip_every_pair()
-                    .find(|&(a, b)| colors[&a] == colors[&b] && graph[a].is_in_same_unit(graph[b]))
-                    .map(|(a, _)| colors[&a])
-                    .into_iter()
-                    .flat_map(move |color_to_remove| {
-                        graph
-                            .node_indices()
-                            .filter(|node_index| colors[node_index] == color_to_remove)
-                            .map(|node_index| (graph[node_index], candidate))
-                            .collect::<Vec<_>>()
-                            .into_iter()
-                    })
-            })
+            create_connected_components(board, candidate)
+                .flat_map(move |graph| {
+                    let colors = color_to_map(&graph);
+                    graph
+                        .nodes()
+                        .zip_every_pair()
+                        .find(|(a, b)| colors[a] == colors[b] && a.is_in_same_unit(b))
+                        .map(|(a, _)| colors[a])
+                        .map(|color_to_remove| {
+                            graph
+                                .nodes()
+                                .filter(|node| colors[node] == color_to_remove)
+                                .map(|node| (node, candidate))
+                                .collect::<Vec<_>>()
+                                .into_iter()
+                        })
+                })
+                .flatten()
         })
         .merge_to_remove_candidates()
 }
@@ -65,13 +65,9 @@ pub fn simple_coloring_rule_4(board: &Board<Cell>) -> Vec<BoardModification> {
                     .unsolved_cells()
                     .filter(move |cell| {
                         cell.candidates().contains(&candidate)
-                            && graph.node_weights().all(|weight| weight != cell)
-                            && color_one
-                                .iter()
-                                .any(|&color| cell.is_in_same_unit(graph[color]))
-                            && color_two
-                                .iter()
-                                .any(|&color| cell.is_in_same_unit(graph[color]))
+                            && !graph.contains_node(cell)
+                            && color_one.iter().any(|color| cell.is_in_same_unit(color))
+                            && color_two.iter().any(|color| cell.is_in_same_unit(color))
                     })
                     .map(move |cell| (cell, candidate))
             })
@@ -80,12 +76,12 @@ pub fn simple_coloring_rule_4(board: &Board<Cell>) -> Vec<BoardModification> {
 }
 
 #[allow(dead_code)]
-fn to_dot(graph: &UnGraph<&UnsolvedCell, ()>) -> String {
+fn to_dot(graph: &UnGraphMap<&UnsolvedCell, ()>) -> String {
     let dot = Dot::with_attr_getters(
         graph,
         &[Config::EdgeNoLabel, Config::NodeNoLabel],
         &|_, _| String::new(),
-        &|_, (_, cell)| format!(r#"label = "{}""#, cell.vertex_label()),
+        &|_, (cell, _)| format!(r#"label = "{}""#, cell.vertex_label()),
     );
     format!("{dot:?}")
 }
@@ -93,22 +89,17 @@ fn to_dot(graph: &UnGraph<&UnsolvedCell, ()>) -> String {
 fn create_connected_components(
     board: &Board<Cell>,
     candidate: SudokuNumber,
-) -> impl Iterator<Item = UnGraph<&UnsolvedCell, ()>> {
-    let mut graph = Graph::new_undirected();
-    let mut nodes = HashMap::new();
-    for unit in board.units() {
-        let with_candidate: Vec<_> = unit
-            .unsolved_cells()
-            .filter(|cell| cell.candidates().contains(&candidate))
-            .collect();
-        if with_candidate.len() == 2 {
-            let a = with_candidate[0];
-            let b = with_candidate[1];
-            let a_index = *nodes.entry(a).or_insert_with(|| graph.add_node(a));
-            let b_index = *nodes.entry(b).or_insert_with(|| graph.add_node(b));
-            graph.update_edge(a_index, b_index, ());
-        }
-    }
+) -> impl Iterator<Item = UnGraphMap<&UnsolvedCell, ()>> {
+    let edges = board
+        .units()
+        .map(|unit| {
+            unit.unsolved_cells()
+                .filter(|cell| cell.candidates().contains(&candidate))
+                .collect::<Vec<_>>()
+        })
+        .filter(|with_candidate| with_candidate.len() == 2)
+        .map(|with_candidate| (with_candidate[0], with_candidate[1]));
+    let graph = GraphMap::from_edges(edges);
     connected_components(&graph).collect::<Vec<_>>().into_iter()
 }
 
@@ -127,23 +118,27 @@ impl VertexColor {
     }
 }
 
-fn color_to_map(graph: &UnGraph<&UnsolvedCell, ()>) -> HashMap<NodeIndex, VertexColor> {
+fn color_to_map<'a>(
+    graph: &UnGraphMap<&'a UnsolvedCell, ()>,
+) -> HashMap<&'a UnsolvedCell, VertexColor> {
     let mut colors = HashMap::new();
-    if let start_node_option @ Some(start_node) = graph.node_indices().next() {
+    if let start_node_option @ Some(start_node) = graph.nodes().next() {
         colors.insert(start_node, VertexColor::ColorOne);
         visit::depth_first_search(graph, start_node_option, |event| {
             if let DfsEvent::TreeEdge(a, b) = event {
-                colors.insert(b, colors[&a].opposite());
+                colors.insert(b, colors[a].opposite());
             }
-        });
+        })
     }
     colors
 }
 
-fn color_to_lists(graph: &UnGraph<&UnsolvedCell, ()>) -> (Vec<NodeIndex>, Vec<NodeIndex>) {
+fn color_to_lists<'a>(
+    graph: &UnGraphMap<&'a UnsolvedCell, ()>,
+) -> (Vec<&'a UnsolvedCell>, Vec<&'a UnsolvedCell>) {
     let mut color_one = Vec::new();
     let mut color_two = Vec::new();
-    if let start_node_option @ Some(start_node) = graph.node_indices().next() {
+    if let start_node_option @ Some(start_node) = graph.nodes().next() {
         color_one.push(start_node);
         visit::depth_first_search(graph, start_node_option, |event| {
             if let DfsEvent::TreeEdge(a, b) = event {
@@ -159,47 +154,18 @@ fn color_to_lists(graph: &UnGraph<&UnsolvedCell, ()>) -> (Vec<NodeIndex>, Vec<No
 }
 
 fn connected_components<'a>(
-    graph: &UnGraph<&'a UnsolvedCell, ()>,
-) -> impl Iterator<Item = UnGraph<&'a UnsolvedCell, ()>> {
-    // The transformation here is a little tricky. tarjan_scc returns a Vec<Vec<NodeIndex>> in which each inner Vec
-    // represents the nodes of a subgraph, but not as an actual Graph object. Each Vec<NodeIndex> is transformed into an
-    // Ungraph<&UnsolvedCell, ()> according to the following steps:
-    //
-    // 1. For each NodeIndex, which is an index into the original graph, get that node's weight from the graph which is
-    //    returned as a &UnsolvedCell.
-    // 2. For each node weight as a &UnsolvedCell, add that as a node to the subgraph and get the subgraph's index for
-    //    that node. Make sure that the graph's index and the subgraph's index are tracked together. The code below uses
-    //    a tuple of (graph's index, subgraph's index) for this tracking.
-    // 3. For each pair of nodes in the subgraph, check if an edge exists between those pairs in the original graph (the
-    //    graph's node indices are needed for this). If an edge does exist, then add a new edge between the pair to the
-    //    subgraph (the subgraph's node indices are needed for this).
+    graph: &UnGraphMap<&'a UnsolvedCell, ()>,
+) -> impl Iterator<Item = UnGraphMap<&'a UnsolvedCell, ()>> {
     let components = tarjan_scc::tarjan_scc(graph)
         .into_iter()
         .map(|graph_nodes| {
-            let mut subgraph = Graph::new_undirected();
+            let mut subgraph = GraphMap::new();
             graph_nodes
                 .iter()
-                .map(|&graph_node| (graph_node, subgraph.add_node(graph[graph_node])))
-                // Collecting into a Vec is required because subgraph is mutated in the previous call to map. This can
-                // be a little tricky to understand. In order to call zip_every_pair(), the Iterator must implement
-                // Clone. This means that the closure passed to the previous call to map must also be Clonable. If you
-                // look at the above closure, it grabs a mutable reference to subgraph by calling
-                // subgraph.add_node(). Cloning the closure would require cloning, not the subgraph, but the mutable
-                // reference to the subgraph. This would violate one of Rust's fundamental principles in that there can
-                // only be one mutable reference borrowed from a value at a time. It took me a little bit to understand
-                // all of this from the compiler's error message.
-                //
-                // The solution to all of this was to collect the results of the map into a Vec and then iterator over
-                // that Vec. By collecting at this point, the map is eagerly evaluated, thus removing the need to clone
-                // the closure passed to map.
-                .collect::<Vec<_>>()
-                .iter()
                 .zip_every_pair()
-                .filter(|&(&(graph_node_a, _), &(graph_node_b, _))| {
-                    graph.contains_edge(graph_node_a, graph_node_b)
-                })
-                .for_each(|(&(_, subgraph_node_a), &(_, subgraph_node_b))| {
-                    subgraph.add_edge(subgraph_node_a, subgraph_node_b, ());
+                .filter(|(a, b)| graph.contains_edge(a, b))
+                .for_each(|(&a, &b)| {
+                    subgraph.add_edge(a, b, ());
                 });
             subgraph
         });
@@ -219,10 +185,10 @@ mod tests {
     use super::*;
     use crate::{logic::assertions, remove_candidates};
     use indoc::indoc;
+    use std::iter;
 
     #[test]
     fn test_to_dot() {
-        let mut graph = Graph::new_undirected();
         let cells = [
             UnsolvedCell::with_all_candidates(0, 0),
             UnsolvedCell::with_all_candidates(0, 3),
@@ -230,9 +196,7 @@ mod tests {
         let cells: Vec<_> = cells.iter().unsolved_cells().collect();
         let a = cells[0];
         let b = cells[1];
-        let a_index = graph.add_node(a);
-        let b_index = graph.add_node(b);
-        graph.add_edge(a_index, b_index, ());
+        let graph = GraphMap::from_edges(iter::once((a, b)));
         let actual = to_dot(&graph);
         let expected = indoc! {r#"
             graph {

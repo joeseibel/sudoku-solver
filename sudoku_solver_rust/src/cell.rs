@@ -94,7 +94,7 @@ impl Display for SolvedCell {
     }
 }
 
-#[derive(Debug, Eq, Hash, PartialEq)]
+#[derive(Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct UnsolvedCell {
     row: usize,
     column: usize,
