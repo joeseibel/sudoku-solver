@@ -111,7 +111,7 @@ extension Board: CustomStringConvertible {
                          * warning's message, I don't want to require that Element conform to Sendable just because that
                          * should not be needed in a single-threaded program.
                          */
-                        row[fromIndex..<toIndex].map { cell in String(describing: cell) }.joined(separator: " ")
+                        row[fromIndex..<toIndex].map { String(describing: $0) }.joined(separator: " ")
                     }
                     
                     let first = joinCells(fromIndex: 0, toIndex: unitSizeSquareRoot)
