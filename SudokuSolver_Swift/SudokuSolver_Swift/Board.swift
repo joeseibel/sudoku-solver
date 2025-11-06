@@ -86,7 +86,32 @@ extension Board: CustomStringConvertible {
             rows[fromIndex..<toIndex]
                 .map { row in
                     func joinCells(fromIndex: Int, toIndex: Int) -> String {
-                        row[fromIndex..<toIndex].map(String.init(describing:)).joined(separator: " ")
+                        /*
+                         * Something strange is happening here that I don't really understand. Originally, joinCells
+                         * returned this expression:
+                         *
+                         *   row[fromIndex..<toIndex].map(String.init(describing:)).joined(separator: " ")
+                         *
+                         * This became a problem after an update of Xcode which resulted in a warning with the message,
+                         * "Capture of non-Sendable type 'Element.Type' in an isolated closure". I don't really
+                         * understand why this warning is showing up here, but I have found two solutions to the
+                         * warning:
+                         *
+                         * 1. Require that Element conform to Sendable.
+                         * 2. Express the argument passed to map as a full closure instead of a reference to
+                         *    String.init(describing:).
+                         *
+                         * The fact that #2 is a possible solution really confuses me because this is only a syntax
+                         * change and doesn't impact the symantics of the call to map. I suspect that the warning may be
+                         * a false positive, because this entire solver is single threaded and nothing is crossing a
+                         * thread boundary here. It would be good for me to better understand Swift concurrency so that
+                         * I can truly see if this is indeed a false positive.
+                         *
+                         * For now, I have opted for solution #2. While solution #1 is a more direct response to the
+                         * warning's message, I don't want to require that Element conform to Sendable just because that
+                         * should not be needed in a single-threaded program.
+                         */
+                        row[fromIndex..<toIndex].map { cell in String(describing: cell) }.joined(separator: " ")
                     }
                     
                     let first = joinCells(fromIndex: 0, toIndex: unitSizeSquareRoot)
