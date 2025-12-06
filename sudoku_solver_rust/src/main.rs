@@ -17,7 +17,7 @@ use logic::{
         naked_pairs, naked_quads, naked_singles, naked_triples, pointing_pairs_pointing_triples,
         prune_candidates,
     },
-    tough::{simple_coloring, x_wing},
+    tough::{simple_coloring, x_wing, y_wing},
 };
 use sudoku_number::SudokuNumber;
 
@@ -139,6 +139,7 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         x_wing::x_wing,
         simple_coloring::simple_coloring_rule_2,
         simple_coloring::simple_coloring_rule_4,
+        y_wing::y_wing,
     ];
     solutions
         .iter()
