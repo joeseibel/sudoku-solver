@@ -7,6 +7,12 @@ use crate::{
 };
 use std::collections::BTreeSet;
 
+// http://www.sudokuwiki.org/Y_Wing_Strategy
+//
+// Given a hinge cell and two wing cells such that the hinge can see both wings, all three cells each have two
+// candidates, there are three total candidates across the three cells, the hinge shares one candidate with one wing and
+// one candidate with the other wing, and the wing cells share a candidate among each other, then this third candidate
+// must be the solution to one of the wings. The third candidate can be removed from any cell which can see both wings.
 pub fn y_wing(board: &Board<Cell>) -> Vec<BoardModification> {
     fn try_hinge<'a>(
         board: &'a Board<Cell>,
