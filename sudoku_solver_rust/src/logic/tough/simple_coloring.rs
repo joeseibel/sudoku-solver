@@ -232,7 +232,7 @@ mod tests {
             remove_candidates!(7, 4, 5),
             remove_candidates!(8, 8, 5),
         ];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_2)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_2);
     }
 
     #[test]
@@ -258,7 +258,7 @@ mod tests {
             remove_candidates!(7, 4, 7),
             remove_candidates!(8, 1, 7),
         ];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_2)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_2);
     }
 
     #[test]
@@ -281,7 +281,7 @@ mod tests {
             remove_candidates!(4, 1, 9),
             remove_candidates!(5, 3, 9),
         ];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_2)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_2);
     }
 
     #[test]
@@ -302,7 +302,7 @@ mod tests {
             remove_candidates!(8, 4, 5),
             remove_candidates!(8, 7, 5),
         ];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_2)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_2);
     }
 
     #[test]
@@ -319,7 +319,7 @@ mod tests {
             2{15}863{14}97{45}\
         ";
         let expected = [remove_candidates!(4, 0, 5), remove_candidates!(4, 2, 5)];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4);
     }
 
     #[test]
@@ -336,7 +336,7 @@ mod tests {
             6{37}19{357}{357}482\
         ";
         let expected = [remove_candidates!(1, 4, 3), remove_candidates!(1, 8, 8)];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4);
     }
 
     #[test]
@@ -357,7 +357,7 @@ mod tests {
             remove_candidates!(4, 0, 7),
             remove_candidates!(8, 3, 7),
         ];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4);
     }
 
     #[test]
@@ -374,7 +374,7 @@ mod tests {
             5{4678}{78}193{246}{2467}{24}\
         ";
         let expected = [remove_candidates!(1, 7, 2, 4)];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4);
     }
 
     #[test]
@@ -391,7 +391,7 @@ mod tests {
             178{46}29{456}3{456}\
         ";
         let expected = [remove_candidates!(1, 7, 6)];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4);
     }
 
     #[test]
@@ -412,6 +412,6 @@ mod tests {
             remove_candidates!(2, 7, 8),
             remove_candidates!(4, 8, 7),
         ];
-        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4)
+        assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4);
     }
 }

@@ -106,7 +106,7 @@ mod tests {
             8{16}{13}{3467}{347}{3467}529\
         ";
         let expected = [remove_candidates!(7, 1, 9), remove_candidates!(7, 3, 6)];
-        assertions::assert_logical_solution(&expected, board, y_wing)
+        assertions::assert_logical_solution(&expected, board, y_wing);
     }
 
     #[test]
@@ -123,7 +123,7 @@ mod tests {
             1374{59}6{589}{589}2\
         ";
         let expected = [remove_candidates!(0, 4, 9), remove_candidates!(1, 7, 9)];
-        assertions::assert_logical_solution(&expected, board, y_wing)
+        assertions::assert_logical_solution(&expected, board, y_wing);
     }
 
     #[test]
@@ -146,6 +146,6 @@ mod tests {
             remove_candidates!(7, 6, 6),
             remove_candidates!(7, 7, 7),
         ];
-        assertions::assert_logical_solution(&expected, board, y_wing)
+        assertions::assert_logical_solution(&expected, board, y_wing);
     }
 }
