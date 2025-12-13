@@ -117,7 +117,7 @@ extension WeightedEdge<Strength>: @retroactive Hashable {
 
 extension Graph where Index == Int, E: WeightedEdgeProtocol, E.Weight == Strength {
     /*
-     * Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The returned graph
+     * Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The modified graph
      * will either be empty or only contain vertices with a degree of two or more and be connected by at least one
      * strong link and one weak link.
      */
