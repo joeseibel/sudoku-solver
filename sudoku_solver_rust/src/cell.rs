@@ -105,9 +105,7 @@ pub struct UnsolvedCell {
 impl UnsolvedCell {
     pub fn from_indices(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> Cell {
         board::validate_row_and_column(row, column);
-        if candidates.is_empty() {
-            panic!("candidates must not be empty.");
-        }
+        assert!(!candidates.is_empty(), "candidates must not be empty.");
         Cell::UnsolvedCell(Self {
             row,
             column,

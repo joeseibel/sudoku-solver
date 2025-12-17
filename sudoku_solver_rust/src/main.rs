@@ -99,22 +99,23 @@ fn solve(input: Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, Solv
             match modification {
                 BoardModification::RemoveCandidates(modification) => {
                     for &candidate in modification.candidates() {
-                        if candidate == known_solution {
-                            panic!("Cannot remove candidate {candidate} from [{row}, {column}]");
-                        }
-                        if !cell.candidates().contains(&candidate) {
-                            panic!("{candidate} is not a candidate of [{row}, {column}]");
-                        }
+                        assert!(
+                            candidate != known_solution,
+                            "Cannot remove candidate {candidate} from [{row}, {column}]"
+                        );
+                        assert!(
+                            cell.candidates().contains(&candidate),
+                            "{candidate} is not a candidate of [{row}, {column}]"
+                        );
                         cell.remove_candidate(&candidate);
                     }
                 }
                 BoardModification::SetValue(modification) => {
                     let value = modification.value();
-                    if value != known_solution {
-                        panic!(
-                            "Cannot set value {value} to [{row}, {column}]. Solution is {known_solution}"
-                        );
-                    }
+                    assert!(
+                        value == known_solution,
+                        "Cannot set value {value} to [{row}, {column}]. Solution is {known_solution}"
+                    );
                     board[(row, column)] = SolvedCell::from_indices(row, column, value);
                 }
             }

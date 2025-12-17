@@ -61,13 +61,12 @@ impl RemoveCandidates {
     pub fn from_cell(cell: &UnsolvedCell, candidates: BTreeSet<SudokuNumber>) -> BoardModification {
         RemoveCandidates::validate_candidates(&candidates);
         for candidate in &candidates {
-            if !cell.candidates().contains(candidate) {
-                panic!(
-                    "{candidate} is not a candidate for [{}, {}].",
-                    cell.row(),
-                    cell.column()
-                );
-            }
+            assert!(
+                cell.candidates().contains(candidate),
+                "{candidate} is not a candidate for [{}, {}].",
+                cell.row(),
+                cell.column()
+            );
         }
         BoardModification::RemoveCandidates(Self {
             row: cell.row(),
@@ -81,9 +80,7 @@ impl RemoveCandidates {
     }
 
     fn validate_candidates(candidates: &BTreeSet<SudokuNumber>) {
-        if candidates.is_empty() {
-            panic!("candidates must not be empty.");
-        }
+        assert!(!candidates.is_empty(), "candidates must not be empty.");
     }
 }
 
@@ -96,13 +93,12 @@ pub struct SetValue {
 
 impl SetValue {
     pub fn from_cell(cell: &UnsolvedCell, value: SudokuNumber) -> BoardModification {
-        if !cell.candidates().contains(&value) {
-            panic!(
-                "{value} is not a candidate for [{}, {}].",
-                cell.row(),
-                cell.column()
-            )
-        }
+        assert!(
+            cell.candidates().contains(&value),
+            "{value} is not a candidate for [{}, {}].",
+            cell.row(),
+            cell.column()
+        );
         BoardModification::SetValue(Self {
             row: cell.row(),
             column: cell.column(),

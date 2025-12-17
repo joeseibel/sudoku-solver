@@ -79,12 +79,11 @@ impl<T> Board<T> {
     }
 
     pub fn get_block(&self, block_index: usize) -> impl Iterator<Item = &T> + Clone {
-        if block_index >= UNIT_SIZE {
-            panic!(
-                "block_index is {block_index}, must be between 0 and {}.",
-                UNIT_SIZE - 1
-            );
-        }
+        assert!(
+            block_index < UNIT_SIZE,
+            "block_index is {block_index}, must be between 0 and {}.",
+            UNIT_SIZE - 1
+        );
         let row_index = block_index / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
         let column_index = block_index % UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
         self.rows
@@ -160,15 +159,16 @@ pub fn get_block_index(row_index: usize, column_index: usize) -> usize {
 }
 
 pub fn validate_row_and_column(row: usize, column: usize) {
-    if row >= UNIT_SIZE {
-        panic!("row is {row}, must be between 0 and {}.", UNIT_SIZE - 1);
-    }
-    if column >= UNIT_SIZE {
-        panic!(
-            "column is {column}, must be between 0 and {}.",
-            UNIT_SIZE - 1
-        );
-    }
+    assert!(
+        row < UNIT_SIZE,
+        "row is {row}, must be between 0 and {}.",
+        UNIT_SIZE - 1
+    );
+    assert!(
+        column < UNIT_SIZE,
+        "column is {column}, must be between 0 and {}.",
+        UNIT_SIZE - 1
+    );
 }
 
 #[cfg(test)]
