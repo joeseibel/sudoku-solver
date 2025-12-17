@@ -109,7 +109,7 @@ enum VertexColor {
 }
 
 impl VertexColor {
-    fn opposite(&self) -> VertexColor {
+    fn opposite(&self) -> Self {
         match self {
             Self::ColorOne => Self::ColorTwo,
             Self::ColorTwo => Self::ColorOne,
