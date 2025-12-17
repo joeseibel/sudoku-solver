@@ -158,15 +158,12 @@ fn connected_components<'a>(
     let components = tarjan_scc::tarjan_scc(graph)
         .into_iter()
         .map(|graph_vertices| {
-            let mut subgraph = GraphMap::new();
-            graph_vertices
+            let edges = graph_vertices
                 .iter()
                 .zip_every_pair()
                 .filter(|(a, b)| graph.contains_edge(a, b))
-                .for_each(|(&a, &b)| {
-                    subgraph.add_edge(a, b, ());
-                });
-            subgraph
+                .map(|(&a, &b)| (a, b));
+            GraphMap::from_edges(edges)
         });
     let mut vertex_count = 0;
     let mut edge_count = 0;
