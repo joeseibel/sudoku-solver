@@ -42,7 +42,6 @@ pub fn simple_coloring_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
                                 .filter(|cell| colors[cell] == color_to_remove)
                                 .map(|cell| (cell, candidate))
                                 .collect::<Vec<_>>()
-                                .into_iter()
                         })
                 })
                 .flatten()

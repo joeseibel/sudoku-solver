@@ -53,8 +53,7 @@ pub fn x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                             cell.candidates().contains(&candidate) && !unit_a.contains(cell) && !unit_b.contains(cell)
                         })
                         .map(|cell| (cell, candidate))
-                        .collect::<Vec<_>>()
-                        .into_iter();
+                        .collect::<Vec<_>>();
                     Some(removals)
                 } else {
                     None

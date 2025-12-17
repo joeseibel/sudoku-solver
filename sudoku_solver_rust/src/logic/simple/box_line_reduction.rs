@@ -43,8 +43,7 @@ pub fn box_line_reduction(board: &Board<Cell>) -> Vec<BoardModification> {
                                         && cell.candidates().contains(&candidate)
                                 })
                                 .map(|cell| (cell, candidate))
-                                .collect::<Vec<_>>()
-                                .into_iter();
+                                .collect::<Vec<_>>();
                             Some(removals)
                         } else {
                             None

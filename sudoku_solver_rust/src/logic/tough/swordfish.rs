@@ -60,8 +60,7 @@ pub fn swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
                                     cell.candidates().contains(&candidate) && !with_candidate.contains(cell)
                                 })
                                 .map(|cell| (cell, candidate))
-                                .collect::<Vec<_>>()
-                                .into_iter();
+                                .collect::<Vec<_>>();
                             Some(removals)
                         } else {
                             None
