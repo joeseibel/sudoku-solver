@@ -12,6 +12,7 @@ use clap::Parser;
 use indoc::formatdoc;
 use logic::{
     brute_force::{self, BruteForceError},
+    diabolical::x_cycles,
     simple::{
         box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
         naked_pairs, naked_quads, naked_singles, naked_triples, pointing_pairs_pointing_triples,
@@ -142,6 +143,10 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         y_wing::y_wing,
         swordfish::swordfish,
         xyz_wing::xyz_wing,
+        // Start of diabolical solutions.
+        x_cycles::x_cycles_rule_1,
+        x_cycles::x_cycles_rule_2,
+        x_cycles::x_cycles_rule_3,
     ];
     solutions
         .iter()
