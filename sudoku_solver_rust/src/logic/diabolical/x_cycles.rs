@@ -44,7 +44,7 @@ pub fn x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
                         source: &UnsolvedCell,
                         target: &UnsolvedCell,
                         get_unit_index: impl Fn(&UnsolvedCell) -> usize,
-                        get_unit: impl Fn(usize) -> U,
+                        get_unit: impl FnOnce(usize) -> U,
                     ) -> impl Iterator<Item = LocatedCandidate<'a>> {
                         let removals = if get_unit_index(source) == get_unit_index(target) {
                             let removals = get_unit(get_unit_index(source))
