@@ -2,7 +2,7 @@ use crate::{
     board::Board,
     board_modification::{BoardModification, IteratorRemoveCandidatesExt},
     cell::{Cell, IteratorCellExt, LocatedCandidate, Location, UnsolvedCell},
-    collections::IteratorZipExtOwned,
+    collections::IteratorZipExt,
     sudoku_number::SudokuNumber,
 };
 use strum::IntoEnumIterator;
@@ -17,64 +17,73 @@ use strum::IntoEnumIterator;
 // rectangle, then the candidate must be placed in opposite corners of the rectangle. The candidate can be removed from
 // cells which are in the two rows, but different columns.
 pub fn x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
-    SudokuNumber::iter().flat_map(|candidate| {
+    SudokuNumber::iter()
+        .flat_map(|candidate| {
+            fn x_wing<
+                'a,
+                Z: Iterator<Item = &'a Cell> + IteratorCellExt<'a>,
+                U: Iterator<Item = &'a Cell> + Clone,
+            >(
+                candidate: SudokuNumber,
+                units: impl Iterator<Item = impl Iterator<Item = &'a Cell>> + IteratorZipExt<Z>,
+                get_other_unit: impl Fn(usize) -> U,
+                get_other_unit_index: impl Fn(&UnsolvedCell) -> usize,
+            ) -> impl Iterator<Item = LocatedCandidate<'a>> {
+                units
+                    .zip_every_pair()
+                    .flat_map(move |(unit_a, unit_b)| {
+                        let unit_a: Vec<_> = unit_a.unsolved_cells().collect();
+                        let unit_b: Vec<_> = unit_b.unsolved_cells().collect();
+                        let a_with_candidate: Result<[_; 2], _> = unit_a
+                            .iter()
+                            .filter(|cell| cell.candidates().contains(&candidate))
+                            .collect::<Vec<_>>()
+                            .try_into();
+                        let b_with_candidate: Result<[_; 2], _> = unit_b
+                            .iter()
+                            .filter(|cell| cell.candidates().contains(&candidate))
+                            .collect::<Vec<_>>()
+                            .try_into();
+                        if let Ok([first_a, last_a]) = a_with_candidate
+                            && let Ok([first_b, last_b]) = b_with_candidate
+                            && get_other_unit_index(first_a) == get_other_unit_index(first_b)
+                            && get_other_unit_index(last_a) == get_other_unit_index(last_b)
+                        {
+                            let other_unit_a = get_other_unit(get_other_unit_index(first_a));
+                            let other_unit_b = get_other_unit(get_other_unit_index(last_a));
+                            let removals = other_unit_a
+                                .chain(other_unit_b)
+                                .unsolved_cells()
+                                .filter(|cell| {
+                                    cell.candidates().contains(&candidate)
+                                        && !unit_a.contains(cell)
+                                        && !unit_b.contains(cell)
+                                })
+                                .map(|cell| (cell, candidate))
+                                .collect::<Vec<_>>();
+                            Some(removals)
+                        } else {
+                            None
+                        }
+                    })
+                    .flatten()
+            }
 
-        fn x_wing<
-            'a,
-            Z: Iterator<Item = &'a Cell> + IteratorCellExt<'a>,
-            U: Iterator<Item = &'a Cell> + Clone
-        >(
-            candidate: SudokuNumber,
-            units: impl Iterator<Item = impl Iterator<Item = &'a Cell>> + IteratorZipExtOwned<Z>,
-            get_other_unit: impl Fn(usize) -> U,
-            get_other_unit_index: impl Fn(&UnsolvedCell) -> usize
-        ) -> impl Iterator<Item = LocatedCandidate<'a>> {
-            units.zip_every_pair().flat_map(move |(unit_a, unit_b)| {
-                let unit_a: Vec<_> = unit_a.unsolved_cells().collect();
-                let unit_b: Vec<_> = unit_b.unsolved_cells().collect();
-                let a_with_candidate: Result<[_; 2], _> = unit_a.iter()
-                    .filter(|cell| cell.candidates().contains(&candidate))
-                    .collect::<Vec<_>>()
-                    .try_into();
-                let b_with_candidate: Result<[_; 2], _> = unit_b.iter()
-                    .filter(|cell| cell.candidates().contains(&candidate))
-                    .collect::<Vec<_>>()
-                    .try_into();
-                if let Ok([first_a, last_a]) = a_with_candidate &&
-                    let Ok([first_b, last_b]) = b_with_candidate &&
-                    get_other_unit_index(first_a) == get_other_unit_index(first_b) &&
-                    get_other_unit_index(last_a) == get_other_unit_index(last_b)
-                {
-                    let other_unit_a = get_other_unit(get_other_unit_index(first_a));
-                    let other_unit_b = get_other_unit(get_other_unit_index(last_a));
-                    let removals = other_unit_a.chain(other_unit_b)
-                        .unsolved_cells()
-                        .filter(|cell| {
-                            cell.candidates().contains(&candidate) && !unit_a.contains(cell) && !unit_b.contains(cell)
-                        })
-                        .map(|cell| (cell, candidate))
-                        .collect::<Vec<_>>();
-                    Some(removals)
-                } else {
-                    None
-                }
-            }).flatten()
-        }
-
-        let row_removals = x_wing(
-            candidate,
-            board.rows(),
-            |index| board.get_column(index),
-            Location::column
-        );
-        let column_removals = x_wing(
-            candidate,
-            board.columns(),
-            |index| board.get_row(index),
-            Location::row
-        );
-        row_removals.chain(column_removals)
-    }).merge_to_remove_candidates()
+            let row_removals = x_wing(
+                candidate,
+                board.rows(),
+                |index| board.get_column(index),
+                Location::column,
+            );
+            let column_removals = x_wing(
+                candidate,
+                board.columns(),
+                |index| board.get_row(index),
+                Location::row,
+            );
+            row_removals.chain(column_removals)
+        })
+        .merge_to_remove_candidates()
 }
 
 #[cfg(test)]

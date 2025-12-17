@@ -2,7 +2,7 @@ use crate::{
     board::Board,
     board_modification::{BoardModification, IteratorRemoveCandidatesExt},
     cell::{Cell, IteratorCellExt, LocatedCandidate, Location, UnsolvedCell},
-    collections::IteratorZipExtOwned,
+    collections::IteratorZipExt,
     sudoku_number::SudokuNumber,
 };
 use std::collections::HashSet;
@@ -20,55 +20,63 @@ use strum::IntoEnumIterator;
 pub fn swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
-
             fn swordfish<
                 'a,
                 Z: Iterator<Item = &'a Cell> + IteratorCellExt<'a>,
-                U: Iterator<Item = &'a Cell> + Clone
+                U: Iterator<Item = &'a Cell> + Clone,
             >(
                 candidate: SudokuNumber,
-                units: impl Iterator<Item = impl Iterator<Item = &'a Cell>> + IteratorZipExtOwned<Z>,
+                units: impl Iterator<Item = impl Iterator<Item = &'a Cell>> + IteratorZipExt<Z>,
                 get_other_unit: impl Fn(usize) -> U,
-                get_other_unit_index: impl Fn(&UnsolvedCell) -> usize
+                get_other_unit_index: impl Fn(&UnsolvedCell) -> usize,
             ) -> impl Iterator<Item = LocatedCandidate<'a>> {
-                units.zip_every_triple().flat_map(move |(unit_a, unit_b, unit_c)| {
-                    let a_with_candidate: Vec<_> = unit_a.unsolved_cells()
-                        .filter(|cell| cell.candidates().contains(&candidate))
-                        .collect();
-                    let b_with_candidate: Vec<_> = unit_b.unsolved_cells()
-                        .filter(|cell| cell.candidates().contains(&candidate))
-                        .collect();
-                    let c_with_candidate: Vec<_> = unit_c.unsolved_cells()
-                        .filter(|cell| cell.candidates().contains(&candidate))
-                        .collect();
-                    if (2..=3).contains(&a_with_candidate.len())
-                        && (2..=3).contains(&b_with_candidate.len())
-                        && (2..=3).contains(&c_with_candidate.len())
-                    {
-                        let mut with_candidate = Vec::new();
-                        with_candidate.extend(a_with_candidate);
-                        with_candidate.extend(b_with_candidate);
-                        with_candidate.extend(c_with_candidate);
-                        let other_unit_indices: HashSet<_> = with_candidate.iter()
-                            .map(|cell| get_other_unit_index(cell))
+                units
+                    .zip_every_triple()
+                    .flat_map(move |(unit_a, unit_b, unit_c)| {
+                        let a_with_candidate: Vec<_> = unit_a
+                            .unsolved_cells()
+                            .filter(|cell| cell.candidates().contains(&candidate))
                             .collect();
-                        if other_unit_indices.len() == 3 {
-                            let removals = other_unit_indices.iter()
-                                .flat_map(|&index| get_other_unit(index))
-                                .unsolved_cells()
-                                .filter(|cell| {
-                                    cell.candidates().contains(&candidate) && !with_candidate.contains(cell)
-                                })
-                                .map(|cell| (cell, candidate))
-                                .collect::<Vec<_>>();
-                            Some(removals)
+                        let b_with_candidate: Vec<_> = unit_b
+                            .unsolved_cells()
+                            .filter(|cell| cell.candidates().contains(&candidate))
+                            .collect();
+                        let c_with_candidate: Vec<_> = unit_c
+                            .unsolved_cells()
+                            .filter(|cell| cell.candidates().contains(&candidate))
+                            .collect();
+                        if (2..=3).contains(&a_with_candidate.len())
+                            && (2..=3).contains(&b_with_candidate.len())
+                            && (2..=3).contains(&c_with_candidate.len())
+                        {
+                            let mut with_candidate = Vec::new();
+                            with_candidate.extend(a_with_candidate);
+                            with_candidate.extend(b_with_candidate);
+                            with_candidate.extend(c_with_candidate);
+                            let other_unit_indices: HashSet<_> = with_candidate
+                                .iter()
+                                .map(|cell| get_other_unit_index(cell))
+                                .collect();
+                            if other_unit_indices.len() == 3 {
+                                let removals = other_unit_indices
+                                    .iter()
+                                    .flat_map(|&index| get_other_unit(index))
+                                    .unsolved_cells()
+                                    .filter(|cell| {
+                                        cell.candidates().contains(&candidate)
+                                            && !with_candidate.contains(cell)
+                                    })
+                                    .map(|cell| (cell, candidate))
+                                    .collect::<Vec<_>>();
+                                Some(removals)
+                            } else {
+                                None
+                            }
                         } else {
                             None
                         }
-                    } else {
-                        None
-                    }
-                }).flatten()
+                    })
+                    .flatten()
             }
 
             let row_removals = swordfish(

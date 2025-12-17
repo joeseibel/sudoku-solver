@@ -1,6 +1,6 @@
 use crate::board_modification::IteratorRemoveCandidatesExt;
 use crate::cell::IteratorCellExt;
-use crate::collections::IteratorZipExtRef;
+use crate::collections::IteratorZipExt;
 use crate::{
     board::Board, board_modification::BoardModification, cell::Cell, sudoku_number::SudokuNumber,
 };

@@ -2,7 +2,7 @@ use crate::{
     board::Board,
     board_modification::{BoardModification, IteratorRemoveCandidatesExt, SetValue},
     cell::{Cell, IteratorCellExt, LocatedCandidate, Location, UnsolvedCell},
-    collections::IteratorZipExtOwned,
+    collections::IteratorZipExt,
     sudoku_number::SudokuNumber,
 };
 use petgraph::{
