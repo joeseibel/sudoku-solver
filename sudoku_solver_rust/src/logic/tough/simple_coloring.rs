@@ -39,8 +39,8 @@ pub fn simple_coloring_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
                         .map(|color_to_remove| {
                             graph
                                 .nodes()
-                                .filter(|node| colors[node] == color_to_remove)
-                                .map(|node| (node, candidate))
+                                .filter(|cell| colors[cell] == color_to_remove)
+                                .map(|cell| (cell, candidate))
                                 .collect::<Vec<_>>()
                                 .into_iter()
                         })
@@ -122,9 +122,9 @@ fn color_to_map<'a>(
     graph: &UnGraphMap<&'a UnsolvedCell, ()>,
 ) -> HashMap<&'a UnsolvedCell, VertexColor> {
     let mut colors = HashMap::new();
-    if let start_node_option @ Some(start_node) = graph.nodes().next() {
-        colors.insert(start_node, VertexColor::ColorOne);
-        visit::depth_first_search(graph, start_node_option, |event| {
+    if let start_vertex_option @ Some(start_vertex) = graph.nodes().next() {
+        colors.insert(start_vertex, VertexColor::ColorOne);
+        visit::depth_first_search(graph, start_vertex_option, |event| {
             if let DfsEvent::TreeEdge(a, b) = event {
                 colors.insert(b, colors[a].opposite());
             }
@@ -138,9 +138,9 @@ fn color_to_lists<'a>(
 ) -> (Vec<&'a UnsolvedCell>, Vec<&'a UnsolvedCell>) {
     let mut color_one = Vec::new();
     let mut color_two = Vec::new();
-    if let start_node_option @ Some(start_node) = graph.nodes().next() {
-        color_one.push(start_node);
-        visit::depth_first_search(graph, start_node_option, |event| {
+    if let start_vertex_option @ Some(start_vertex) = graph.nodes().next() {
+        color_one.push(start_vertex);
+        visit::depth_first_search(graph, start_vertex_option, |event| {
             if let DfsEvent::TreeEdge(a, b) = event {
                 if color_one.contains(&a) {
                     color_two.push(b);
@@ -158,9 +158,9 @@ fn connected_components<'a>(
 ) -> impl Iterator<Item = UnGraphMap<&'a UnsolvedCell, ()>> {
     let components = tarjan_scc::tarjan_scc(graph)
         .into_iter()
-        .map(|graph_nodes| {
+        .map(|graph_vertices| {
             let mut subgraph = GraphMap::new();
-            graph_nodes
+            graph_vertices
                 .iter()
                 .zip_every_pair()
                 .filter(|(a, b)| graph.contains_edge(a, b))
@@ -169,13 +169,13 @@ fn connected_components<'a>(
                 });
             subgraph
         });
-    let mut node_count = 0;
+    let mut vertex_count = 0;
     let mut edge_count = 0;
     for subgraph in components.clone() {
-        node_count += subgraph.node_count();
+        vertex_count += subgraph.node_count();
         edge_count += subgraph.edge_count();
     }
-    assert_eq!(graph.node_count(), node_count);
+    assert_eq!(graph.node_count(), vertex_count);
     assert_eq!(graph.edge_count(), edge_count);
     components
 }
