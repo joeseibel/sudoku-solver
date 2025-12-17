@@ -20,13 +20,9 @@ use strum::IntoEnumIterator;
 pub fn swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
-            fn swordfish<
-                'a,
-                Z: Iterator<Item = &'a Cell> + IteratorCellExt<'a>,
-                U: Iterator<Item = &'a Cell> + Clone,
-            >(
+            fn swordfish<'a, Z: IteratorCellExt<'a>, U: Iterator<Item = &'a Cell> + Clone>(
                 candidate: SudokuNumber,
-                units: impl Iterator<Item = impl Iterator<Item = &'a Cell>> + IteratorZipExt<Z>,
+                units: impl IteratorZipExt<Z>,
                 get_other_unit: impl Fn(usize) -> U,
                 get_other_unit_index: impl Fn(&UnsolvedCell) -> usize,
             ) -> impl Iterator<Item = LocatedCandidate<'a>> {

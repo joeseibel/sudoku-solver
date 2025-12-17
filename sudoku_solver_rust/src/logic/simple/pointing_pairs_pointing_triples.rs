@@ -25,10 +25,7 @@ pub fn pointing_pairs_pointing_triples(board: &Board<Cell>) -> Vec<BoardModifica
                     .clone()
                     .filter(move |cell| cell.candidates().contains(&candidate));
 
-                fn pointing_pairs_pointing_triples<
-                    'a,
-                    T: Iterator<Item = &'a Cell> + IteratorCellExt<'a>,
-                >(
+                fn pointing_pairs_pointing_triples<'a, T: IteratorCellExt<'a>>(
                     block_index: usize,
                     candidate: SudokuNumber,
                     with_candidate: impl Iterator<Item = &'a UnsolvedCell>,
