@@ -41,7 +41,7 @@ public class BUG {
                                 .filter(rowCell -> rowCell.candidates().contains(candidate))
                                 .count() == 3)
                         .toList();
-                assert candidates.size() == 1 : "There are multiple candidates that appear three times in the row";
+                assert candidates.size() == 1;
                 return Optional.of(new SetValue(cell, candidates.getFirst()));
             } else {
                 return Optional.empty();

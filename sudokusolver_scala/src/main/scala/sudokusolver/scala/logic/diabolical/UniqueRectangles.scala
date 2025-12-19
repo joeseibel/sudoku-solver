@@ -43,7 +43,9 @@ def uniqueRectanglesType2(board: Board[Cell]): Seq[RemoveCandidates] =
   createRectangles(board).flatMap { rectangle =>
     rectangle.roof match
       case Seq(roofA, roofB) if roofA.candidates.size == 3 && roofA.candidates == roofB.candidates =>
-        val additionalCandidate = (roofA.candidates &~ rectangle.commonCandidates).head
+        val additionalCandidates = roofA.candidates &~ rectangle.commonCandidates
+        assert(additionalCandidates.size == 1)
+        val additionalCandidate = additionalCandidates.head
         for
           cell <- board.cells.collect { case cell: UnsolvedCell => cell }
           if cell.candidates.contains(additionalCandidate) &&

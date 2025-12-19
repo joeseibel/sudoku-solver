@@ -18,6 +18,7 @@ def bug(board: Board[Cell]): Option[SetValue] =
   board.cells.collect { case cell: UnsolvedCell if cell.candidates.size != 2 => cell } match
     case Seq(cell) if cell.candidates.size == 3 =>
       val row = board.getRow(cell.row).collect { case cell: UnsolvedCell => cell }
-      val candidate = cell.candidates.filter(candidate => row.count(_.candidates.contains(candidate)) == 3).head
-      Some(SetValue(cell, candidate))
+      val candidates = cell.candidates.filter(candidate => row.count(_.candidates.contains(candidate)) == 3)
+      assert(candidates.size == 1)
+      Some(SetValue(cell, candidates.head))
     case _ => None

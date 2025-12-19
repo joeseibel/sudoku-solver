@@ -42,7 +42,9 @@ func uniqueRectanglesType2(board: Board<Cell>) -> [BoardModification] {
             let roofA = roof[0]
             let roofB = roof[1]
             if roofA.candidates.count == 3 && roofA.candidates == roofB.candidates {
-                let additionalCandidate = roofA.candidates.subtracting(rectangle.commonCandidates).first!
+                let additionalCandidates = roofA.candidates.subtracting(rectangle.commonCandidates)
+                precondition(additionalCandidates.count == 1)
+                let additionalCandidate = additionalCandidates.first!
                 return board.cells
                     .unsolvedCells
                     .filter {

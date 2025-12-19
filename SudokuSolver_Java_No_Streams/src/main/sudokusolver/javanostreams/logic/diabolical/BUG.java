@@ -50,7 +50,7 @@ public class BUG {
                         candidates.add(candidate);
                     }
                 }
-                assert candidates.size() == 1 : "There are multiple candidates that appear three times in the row";
+                assert candidates.size() == 1;
                 return Optional.of(new SetValue(cell, candidates.getFirst()));
             } else {
                 return Optional.empty();
