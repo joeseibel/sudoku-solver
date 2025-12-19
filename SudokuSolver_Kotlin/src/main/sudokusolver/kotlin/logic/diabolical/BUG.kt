@@ -24,6 +24,6 @@ fun bug(board: Board<Cell>): SetValue? =
         ?.takeIf { it.candidates.size == 3 }
         ?.let { cell ->
             val row = board.getRow(cell.row).filterIsInstance<UnsolvedCell>()
-            val candidate = cell.candidates.single { candidate -> row.filter { candidate in it.candidates }.size == 3 }
+            val candidate = cell.candidates.single { candidate -> row.count { candidate in it.candidates } == 3 }
             SetValue(cell, candidate)
         }
