@@ -12,7 +12,7 @@ use clap::Parser;
 use indoc::formatdoc;
 use logic::{
     brute_force::{self, BruteForceError},
-    diabolical::x_cycles,
+    diabolical::{bug, x_cycles},
     simple::{
         box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
         naked_pairs, naked_quads, naked_singles, naked_triples, pointing_pairs_pointing_triples,
@@ -148,6 +148,40 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         x_cycles::x_cycles_rule_1,
         x_cycles::x_cycles_rule_2,
         x_cycles::x_cycles_rule_3,
+        // Something strange is going on with the type of board in the following closure and I don't really understand
+        // it. If I don't explicity specify its type, the compiler correctly infers it to be a &Board<Cell>, but places
+        // a mismatched types error on the entire closure with the confusing error message, "one type is more general
+        // than the other." The error also provides this note on the expected and found types:
+        //
+        // = note: expected fn pointer `for<'a> fn(&'a board::Board<_>) -> std::vec::Vec<_>`
+        //            found fn pointer `fn(&board::Board<_>) -> std::vec::Vec<_>`
+        //
+        // I have no clue what this is complaining about. It does seem to be related to lifetimes and a quick Google
+        // search shows that I'm not the only one who is confused. The most helpful explaination I found was in the
+        // following post:
+        // https://users.rust-lang.org/t/why-does-one-type-is-more-general-than-other-occur-with-the-same-type/69150/4
+        //
+        // In that post, the user quinedot said, "Errors like this can happen when you have a closure that is inferred
+        // to be tied to a specific lifetime instead of higher-ranked over a generic lifetime. It's a known short-coming
+        // of the current implementation, and yes, the error is confusing. The 'more general than the other' is a hint
+        // that higher-ranked types are involved."
+        //
+        // I also discovered a number of GitHub issues related to higher-ranked lifetime errors as well as the "one type
+        // is more general than the other" error message: https://github.com/rust-lang/rust/issues/110338
+        //
+        // Adding an explicit type for board solves the error, but I really don't understand why, especially since I
+        // didn't have to specify a general lifetime. I would like to dig into this further to have a better
+        // understanding of the lifetime issues here, especially if the compiler is updated to provide a more meaningful
+        // error message.
+        //
+        // Additional note: Rust has experimental syntax for specifying a lifetime for a closure. See the following
+        // links:
+        // https://github.com/rust-lang/rust/issues/97362
+        // https://github.com/rust-lang/rfcs/pull/3216
+        // https://internals.rust-lang.org/t/pre-rfc-allow-for-a-syntax-with-closures-for-explicit-higher-ranked-lifetimes/15888
+        //
+        // TODO: Read through the above links to have a better understanding of the issue and then rewrite this comment.
+        |board: &Board<_>| bug::bug(board).into_iter().collect(),
     ];
     solutions
         .iter()
