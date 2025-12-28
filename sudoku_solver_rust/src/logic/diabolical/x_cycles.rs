@@ -3,6 +3,7 @@ use crate::{
     board_modification::{BoardModification, IteratorRemoveCandidatesExt, SetValue},
     cell::{Cell, IteratorCellExt, LocatedCandidate, Location, UnsolvedCell},
     collections::IteratorZipExt,
+    graphs::{self, Strength},
     sudoku_number::SudokuNumber,
 };
 use petgraph::{
@@ -187,31 +188,6 @@ fn additional_weak_links<'a>(
     graph.extend(edges);
 }
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
-enum Strength {
-    Strong,
-    Weak,
-}
-
-impl Strength {
-    fn opposite(self) -> Self {
-        match self {
-            Self::Strong => Self::Weak,
-            Self::Weak => Self::Strong,
-        }
-    }
-
-    // For solutions that look for alternating edge types in a graph, it can sometimes be the case that a strong link
-    // can take the place of a weak link. In those cases, this method should be called instead of performing an equality
-    // check.
-    fn is_compatible_with(self, required_type: Self) -> bool {
-        match self {
-            Self::Strong => true,
-            Self::Weak => required_type == Self::Weak,
-        }
-    }
-}
-
 // Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The modified graph will
 // either be empty or only contain vertices with a degree of two or more and be connected by at least one strong link
 // and one weak link.
@@ -264,7 +240,7 @@ fn get_alternating_cycle_weak_edges<'a, 'b>(
         let next_edges_and_vertices = graph
             .edges(current_vertex)
             .filter(|(_, _, strength)| strength.is_compatible_with(next_type))
-            .map(|edge| (edge, get_opposite_vertex(edge, current_vertex)));
+            .map(|edge| (edge, graphs::get_opposite_vertex(edge, current_vertex)));
         if next_type == Strength::Strong
             && next_edges_and_vertices
                 .clone()
@@ -324,8 +300,8 @@ fn alternating_cycle_exists(
         .filter(|&(_, _, &strength)| strength == adjacent_edges_type)
         .zip_every_pair()
         .any(|(edge_a, edge_b)| {
-            let start = get_opposite_vertex(edge_a, vertex);
-            let end = get_opposite_vertex(edge_b, vertex);
+            let start = graphs::get_opposite_vertex(edge_a, vertex);
+            let end = graphs::get_opposite_vertex(edge_b, vertex);
 
             fn alternating_cycle_exists(
                 graph: &UnGraphMap<&UnsolvedCell, Strength>,
@@ -338,7 +314,7 @@ fn alternating_cycle_exists(
                 let mut next_vertices: HashSet<_> = graph
                     .edges(current_vertex)
                     .filter(|(_, _, strength)| strength.is_compatible_with(next_type))
-                    .map(|edge| get_opposite_vertex(edge, current_vertex))
+                    .map(|edge| graphs::get_opposite_vertex(edge, current_vertex))
                     .collect();
                 if adjacent_edges_type.opposite() == next_type && next_vertices.contains(end) {
                     true
@@ -371,20 +347,6 @@ fn alternating_cycle_exists(
                 visited,
             )
         })
-}
-
-fn get_opposite_vertex<'a>(
-    edge: (&'a UnsolvedCell, &'a UnsolvedCell, &Strength),
-    vertex: &UnsolvedCell,
-) -> &'a UnsolvedCell {
-    let (source, target, _) = edge;
-    if vertex == source {
-        target
-    } else if vertex == target {
-        source
-    } else {
-        panic!("vertex must be an endpoint of edge.")
-    }
 }
 
 #[cfg(test)]

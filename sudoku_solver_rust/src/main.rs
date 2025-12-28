@@ -2,6 +2,7 @@ mod board;
 mod board_modification;
 mod cell;
 mod collections;
+mod graphs;
 mod logic;
 mod sudoku_number;
 

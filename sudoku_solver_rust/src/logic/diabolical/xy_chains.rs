@@ -3,6 +3,7 @@ use crate::{
     board_modification::{BoardModification, IteratorRemoveCandidatesExt},
     cell::{Cell, IteratorCellExt, LocatedCandidate},
     collections::IteratorZipExt,
+    graphs::{self, Strength},
 };
 use itertools::Itertools;
 use petgraph::{
@@ -123,7 +124,7 @@ fn alternating_path_exists(
         let mut next_vertices: HashSet<_> = graph
             .edges(current_vertex)
             .filter(|(_, _, strength)| strength.is_compatible_with(next_type))
-            .map(|edge| get_opposite_vertex(edge, current_vertex))
+            .map(|edge| graphs::get_opposite_vertex(edge, current_vertex))
             .collect();
         next_type == Strength::Strong && next_vertices.contains(&end) || {
             for visited_vertex in &visited {
@@ -141,45 +142,6 @@ fn alternating_path_exists(
     let mut visited = HashSet::new();
     visited.insert(start);
     alternating_path_exists(graph, end, start, Strength::Strong, visited)
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-enum Strength {
-    Strong,
-    Weak,
-}
-
-impl Strength {
-    fn opposite(self) -> Self {
-        match self {
-            Self::Strong => Self::Weak,
-            Self::Weak => Self::Strong,
-        }
-    }
-
-    // For solutions that look for alternating edge types in a graph, it can sometimes be the case that a strong link
-    // can take the place of a weak link. In those cases, this method should be called instead of performing an equality
-    // check.
-    fn is_compatible_with(self, required_type: Self) -> bool {
-        match self {
-            Self::Strong => true,
-            Self::Weak => required_type == Self::Weak,
-        }
-    }
-}
-
-fn get_opposite_vertex<'a>(
-    edge: (LocatedCandidate<'a>, LocatedCandidate<'a>, &Strength),
-    vertex: LocatedCandidate,
-) -> LocatedCandidate<'a> {
-    let (source, target, _) = edge;
-    if vertex == source {
-        target
-    } else if vertex == target {
-        source
-    } else {
-        panic!("vertex must be an endpoint of edge.")
-    }
 }
 
 #[cfg(test)]
