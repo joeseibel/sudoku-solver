@@ -12,7 +12,7 @@ use clap::Parser;
 use indoc::formatdoc;
 use logic::{
     brute_force::{self, BruteForceError},
-    diabolical::{bug, x_cycles},
+    diabolical::{bug, x_cycles, xy_chains},
     simple::{
         box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
         naked_pairs, naked_quads, naked_singles, naked_triples, pointing_pairs_pointing_triples,
@@ -171,6 +171,7 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         // Even though I don't use the lifetime binder, I found the RFC to be incredibly helpful for understanding this
         // lifetime issue.
         |board: &Board<_>| bug::bug(board).into_iter().collect(),
+        xy_chains::xy_chains,
     ];
     solutions
         .iter()
