@@ -68,11 +68,12 @@ public class XYChains {
                                                 cell.isInSameUnit(cellA) && cell.isInSameUnit(cellB))
                                         .toList();
                                 if (!visibleCells.isEmpty() && alternatingPathExists(graph, vertexA, vertexB)) {
-                                    return visibleCells.stream().map(cell -> new LocatedCandidate(cell, candidate));
+                                    return visibleCells.stream();
                                 } else {
                                     return Stream.empty();
                                 }
-                            });
+                            })
+                            .map(cell -> new LocatedCandidate(cell, candidate));
                 })
                 .collect(LocatedCandidate.mergeToRemoveCandidates());
     }
