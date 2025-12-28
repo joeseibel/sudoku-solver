@@ -151,8 +151,8 @@ fn create_strong_links(
         })
         .filter(|with_candidate| with_candidate.len() == 2)
         .map(|with_candidate| {
-            let a = with_candidate[0];
-            let b = with_candidate[1];
+            let &a = with_candidate.first().unwrap();
+            let &b = with_candidate.last().unwrap();
             (a, b, Strength::Strong)
         });
     GraphMap::from_edges(edges)

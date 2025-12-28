@@ -97,7 +97,11 @@ fn create_connected_components(
                 .collect::<Vec<_>>()
         })
         .filter(|with_candidate| with_candidate.len() == 2)
-        .map(|with_candidate| (with_candidate[0], with_candidate[1]));
+        .map(|with_candidate| {
+            let &a = with_candidate.first().unwrap();
+            let &b = with_candidate.last().unwrap();
+            (a, b)
+        });
     let graph = GraphMap::from_edges(edges);
     connected_components(&graph).collect::<Vec<_>>().into_iter()
 }
