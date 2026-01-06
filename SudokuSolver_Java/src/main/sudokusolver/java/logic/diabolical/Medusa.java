@@ -248,20 +248,20 @@ public class Medusa {
                 .toList();
     }
 
-    public static String toDOT(Graph<LocatedCandidate, DefaultEdge> graph) {
-        var writer = new StringWriter();
-        var exporter = new DOTExporter<LocatedCandidate, DefaultEdge>();
-        exporter.setVertexAttributeProvider(LocatedCandidate::getVertexAttributes);
-        exporter.exportGraph(graph, writer);
-        return writer.toString();
-    }
-
     private static boolean everyCandidateCanSeeColor(UnsolvedCell cell, List<LocatedCandidate> color) {
         return cell.candidates().stream().allMatch(candidate -> color.stream().anyMatch(vertex -> {
             var coloredCell = vertex.cell();
             var coloredCandidate = vertex.candidate();
             return candidate == coloredCandidate && cell.isInSameUnit(coloredCell);
         }));
+    }
+
+    public static String toDOT(Graph<LocatedCandidate, DefaultEdge> graph) {
+        var writer = new StringWriter();
+        var exporter = new DOTExporter<LocatedCandidate, DefaultEdge>();
+        exporter.setVertexAttributeProvider(LocatedCandidate::getVertexAttributes);
+        exporter.exportGraph(graph, writer);
+        return writer.toString();
     }
 
     private static Set<Graph<LocatedCandidate, DefaultEdge>> createConnectedComponents(Board<Cell> board) {

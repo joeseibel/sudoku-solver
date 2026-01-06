@@ -261,14 +261,6 @@ public class Medusa {
         return modifications;
     }
 
-    public static String toDOT(Graph<LocatedCandidate, DefaultEdge> graph) {
-        var writer = new StringWriter();
-        var exporter = new DOTExporter<LocatedCandidate, DefaultEdge>();
-        exporter.setVertexAttributeProvider(LocatedCandidate::getVertexAttributes);
-        exporter.exportGraph(graph, writer);
-        return writer.toString();
-    }
-
     private static boolean everyCandidateCanSeeColor(UnsolvedCell cell, List<LocatedCandidate> color) {
         for (var candidate : cell.candidates()) {
             var canSeeColor = false;
@@ -285,6 +277,14 @@ public class Medusa {
             }
         }
         return true;
+    }
+
+    public static String toDOT(Graph<LocatedCandidate, DefaultEdge> graph) {
+        var writer = new StringWriter();
+        var exporter = new DOTExporter<LocatedCandidate, DefaultEdge>();
+        exporter.setVertexAttributeProvider(LocatedCandidate::getVertexAttributes);
+        exporter.exportGraph(graph, writer);
+        return writer.toString();
     }
 
     private static Set<Graph<LocatedCandidate, DefaultEdge>> createConnectedComponents(Board<Cell> board) {
