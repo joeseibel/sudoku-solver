@@ -41,7 +41,7 @@ pub fn bug(board: &Board<Cell>) -> Option<BoardModification> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{board_modification::SetValue, logic::assertions};
+    use crate::logic::assertions;
 
     #[test]
     fn test_1() {
