@@ -36,9 +36,7 @@ pub fn medusa_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
             graph
                 .nodes()
                 .zip_every_pair()
-                .find(|(a, b)| {
-                    let (cell_a, _) = a;
-                    let (cell_b, _) = b;
+                .find(|(a @ (cell_a, _), b @ (cell_b, _))| {
                     cell_a == cell_b && colors[a] == colors[b]
                 })
                 .map(|(a, _)| colors[&a])
@@ -71,9 +69,7 @@ pub fn medusa_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
             graph
                 .nodes()
                 .zip_every_pair()
-                .find(|(a, b)| {
-                    let (cell_a, candidate_a) = a;
-                    let (cell_b, candidate_b) = b;
+                .find(|(a @ (cell_a, candidate_a), b @ (cell_b, candidate_b))| {
                     candidate_a == candidate_b
                         && colors[a] == colors[b]
                         && cell_a.is_in_same_unit(cell_b)
@@ -108,9 +104,7 @@ pub fn medusa_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
                 .nodes()
                 .filter(|(cell, _)| cell.candidates().len() > 2)
                 .zip_every_pair()
-                .find(|(a, b)| {
-                    let (cell_a, _) = a;
-                    let (cell_b, _) = b;
+                .find(|(a @ (cell_a, _), b @ (cell_b, _))| {
                     cell_a == cell_b && colors[a] != colors[b]
                 })
                 .map(|(a, _)| a)
