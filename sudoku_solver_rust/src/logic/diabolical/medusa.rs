@@ -3,15 +3,13 @@ use crate::{
     board_modification::{BoardModification, IteratorRemoveCandidatesExt, SetValue},
     cell::{Cell, IteratorCellExt, LocatedCandidate, UnsolvedCell},
     collections::IteratorZipExt,
+    graphs,
     sudoku_number::SudokuNumber,
 };
 use petgraph::{
-    algo::scc::tarjan_scc,
     dot::{Config, Dot},
     prelude::{GraphMap, UnGraphMap},
-    visit::{self, DfsEvent},
 };
-use std::collections::HashMap;
 use strum::IntoEnumIterator;
 
 // https://www.sudokuwiki.org/3D_Medusa
@@ -32,7 +30,7 @@ use strum::IntoEnumIterator;
 pub fn medusa_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
     create_connected_components(board)
         .flat_map(|graph| {
-            let colors = color_to_map(&graph);
+            let colors = graphs::color_to_map(&graph);
             graph
                 .nodes()
                 .zip_every_pair()
@@ -65,7 +63,7 @@ pub fn medusa_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
 pub fn medusa_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
     create_connected_components(board)
         .flat_map(|graph| {
-            let colors = color_to_map(&graph);
+            let colors = graphs::color_to_map(&graph);
             graph
                 .nodes()
                 .zip_every_pair()
@@ -99,7 +97,7 @@ pub fn medusa_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
 pub fn medusa_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
     create_connected_components(board)
         .flat_map(|graph| {
-            let colors = color_to_map(&graph);
+            let colors = graphs::color_to_map(&graph);
             graph
                 .nodes()
                 .filter(|(cell, _)| cell.candidates().len() > 2)
@@ -131,7 +129,7 @@ pub fn medusa_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
 pub fn medusa_rule_4(board: &Board<Cell>) -> Vec<BoardModification> {
     create_connected_components(board)
         .flat_map(|graph| {
-            let (color_one, color_two) = color_to_lists(&graph);
+            let (color_one, color_two) = graphs::color_to_lists(&graph);
             board
                 .cells()
                 .unsolved_cells()
@@ -168,7 +166,7 @@ fn can_see_color(
 pub fn medusa_rule_5(board: &Board<Cell>) -> Vec<BoardModification> {
     create_connected_components(board)
         .flat_map(|graph| {
-            let (color_one, color_two) = color_to_lists(&graph);
+            let (color_one, color_two) = graphs::color_to_lists(&graph);
             board
                 .cells()
                 .unsolved_cells()
@@ -201,7 +199,7 @@ pub fn medusa_rule_5(board: &Board<Cell>) -> Vec<BoardModification> {
 pub fn medusa_rule_6(board: &Board<Cell>) -> Vec<BoardModification> {
     create_connected_components(board)
         .flat_map(|graph| {
-            let (color_one, color_two) = color_to_lists(&graph);
+            let (color_one, color_two) = graphs::color_to_lists(&graph);
             board
                 .cells()
                 .unsolved_cells()
@@ -279,81 +277,9 @@ fn create_connected_components(
     });
     let edges = same_cell_edges.chain(same_candidate_edges);
     let graph = GraphMap::from_edges(edges);
-    connected_components(&graph).collect::<Vec<_>>().into_iter()
-}
-
-#[derive(Clone, Copy, PartialEq)]
-enum VertexColor {
-    ColorOne,
-    ColorTwo,
-}
-
-impl VertexColor {
-    fn opposite(&self) -> Self {
-        match self {
-            Self::ColorOne => Self::ColorTwo,
-            Self::ColorTwo => Self::ColorOne,
-        }
-    }
-}
-
-fn color_to_map<'a>(
-    graph: &UnGraphMap<LocatedCandidate<'a>, ()>,
-) -> HashMap<LocatedCandidate<'a>, VertexColor> {
-    let mut colors = HashMap::new();
-    if let start_vertex_option @ Some(start_vertex) = graph.nodes().next() {
-        colors.insert(start_vertex, VertexColor::ColorOne);
-        visit::depth_first_search(graph, start_vertex_option, |event| {
-            if let DfsEvent::TreeEdge(a, b) = event {
-                colors.insert(b, colors[&a].opposite());
-            }
-        })
-    }
-    colors
-}
-
-fn color_to_lists<'a>(
-    graph: &UnGraphMap<LocatedCandidate<'a>, ()>,
-) -> (Vec<LocatedCandidate<'a>>, Vec<LocatedCandidate<'a>>) {
-    let mut color_one = Vec::new();
-    let mut color_two = Vec::new();
-    if let start_vertex_option @ Some(start_vertex) = graph.nodes().next() {
-        color_one.push(start_vertex);
-        visit::depth_first_search(graph, start_vertex_option, |event| {
-            if let DfsEvent::TreeEdge(a, b) = event {
-                if color_one.contains(&a) {
-                    color_two.push(b);
-                } else {
-                    color_one.push(b);
-                }
-            }
-        });
-    }
-    (color_one, color_two)
-}
-
-fn connected_components<'a>(
-    graph: &UnGraphMap<LocatedCandidate<'a>, ()>,
-) -> impl Iterator<Item = UnGraphMap<LocatedCandidate<'a>, ()>> {
-    let components = tarjan_scc::tarjan_scc(graph)
+    graphs::connected_components(&graph)
+        .collect::<Vec<_>>()
         .into_iter()
-        .map(|graph_vertices| {
-            let edges = graph_vertices
-                .iter()
-                .zip_every_pair()
-                .filter(|&(&a, &b)| graph.contains_edge(a, b))
-                .map(|(&a, &b)| (a, b));
-            GraphMap::from_edges(edges)
-        });
-    let mut vertex_count = 0;
-    let mut edge_count = 0;
-    for subgraph in components.clone() {
-        vertex_count += subgraph.node_count();
-        edge_count += subgraph.edge_count();
-    }
-    assert_eq!(graph.node_count(), vertex_count);
-    assert_eq!(graph.edge_count(), edge_count);
-    components
 }
 
 #[cfg(test)]
