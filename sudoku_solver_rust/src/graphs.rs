@@ -79,9 +79,12 @@ impl Strength {
 
 pub fn connected_components<N: Copy + Hash + Ord + PartialEq, E: Default>(
     graph: &UnGraphMap<N, E>,
-) -> impl Iterator<Item = UnGraphMap<N, E>> {
-    let components = tarjan_scc::tarjan_scc(graph)
-        .into_iter()
+) -> Vec<UnGraphMap<N, E>> {
+    // If I don't annotate the type of components, then I get an error later stating that the type of subgraph in the
+    // for loop can't be inferred. I suspect this is a bug in the compiler's type inference algorithm. It would be good
+    // for me to create a simple example and file a bug report.
+    let components: Vec<_> = tarjan_scc::tarjan_scc(graph)
+        .iter()
         .map(|graph_vertices| {
             let edges = graph_vertices
                 .iter()
@@ -89,10 +92,11 @@ pub fn connected_components<N: Copy + Hash + Ord + PartialEq, E: Default>(
                 .filter(|&(&a, &b)| graph.contains_edge(a, b))
                 .map(|(&a, &b)| (a, b));
             GraphMap::from_edges(edges)
-        });
+        })
+        .collect();
     let mut vertex_count = 0;
     let mut edge_count = 0;
-    for subgraph in components.clone() {
+    for subgraph in &components {
         vertex_count += subgraph.node_count();
         edge_count += subgraph.edge_count();
     }

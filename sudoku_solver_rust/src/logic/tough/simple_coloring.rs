@@ -101,9 +101,7 @@ fn create_connected_components(
             (a, b)
         });
     let graph = GraphMap::from_edges(edges);
-    graphs::connected_components(&graph)
-        .collect::<Vec<_>>()
-        .into_iter()
+    graphs::connected_components(&graph).into_iter()
 }
 
 #[cfg(test)]
