@@ -1,8 +1,9 @@
 use crate::collections::IteratorZipExt;
 use petgraph::{
     algo::scc::tarjan_scc,
+    graphmap::NodeTrait,
     prelude::{GraphMap, UnGraphMap},
-    visit::{self, DfsEvent},
+    visit::{self, DfsEvent, IntoNeighbors, IntoNodeIdentifiers, Visitable},
 };
 use std::{collections::HashMap, hash::Hash};
 
@@ -21,9 +22,11 @@ impl VertexColor {
     }
 }
 
-pub fn color_to_map<N: Copy + Hash + Ord, E>(graph: &UnGraphMap<N, E>) -> HashMap<N, VertexColor> {
+pub fn color_to_map<G: IntoNeighbors + IntoNodeIdentifiers<NodeId: Eq + Hash> + Visitable>(
+    graph: G,
+) -> HashMap<G::NodeId, VertexColor> {
     let mut colors = HashMap::new();
-    if let start_vertex_option @ Some(start_vertex) = graph.nodes().next() {
+    if let start_vertex_option @ Some(start_vertex) = graph.node_identifiers().next() {
         colors.insert(start_vertex, VertexColor::ColorOne);
         visit::depth_first_search(graph, start_vertex_option, |event| {
             if let DfsEvent::TreeEdge(a, b) = event {
@@ -34,10 +37,12 @@ pub fn color_to_map<N: Copy + Hash + Ord, E>(graph: &UnGraphMap<N, E>) -> HashMa
     colors
 }
 
-pub fn color_to_lists<N: Copy + Hash + Ord, E>(graph: &UnGraphMap<N, E>) -> (Vec<N>, Vec<N>) {
+pub fn color_to_lists<G: IntoNeighbors + IntoNodeIdentifiers + Visitable>(
+    graph: G,
+) -> (Vec<G::NodeId>, Vec<G::NodeId>) {
     let mut color_one = Vec::new();
     let mut color_two = Vec::new();
-    if let start_vertex_option @ Some(start_vertex) = graph.nodes().next() {
+    if let start_vertex_option @ Some(start_vertex) = graph.node_identifiers().next() {
         color_one.push(start_vertex);
         visit::depth_first_search(graph, start_vertex_option, |event| {
             if let DfsEvent::TreeEdge(a, b) = event {
@@ -77,7 +82,7 @@ impl Strength {
     }
 }
 
-pub fn connected_components<N: Copy + Hash + Ord + PartialEq, E: Default>(
+pub fn connected_components<N: NodeTrait + PartialEq, E: Default>(
     graph: &UnGraphMap<N, E>,
 ) -> Vec<UnGraphMap<N, E>> {
     // If I don't annotate the type of components, then I get an error later stating that the type of subgraph in the
