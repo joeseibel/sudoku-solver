@@ -82,9 +82,9 @@ impl Strength {
     }
 }
 
-pub fn connected_components<N: NodeTrait + PartialEq, E: Default>(
-    graph: &UnGraphMap<N, E>,
-) -> Vec<UnGraphMap<N, E>> {
+pub fn connected_components<N: NodeTrait + PartialEq>(
+    graph: &UnGraphMap<N, ()>,
+) -> Vec<UnGraphMap<N, ()>> {
     // If I don't annotate the type of components, then I get an error later stating that the type of subgraph in the
     // for loop can't be inferred. I suspect this is a bug in the compiler's type inference algorithm. It would be good
     // for me to create a simple example and file a bug report.
