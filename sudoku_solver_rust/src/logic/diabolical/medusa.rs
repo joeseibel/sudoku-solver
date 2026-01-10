@@ -199,7 +199,7 @@ pub fn medusa_rule_5(board: &Board<Cell>) -> Vec<BoardModification> {
 pub fn medusa_rule_6(board: &Board<Cell>) -> Vec<BoardModification> {
     create_connected_components(board)
         .flat_map(|graph| {
-            let (color_one, color_two) = graphs::color_to_lists(&graph);
+            let (color_one, color_two) = &graphs::color_to_lists(&graph);
             board
                 .cells()
                 .unsolved_cells()
@@ -220,19 +220,20 @@ pub fn medusa_rule_6(board: &Board<Cell>) -> Vec<BoardModification> {
                         })
                     }
 
-                    if every_candidate_can_see_color(cell, &color_one) {
-                        Some(color_two.clone())
-                    } else if every_candidate_can_see_color(cell, &color_two) {
-                        Some(color_one.clone())
+                    if every_candidate_can_see_color(cell, color_one) {
+                        Some(color_two)
+                    } else if every_candidate_can_see_color(cell, color_two) {
+                        Some(color_one)
                     } else {
                         None
                     }
                 })
                 .into_iter()
                 .flatten()
-                .map(|(colored_cell, colored_candidate)| {
+                .map(|&(colored_cell, colored_candidate)| {
                     SetValue::from_cell(colored_cell, colored_candidate)
                 })
+                .collect::<Vec<_>>()
         })
         .collect()
 }
