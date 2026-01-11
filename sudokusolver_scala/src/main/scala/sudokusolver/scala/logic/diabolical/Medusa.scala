@@ -34,8 +34,7 @@ def medusaRule1(board: Board[Cell]): Seq[SetValue] =
         val (cellB, _) = b
         cellA == cellB && colors(a) == colors(b)
       }
-      .map((a, _) => colors(a))
-      .map(_.opposite)
+      .map((a, _) => colors(a).opposite)
       .toSeq
       .flatMap { colorToSet =>
         graph.nodes
@@ -64,8 +63,7 @@ def medusaRule2(board: Board[Cell]): Seq[SetValue] =
         val (cellB, candidateB) = b
         candidateA == candidateB && colors(a) == colors(b) && cellA.isInSameUnit(cellB)
       }
-      .map((a, _) => colors(a))
-      .map(_.opposite)
+      .map((a, _) => colors(a).opposite)
       .toSeq
       .flatMap { colorToSet =>
         graph.nodes

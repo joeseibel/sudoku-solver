@@ -192,9 +192,9 @@ public class Medusa {
                             .map(UnsolvedCell.class::cast)
                             .flatMap(cell -> cell.candidates()
                                     .stream().map(candidate -> new LocatedCandidate(cell, candidate)))
-                            .filter(removal -> !graph.vertexSet().contains(removal))
-                            .filter(removal -> canSeeColor(removal, colorOne) && colorInCell(removal, colorTwo) ||
-                                    canSeeColor(removal, colorTwo) && colorInCell(removal, colorOne));
+                            .filter(removal -> !graph.vertexSet().contains(removal) &&
+                                    (canSeeColor(removal, colorOne) && colorInCell(removal, colorTwo) ||
+                                            canSeeColor(removal, colorTwo) && colorInCell(removal, colorOne)));
                 })
                 .collect(LocatedCandidate.mergeToRemoveCandidates());
     }

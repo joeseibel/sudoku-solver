@@ -37,8 +37,7 @@ pub fn medusa_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
                 .find(|(a @ (cell_a, _), b @ (cell_b, _))| {
                     cell_a == cell_b && colors[a] == colors[b]
                 })
-                .map(|(a, _)| colors[&a])
-                .map(|color| color.opposite())
+                .map(|(a, _)| colors[&a].opposite())
                 .iter()
                 .flat_map(|&color_to_set| {
                     graph
@@ -72,8 +71,7 @@ pub fn medusa_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
                         && colors[a] == colors[b]
                         && cell_a.is_in_same_unit(cell_b)
                 })
-                .map(|(a, _)| colors[&a])
-                .map(|color| color.opposite())
+                .map(|(a, _)| colors[&a].opposite())
                 .iter()
                 .flat_map(|&color_to_set| {
                     graph
@@ -105,8 +103,7 @@ pub fn medusa_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
                 .find(|(a @ (cell_a, _), b @ (cell_b, _))| {
                     cell_a == cell_b && colors[a] != colors[b]
                 })
-                .map(|(a, _)| a)
-                .map(|(cell, _)| cell)
+                .map(|((cell, _), _)| cell)
                 .iter()
                 .flat_map(|&cell| {
                     cell.candidates()
@@ -138,9 +135,9 @@ pub fn medusa_rule_4(board: &Board<Cell>) -> Vec<BoardModification> {
                         .iter()
                         .map(move |&candidate| (cell, candidate))
                 })
-                .filter(move |&removal| !graph.contains_node(removal))
-                .filter(move |&(cell, candidate)| {
-                    can_see_color(cell, candidate, &color_one)
+                .filter(move |&removal @ (cell, candidate)| {
+                    !graph.contains_node(removal)
+                        && can_see_color(cell, candidate, &color_one)
                         && can_see_color(cell, candidate, &color_two)
                 })
         })
@@ -175,17 +172,18 @@ pub fn medusa_rule_5(board: &Board<Cell>) -> Vec<BoardModification> {
                         .iter()
                         .map(move |&candidate| (cell, candidate))
                 })
-                .filter(move |&removal| !graph.contains_node(removal))
-                .filter(move |&(cell, candidate)| {
+                .filter(move |&removal @ (cell, candidate)| {
                     fn color_in_cell(cell: &UnsolvedCell, color: &Vec<LocatedCandidate>) -> bool {
                         cell.candidates()
                             .iter()
                             .any(|&candidate| color.contains(&(cell, candidate)))
                     }
 
-                    can_see_color(cell, candidate, &color_one) && color_in_cell(cell, &color_two)
-                        || can_see_color(cell, candidate, &color_two)
-                            && color_in_cell(cell, &color_one)
+                    !graph.contains_node(removal)
+                        && (can_see_color(cell, candidate, &color_one)
+                            && color_in_cell(cell, &color_two)
+                            || can_see_color(cell, candidate, &color_two)
+                                && color_in_cell(cell, &color_one))
                 })
         })
         .merge_to_remove_candidates()

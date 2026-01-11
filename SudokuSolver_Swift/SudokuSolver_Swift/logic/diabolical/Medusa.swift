@@ -64,10 +64,9 @@ func medusaRule3(board: Board<Cell>) -> [BoardModification] {
         return graph.filter { $0.cell.candidates.count > 2 }
             .zipEveryPair()
             .first { a, b in a.cell == b.cell && colors[a] != colors[b] }
-            .map { a, _ in a }
-            .map(\.cell)
-            .map { cell in
-                cell.candidates
+            .map { a, _ -> [LocatedCandidate] in
+                let cell = a.cell
+                return cell.candidates
                     .map { (cell, $0) }
                     .filter { cell, candidate in
                         !graph.contains(CodableLocatedCandidate(cell: cell, candidate: candidate))
@@ -91,14 +90,14 @@ func medusaRule4(board: Board<Cell>) -> [BoardModification] {
         return board.cells
             .unsolvedCells
             .flatMap { cell in cell.candidates.map { candidate in (cell, candidate) } }
-            .filter { cell, candidate in !graph.contains(CodableLocatedCandidate(cell: cell, candidate: candidate)) }
             .filter { cell, candidate in
                 
                 func canSeeColor(color: [CodableLocatedCandidate]) -> Bool {
                     color.contains { colored in candidate == colored.candidate && cell.isInSameUnit(as: colored.cell) }
                 }
                 
-                return canSeeColor(color: colorOne) && canSeeColor(color: colorTwo)
+                return !graph.contains(CodableLocatedCandidate(cell: cell, candidate: candidate)) &&
+                    canSeeColor(color: colorOne) && canSeeColor(color: colorTwo)
             }
     }.mergeToRemoveCandidates()
 }
@@ -117,7 +116,6 @@ func medusaRule5(board: Board<Cell>) -> [BoardModification] {
         return board.cells
             .unsolvedCells
             .flatMap { cell in cell.candidates.map { candidate in (cell, candidate) } }
-            .filter { cell, candidate in !graph.contains(CodableLocatedCandidate(cell: cell, candidate: candidate)) }
             .filter { cell, candidate in
                 
                 func canSeeColor(color: [CodableLocatedCandidate]) -> Bool {
@@ -128,8 +126,9 @@ func medusaRule5(board: Board<Cell>) -> [BoardModification] {
                     cell.candidates.contains { color.contains(CodableLocatedCandidate(cell: cell, candidate: $0)) }
                 }
                 
-                return canSeeColor(color: colorOne) && colorInCell(color: colorTwo) ||
-                    canSeeColor(color: colorTwo) && colorInCell(color: colorOne)
+                return !graph.contains(CodableLocatedCandidate(cell: cell, candidate: candidate)) &&
+                    (canSeeColor(color: colorOne) && colorInCell(color: colorTwo) ||
+                        canSeeColor(color: colorTwo) && colorInCell(color: colorOne))
             }
     }.mergeToRemoveCandidates()
 }
