@@ -13,7 +13,7 @@ use clap::Parser;
 use indoc::formatdoc;
 use logic::{
     brute_force::{self, BruteForceError},
-    diabolical::{bug, jellyfish, medusa, x_cycles, xy_chains},
+    diabolical::{bug, jellyfish, medusa, unique_rectangles, x_cycles, xy_chains},
     simple::{
         box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
         naked_pairs, naked_quads, naked_singles, naked_triples, pointing_pairs_pointing_triples,
@@ -180,6 +180,12 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         medusa::medusa_rule_5,
         medusa::medusa_rule_6,
         jellyfish::jellyfish,
+        unique_rectangles::unique_rectangles_type_1,
+        unique_rectangles::unique_rectangles_type_2,
+        unique_rectangles::unique_rectangles_type_3,
+        unique_rectangles::unique_rectangles_type_3_b_with_triple_pseudo_cells,
+        unique_rectangles::unique_rectangles_type_4,
+        unique_rectangles::unique_rectangles_type_5,
     ];
     solutions
         .iter()
