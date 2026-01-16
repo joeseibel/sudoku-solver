@@ -20,7 +20,7 @@ pub fn bug(board: &Board<Cell>) -> Option<BoardModification> {
         .unsolved_cells()
         .filter(|cell| cell.candidates().len() != 2);
     if let Some(cell) = cells.next()
-        && let None = cells.next()
+        && cells.next().is_none()
         && cell.candidates().len() == 3
     {
         let row: Vec<_> = board.get_row(cell.row()).unsolved_cells().collect();

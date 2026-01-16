@@ -40,7 +40,7 @@ pub fn xyz_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                 .flat_map(move |(wing_a, wing_b)| {
                     let mut candidates = wing_a.candidates().intersection(wing_b.candidates());
                     if let Some(&candidate) = candidates.next()
-                        && let None = candidates.next()
+                        && candidates.next().is_none()
                     {
                         let removals = board
                             .cells()

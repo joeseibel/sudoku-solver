@@ -26,7 +26,7 @@ pub fn y_wing(board: &Board<Cell>) -> Vec<BoardModification> {
             && hinge.candidates().intersection(wing_a.candidates()).count() == 1
             && hinge.candidates().intersection(wing_b.candidates()).count() == 1
             && let Some(&candidate) = wing_candidates.next()
-            && let None = wing_candidates.next()
+            && wing_candidates.next().is_none()
         {
             let removals = board
                 .cells()
