@@ -5,7 +5,7 @@ use crate::{
     collections::IteratorZipExt,
     sudoku_number::SudokuNumber,
 };
-use std::collections::BTreeSet;
+use std::collections::HashSet;
 use strum::VariantArray;
 
 // http://www.sudokuwiki.org/Hidden_Candidates#HT
@@ -30,7 +30,7 @@ pub fn hidden_triples(board: &Board<Cell>) -> Vec<BoardModification> {
                         })
                         .collect();
                     if cells.len() == 3 {
-                        let mut union = BTreeSet::<SudokuNumber>::new();
+                        let mut union: HashSet<SudokuNumber> = HashSet::new();
                         for cell in &cells {
                             union.extend(cell.candidates());
                         }

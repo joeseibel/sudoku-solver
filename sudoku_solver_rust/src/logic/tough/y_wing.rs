@@ -5,7 +5,7 @@ use crate::{
     collections::IteratorZipExt,
     sudoku_number::SudokuNumber,
 };
-use std::collections::BTreeSet;
+use std::collections::HashSet;
 
 // http://www.sudokuwiki.org/Y_Wing_Strategy
 //
@@ -52,7 +52,7 @@ pub fn y_wing(board: &Board<Cell>) -> Vec<BoardModification> {
         .filter(|cell| cell.candidates().len() == 2)
         .zip_every_triple()
         .filter(|(a, b, c)| {
-            let mut union: BTreeSet<SudokuNumber> = BTreeSet::new();
+            let mut union: HashSet<SudokuNumber> = HashSet::new();
             union.extend(a.candidates());
             union.extend(b.candidates());
             union.extend(c.candidates());

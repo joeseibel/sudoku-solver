@@ -5,7 +5,7 @@ use crate::{
     collections::IteratorZipExt,
     sudoku_number::SudokuNumber,
 };
-use std::collections::BTreeSet;
+use std::collections::HashSet;
 
 // http://www.sudokuwiki.org/XYZ_Wing
 //
@@ -30,7 +30,7 @@ pub fn xyz_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                         && hinge.is_in_same_unit(wing_a)
                         && hinge.is_in_same_unit(wing_b)
                         && {
-                            let mut union: BTreeSet<SudokuNumber> = BTreeSet::new();
+                            let mut union: HashSet<SudokuNumber> = HashSet::new();
                             union.extend(hinge.candidates());
                             union.extend(wing_a.candidates());
                             union.extend(wing_b.candidates());
