@@ -150,11 +150,9 @@ fn create_strong_links(
                 .filter(|cell| cell.candidates().contains(&candidate))
                 .collect::<Vec<_>>()
         })
-        .filter(|with_candidate| with_candidate.len() == 2)
-        .map(|with_candidate| {
-            let &a = with_candidate.first().unwrap();
-            let &b = with_candidate.last().unwrap();
-            (a, b, Strength::Strong)
+        .filter_map(|with_candidate| match with_candidate[..] {
+            [a, b] => Some((a, b, Strength::Strong)),
+            _ => None,
         });
     GraphMap::from_edges(edges)
 }

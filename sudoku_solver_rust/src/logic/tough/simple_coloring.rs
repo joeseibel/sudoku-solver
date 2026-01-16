@@ -94,11 +94,9 @@ fn create_connected_components(
                 .filter(|cell| cell.candidates().contains(&candidate))
                 .collect::<Vec<_>>()
         })
-        .filter(|with_candidate| with_candidate.len() == 2)
-        .map(|with_candidate| {
-            let &a = with_candidate.first().unwrap();
-            let &b = with_candidate.last().unwrap();
-            (a, b)
+        .filter_map(|with_candidate| match with_candidate[..] {
+            [a, b] => Some((a, b)),
+            _ => None,
         });
     let graph = GraphMap::from_edges(edges);
     graphs::connected_components(&graph).into_iter()

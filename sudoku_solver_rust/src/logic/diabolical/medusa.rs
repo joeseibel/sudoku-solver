@@ -267,11 +267,9 @@ fn create_connected_components(
                     .filter(|cell| cell.candidates().contains(&candidate))
                     .collect::<Vec<_>>()
             })
-            .filter(|unit| unit.len() == 2)
-            .map(move |unit| {
-                let a = (*unit.first().unwrap(), candidate);
-                let b = (*unit.last().unwrap(), candidate);
-                (a, b)
+            .filter_map(move |unit| match unit[..] {
+                [a, b] => Some(((a, candidate), (b, candidate))),
+                _ => None,
             })
     });
     let edges = same_cell_edges.chain(same_candidate_edges);
