@@ -41,7 +41,8 @@ private func getRemovals(units: [[Cell]]) -> [LocatedCandidate] {
 
 private func getRemovals(
     commonCandidates: Set<SudokuNumber>,
-    unit: [UnsolvedCell], unitCandidates: Set<SudokuNumber>
+    unit: [UnsolvedCell],
+    unitCandidates: Set<SudokuNumber>
 ) -> [LocatedCandidate] {
     if unitCandidates.count > 3 && unitCandidates.isSuperset(of: commonCandidates) {
         let withAdditional = unit.filter { !commonCandidates.isSuperset(of: $0.candidates) }
