@@ -4,6 +4,7 @@ mod cell;
 mod collections;
 mod graphs;
 mod logic;
+mod rectangles;
 mod sudoku_number;
 
 use board::Board;

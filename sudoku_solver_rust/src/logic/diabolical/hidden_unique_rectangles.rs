@@ -2,11 +2,9 @@ use crate::{
     board::Board,
     board_modification::{BoardModification, IteratorRemoveCandidatesExt},
     cell::{Cell, IteratorCellExt, LocatedCandidate, Location, UnsolvedCell},
-    collections::IteratorZipExt,
+    rectangles::{self, Rectangle},
     sudoku_number::SudokuNumber,
 };
-use std::collections::HashSet;
-use strum::IntoEnumIterator;
 
 // https://www.sudokuwiki.org/Hidden_Unique_Rectangles
 //
@@ -15,7 +13,7 @@ use strum::IntoEnumIterator;
 // strong links between cells of a rectangle. A strong link exists between two cells for a given candidate when those
 // two cells are the only cells with the candidate in a given row or column.
 pub fn hidden_unique_rectangles(board: &Board<Cell>) -> Vec<BoardModification> {
-    create_rectangles(board)
+    rectangles::create_rectangles(board)
         .flat_map(|rectangle| {
             let (floor, roof): (Vec<_>, Vec<_>) = rectangle
                 .cells()
@@ -158,49 +156,6 @@ fn type_2<'a>(
     } else {
         None
     }
-}
-
-struct Rectangle<'a> {
-    cells: [&'a UnsolvedCell; 4],
-    common_candidates: [SudokuNumber; 2],
-}
-
-impl<'a> Rectangle<'a> {
-    fn cells(&self) -> &[&'a UnsolvedCell; 4] {
-        &self.cells
-    }
-
-    fn common_candidates(&self) -> &[SudokuNumber; 2] {
-        &self.common_candidates
-    }
-}
-
-fn create_rectangles(board: &Board<Cell>) -> impl Iterator<Item = Rectangle<'_>> {
-    board.rows().zip_every_pair().flat_map(|(row_a, row_b)| {
-        row_a
-            .zip(row_b)
-            .flat_map(|(cell_a, cell_b)| match (cell_a, cell_b) {
-                (Cell::UnsolvedCell(cell_a), Cell::UnsolvedCell(cell_b)) => Some((cell_a, cell_b)),
-                _ => None,
-            })
-            .zip_every_pair()
-            .flat_map(|((cell_a, cell_b), (cell_c, cell_d))| {
-                let cells = [cell_a, cell_b, cell_c, cell_d];
-                let mut common_candidates: HashSet<_> = SudokuNumber::iter().collect();
-                for cell in cells {
-                    common_candidates.retain(|candidate| cell.candidates().contains(candidate));
-                }
-                common_candidates
-                    .into_iter()
-                    .collect::<Vec<_>>()
-                    .try_into()
-                    .ok()
-                    .map(|common_candidates| Rectangle {
-                        cells,
-                        common_candidates,
-                    })
-            })
-    })
 }
 
 #[cfg(test)]

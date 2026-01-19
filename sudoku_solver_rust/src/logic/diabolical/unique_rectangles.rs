@@ -3,10 +3,10 @@ use crate::{
     board_modification::{BoardModification, IteratorRemoveCandidatesExt, SetValue},
     cell::{Cell, IteratorCellExt, LocatedCandidate, Location, UnsolvedCell},
     collections::IteratorZipExt,
+    rectangles::{self, Rectangle},
     sudoku_number::SudokuNumber,
 };
-use std::collections::{BTreeSet, HashSet};
-use strum::IntoEnumIterator;
+use std::collections::BTreeSet;
 
 // https://www.sudokuwiki.org/Unique_Rectangles
 //
@@ -29,7 +29,7 @@ use strum::IntoEnumIterator;
 // removed from the roof, then that would lead to a Deadly Pattern. The two common candidates can be removed from the
 // roof leaving only the additional candidates remaining.
 pub fn unique_rectangles_type_1(board: &Board<Cell>) -> Vec<BoardModification> {
-    create_rectangles(board)
+    rectangles::create_rectangles(board)
         .flat_map(|rectangle| {
             if let [roof] = rectangle.roof()[..] {
                 let removals = rectangle
@@ -54,7 +54,7 @@ pub fn unique_rectangles_type_1(board: &Board<Cell>) -> Vec<BoardModification> {
 // lead to a Deadly Pattern, therefore the additional candidate must be the solution for one of the two roof cells. The
 // common candidate can be removed from any other cell that can see both of the roof cells.
 pub fn unique_rectangles_type_2(board: &Board<Cell>) -> Vec<BoardModification> {
-    create_rectangles(board)
+    rectangles::create_rectangles(board)
         .flat_map(|rectangle| {
             if let [roof_a, roof_b] = rectangle.roof()[..]
                 && roof_a.candidates().len() == 3
@@ -96,7 +96,7 @@ pub fn unique_rectangles_type_2(board: &Board<Cell>) -> Vec<BoardModification> {
 // can see both roof cells and has the additional candidates as its candidates, then the roof cells and the other cell
 // effectively form a Naked Pair. The additional candidates can be removed from any other cell in the unit.
 pub fn unique_rectangles_type_3(board: &Board<Cell>) -> Vec<BoardModification> {
-    create_rectangles(board)
+    rectangles::create_rectangles(board)
         .flat_map(|rectangle| {
             if let [roof_a, roof_b] = rectangle.roof()[..]
                 && roof_a.candidates().len() == 3
@@ -185,7 +185,7 @@ pub fn unique_rectangles_type_3(board: &Board<Cell>) -> Vec<BoardModification> {
 pub fn unique_rectangles_type_3_b_with_triple_pseudo_cells(
     board: &Board<Cell>,
 ) -> Vec<BoardModification> {
-    create_rectangles(board)
+    rectangles::create_rectangles(board)
         .flat_map(|rectangle| {
             if let [roof_a, roof_b] = rectangle.roof()[..] {
                 let mut additional_candidates = roof_a.candidates().clone();
@@ -283,7 +283,7 @@ pub fn unique_rectangles_type_3_b_with_triple_pseudo_cells(
 // solution to one of the roof cells would lead to the Deadly Pattern. The other common candidate can be removed from
 // the roof cells.
 pub fn unique_rectangles_type_4(board: &Board<Cell>) -> Vec<BoardModification> {
-    create_rectangles(board)
+    rectangles::create_rectangles(board)
         .flat_map(|rectangle| {
             if let roof @ [roof_a, roof_b] = &rectangle.roof()[..] {
                 fn get_removals<'a, U: IteratorCellExt<'a>>(
@@ -382,7 +382,7 @@ pub fn unique_rectangles_type_4(board: &Board<Cell>) -> Vec<BoardModification> {
 // cell. Since each floor cell only contains two candidates, this means that the strong link candidate must be the
 // solution for the floor cells.
 pub fn unique_rectangles_type_5(board: &Board<Cell>) -> Vec<BoardModification> {
-    create_rectangles(board)
+    rectangles::create_rectangles(board)
         .flat_map(|rectangle| {
             if let floor @ [floor_a, floor_b] = &rectangle.floor()[..]
                 && floor_a.row() != floor_b.row()
@@ -426,59 +426,6 @@ pub fn unique_rectangles_type_5(board: &Board<Cell>) -> Vec<BoardModification> {
         })
         .flatten()
         .collect()
-}
-
-struct Rectangle<'a> {
-    cells: [&'a UnsolvedCell; 4],
-    common_candidates: [SudokuNumber; 2],
-}
-
-impl<'a> Rectangle<'a> {
-    fn common_candidates(&self) -> &[SudokuNumber; 2] {
-        &self.common_candidates
-    }
-
-    fn floor(&self) -> Vec<&'a UnsolvedCell> {
-        self.cells
-            .into_iter()
-            .filter(|cell| cell.candidates().len() == 2)
-            .collect()
-    }
-
-    fn roof(&self) -> Vec<&'a UnsolvedCell> {
-        self.cells
-            .into_iter()
-            .filter(|cell| cell.candidates().len() > 2)
-            .collect()
-    }
-}
-
-fn create_rectangles(board: &Board<Cell>) -> impl Iterator<Item = Rectangle<'_>> {
-    board.rows().zip_every_pair().flat_map(|(row_a, row_b)| {
-        row_a
-            .zip(row_b)
-            .flat_map(|(cell_a, cell_b)| match (cell_a, cell_b) {
-                (Cell::UnsolvedCell(cell_a), Cell::UnsolvedCell(cell_b)) => Some((cell_a, cell_b)),
-                _ => None,
-            })
-            .zip_every_pair()
-            .flat_map(|((cell_a, cell_b), (cell_c, cell_d))| {
-                let cells = [cell_a, cell_b, cell_c, cell_d];
-                let mut common_candidates: HashSet<_> = SudokuNumber::iter().collect();
-                for cell in cells {
-                    common_candidates.retain(|candidate| cell.candidates().contains(candidate));
-                }
-                common_candidates
-                    .into_iter()
-                    .collect::<Vec<_>>()
-                    .try_into()
-                    .ok()
-                    .map(|common_candidates| Rectangle {
-                        cells,
-                        common_candidates,
-                    })
-            })
-    })
 }
 
 #[cfg(test)]
