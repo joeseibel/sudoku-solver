@@ -16,7 +16,7 @@ use logic::{
     brute_force::{self, BruteForceError},
     diabolical::{
         bug, extended_unique_rectangles, hidden_unique_rectangles, jellyfish, medusa,
-        unique_rectangles, x_cycles, xy_chains,
+        unique_rectangles, wxyz_wing, x_cycles, xy_chains,
     },
     simple::{
         box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
@@ -192,6 +192,7 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         unique_rectangles::unique_rectangles_type_5,
         extended_unique_rectangles::extended_unique_rectangles,
         hidden_unique_rectangles::hidden_unique_rectangles,
+        wxyz_wing::wxyz_wing,
     ];
     solutions
         .iter()
