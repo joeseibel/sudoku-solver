@@ -15,8 +15,8 @@ use indoc::formatdoc;
 use logic::{
     brute_force::{self, BruteForceError},
     diabolical::{
-        bug, extended_unique_rectangles, hidden_unique_rectangles, jellyfish, medusa,
-        unique_rectangles, wxyz_wing, x_cycles, xy_chains,
+        aligned_pair_exclusion, bug, extended_unique_rectangles, hidden_unique_rectangles,
+        jellyfish, medusa, unique_rectangles, wxyz_wing, x_cycles, xy_chains,
     },
     simple::{
         box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
@@ -193,6 +193,7 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         extended_unique_rectangles::extended_unique_rectangles,
         hidden_unique_rectangles::hidden_unique_rectangles,
         wxyz_wing::wxyz_wing,
+        aligned_pair_exclusion::aligned_pair_exclusion,
     ];
     solutions
         .iter()

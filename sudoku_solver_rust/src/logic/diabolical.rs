@@ -1,3 +1,4 @@
+pub mod aligned_pair_exclusion;
 pub mod bug;
 pub mod extended_unique_rectangles;
 pub mod hidden_unique_rectangles;
