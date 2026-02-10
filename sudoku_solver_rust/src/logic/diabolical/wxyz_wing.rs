@@ -52,8 +52,7 @@ pub fn wxyz_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                                 })
                         })
                         .map(|cell| (cell, non_restricted))
-                        .collect::<Vec<_>>()
-                        .into_iter();
+                        .collect::<Vec<_>>();
                     Some(removals)
                 } else {
                     None

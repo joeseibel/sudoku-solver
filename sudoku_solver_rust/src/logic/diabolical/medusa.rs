@@ -49,7 +49,6 @@ pub fn medusa_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
                         .map(|(cell, candidate)| SetValue::from_cell(cell, candidate))
                 })
                 .collect::<Vec<_>>()
-                .into_iter()
         })
         .collect()
 }
@@ -83,7 +82,6 @@ pub fn medusa_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
                         .map(|(cell, candidate)| SetValue::from_cell(cell, candidate))
                 })
                 .collect::<Vec<_>>()
-                .into_iter()
         })
         .collect()
 }
@@ -112,7 +110,6 @@ pub fn medusa_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
                         .filter(|&removal| !graph.contains_node(removal))
                 })
                 .collect::<Vec<_>>()
-                .into_iter()
         })
         .merge_to_remove_candidates()
 }

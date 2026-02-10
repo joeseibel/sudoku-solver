@@ -36,8 +36,7 @@ pub fn unique_rectangles_type_1(board: &Board<Cell>) -> Vec<BoardModification> {
                     .common_candidates()
                     .iter()
                     .map(|&candidate| (roof, candidate))
-                    .collect::<Vec<_>>()
-                    .into_iter();
+                    .collect::<Vec<_>>();
                 Some(removals)
             } else {
                 None
@@ -65,7 +64,7 @@ pub fn unique_rectangles_type_2(board: &Board<Cell>) -> Vec<BoardModification> {
                 additional_candidates.remove(common_candidate_a);
                 additional_candidates.remove(common_candidate_b);
                 assert!(additional_candidates.len() == 1);
-                let additional_candidate = additional_candidates.into_iter().next().unwrap();
+                let &additional_candidate = additional_candidates.first().unwrap();
                 let removals = board
                     .cells()
                     .unsolved_cells()
@@ -77,8 +76,7 @@ pub fn unique_rectangles_type_2(board: &Board<Cell>) -> Vec<BoardModification> {
                             && cell.is_in_same_unit(roof_b)
                     })
                     .map(|cell| (cell, additional_candidate))
-                    .collect::<Vec<_>>()
-                    .into_iter();
+                    .collect::<Vec<_>>();
                 Some(removals)
             } else {
                 None
@@ -133,7 +131,6 @@ pub fn unique_rectangles_type_3(board: &Board<Cell>) -> Vec<BoardModification> {
                                             .map(move |&candidate| (cell, candidate))
                                     })
                                     .collect::<Vec<_>>()
-                                    .into_iter()
                             })
                     } else {
                         None
@@ -165,8 +162,7 @@ pub fn unique_rectangles_type_3(board: &Board<Cell>) -> Vec<BoardModification> {
                 let removals = row_removals
                     .chain(column_removals)
                     .chain(block_removals)
-                    .collect::<Vec<_>>()
-                    .into_iter();
+                    .collect::<Vec<_>>();
                 Some(removals)
             } else {
                 None
@@ -224,7 +220,6 @@ pub fn unique_rectangles_type_3_b_with_triple_pseudo_cells(
                                                 .intersection(&triple_candidates)
                                                 .map(|&candidate| (cell, candidate))
                                                 .collect::<Vec<_>>()
-                                                .into_iter()
                                         });
                                     Some(removals)
                                 } else {
@@ -232,8 +227,7 @@ pub fn unique_rectangles_type_3_b_with_triple_pseudo_cells(
                                 }
                             })
                             .flatten()
-                            .collect::<Vec<_>>()
-                            .into_iter();
+                            .collect::<Vec<_>>();
                         Some(removals)
                     } else {
                         None
@@ -265,8 +259,7 @@ pub fn unique_rectangles_type_3_b_with_triple_pseudo_cells(
                 let removals = row_removals
                     .chain(column_removals)
                     .chain(block_removals)
-                    .collect::<Vec<_>>()
-                    .into_iter();
+                    .collect::<Vec<_>>();
                 Some(removals)
             } else {
                 None
@@ -328,8 +321,7 @@ pub fn unique_rectangles_type_4(board: &Board<Cell>) -> Vec<BoardModification> {
                                     common_candidate_b,
                                     common_candidate_a,
                                 ))
-                                .collect::<Vec<_>>()
-                                .into_iter();
+                                .collect::<Vec<_>>();
                         Some(removals)
                     } else {
                         None
@@ -360,8 +352,7 @@ pub fn unique_rectangles_type_4(board: &Board<Cell>) -> Vec<BoardModification> {
                 let removals = row_removals
                     .chain(column_removals)
                     .chain(block_removals)
-                    .collect::<Vec<_>>()
-                    .into_iter();
+                    .collect::<Vec<_>>();
                 Some(removals)
             } else {
                 None
@@ -415,10 +406,8 @@ pub fn unique_rectangles_type_5(board: &Board<Cell>) -> Vec<BoardModification> {
                                 SetValue::from_cell(floor_cell, strong_link_candidate)
                             })
                             .collect::<Vec<_>>()
-                            .into_iter()
                     })
-                    .collect::<Vec<_>>()
-                    .into_iter();
+                    .collect::<Vec<_>>();
                 Some(modifications)
             } else {
                 None

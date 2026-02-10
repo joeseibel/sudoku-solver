@@ -38,7 +38,7 @@ pub fn x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
             add_weak_links(&mut graph);
             trim(&mut graph);
             get_weak_edges_in_alternating_cycle(&graph)
-                .into_iter()
+                .iter()
                 .flat_map(|(source, target, _)| {
                     fn remove_from_unit<'a, U: IteratorCellExt<'a>>(
                         candidate: SudokuNumber,

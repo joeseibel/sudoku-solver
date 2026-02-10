@@ -70,8 +70,7 @@ pub fn jellyfish(board: &Board<Cell>) -> Vec<BoardModification> {
                                             && !with_candidate.contains(cell)
                                     })
                                     .map(|cell| (cell, candidate))
-                                    .collect::<Vec<_>>()
-                                    .into_iter();
+                                    .collect::<Vec<_>>();
                                 Some(removals)
                             } else {
                                 None

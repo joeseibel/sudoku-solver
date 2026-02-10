@@ -70,14 +70,12 @@ fn get_removals<'a, U: Iterator<Item = &'a Cell> + Clone>(
             if unit_a_candidates.len() == 3 {
                 let removals =
                     get_unit_removals(&unit_a_candidates, unit_b.into_iter(), &unit_b_candidates)
-                        .collect::<Vec<_>>()
-                        .into_iter();
+                        .collect::<Vec<_>>();
                 Some(removals)
             } else if unit_b_candidates.len() == 3 {
                 let removals =
                     get_unit_removals(&unit_b_candidates, unit_a.into_iter(), &unit_a_candidates)
-                        .collect::<Vec<_>>()
-                        .into_iter();
+                        .collect::<Vec<_>>();
                 Some(removals)
             } else {
                 None
@@ -101,8 +99,7 @@ fn get_unit_removals<'a>(
                 .candidates()
                 .intersection(common_candidates)
                 .map(|&candidate| (with_additional, candidate))
-                .collect::<Vec<_>>()
-                .into_iter();
+                .collect::<Vec<_>>();
             Some(removals)
         } else {
             None
