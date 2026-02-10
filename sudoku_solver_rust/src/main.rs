@@ -18,6 +18,7 @@ use logic::{
         aligned_pair_exclusion, bug, extended_unique_rectangles, hidden_unique_rectangles,
         jellyfish, medusa, unique_rectangles, wxyz_wing, x_cycles, xy_chains,
     },
+    extreme::grouped_x_cycles,
     simple::{
         box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
         naked_pairs, naked_quads, naked_singles, naked_triples, pointing_pairs_pointing_triples,
@@ -194,6 +195,10 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         hidden_unique_rectangles::hidden_unique_rectangles,
         wxyz_wing::wxyz_wing,
         aligned_pair_exclusion::aligned_pair_exclusion,
+        // Start of extreme solutions.
+        grouped_x_cycles::grouped_x_cycles_rule_1,
+        grouped_x_cycles::grouped_x_cycles_rule_2,
+        grouped_x_cycles::grouped_x_cycles_rule_3,
     ];
     solutions
         .iter()

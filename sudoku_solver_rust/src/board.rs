@@ -4,7 +4,7 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-const UNIT_SIZE_SQUARE_ROOT: usize = 3;
+pub const UNIT_SIZE_SQUARE_ROOT: usize = 3;
 pub const UNIT_SIZE: usize = UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
 pub const UNIT_SIZE_SQUARED: usize = UNIT_SIZE * UNIT_SIZE;
 

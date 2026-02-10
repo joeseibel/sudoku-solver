@@ -1,5 +1,6 @@
 pub mod brute_force;
 pub mod diabolical;
+pub mod extreme;
 pub mod simple;
 pub mod tough;
 
