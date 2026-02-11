@@ -159,18 +159,17 @@ private func buildGraph(board: Board<Cell>, candidate: SudokuNumber) -> Weighted
         }
     
     // Add groups.
-    func createGroups(units: [[Cell]], groupConstructor: ([UnsolvedCell]) -> Node) -> [Node] {
+    func createGroups(units: [[Cell]], groupConstructor: ([UnsolvedCell]) -> Node) -> [Int] {
         units.flatMap { unit in
             Dictionary(grouping: unit.unsolvedCells.filter { $0.candidates.contains(candidate) }, by: \.block)
                 .values
                 .filter { $0.count >= 2 }
-                .map(groupConstructor)
+                .map { graph.addVertex(groupConstructor($0)) }
         }
     }
     
-    let rowGroupIndices = createGroups(units: board.rows, groupConstructor: Node.init(rowGroup:)).map(graph.addVertex)
+    let rowGroupIndices = createGroups(units: board.rows, groupConstructor: Node.init(rowGroup:))
     let columnGroupIndices = createGroups(units: board.columns, groupConstructor: Node.init(columnGroup:))
-        .map(graph.addVertex)
     let groupIndices = rowGroupIndices + columnGroupIndices
     
     // Connect groups to cels.
