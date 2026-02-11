@@ -62,7 +62,7 @@ def groupedXCyclesRule1(board: Board[Cell]): Seq[RemoveCandidates] =
 
       val rowRemovals = removeFromUnit(source.row, target.row, board.getRow)
       val columnRemovals = removeFromUnit(source.column, target.column, board.getColumn)
-      val blockRemovals = removeFromUnit(source.block, target.block, board.getBlock)
+      val blockRemovals = removeFromUnit(Some(source.block), Some(target.block), board.getBlock)
       rowRemovals ++ columnRemovals ++ blockRemovals
     }
   }.mergeToRemoveCandidates
@@ -201,9 +201,9 @@ extension (node: Node)
     case node: RowGroup => None
     case node: ColumnGroup => Some(node.column)
 
-  private def block: Option[Int] = node match
-    case node: UnsolvedCell => Some(node.block)
-    case node: Group => Some(node.block)
+  private def block: Int = node match
+    case node: UnsolvedCell => node.block
+    case node: Group => node.block
 
   private def cells: Set[UnsolvedCell] = node match
     case node: UnsolvedCell => Set(node)
