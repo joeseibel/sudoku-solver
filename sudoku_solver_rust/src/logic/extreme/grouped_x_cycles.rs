@@ -140,7 +140,9 @@ pub fn grouped_x_cycles_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
             graph
                 .node_indices()
                 .flat_map(move |index| match graph[index].as_cell_node() {
-                    Ok(cell) if alternating_cycle_exists(&graph, index, Strength::Strong) => {
+                    Ok(cell)
+                        if graphs::alternating_cycle_exists(&graph, index, Strength::Strong) =>
+                    {
                         Some(SetValue::from_cell(cell, candidate))
                     }
                     _ => None,
@@ -163,7 +165,7 @@ pub fn grouped_x_cycles_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
             graph
                 .node_indices()
                 .flat_map(move |index| match graph[index].as_cell_node() {
-                    Ok(cell) if alternating_cycle_exists(&graph, index, Strength::Weak) => {
+                    Ok(cell) if graphs::alternating_cycle_exists(&graph, index, Strength::Weak) => {
                         Some((cell, candidate))
                     }
                     _ => None,
@@ -661,65 +663,6 @@ fn get_alternating_cycle_weak_edges<'a>(
         "There are strong edges in the return value."
     );
     weak_edges
-}
-
-fn alternating_cycle_exists<'a>(
-    graph: &UnGraph<Box<dyn Node + 'a>, Strength>,
-    index: NodeIndex,
-    adjacent_edges_type: Strength,
-) -> bool {
-    graph
-        .edges(index)
-        .filter(|edge| *edge.weight() == adjacent_edges_type)
-        .zip_every_pair()
-        .any(|(edge_a, edge_b)| {
-            let start = graphs::get_opposite_vertex(edge_a, index);
-            let end = graphs::get_opposite_vertex(edge_b, index);
-
-            fn alternating_cycle_exists<'a>(
-                graph: &UnGraph<Box<dyn Node + 'a>, Strength>,
-                adjacent_edges_type: Strength,
-                end: NodeIndex,
-                current_index: NodeIndex,
-                next_type: Strength,
-                visited: HashSet<NodeIndex>,
-            ) -> bool {
-                let mut next_indices: HashSet<_> = graph
-                    .edges(current_index)
-                    .filter(|edge| edge.weight().is_compatible_with(next_type))
-                    .map(|edge| graphs::get_opposite_vertex(edge, current_index))
-                    .collect();
-                if adjacent_edges_type.opposite() == next_type && next_indices.contains(&end) {
-                    true
-                } else {
-                    next_indices.retain(|&index| !visited.contains(&index) && index != end);
-                    next_indices.iter().any(|&next_index| {
-                        let mut next_visisted = visited.clone();
-                        next_visisted.insert(next_index);
-                        alternating_cycle_exists(
-                            graph,
-                            adjacent_edges_type,
-                            end,
-                            next_index,
-                            next_type.opposite(),
-                            next_visisted,
-                        )
-                    })
-                }
-            }
-
-            let mut visited = HashSet::new();
-            visited.insert(index);
-            visited.insert(start);
-            alternating_cycle_exists(
-                graph,
-                adjacent_edges_type,
-                end,
-                start,
-                adjacent_edges_type.opposite(),
-                visited,
-            )
-        })
 }
 
 #[cfg(test)]
