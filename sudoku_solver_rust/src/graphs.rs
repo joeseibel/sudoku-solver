@@ -1,9 +1,10 @@
 use crate::collections::IteratorZipExt;
 use petgraph::{
+    Undirected,
     algo::scc::tarjan_scc,
     graphmap::NodeTrait,
     prelude::{GraphMap, UnGraphMap},
-    visit::{self, DfsEvent, EdgeRef, IntoNeighbors, IntoNodeIdentifiers, Visitable},
+    visit::{self, DfsEvent, EdgeRef, GraphProp, IntoNeighbors, IntoNodeIdentifiers, Visitable},
 };
 use std::{collections::HashMap, hash::Hash};
 
@@ -22,7 +23,12 @@ impl VertexColor {
     }
 }
 
-pub fn color_to_map<G: IntoNeighbors + IntoNodeIdentifiers<NodeId: Eq + Hash> + Visitable>(
+pub fn color_to_map<
+    G: GraphProp<EdgeType = Undirected>
+        + IntoNeighbors
+        + IntoNodeIdentifiers<NodeId: Eq + Hash>
+        + Visitable,
+>(
     graph: G,
 ) -> HashMap<G::NodeId, VertexColor> {
     let mut colors = HashMap::new();
@@ -37,7 +43,9 @@ pub fn color_to_map<G: IntoNeighbors + IntoNodeIdentifiers<NodeId: Eq + Hash> + 
     colors
 }
 
-pub fn color_to_lists<G: IntoNeighbors + IntoNodeIdentifiers + Visitable>(
+pub fn color_to_lists<
+    G: GraphProp<EdgeType = Undirected> + IntoNeighbors + IntoNodeIdentifiers + Visitable,
+>(
     graph: G,
 ) -> (Vec<G::NodeId>, Vec<G::NodeId>) {
     let mut color_one = Vec::new();
