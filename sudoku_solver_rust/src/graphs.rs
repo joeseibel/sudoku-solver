@@ -3,7 +3,7 @@ use petgraph::{
     algo::scc::tarjan_scc,
     graphmap::NodeTrait,
     prelude::{GraphMap, UnGraphMap},
-    visit::{self, DfsEvent, IntoNeighbors, IntoNodeIdentifiers, Visitable},
+    visit::{self, DfsEvent, EdgeRef, IntoNeighbors, IntoNodeIdentifiers, Visitable},
 };
 use std::{collections::HashMap, hash::Hash};
 
@@ -110,13 +110,14 @@ pub fn connected_components<N: NodeTrait + PartialEq>(
     components
 }
 
-pub fn get_opposite_vertex<N: PartialEq, E>(edge: (N, N, E), vertex: N) -> N {
-    let (source, target, _) = edge;
+pub fn get_opposite_vertex<E: EdgeRef<NodeId: PartialEq>>(edge: E, vertex: E::NodeId) -> E::NodeId {
+    let source = edge.source();
+    let target = edge.target();
     if vertex == source {
         target
     } else if vertex == target {
         source
     } else {
-        panic!("vertex must be an endpoint of edge.")
+        panic!("vertex must be an endpoint of edge.");
     }
 }

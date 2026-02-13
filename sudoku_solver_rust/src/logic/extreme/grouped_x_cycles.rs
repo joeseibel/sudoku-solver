@@ -3,14 +3,14 @@ use crate::{
     board_modification::{BoardModification, IteratorRemoveCandidatesExt, SetValue},
     cell::{Cell, IteratorCellExt, LocatedCandidate, Location, UnsolvedCell},
     collections::IteratorZipExt,
-    graphs::Strength,
+    graphs::{self, Strength},
     sudoku_number::SudokuNumber,
 };
 use itertools::Itertools;
 use petgraph::{
     Graph,
     dot::{Config, Dot},
-    graph::{EdgeIndex, EdgeReference, NodeIndex, UnGraph},
+    graph::{EdgeIndex, NodeIndex, UnGraph},
     visit::EdgeRef,
 };
 use std::{
@@ -611,7 +611,7 @@ fn get_alternating_cycle_weak_edges<'a>(
         let next_edges_and_indices: Vec<_> = graph
             .edges(current_index)
             .filter(|edge| edge.weight().is_compatible_with(next_type))
-            .map(|edge| (edge, get_opposite_index(edge, current_index)))
+            .map(|edge| (edge, graphs::get_opposite_vertex(edge, current_index)))
             .collect();
         if next_type == Strength::Strong
             && next_edges_and_indices
@@ -673,8 +673,8 @@ fn alternating_cycle_exists<'a>(
         .filter(|edge| *edge.weight() == adjacent_edges_type)
         .zip_every_pair()
         .any(|(edge_a, edge_b)| {
-            let start = get_opposite_index(edge_a, index);
-            let end = get_opposite_index(edge_b, index);
+            let start = graphs::get_opposite_vertex(edge_a, index);
+            let end = graphs::get_opposite_vertex(edge_b, index);
 
             fn alternating_cycle_exists<'a>(
                 graph: &UnGraph<Box<dyn Node + 'a>, Strength>,
@@ -687,7 +687,7 @@ fn alternating_cycle_exists<'a>(
                 let mut next_indices: HashSet<_> = graph
                     .edges(current_index)
                     .filter(|edge| edge.weight().is_compatible_with(next_type))
-                    .map(|edge| get_opposite_index(edge, current_index))
+                    .map(|edge| graphs::get_opposite_vertex(edge, current_index))
                     .collect();
                 if adjacent_edges_type.opposite() == next_type && next_indices.contains(&end) {
                     true
@@ -720,16 +720,6 @@ fn alternating_cycle_exists<'a>(
                 visited,
             )
         })
-}
-
-fn get_opposite_index(edge: EdgeReference<Strength>, index: NodeIndex) -> NodeIndex {
-    if index == edge.source() {
-        edge.target()
-    } else if index == edge.target() {
-        edge.source()
-    } else {
-        panic!("index must be an endpoint of edge.")
-    }
 }
 
 #[cfg(test)]
