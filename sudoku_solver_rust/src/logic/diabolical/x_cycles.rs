@@ -10,7 +10,6 @@ use petgraph::{
     dot::{Config, Dot},
     prelude::{GraphMap, UnGraphMap},
 };
-use std::collections::HashSet;
 use strum::IntoEnumIterator;
 
 // http://www.sudokuwiki.org/X_Cycles
@@ -37,9 +36,9 @@ pub fn x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
             let mut graph = create_strong_links(board, candidate);
             add_weak_links(&mut graph);
             trim(&mut graph);
-            get_weak_edges_in_alternating_cycle(&graph)
+            graphs::get_weak_edges_in_alternating_cycle(&graph)
                 .iter()
-                .flat_map(|(source, target, _)| {
+                .flat_map(|(source, target)| {
                     fn remove_from_unit<'a, U: IteratorCellExt<'a>>(
                         candidate: SudokuNumber,
                         source: &UnsolvedCell,
@@ -203,89 +202,6 @@ fn trim(graph: &mut UnGraphMap<&UnsolvedCell, Strength>) {
             None => break,
         };
     }
-}
-
-fn get_weak_edges_in_alternating_cycle<'a, 'b>(
-    graph: &'a UnGraphMap<&'b UnsolvedCell, Strength>,
-) -> HashSet<(&'b UnsolvedCell, &'b UnsolvedCell, &'a Strength)> {
-    let mut weak_edges_in_alternating_cycle = HashSet::new();
-    for edge in graph
-        .all_edges()
-        .filter(|&(_, _, &strength)| strength == Strength::Weak)
-    {
-        if !weak_edges_in_alternating_cycle.contains(&edge) {
-            weak_edges_in_alternating_cycle.extend(get_alternating_cycle_weak_edges(graph, edge));
-        }
-    }
-    weak_edges_in_alternating_cycle
-}
-
-fn get_alternating_cycle_weak_edges<'a, 'b>(
-    graph: &'a UnGraphMap<&'b UnsolvedCell, Strength>,
-    start_edge: (&'b UnsolvedCell, &'b UnsolvedCell, &'a Strength),
-) -> Vec<(&'b UnsolvedCell, &'b UnsolvedCell, &'a Strength)> {
-    let (start, end, &strength) = start_edge;
-    assert!(strength == Strength::Weak, "start_edge must be weak.");
-
-    fn get_alternating_cycle_weak_edges<'a, 'b>(
-        graph: &'a UnGraphMap<&'b UnsolvedCell, Strength>,
-        end: &UnsolvedCell,
-        current_vertex: &'b UnsolvedCell,
-        next_type: Strength,
-        visited: HashSet<&UnsolvedCell>,
-        weak_edges: Vec<(&'b UnsolvedCell, &'b UnsolvedCell, &'a Strength)>,
-    ) -> Vec<(&'b UnsolvedCell, &'b UnsolvedCell, &'a Strength)> {
-        let next_edges_and_vertices = graph
-            .edges(current_vertex)
-            .filter(|(_, _, strength)| strength.is_compatible_with(next_type))
-            .map(|edge| (edge, graphs::get_opposite_vertex(edge, current_vertex)));
-        if next_type == Strength::Strong
-            && next_edges_and_vertices
-                .clone()
-                .any(|(_, next_vertex)| next_vertex == end)
-        {
-            weak_edges
-        } else {
-            next_edges_and_vertices
-                .filter(|&(_, next_vertex)| next_vertex != end && !visited.contains(next_vertex))
-                .map(|(next_edge, next_vertex)| {
-                    let mut next_visited = visited.clone();
-                    next_visited.insert(next_vertex);
-                    let mut next_weak_edges = weak_edges.clone();
-                    if let (_, _, Strength::Weak) = next_edge {
-                        next_weak_edges.push(next_edge);
-                    }
-                    get_alternating_cycle_weak_edges(
-                        graph,
-                        end,
-                        next_vertex,
-                        next_type.opposite(),
-                        next_visited,
-                        next_weak_edges,
-                    )
-                })
-                .find(|next_result| !next_result.is_empty())
-                .unwrap_or_default()
-        }
-    }
-
-    let mut visited = HashSet::new();
-    visited.insert(start);
-    let weak_edges = get_alternating_cycle_weak_edges(
-        graph,
-        end,
-        start,
-        Strength::Strong,
-        visited,
-        vec![start_edge],
-    );
-    assert!(
-        !weak_edges
-            .iter()
-            .any(|&(_, _, &strength)| strength == Strength::Strong),
-        "There are strong edges in the return value."
-    );
-    weak_edges
 }
 
 #[cfg(test)]

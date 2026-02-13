@@ -10,8 +10,7 @@ use itertools::Itertools;
 use petgraph::{
     Graph,
     dot::{Config, Dot},
-    graph::{EdgeIndex, NodeIndex, UnGraph},
-    visit::EdgeRef,
+    graph::{NodeIndex, UnGraph},
 };
 use std::{
     collections::{BTreeSet, HashSet},
@@ -60,7 +59,7 @@ pub fn grouped_x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
         .flat_map(|candidate| {
             let mut graph = build_graph(board, candidate);
             trim(&mut graph);
-            get_weak_edges_in_alternating_cycle(&graph)
+            graphs::get_weak_edges_in_alternating_cycle(&graph)
                 .into_iter()
                 .flat_map(move |edge_index| {
                     let (source_index, target_index) = graph.edge_endpoints(edge_index).unwrap();
@@ -574,95 +573,6 @@ fn trim<'a>(graph: &mut UnGraph<Box<dyn Node + 'a>, Strength>) {
             None => break,
         };
     }
-}
-
-fn get_weak_edges_in_alternating_cycle<'a>(
-    graph: &UnGraph<Box<dyn Node + 'a>, Strength>,
-) -> HashSet<EdgeIndex> {
-    let mut weak_edges_in_alternating_cycle = HashSet::new();
-    for edge in graph
-        .edge_indices()
-        .filter(|&index| graph[index] == Strength::Weak)
-    {
-        if !weak_edges_in_alternating_cycle.contains(&edge) {
-            weak_edges_in_alternating_cycle.extend(get_alternating_cycle_weak_edges(graph, edge));
-        }
-    }
-    weak_edges_in_alternating_cycle
-}
-
-fn get_alternating_cycle_weak_edges<'a>(
-    graph: &UnGraph<Box<dyn Node + 'a>, Strength>,
-    start_edge: EdgeIndex,
-) -> Vec<EdgeIndex> {
-    assert_eq!(
-        graph[start_edge],
-        Strength::Weak,
-        "start_edge must be weak."
-    );
-    let (start, end) = graph.edge_endpoints(start_edge).unwrap();
-
-    fn get_alternating_cycle_weak_edges<'a>(
-        graph: &UnGraph<Box<dyn Node + 'a>, Strength>,
-        end: NodeIndex,
-        current_index: NodeIndex,
-        next_type: Strength,
-        visited: HashSet<NodeIndex>,
-        weak_edges: Vec<EdgeIndex>,
-    ) -> Vec<EdgeIndex> {
-        let next_edges_and_indices: Vec<_> = graph
-            .edges(current_index)
-            .filter(|edge| edge.weight().is_compatible_with(next_type))
-            .map(|edge| (edge, graphs::get_opposite_vertex(edge, current_index)))
-            .collect();
-        if next_type == Strength::Strong
-            && next_edges_and_indices
-                .iter()
-                .any(|&(_, next_index)| next_index == end)
-        {
-            weak_edges
-        } else {
-            next_edges_and_indices
-                .iter()
-                .filter(|&&(_, next_index)| next_index != end && !visited.contains(&next_index))
-                .map(|&(next_edge, next_index)| {
-                    let mut next_visited = visited.clone();
-                    next_visited.insert(next_index);
-                    let mut next_weak_edges = weak_edges.clone();
-                    if *next_edge.weight() == Strength::Weak {
-                        next_weak_edges.push(next_edge.id());
-                    }
-                    get_alternating_cycle_weak_edges(
-                        graph,
-                        end,
-                        next_index,
-                        next_type.opposite(),
-                        next_visited,
-                        next_weak_edges,
-                    )
-                })
-                .find(|next_result| !next_result.is_empty())
-                .unwrap_or_default()
-        }
-    }
-
-    let mut visited = HashSet::new();
-    visited.insert(start);
-    let weak_edges = get_alternating_cycle_weak_edges(
-        graph,
-        end,
-        start,
-        Strength::Strong,
-        visited,
-        vec![start_edge],
-    );
-    assert!(
-        !weak_edges
-            .iter()
-            .any(|&edge_index| graph[edge_index] == Strength::Strong),
-        "There are strong edges in the return value."
-    );
-    weak_edges
 }
 
 #[cfg(test)]

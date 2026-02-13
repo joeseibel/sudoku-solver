@@ -5,13 +5,14 @@ use petgraph::{
     graphmap::NodeTrait,
     prelude::{GraphMap, UnGraphMap},
     visit::{
-        self, DfsEvent, EdgeRef, GraphProp, IntoEdges, IntoNeighbors, IntoNodeIdentifiers,
-        Visitable,
+        self, DfsEvent, EdgeRef, GraphBase, GraphProp, IntoEdgeReferences, IntoEdges,
+        IntoNeighbors, IntoNodeIdentifiers, Visitable,
     },
 };
 use std::{
     collections::{HashMap, HashSet},
     hash::Hash,
+    ops::Index,
 };
 
 #[derive(Clone, Copy, PartialEq)]
@@ -94,6 +95,113 @@ impl Strength {
             Self::Weak => required_type == Self::Weak,
         }
     }
+}
+
+pub fn get_weak_edges_in_alternating_cycle<
+    'a,
+    G: GraphProp<EdgeType = Undirected> + Index<G::EdgeId, Output = Strength>,
+>(
+    graph: &'a G,
+) -> HashSet<G::EdgeId>
+where
+    G::NodeId: Eq + Hash,
+    G::EdgeId: Eq + Hash,
+    &'a G: IntoEdges<EdgeWeight = Strength> + GraphBase<EdgeId = G::EdgeId, NodeId = G::NodeId>,
+{
+    let mut weak_edges_in_alternating_cycle = HashSet::new();
+    for edge in graph
+        .edge_references()
+        .filter(|edge| *edge.weight() == Strength::Weak)
+    {
+        if !weak_edges_in_alternating_cycle.contains(&edge.id()) {
+            weak_edges_in_alternating_cycle.extend(get_alternating_cycle_weak_edges(graph, edge));
+        }
+    }
+    weak_edges_in_alternating_cycle
+}
+
+fn get_alternating_cycle_weak_edges<
+    'a,
+    G: GraphProp<EdgeType = Undirected> + Index<G::EdgeId, Output = Strength>,
+    E: EdgeRef<EdgeId = G::EdgeId, NodeId = G::NodeId, Weight = Strength>,
+>(
+    graph: &'a G,
+    start_edge: E,
+) -> Vec<G::EdgeId>
+where
+    G::NodeId: Eq + Hash,
+    &'a G: IntoEdges<EdgeWeight = Strength> + GraphBase<EdgeId = G::EdgeId, NodeId = G::NodeId>,
+{
+    assert_eq!(
+        *start_edge.weight(),
+        Strength::Weak,
+        "start_edge must be weak."
+    );
+    let start = start_edge.source();
+    let end = start_edge.target();
+
+    fn get_alternating_cycle_weak_edges<
+        G: GraphProp<EdgeType = Undirected> + IntoEdges<EdgeWeight = Strength, NodeId: Eq + Hash>,
+    >(
+        graph: G,
+        end: G::NodeId,
+        current_vertex: G::NodeId,
+        next_type: Strength,
+        visited: HashSet<G::NodeId>,
+        weak_edges: Vec<G::EdgeId>,
+    ) -> Vec<G::EdgeId> {
+        let next_edges_and_vertices: Vec<_> = graph
+            .edges(current_vertex)
+            .filter(|edge| edge.weight().is_compatible_with(next_type))
+            .map(|edge| (edge, get_opposite_vertex(edge, current_vertex)))
+            .collect();
+        if next_type == Strength::Strong
+            && next_edges_and_vertices
+                .iter()
+                .any(|&(_, next_vertex)| next_vertex == end)
+        {
+            weak_edges
+        } else {
+            next_edges_and_vertices
+                .iter()
+                .filter(|&&(_, next_vertex)| next_vertex != end && !visited.contains(&next_vertex))
+                .map(|&(next_edge, next_vertex)| {
+                    let mut next_visited = visited.clone();
+                    next_visited.insert(next_vertex);
+                    let mut next_weak_edges = weak_edges.clone();
+                    if *next_edge.weight() == Strength::Weak {
+                        next_weak_edges.push(next_edge.id());
+                    }
+                    get_alternating_cycle_weak_edges(
+                        graph,
+                        end,
+                        next_vertex,
+                        next_type.opposite(),
+                        next_visited,
+                        next_weak_edges,
+                    )
+                })
+                .find(|next_result| !next_result.is_empty())
+                .unwrap_or_default()
+        }
+    }
+
+    let mut visited = HashSet::new();
+    visited.insert(start);
+    let weak_edges = get_alternating_cycle_weak_edges(
+        graph,
+        end,
+        start,
+        Strength::Strong,
+        visited,
+        vec![start_edge.id()],
+    );
+    assert!(
+        !weak_edges
+            .iter()
+            .any(|&edge| graph[edge] == Strength::Strong)
+    );
+    weak_edges
 }
 
 pub fn alternating_cycle_exists<
