@@ -172,6 +172,18 @@ impl Display for UnsolvedCell {
 
 pub type LocatedCandidate<'a> = (&'a UnsolvedCell, SudokuNumber);
 
+// In Rust, it is not possible to add methods to a tuple type, so instead I am using an extension trait.
+pub trait LocatedCandidateExt {
+    fn vertex_label(self) -> String;
+}
+
+impl LocatedCandidateExt for LocatedCandidate<'_> {
+    fn vertex_label(self) -> String {
+        let (cell, candidate) = self;
+        format!("{} : {candidate}", cell.vertex_label())
+    }
+}
+
 impl Board<Cell> {
     pub fn to_simple_string(&self) -> String {
         self.cells().join("")

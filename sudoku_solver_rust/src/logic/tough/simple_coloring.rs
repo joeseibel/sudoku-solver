@@ -6,10 +6,7 @@ use crate::{
     graphs,
     sudoku_number::SudokuNumber,
 };
-use petgraph::{
-    dot::{Config, Dot},
-    prelude::{GraphMap, UnGraphMap},
-};
+use petgraph::prelude::{GraphMap, UnGraphMap};
 use strum::IntoEnumIterator;
 
 // http://www.sudokuwiki.org/Singles_Chains
@@ -74,13 +71,7 @@ pub fn simple_coloring_rule_4(board: &Board<Cell>) -> Vec<BoardModification> {
 
 #[allow(dead_code)]
 fn to_dot(graph: &UnGraphMap<&UnsolvedCell, ()>) -> String {
-    let dot = Dot::with_attr_getters(
-        graph,
-        &[Config::EdgeNoLabel, Config::NodeNoLabel],
-        &|_, _| String::new(),
-        &|_, (cell, _)| format!(r#"label = "{}""#, cell.vertex_label()),
-    );
-    format!("{dot:?}")
+    graphs::to_dot(graph, |_| String::new(), |(cell, _)| cell.vertex_label())
 }
 
 fn create_connected_components(

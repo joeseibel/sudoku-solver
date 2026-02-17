@@ -2,15 +2,17 @@ use crate::collections::IteratorZipExt;
 use petgraph::{
     Undirected,
     algo::scc::tarjan_scc,
+    dot::{Config, Dot},
     graphmap::NodeTrait,
     prelude::{GraphMap, UnGraphMap},
     visit::{
         self, DfsEvent, EdgeRef, GraphBase, GraphProp, IntoEdgeReferences, IntoEdges,
-        IntoNeighbors, IntoNodeIdentifiers, Visitable,
+        IntoNeighbors, IntoNodeIdentifiers, IntoNodeReferences, NodeIndexable, Visitable,
     },
 };
 use std::{
     collections::{HashMap, HashSet},
+    fmt::Debug,
     hash::Hash,
     ops::Index,
 };
@@ -94,6 +96,13 @@ impl Strength {
             Self::Strong => true,
             Self::Weak => required_type == Self::Weak,
         }
+    }
+}
+
+pub fn edge_attributes<E: EdgeRef<Weight = Strength>>(edge: E) -> String {
+    match edge.weight() {
+        Strength::Strong => String::new(),
+        Strength::Weak => String::from("style = dashed"),
     }
 }
 
@@ -267,6 +276,27 @@ pub fn alternating_cycle_exists<
                 visited,
             )
         })
+}
+
+pub fn to_dot<
+    G: GraphProp
+        + IntoNodeReferences<NodeWeight: Debug>
+        + IntoEdgeReferences<EdgeWeight: Debug>
+        + NodeIndexable,
+>(
+    graph: G,
+    get_edge_attributes: impl Fn(G::EdgeRef) -> String,
+    get_node_attributes: impl Fn(G::NodeRef) -> String,
+) -> String {
+    let edge_attributes = |_, edge| get_edge_attributes(edge);
+    let node_attributes = |_, vertex| format!(r#"label = "{}""#, get_node_attributes(vertex));
+    let dot = Dot::with_attr_getters(
+        graph,
+        &[Config::EdgeNoLabel, Config::NodeNoLabel],
+        &edge_attributes,
+        &node_attributes,
+    );
+    format!("{dot:?}")
 }
 
 pub fn connected_components<N: NodeTrait + PartialEq>(

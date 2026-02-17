@@ -1,15 +1,12 @@
 use crate::{
     board::Board,
     board_modification::{BoardModification, IteratorRemoveCandidatesExt},
-    cell::{Cell, IteratorCellExt, LocatedCandidate},
+    cell::{Cell, IteratorCellExt, LocatedCandidate, LocatedCandidateExt},
     collections::IteratorZipExt,
     graphs::{self, Strength},
 };
 use itertools::Itertools;
-use petgraph::{
-    dot::{Config, Dot},
-    prelude::{GraphMap, UnGraphMap},
-};
+use petgraph::prelude::{GraphMap, UnGraphMap};
 use std::collections::HashSet;
 
 // https://www.sudokuwiki.org/XY_Chains
@@ -70,16 +67,9 @@ pub fn xy_chains(board: &Board<Cell>) -> Vec<BoardModification> {
 
 #[allow(dead_code)]
 fn to_dot(graph: &UnGraphMap<LocatedCandidate, Strength>) -> String {
-    let dot = Dot::with_attr_getters(
-        graph,
-        &[Config::EdgeNoLabel, Config::NodeNoLabel],
-        &|_, (_, _, strength)| match strength {
-            Strength::Strong => String::new(),
-            Strength::Weak => String::from("style = dashed"),
-        },
-        &|_, ((cell, candidate), _)| format!(r#"label = "{} : {candidate}""#, cell.vertex_label()),
-    );
-    format!("{dot:?}")
+    graphs::to_dot(graph, graphs::edge_attributes, |(vertex, _)| {
+        vertex.vertex_label()
+    })
 }
 
 fn create_strong_links(board: &Board<Cell>) -> UnGraphMap<LocatedCandidate<'_>, Strength> {

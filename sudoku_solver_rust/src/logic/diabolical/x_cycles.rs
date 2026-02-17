@@ -6,10 +6,7 @@ use crate::{
     graphs::{self, Strength},
     sudoku_number::SudokuNumber,
 };
-use petgraph::{
-    dot::{Config, Dot},
-    prelude::{GraphMap, UnGraphMap},
-};
+use petgraph::prelude::{GraphMap, UnGraphMap};
 use strum::IntoEnumIterator;
 
 // http://www.sudokuwiki.org/X_Cycles
@@ -126,16 +123,9 @@ pub fn x_cycles_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
 
 #[allow(dead_code)]
 fn to_dot(graph: &UnGraphMap<&UnsolvedCell, Strength>) -> String {
-    let dot = Dot::with_attr_getters(
-        graph,
-        &[Config::EdgeNoLabel, Config::NodeNoLabel],
-        &|_, (_, _, strength)| match strength {
-            Strength::Strong => String::new(),
-            Strength::Weak => String::from("style = dashed"),
-        },
-        &|_, (cell, _)| format!(r#"label = "{}""#, cell.vertex_label()),
-    );
-    format!("{dot:?}")
+    graphs::to_dot(graph, graphs::edge_attributes, |(cell, _)| {
+        cell.vertex_label()
+    })
 }
 
 fn create_strong_links(

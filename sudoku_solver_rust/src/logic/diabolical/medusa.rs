@@ -1,15 +1,12 @@
 use crate::{
     board::Board,
     board_modification::{BoardModification, IteratorRemoveCandidatesExt, SetValue},
-    cell::{Cell, IteratorCellExt, LocatedCandidate, UnsolvedCell},
+    cell::{Cell, IteratorCellExt, LocatedCandidate, LocatedCandidateExt, UnsolvedCell},
     collections::IteratorZipExt,
     graphs,
     sudoku_number::SudokuNumber,
 };
-use petgraph::{
-    dot::{Config, Dot},
-    prelude::{GraphMap, UnGraphMap},
-};
+use petgraph::prelude::{GraphMap, UnGraphMap};
 use strum::IntoEnumIterator;
 
 // https://www.sudokuwiki.org/3D_Medusa
@@ -235,13 +232,11 @@ pub fn medusa_rule_6(board: &Board<Cell>) -> Vec<BoardModification> {
 
 #[allow(dead_code)]
 fn to_dot(graph: &UnGraphMap<LocatedCandidate, ()>) -> String {
-    let dot = Dot::with_attr_getters(
+    graphs::to_dot(
         graph,
-        &[Config::EdgeNoLabel, Config::NodeNoLabel],
-        &|_, _| String::new(),
-        &|_, ((cell, candidate), _)| format!(r#"label = "{} : {candidate}""#, cell.vertex_label()),
-    );
-    format!("{dot:?}")
+        |_| String::new(),
+        |(vertex, _)| vertex.vertex_label(),
+    )
 }
 
 fn create_connected_components(

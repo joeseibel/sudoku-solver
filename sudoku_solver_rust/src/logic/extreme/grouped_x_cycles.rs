@@ -9,7 +9,6 @@ use crate::{
 use itertools::Itertools;
 use petgraph::{
     Graph,
-    dot::{Config, Dot},
     graph::{NodeIndex, UnGraph},
 };
 use std::{
@@ -175,16 +174,9 @@ pub fn grouped_x_cycles_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
 
 #[allow(dead_code)]
 fn to_dot<'a>(graph: &UnGraph<Box<dyn Node + 'a>, Strength>) -> String {
-    let dot = Dot::with_attr_getters(
-        graph,
-        &[Config::EdgeNoLabel, Config::NodeNoLabel],
-        &|_, edge| match edge.weight() {
-            Strength::Strong => String::new(),
-            Strength::Weak => String::from("style = dashed"),
-        },
-        &|_, (_, vertex)| format!(r#"label = "{}""#, vertex.vertex_label()),
-    );
-    format!("{dot:?}")
+    graphs::to_dot(graph, graphs::edge_attributes, |(_, vertex)| {
+        vertex.vertex_label()
+    })
 }
 
 // In grouped_x_cycles, Graph is used instead of GraphMap. This is different from every other graph-based logical
