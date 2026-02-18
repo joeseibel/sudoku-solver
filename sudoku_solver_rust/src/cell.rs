@@ -15,7 +15,7 @@ use strum::IntoEnumIterator;
 //
 // There is interest in the Rust community in changing this, but it might be a while before we see this change. See the
 // following Rust issue: https://github.com/rust-lang/lang-team/issues/122
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Cell {
     SolvedCell(SolvedCell),
     UnsolvedCell(UnsolvedCell),
@@ -64,7 +64,7 @@ pub trait Location {
     fn column(&self) -> usize;
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct SolvedCell {
     row: usize,
     column: usize,
