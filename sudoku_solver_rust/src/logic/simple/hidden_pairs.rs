@@ -4,7 +4,7 @@ use crate::collections::IteratorZipExt;
 use crate::{
     board::Board, board_modification::BoardModification, cell::Cell, sudoku_number::SudokuNumber,
 };
-use strum::VariantArray;
+use strum::IntoEnumIterator;
 
 // http://www.sudokuwiki.org/Hidden_Candidates#HP
 //
@@ -14,24 +14,23 @@ pub fn hidden_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
-            SudokuNumber::VARIANTS
-                .iter()
+            SudokuNumber::iter()
                 .zip_every_pair()
                 .flat_map(move |(a, b)| {
                     let cells_with_a: Vec<_> = unit
                         .clone()
                         .unsolved_cells()
-                        .filter(|cell| cell.candidates().contains(a))
+                        .filter(|cell| cell.candidates().contains(&a))
                         .collect();
                     let cells_with_b: Vec<_> = unit
                         .clone()
                         .unsolved_cells()
-                        .filter(|cell| cell.candidates().contains(b))
+                        .filter(|cell| cell.candidates().contains(&b))
                         .collect();
                     if cells_with_a.len() == 2 && cells_with_a == cells_with_b {
-                        Some(cells_with_a.into_iter().flat_map(|cell| {
+                        Some(cells_with_a.into_iter().flat_map(move |cell| {
                             cell.candidates()
-                                .difference(&[*a, *b].into())
+                                .difference(&[a, b].into())
                                 .copied()
                                 .collect::<Vec<_>>()
                                 .into_iter()

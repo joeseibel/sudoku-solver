@@ -6,7 +6,7 @@ use crate::{
     sudoku_number::SudokuNumber,
 };
 use std::collections::HashSet;
-use strum::VariantArray;
+use strum::IntoEnumIterator;
 
 // http://www.sudokuwiki.org/Hidden_Candidates#HT
 //
@@ -16,17 +16,16 @@ pub fn hidden_triples(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
-            SudokuNumber::VARIANTS
-                .iter()
+            SudokuNumber::iter()
                 .zip_every_triple()
                 .flat_map(move |(a, b, c)| {
                     let cells: Vec<_> = unit
                         .clone()
                         .unsolved_cells()
                         .filter(|cell| {
-                            cell.candidates().contains(a)
-                                || cell.candidates().contains(b)
-                                || cell.candidates().contains(c)
+                            cell.candidates().contains(&a)
+                                || cell.candidates().contains(&b)
+                                || cell.candidates().contains(&c)
                         })
                         .collect();
                     if cells.len() == 3 {
@@ -34,10 +33,10 @@ pub fn hidden_triples(board: &Board<Cell>) -> Vec<BoardModification> {
                         for cell in &cells {
                             union.extend(cell.candidates());
                         }
-                        if union.contains(a) && union.contains(b) && union.contains(c) {
-                            Some(cells.clone().into_iter().flat_map(|cell| {
+                        if union.contains(&a) && union.contains(&b) && union.contains(&c) {
+                            Some(cells.clone().into_iter().flat_map(move |cell| {
                                 cell.candidates()
-                                    .difference(&[*a, *b, *c].into())
+                                    .difference(&[a, b, c].into())
                                     .copied()
                                     .collect::<Vec<_>>()
                                     .into_iter()

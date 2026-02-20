@@ -6,7 +6,7 @@ use crate::{
     sudoku_number::SudokuNumber,
 };
 use std::collections::HashSet;
-use strum::VariantArray;
+use strum::IntoEnumIterator;
 
 // http://www.sudokuwiki.org/Hidden_Candidates#HQ
 //
@@ -16,18 +16,17 @@ pub fn hidden_quads(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
-            SudokuNumber::VARIANTS
-                .iter()
+            SudokuNumber::iter()
                 .zip_every_quad()
                 .flat_map(move |(a, b, c, d)| {
                     let cells: Vec<_> = unit
                         .clone()
                         .unsolved_cells()
                         .filter(|cell| {
-                            cell.candidates().contains(a)
-                                || cell.candidates().contains(b)
-                                || cell.candidates().contains(c)
-                                || cell.candidates().contains(d)
+                            cell.candidates().contains(&a)
+                                || cell.candidates().contains(&b)
+                                || cell.candidates().contains(&c)
+                                || cell.candidates().contains(&d)
                         })
                         .collect();
                     if cells.len() == 4 {
@@ -35,14 +34,14 @@ pub fn hidden_quads(board: &Board<Cell>) -> Vec<BoardModification> {
                         for cell in &cells {
                             union.extend(cell.candidates());
                         }
-                        if union.contains(a)
-                            && union.contains(b)
-                            && union.contains(c)
-                            && union.contains(d)
+                        if union.contains(&a)
+                            && union.contains(&b)
+                            && union.contains(&c)
+                            && union.contains(&d)
                         {
-                            Some(cells.into_iter().flat_map(|cell| {
+                            Some(cells.into_iter().flat_map(move |cell| {
                                 cell.candidates()
-                                    .difference(&[*a, *b, *c, *d].into())
+                                    .difference(&[a, b, c, d].into())
                                     .copied()
                                     .collect::<Vec<_>>()
                                     .into_iter()
