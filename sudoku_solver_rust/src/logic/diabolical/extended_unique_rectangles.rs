@@ -68,46 +68,38 @@ fn get_removals<'a, U: Iterator<Item = &'a Cell> + Clone>(
                 .copied()
                 .collect();
             if unit_a_candidates.len() == 3 {
-                let removals =
-                    get_unit_removals(&unit_a_candidates, unit_b.into_iter(), &unit_b_candidates)
-                        .collect::<Vec<_>>();
-                Some(removals)
+                get_unit_removals(&unit_a_candidates, &unit_b, &unit_b_candidates)
             } else if unit_b_candidates.len() == 3 {
-                let removals =
-                    get_unit_removals(&unit_b_candidates, unit_a.into_iter(), &unit_a_candidates)
-                        .collect::<Vec<_>>();
-                Some(removals)
+                get_unit_removals(&unit_b_candidates, &unit_a, &unit_a_candidates)
             } else {
-                None
+                Vec::new()
             }
         })
-        .flatten()
 }
 
 fn get_unit_removals<'a>(
     common_candidates: &BTreeSet<SudokuNumber>,
-    unit: impl Iterator<Item = &'a UnsolvedCell>,
+    unit: &[&'a UnsolvedCell],
     unit_candidates: &BTreeSet<SudokuNumber>,
-) -> impl Iterator<Item = LocatedCandidate<'a>> {
-    let removals = if unit_candidates.len() > 3 && unit_candidates.is_superset(common_candidates) {
-        let mut with_additional_iter =
-            unit.filter(|cell| !common_candidates.is_superset(cell.candidates()));
-        if let Some(with_additional) = with_additional_iter.next()
+) -> Vec<LocatedCandidate<'a>> {
+    if unit_candidates.len() > 3 && unit_candidates.is_superset(common_candidates) {
+        let mut with_additional_iter = unit
+            .iter()
+            .filter(|cell| !common_candidates.is_superset(cell.candidates()));
+        if let Some(&with_additional) = with_additional_iter.next()
             && with_additional_iter.next().is_none()
         {
-            let removals = with_additional
+            with_additional
                 .candidates()
                 .intersection(common_candidates)
                 .map(|&candidate| (with_additional, candidate))
-                .collect::<Vec<_>>();
-            Some(removals)
+                .collect()
         } else {
-            None
+            Vec::new()
         }
     } else {
-        None
-    };
-    removals.into_iter().flatten()
+        Vec::new()
+    }
 }
 
 #[cfg(test)]
