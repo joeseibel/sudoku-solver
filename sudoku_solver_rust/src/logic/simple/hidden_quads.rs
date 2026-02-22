@@ -16,11 +16,13 @@ pub fn hidden_quads(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
+            let unit: Vec<_> = unit.collect();
             SudokuNumber::iter()
                 .zip_every_quad()
                 .flat_map(move |(a, b, c, d)| {
                     let cells: Vec<_> = unit
-                        .clone()
+                        .iter()
+                        .copied()
                         .unsolved_cells()
                         .filter(|cell| {
                             cell.candidates().contains(&a)
@@ -39,14 +41,13 @@ pub fn hidden_quads(board: &Board<Cell>) -> Vec<BoardModification> {
                             && union.contains(&c)
                             && union.contains(&d)
                         {
-                            Some(cells.into_iter().flat_map(move |cell| {
+                            let removals = cells.into_iter().flat_map(move |cell| {
                                 cell.candidates()
                                     .difference(&[a, b, c, d].into())
-                                    .copied()
+                                    .map(|&candidate| (cell, candidate))
                                     .collect::<Vec<_>>()
-                                    .into_iter()
-                                    .map(move |candidate| (cell, candidate))
-                            }))
+                            });
+                            Some(removals)
                         } else {
                             None
                         }

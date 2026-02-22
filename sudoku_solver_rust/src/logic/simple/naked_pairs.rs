@@ -13,13 +13,16 @@ pub fn naked_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
-            unit.clone()
+            let unit: Vec<_> = unit.collect();
+            unit.iter()
+                .copied()
                 .unsolved_cells()
                 .filter(|cell| cell.candidates().len() == 2)
                 .zip_every_pair()
                 .filter(|(a, b)| a.candidates() == b.candidates())
-                .flat_map(move |(a, b)| {
-                    unit.clone()
+                .flat_map(|(a, b)| {
+                    unit.iter()
+                        .copied()
                         .unsolved_cells()
                         .filter(move |&cell| cell != a && cell != b)
                         .flat_map(|cell| {
@@ -28,6 +31,7 @@ pub fn naked_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
                                 .map(move |&candidate| (cell, candidate))
                         })
                 })
+                .collect::<Vec<_>>()
         })
         .merge_to_remove_candidates()
 }

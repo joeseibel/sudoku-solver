@@ -16,11 +16,13 @@ pub fn hidden_triples(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
+            let unit: Vec<_> = unit.collect();
             SudokuNumber::iter()
                 .zip_every_triple()
                 .flat_map(move |(a, b, c)| {
                     let cells: Vec<_> = unit
-                        .clone()
+                        .iter()
+                        .copied()
                         .unsolved_cells()
                         .filter(|cell| {
                             cell.candidates().contains(&a)
@@ -34,14 +36,13 @@ pub fn hidden_triples(board: &Board<Cell>) -> Vec<BoardModification> {
                             union.extend(cell.candidates());
                         }
                         if union.contains(&a) && union.contains(&b) && union.contains(&c) {
-                            Some(cells.clone().into_iter().flat_map(move |cell| {
+                            let removals = cells.into_iter().flat_map(move |cell| {
                                 cell.candidates()
                                     .difference(&[a, b, c].into())
-                                    .copied()
+                                    .map(|&candidate| (cell, candidate))
                                     .collect::<Vec<_>>()
-                                    .into_iter()
-                                    .map(move |candidate| (cell, candidate))
-                            }))
+                            });
+                            Some(removals)
                         } else {
                             None
                         }

@@ -24,9 +24,10 @@ pub fn box_line_reduction(board: &Board<Cell>) -> Vec<BoardModification> {
                 get_unit_index: impl Fn(&dyn Location) -> usize,
             ) -> impl Iterator<Item = LocatedCandidate<'_>> {
                 units
-                    .flat_map(|mut unit| {
+                    .flat_map(|unit| {
+                        let mut unit = unit.peekable();
+                        let &first_cell = unit.peek().unwrap();
                         let block_indices: HashSet<_> = unit
-                            .clone()
                             .unsolved_cells()
                             .filter(|cell| cell.candidates().contains(&candidate))
                             .map(UnsolvedCell::block)
@@ -34,7 +35,7 @@ pub fn box_line_reduction(board: &Board<Cell>) -> Vec<BoardModification> {
                         if let Some(&block_index) = block_indices.iter().next()
                             && block_indices.len() == 1
                         {
-                            let unit_index = get_unit_index(unit.next().unwrap());
+                            let unit_index = get_unit_index(first_cell);
                             let removals = board
                                 .get_block(block_index)
                                 .unsolved_cells()

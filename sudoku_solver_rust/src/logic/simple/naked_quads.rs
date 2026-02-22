@@ -14,35 +14,34 @@ pub fn naked_quads(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
-            unit.clone()
+            let unit: Vec<_> = unit.collect();
+            unit.iter()
+                .copied()
                 .unsolved_cells()
                 .zip_every_quad()
-                .flat_map(move |(a, b, c, d)| {
+                .flat_map(|(a, b, c, d)| {
                     let mut union_of_candidates = BTreeSet::new();
                     union_of_candidates.extend(a.candidates());
                     union_of_candidates.extend(b.candidates());
                     union_of_candidates.extend(c.candidates());
                     union_of_candidates.extend(d.candidates());
                     if union_of_candidates.len() == 4 {
-                        let removals = unit
-                            .clone()
+                        unit.iter()
+                            .copied()
                             .unsolved_cells()
-                            .filter(move |&cell| cell != a && cell != b && cell != c && cell != d)
-                            .flat_map(move |cell| {
+                            .filter(|&cell| cell != a && cell != b && cell != c && cell != d)
+                            .flat_map(|cell| {
                                 cell.candidates()
                                     .intersection(&union_of_candidates)
-                                    .copied()
-                                    .collect::<Vec<_>>()
-                                    .into_iter()
-                                    .map(move |candidate| (cell, candidate))
-                            });
-                        Some(removals)
+                                    .map(move |&candidate| (cell, candidate))
+                            })
+                            .collect::<Vec<_>>()
                     } else {
-                        None
+                        Vec::new()
                     }
                 })
+                .collect::<Vec<_>>()
         })
-        .flatten()
         .merge_to_remove_candidates()
 }
 

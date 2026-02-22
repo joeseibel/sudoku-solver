@@ -14,28 +14,30 @@ pub fn hidden_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .units()
         .flat_map(|unit| {
+            let unit: Vec<_> = unit.collect();
             SudokuNumber::iter()
                 .zip_every_pair()
                 .flat_map(move |(a, b)| {
                     let cells_with_a: Vec<_> = unit
-                        .clone()
+                        .iter()
+                        .copied()
                         .unsolved_cells()
                         .filter(|cell| cell.candidates().contains(&a))
                         .collect();
                     let cells_with_b: Vec<_> = unit
-                        .clone()
+                        .iter()
+                        .copied()
                         .unsolved_cells()
                         .filter(|cell| cell.candidates().contains(&b))
                         .collect();
                     if cells_with_a.len() == 2 && cells_with_a == cells_with_b {
-                        Some(cells_with_a.into_iter().flat_map(move |cell| {
+                        let removals = cells_with_a.into_iter().flat_map(move |cell| {
                             cell.candidates()
                                 .difference(&[a, b].into())
-                                .copied()
+                                .map(|&candidate| (cell, candidate))
                                 .collect::<Vec<_>>()
-                                .into_iter()
-                                .map(move |candidate| (cell, candidate))
-                        }))
+                        });
+                        Some(removals)
                     } else {
                         None
                     }

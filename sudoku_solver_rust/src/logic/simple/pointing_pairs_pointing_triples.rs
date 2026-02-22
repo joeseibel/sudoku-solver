@@ -18,21 +18,27 @@ pub fn pointing_pairs_pointing_triples(board: &Board<Cell>) -> Vec<BoardModifica
     board
         .blocks()
         .flat_map(|block| {
-            let unsolved = block.clone().unsolved_cells();
-            let block_index = block.clone().next().unwrap().block();
+            let mut block = block.peekable();
+            let block_index = block.peek().unwrap().block();
+            let unsolved: Vec<_> = block.unsolved_cells().collect();
             SudokuNumber::iter().flat_map(move |candidate| {
-                let with_candidate = unsolved
-                    .clone()
-                    .filter(move |cell| cell.candidates().contains(&candidate));
+                let with_candidate: Vec<_> = unsolved
+                    .iter()
+                    .copied()
+                    .filter(|cell| cell.candidates().contains(&candidate))
+                    .collect();
 
                 fn pointing_pairs_pointing_triples<'a, T: IteratorCellExt<'a>>(
                     block_index: usize,
                     candidate: SudokuNumber,
-                    with_candidate: impl Iterator<Item = &'a UnsolvedCell>,
+                    with_candidate: &[&UnsolvedCell],
                     get_unit: impl FnOnce(usize) -> T,
                     get_unit_index: impl Fn(&UnsolvedCell) -> usize,
                 ) -> impl Iterator<Item = LocatedCandidate<'a>> {
-                    let unit_indices: HashSet<_> = with_candidate.map(get_unit_index).collect();
+                    let unit_indices: HashSet<_> = with_candidate
+                        .iter()
+                        .map(|cell| get_unit_index(cell))
+                        .collect();
                     let removals = if let Some(&unit_index) = unit_indices.iter().next()
                         && unit_indices.len() == 1
                     {
@@ -53,18 +59,20 @@ pub fn pointing_pairs_pointing_triples(board: &Board<Cell>) -> Vec<BoardModifica
                 let row_modifications = pointing_pairs_pointing_triples(
                     block_index,
                     candidate,
-                    with_candidate.clone(),
+                    &with_candidate,
                     |index| board.get_row(index),
                     Location::row,
                 );
                 let column_modifications = pointing_pairs_pointing_triples(
                     block_index,
                     candidate,
-                    with_candidate,
+                    &with_candidate,
                     |index| board.get_column(index),
                     Location::column,
                 );
-                row_modifications.chain(column_modifications)
+                row_modifications
+                    .chain(column_modifications)
+                    .collect::<Vec<_>>()
             })
         })
         .merge_to_remove_candidates()
