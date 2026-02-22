@@ -32,10 +32,12 @@ pub fn hidden_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
                         .collect();
                     if cells_with_a.len() == 2 && cells_with_a == cells_with_b {
                         let removals = cells_with_a.into_iter().flat_map(move |cell| {
-                            cell.candidates()
-                                .difference(&[a, b].into())
-                                .map(|&candidate| (cell, candidate))
-                                .collect::<Vec<_>>()
+                            let mut to_remove = cell.candidates().clone();
+                            to_remove.remove(&a);
+                            to_remove.remove(&b);
+                            to_remove
+                                .into_iter()
+                                .map(move |candidate| (cell, candidate))
                         });
                         Some(removals)
                     } else {
