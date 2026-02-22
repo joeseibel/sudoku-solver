@@ -20,7 +20,7 @@ pub fn box_line_reduction(board: &Board<Cell>) -> Vec<BoardModification> {
             fn box_line_reduction<'a>(
                 board: &Board<Cell>,
                 candidate: SudokuNumber,
-                units: impl Iterator<Item = impl Iterator<Item = &'a Cell> + Clone>,
+                units: impl Iterator<Item = impl Iterator<Item = &'a Cell>>,
                 get_unit_index: impl Fn(&dyn Location) -> usize,
             ) -> impl Iterator<Item = LocatedCandidate<'_>> {
                 units

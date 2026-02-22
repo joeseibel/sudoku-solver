@@ -20,7 +20,7 @@ use strum::IntoEnumIterator;
 pub fn jellyfish(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
-            fn jellyfish<'a, U: Iterator<Item = &'a Cell> + Clone, Z: IteratorCellExt<'a>>(
+            fn jellyfish<'a, U: Iterator<Item = &'a Cell>, Z: IteratorCellExt<'a>>(
                 candidate: SudokuNumber,
                 units: impl Iterator<Item = impl Iterator<Item = &'a Cell>> + IteratorZipExt<Z>,
                 get_other_unit: impl Fn(usize) -> U,

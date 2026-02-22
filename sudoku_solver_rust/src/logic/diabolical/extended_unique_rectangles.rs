@@ -20,7 +20,7 @@ pub fn extended_unique_rectangles(board: &Board<Cell>) -> Vec<BoardModification>
         .merge_to_remove_candidates()
 }
 
-fn get_removals<'a, U: Iterator<Item = &'a Cell> + Clone>(
+fn get_removals<'a, U: Iterator<Item = &'a Cell>>(
     units: impl IteratorZipExt<U>,
 ) -> impl Iterator<Item = LocatedCandidate<'a>> {
     units

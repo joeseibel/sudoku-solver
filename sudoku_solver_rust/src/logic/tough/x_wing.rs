@@ -19,7 +19,7 @@ use strum::IntoEnumIterator;
 pub fn x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
-            fn x_wing<'a, Z: IteratorCellExt<'a>, U: Iterator<Item = &'a Cell> + Clone>(
+            fn x_wing<'a, Z: IteratorCellExt<'a>, U: Iterator<Item = &'a Cell>>(
                 candidate: SudokuNumber,
                 units: impl IteratorZipExt<Z>,
                 get_other_unit: impl Fn(usize) -> U,

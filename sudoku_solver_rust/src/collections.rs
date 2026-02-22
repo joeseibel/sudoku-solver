@@ -4,55 +4,57 @@ pub trait IteratorZipExt<T> {
     fn zip_every_quad(self) -> impl Iterator<Item = (T, T, T, T)>;
 }
 
-impl<T: Clone, I: Iterator<Item = T> + Clone> IteratorZipExt<T> for I {
+impl<T: Clone, I: Iterator<Item = T>> IteratorZipExt<T> for I {
     fn zip_every_pair(self) -> impl Iterator<Item = (T, T)> {
-        self.clone()
+        let list: Vec<_> = self.collect();
+        list.iter()
             .enumerate()
-            .flat_map(move |(first_index, first)| {
-                self.clone()
+            .flat_map(|(first_index, first)| {
+                list.iter()
                     .skip(first_index + 1)
-                    .map(move |second| (first.clone(), second))
+                    .map(|second| (first.clone(), second.clone()))
             })
+            .collect::<Vec<_>>()
+            .into_iter()
     }
 
     fn zip_every_triple(self) -> impl Iterator<Item = (T, T, T)> {
-        self.clone()
+        let list: Vec<_> = self.collect();
+        list.iter()
             .enumerate()
-            .flat_map(move |(first_index, first)| {
-                self.clone().enumerate().skip(first_index + 1).flat_map({
-                    let iter = self.clone();
-                    move |(second_index, second)| {
-                        iter.clone().skip(second_index + 1).map({
-                            let first = first.clone();
-                            move |third| (first.clone(), second.clone(), third)
-                        })
-                    }
-                })
+            .flat_map(|(first_index, first)| {
+                list.iter()
+                    .enumerate()
+                    .skip(first_index + 1)
+                    .flat_map(|(second_index, second)| {
+                        list.iter()
+                            .skip(second_index + 1)
+                            .map(|third| (first.clone(), second.clone(), third.clone()))
+                    })
             })
+            .collect::<Vec<_>>()
+            .into_iter()
     }
 
     fn zip_every_quad(self) -> impl Iterator<Item = (T, T, T, T)> {
-        self.clone()
+        let list: Vec<_> = self.collect();
+        list.iter()
             .enumerate()
-            .flat_map(move |(first_index, first)| {
-                self.clone().enumerate().skip(first_index + 1).flat_map({
-                    let iter = self.clone();
-                    move |(second_index, second)| {
-                        iter.clone().enumerate().skip(second_index + 1).flat_map({
-                            let iter = iter.clone();
-                            let first = first.clone();
-                            move |(third_index, third)| {
-                                iter.clone().skip(third_index + 1).map({
-                                    let first = first.clone();
-                                    let second = second.clone();
-                                    move |fourth| {
-                                        (first.clone(), second.clone(), third.clone(), fourth)
-                                    }
+            .flat_map(|(first_index, first)| {
+                list.iter()
+                    .enumerate()
+                    .skip(first_index + 1)
+                    .flat_map(|(second_index, second)| {
+                        list.iter().enumerate().skip(second_index + 1).flat_map(
+                            |(third_index, third)| {
+                                list.iter().skip(third_index + 1).map(|fourth| {
+                                    (first.clone(), second.clone(), third.clone(), fourth.clone())
                                 })
-                            }
-                        })
-                    }
-                })
+                            },
+                        )
+                    })
             })
+            .collect::<Vec<_>>()
+            .into_iter()
     }
 }
