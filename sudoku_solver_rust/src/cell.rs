@@ -269,11 +269,11 @@ fn parse_cells_with_candidates(chars: &[char]) -> Result<Board<Cell>, String> {
                     .map(|position| position + index)
                     .ok_or("Unmatched '{'.")?;
                 if closing_brace == index {
-                    return Err(r#"Empty "{}"."#.into());
+                    return Err(String::from(r#"Empty "{}"."#));
                 }
                 let chars_in_braces = &chars[index..closing_brace];
                 if chars_in_braces.contains(&'{') {
-                    return Err("Nested '{'.".into());
+                    return Err(String::from("Nested '{'."));
                 }
                 let candidates = chars_in_braces
                     .iter()
@@ -284,7 +284,7 @@ fn parse_cells_with_candidates(chars: &[char]) -> Result<Board<Cell>, String> {
                 }));
                 index = closing_brace + 1;
             }
-            '}' => return Err("Unmatched '}'.".into()),
+            '}' => return Err(String::from("Unmatched '}'.")),
             ch => {
                 let value = ch.try_into()?;
                 cell_builders.push(Box::new(move |row, column| {
