@@ -18,7 +18,10 @@ use logic::{
         aligned_pair_exclusion, bug, extended_unique_rectangles, hidden_unique_rectangles,
         jellyfish, medusa, unique_rectangles, wxyz_wing, x_cycles, xy_chains,
     },
-    extreme::{empty_rectangles, finned_swordfish, finned_x_wing, grouped_x_cycles},
+    extreme::{
+        alternating_inference_chains, empty_rectangles, finned_swordfish, finned_x_wing,
+        grouped_x_cycles,
+    },
     simple::{
         box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
         naked_pairs, naked_quads, naked_singles, naked_triples, pointing_pairs_pointing_triples,
@@ -202,6 +205,9 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         empty_rectangles::empty_rectangles,
         finned_x_wing::finned_x_wing,
         finned_swordfish::finned_swordfish,
+        alternating_inference_chains::alternating_inference_chains_rule_1,
+        alternating_inference_chains::alternating_inference_chains_rule_2,
+        alternating_inference_chains::alternating_inference_chains_rule_3,
     ];
     solutions
         .iter()
@@ -234,39 +240,41 @@ mod tests {
         assert_eq!(expected, solve(board.parse().unwrap()).unwrap().to_string());
     }
 
-    // TODO: Uncomment after implementing Alternating Inference Chains.
-    // #[test]
-    // fn test_unable_to_solve() {
-    //     let board =
-    //         "004007830000050470720030695080700300649513728007008010470080060016040007005276100";
-    //     let expected = indoc! {"
-    //         Unable to solve:
-    //         0 0 4 | 0 0 7 | 8 3 0
-    //         0 0 0 | 0 5 0 | 4 7 0
-    //         7 2 0 | 0 3 0 | 6 9 5
-    //         ------+-------+------
-    //         0 8 0 | 7 0 0 | 3 0 0
-    //         6 4 9 | 5 1 3 | 7 2 8
-    //         0 0 7 | 0 0 8 | 0 1 0
-    //         ------+-------+------
-    //         4 7 0 | 0 8 0 | 0 6 0
-    //         0 1 6 | 0 4 0 | 0 0 7
-    //         0 0 5 | 2 7 6 | 1 0 0
+    #[test]
+    fn test_unable_to_solve() {
+        let board =
+            "004007830000050470720030695080700300649513728007008010470080060016040007005276100";
+        let expected = indoc! {"
+            Unable to solve:
+            0 0 4 | 0 0 7 | 8 3 0
+            0 0 0 | 0 5 0 | 4 7 0
+            7 2 0 | 0 3 0 | 6 9 5
+            ------+-------+------
+            0 8 0 | 7 0 0 | 3 0 0
+            6 4 9 | 5 1 3 | 7 2 8
+            0 0 7 | 0 0 8 | 0 1 0
+            ------+-------+------
+            4 7 0 | 0 8 0 | 0 6 0
+            0 1 6 | 0 4 0 | 0 0 7
+            0 0 5 | 2 7 6 | 1 0 0
 
-    //         Simple String: 004007830000050470720030695080700300649513728007008010470080060016040007005276100
+            Simple String: 004007830000050470720030695080700300649513728007008010470080060016040007005276100
 
-    //         With Candidates:
-    //         {159}{569}4{169}{269}783{12}
-    //         {139}{36}{38}{689}5{129}47{12}
-    //         72{18}{148}3{14}695
-    //         {125}8{12}7{269}{249}3{45}{469}
-    //         649513728
-    //         {235}{35}7{46}{269}8{59}1{469}
-    //         47{23}{139}8{159}{259}6{39}
-    //         {2389}16{39}4{59}{25}{58}7
-    //         {38}{39}52761{48}{349}"};
-    //     assert_eq!(SolverError::UnableToSolve(String::from(expected)), solve(board.parse().unwrap()).unwrap_err());
-    // }
+            With Candidates:
+            {159}{569}4{169}{269}783{12}
+            {139}{36}{38}{689}5{129}47{12}
+            72{18}{148}3{14}695
+            {125}8{12}7{269}{249}3{45}{469}
+            649513728
+            {235}{35}7{46}{269}8{59}1{469}
+            47{23}{139}8{159}{259}6{39}
+            {2389}16{39}4{59}{25}{58}7
+            {38}{39}52761{48}{349}"};
+        assert_eq!(
+            SolverError::UnableToSolve(String::from(expected)),
+            solve(board.parse().unwrap()).unwrap_err()
+        );
+    }
 
     #[test]
     fn test_no_solutions() {
