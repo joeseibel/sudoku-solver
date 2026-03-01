@@ -24,7 +24,7 @@ class XYZWingTest {
     }
 
     @Test
-    public void text2() {
+    public void test2() {
         var board = """
                 6{79}{13479}{57}{23457}{234}{125}{145}8
                 5{13}{134}9{2346}8{1246}{146}7

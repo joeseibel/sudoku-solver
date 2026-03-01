@@ -23,7 +23,7 @@ internal class XYZWingKtTest {
     }
 
     @Test
-    fun text2() {
+    fun test2() {
         val board = """
             6{79}{13479}{57}{23457}{234}{125}{145}8
             5{13}{134}9{2346}8{1246}{146}7
