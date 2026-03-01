@@ -106,6 +106,25 @@ pub fn edge_attributes<E: EdgeRef<Weight = Strength>>(edge: E) -> String {
     }
 }
 
+// Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The modified graph will
+// either be empty or only contain vertices with a degree of two or more and be connected by at least one strong link
+// and one weak link.
+pub fn trim<N: NodeTrait>(graph: &mut UnGraphMap<N, Strength>) {
+    loop {
+        let to_remove = graph.nodes().find(|&vertex| {
+            let edges: Vec<_> = graph.edges(vertex).collect();
+            edges.len() < 2
+                || !edges
+                    .iter()
+                    .any(|&(_, _, &strength)| strength == Strength::Strong)
+        });
+        match to_remove {
+            Some(to_remove) => graph.remove_node(to_remove),
+            None => break,
+        };
+    }
+}
+
 pub fn get_weak_edges_in_alternating_cycle<
     'a,
     G: GraphProp<EdgeType = Undirected> + Index<G::EdgeId, Output = Strength>,

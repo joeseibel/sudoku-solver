@@ -36,7 +36,7 @@ use strum::IntoEnumIterator;
 // then all other candidates can be removed from that cell.
 pub fn alternating_inference_chains_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
     let mut graph = build_graph(board);
-    trim(&mut graph);
+    graphs::trim(&mut graph);
     graphs::get_weak_edges_in_alternating_cycle(&graph)
         .iter()
         .flat_map(
@@ -121,7 +121,7 @@ pub fn alternating_inference_chains_rule_1(board: &Board<Cell>) -> Vec<BoardModi
 // appear multiple times in a chain, but only if all the occurrences are consecutive.
 pub fn alternating_inference_chains_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
     let mut graph = build_graph(board);
-    trim(&mut graph);
+    graphs::trim(&mut graph);
     graph
         .nodes()
         .filter(|&vertex| alternating_cycle_exists(&graph, vertex, Strength::Strong))
@@ -258,25 +258,6 @@ fn alternating_cycle_exists(
                 visited_candidates,
             )
         })
-}
-
-// Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The modified graph will
-// either be empty or only contain vertices with a degree of two or more and be connected by at least one strong link
-// and one weak link.
-fn trim(graph: &mut UnGraphMap<LocatedCandidate, Strength>) {
-    loop {
-        let to_remove = graph.nodes().find(|&vertex| {
-            let edges: Vec<_> = graph.edges(vertex).collect();
-            edges.len() < 2
-                || !edges
-                    .iter()
-                    .any(|&(_, _, &strength)| strength == Strength::Strong)
-        });
-        match to_remove {
-            Some(to_remove) => graph.remove_node(to_remove),
-            None => break,
-        };
-    }
 }
 
 #[cfg(test)]

@@ -32,7 +32,7 @@ pub fn x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
         .flat_map(|candidate| {
             let mut graph = create_strong_links(board, candidate);
             add_weak_links(&mut graph);
-            trim(&mut graph);
+            graphs::trim(&mut graph);
             graphs::get_weak_edges_in_alternating_cycle(&graph)
                 .iter()
                 .flat_map(|(source, target)| {
@@ -173,25 +173,6 @@ fn additional_weak_links<'a>(
         })
         .collect();
     graph.extend(edges);
-}
-
-// Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The modified graph will
-// either be empty or only contain vertices with a degree of two or more and be connected by at least one strong link
-// and one weak link.
-fn trim(graph: &mut UnGraphMap<&UnsolvedCell, Strength>) {
-    loop {
-        let to_remove = graph.nodes().find(|vertex| {
-            let edges: Vec<_> = graph.edges(vertex).collect();
-            edges.len() < 2
-                || !edges
-                    .iter()
-                    .any(|&(_, _, &strength)| strength == Strength::Strong)
-        });
-        match to_remove {
-            Some(to_remove) => graph.remove_node(to_remove),
-            None => break,
-        };
-    }
 }
 
 #[cfg(test)]
