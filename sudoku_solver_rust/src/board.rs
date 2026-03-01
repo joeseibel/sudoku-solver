@@ -118,15 +118,13 @@ impl<T> Board<T> {
 impl<T> Index<(usize, usize)> for Board<T> {
     type Output = T;
 
-    fn index(&self, index: (usize, usize)) -> &Self::Output {
-        let (row_index, column_index) = index;
+    fn index(&self, (row_index, column_index): (usize, usize)) -> &Self::Output {
         &self.rows[row_index][column_index]
     }
 }
 
 impl<T> IndexMut<(usize, usize)> for Board<T> {
-    fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
-        let (row_index, column_index) = index;
+    fn index_mut(&mut self, (row_index, column_index): (usize, usize)) -> &mut Self::Output {
         &mut self.rows[row_index][column_index]
     }
 }
