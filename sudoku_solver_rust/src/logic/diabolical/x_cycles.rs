@@ -5,6 +5,7 @@ use crate::{
     collections::IteratorZipExt,
     graphs::{self, Strength},
     sudoku_number::SudokuNumber,
+    trim,
 };
 use petgraph::prelude::{GraphMap, UnGraphMap};
 use strum::IntoEnumIterator;
@@ -32,7 +33,7 @@ pub fn x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
         .flat_map(|candidate| {
             let mut graph = create_strong_links(board, candidate);
             add_weak_links(&mut graph);
-            graphs::trim(&mut graph);
+            trim!(graph);
             graphs::get_weak_edges_in_alternating_cycle(&graph)
                 .iter()
                 .flat_map(|(source, target)| {

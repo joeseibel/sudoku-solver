@@ -5,6 +5,7 @@ use crate::{
     collections::IteratorZipExt,
     graphs::{self, Strength},
     sudoku_number::SudokuNumber,
+    trim,
 };
 use itertools::Itertools;
 use petgraph::{
@@ -57,7 +58,7 @@ pub fn grouped_x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
             let mut graph = build_graph(board, candidate);
-            trim(&mut graph);
+            trim!(graph);
             graphs::get_weak_edges_in_alternating_cycle(&graph)
                 .into_iter()
                 .flat_map(move |edge_index| {
@@ -549,22 +550,6 @@ fn validate_group(cells: &BTreeSet<&UnsolvedCell>) {
         1,
         "Group cells must be in the same block."
     );
-}
-
-// Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The modified graph will
-// either be empty or only contain vertices with a degree of two or more and be connected by at least one strong link
-// and one weak link.
-fn trim<'a>(graph: &mut UnGraph<Box<dyn Node + 'a>, Strength>) {
-    loop {
-        let to_remove = graph.node_indices().find(|&index| {
-            let edges: Vec<_> = graph.edges(index).collect();
-            edges.len() < 2 || !edges.iter().any(|edge| *edge.weight() == Strength::Strong)
-        });
-        match to_remove {
-            Some(to_remove) => graph.remove_node(to_remove),
-            None => break,
-        };
-    }
 }
 
 #[cfg(test)]

@@ -5,6 +5,7 @@ use crate::{
     collections::IteratorZipExt,
     graphs::{self, Strength},
     sudoku_number::SudokuNumber,
+    trim,
 };
 use petgraph::prelude::{GraphMap, UnGraphMap};
 use std::collections::HashSet;
@@ -36,7 +37,7 @@ use strum::IntoEnumIterator;
 // then all other candidates can be removed from that cell.
 pub fn alternating_inference_chains_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
     let mut graph = build_graph(board);
-    graphs::trim(&mut graph);
+    trim!(graph);
     graphs::get_weak_edges_in_alternating_cycle(&graph)
         .iter()
         .flat_map(
@@ -121,7 +122,7 @@ pub fn alternating_inference_chains_rule_1(board: &Board<Cell>) -> Vec<BoardModi
 // appear multiple times in a chain, but only if all the occurrences are consecutive.
 pub fn alternating_inference_chains_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
     let mut graph = build_graph(board);
-    graphs::trim(&mut graph);
+    trim!(graph);
     graph
         .nodes()
         .filter(|&vertex| alternating_cycle_exists(&graph, vertex, Strength::Strong))

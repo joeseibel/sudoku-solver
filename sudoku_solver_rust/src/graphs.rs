@@ -109,20 +109,33 @@ pub fn edge_attributes<E: EdgeRef<Weight = Strength>>(edge: E) -> String {
 // Continuously trims the graph of vertices that cannot be part of a cycle for X-Cycles rule 1. The modified graph will
 // either be empty or only contain vertices with a degree of two or more and be connected by at least one strong link
 // and one weak link.
-pub fn trim<N: NodeTrait>(graph: &mut UnGraphMap<N, Strength>) {
-    loop {
-        let to_remove = graph.nodes().find(|&vertex| {
-            let edges: Vec<_> = graph.edges(vertex).collect();
-            edges.len() < 2
-                || !edges
-                    .iter()
-                    .any(|&(_, _, &strength)| strength == Strength::Strong)
-        });
-        match to_remove {
-            Some(to_remove) => graph.remove_node(to_remove),
-            None => break,
-        };
-    }
+//
+// Implementing trim as a macro, instead of a function, was the only way to provide a common trim functionality for both
+// Graph and GraphMap. While it is true that calls to node_identifiers and edges can be generalized via the traits
+// IntoNodeIdentifiers and IntoEdges, calling remove_node cannot be generalized. There is no trait that provides the
+// function remove_node, it is defined directly on the types Graph and GraphMap. Therefore, it is not possible to write
+// a generic trim function that can operate on a Graph or a GraphMap. Luckily, the syntax for calling remove_node on a
+// Graph and a GraphMap are the same, so I created a macro instead.
+#[macro_export]
+macro_rules! trim {
+    ($graph:ident) => {{
+        use petgraph::visit::{EdgeRef, IntoNodeIdentifiers};
+        use $crate::graphs::Strength;
+
+        loop {
+            let to_remove = $graph.node_identifiers().find(|&vertex| {
+                let edges: Vec<_> = $graph.edges(vertex).collect();
+                edges.len() < 2
+                    || !edges
+                        .iter()
+                        .any(|edge| *EdgeRef::weight(edge) == Strength::Strong)
+            });
+            match to_remove {
+                Some(to_remove) => $graph.remove_node(to_remove),
+                None => break,
+            };
+        }
+    }};
 }
 
 pub fn get_weak_edges_in_alternating_cycle<
