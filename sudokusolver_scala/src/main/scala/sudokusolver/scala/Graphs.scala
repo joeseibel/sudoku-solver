@@ -34,15 +34,6 @@ extension [N, E <: Edge[N]](graph: Graph[N, E])
       case Some(startVertex) => processNode(startVertex, 0, Map.empty).toSeq
       case None => Nil
 
-class StrengthEdge[+N](val source: N, val target: N, val strength: Strength)
-  extends AbstractGenericUnDiEdge[N, StrengthEdge]:
-
-  def map[NN](node_1: NN, node_2: NN): StrengthEdge[NN] = StrengthEdge(node_1, node_2, strength)
-
-  def getEdgeAttributes: Seq[DotAttr] = strength match
-    case Strength.STRONG => Nil
-    case Strength.WEAK => Seq(DotAttr("style", "dashed"))
-
 enum Strength:
   def opposite: Strength = this match
     case STRONG => WEAK
@@ -53,6 +44,15 @@ enum Strength:
     case WEAK => requiredType == WEAK
 
   case STRONG, WEAK
+
+class StrengthEdge[+N](val source: N, val target: N, val strength: Strength)
+  extends AbstractGenericUnDiEdge[N, StrengthEdge]:
+
+  def map[NN](node_1: NN, node_2: NN): StrengthEdge[NN] = StrengthEdge(node_1, node_2, strength)
+
+  def getEdgeAttributes: Seq[DotAttr] = strength match
+    case Strength.STRONG => Nil
+    case Strength.WEAK => Seq(DotAttr("style", "dashed"))
 
 extension [N](graph: Graph[N, StrengthEdge[N]])
   /*
