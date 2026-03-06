@@ -20,7 +20,7 @@ use logic::{
     },
     extreme::{
         alternating_inference_chains, empty_rectangles, finned_swordfish, finned_x_wing,
-        grouped_x_cycles,
+        grouped_x_cycles, sue_de_coq,
     },
     simple::{
         box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
@@ -208,6 +208,7 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         alternating_inference_chains::alternating_inference_chains_rule_1,
         alternating_inference_chains::alternating_inference_chains_rule_2,
         alternating_inference_chains::alternating_inference_chains_rule_3,
+        sue_de_coq::sue_de_coq,
     ];
     solutions
         .iter()
