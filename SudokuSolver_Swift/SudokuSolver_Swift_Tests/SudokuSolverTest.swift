@@ -18,7 +18,7 @@ import Testing
     #expect(expected == String(describing: try solve(input: Board(optionalBoard: board))))
 }
 
-@Test func testUnableToSolve() {
+@Test func testUnableToSolve() throws {
     let board = "004007830000050470720030695080700300649513728007008010470080060016040007005276100"
     let expected = """
         Unable to solve:
@@ -47,8 +47,8 @@ import Testing
         {2389}16{39}4{59}{25}{58}7
         {38}{39}52761{48}{349}
         """
-    let error = #expect(throws: UnableToSolveError.self) { try solve(input: Board(optionalBoard: board)) }
-    #expect(expected == error?.message)
+    let error = try #require(throws: UnableToSolveError.self) { try solve(input: Board(optionalBoard: board)) }
+    #expect(expected == error.message)
 }
 
 @Test func testNoSolutions() {
