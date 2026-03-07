@@ -65,12 +65,7 @@ pub fn x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                     .flatten()
             }
 
-            let row_removals = x_wing(
-                candidate,
-                board.rows(),
-                |index| board.get_column(index),
-                Location::column,
-            );
+            let row_removals = x_wing(candidate, board.rows(), |index| board.get_column(index), Location::column);
             let column_removals = x_wing(candidate, board.columns(), |index| board.get_row(index), Location::row);
             row_removals.chain(column_removals)
         })

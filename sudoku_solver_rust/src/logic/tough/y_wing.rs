@@ -59,9 +59,7 @@ pub fn y_wing(board: &Board<Cell>) -> Vec<BoardModification> {
             union.len() == 3
         })
         .flat_map(|(a, b, c)| {
-            try_hinge(board, a, b, c)
-                .chain(try_hinge(board, b, a, c))
-                .chain(try_hinge(board, c, a, b))
+            try_hinge(board, a, b, c).chain(try_hinge(board, b, a, c)).chain(try_hinge(board, c, a, b))
         })
         .merge_to_remove_candidates()
 }
@@ -84,11 +82,7 @@ mod tests {
             51{348}{34}79{48}62\
             2{34}7{1345}86{145}{45}9\
         ";
-        let expected = [
-            remove_candidates!(1, 0, 8),
-            remove_candidates!(2, 0, 8),
-            remove_candidates!(7, 2, 4),
-        ];
+        let expected = [remove_candidates!(1, 0, 8), remove_candidates!(2, 0, 8), remove_candidates!(7, 2, 4)];
         assertions::assert_logical_solution(&expected, board, y_wing);
     }
 

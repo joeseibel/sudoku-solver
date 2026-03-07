@@ -15,21 +15,16 @@ use crate::{
 // and twice in the cell's block, while one candidate will appear three times in the cell's row, three times in the
 // cell's column, and three times in the cell's block. This check is only performed against the cell's row.
 pub fn bug(board: &Board<Cell>) -> Option<BoardModification> {
-    let mut cells = board
-        .cells()
-        .unsolved_cells()
-        .filter(|cell| cell.candidates().len() != 2);
+    let mut cells = board.cells().unsolved_cells().filter(|cell| cell.candidates().len() != 2);
     if let Some(cell) = cells.next()
         && cells.next().is_none()
         && cell.candidates().len() == 3
     {
         let row: Vec<_> = board.get_row(cell.row()).unsolved_cells().collect();
-        let mut candidates = cell.candidates().iter().filter(|candidate| {
-            row.iter()
-                .filter(|row_cell| row_cell.candidates().contains(candidate))
-                .count()
-                == 3
-        });
+        let mut candidates = cell
+            .candidates()
+            .iter()
+            .filter(|candidate| row.iter().filter(|row_cell| row_cell.candidates().contains(candidate)).count() == 3);
         let &candidate = candidates.next().unwrap();
         assert!(candidates.next().is_none());
         Some(SetValue::from_cell(cell, candidate))

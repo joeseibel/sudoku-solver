@@ -150,9 +150,7 @@ pub fn medusa_rule_5(board: &Board<Cell>) -> Vec<BoardModification> {
                 .flat_map(|cell| cell.candidates().iter().map(move |&candidate| (cell, candidate)))
                 .filter(move |&removal @ (cell, candidate)| {
                     fn color_in_cell(cell: &UnsolvedCell, color: &Vec<LocatedCandidate>) -> bool {
-                        cell.candidates()
-                            .iter()
-                            .any(|&candidate| color.contains(&(cell, candidate)))
+                        cell.candidates().iter().any(|&candidate| color.contains(&(cell, candidate)))
                     }
 
                     !graph.contains_node(removal)
@@ -175,11 +173,7 @@ pub fn medusa_rule_6(board: &Board<Cell>) -> Vec<BoardModification> {
             board
                 .cells()
                 .unsolved_cells()
-                .filter(|cell| {
-                    cell.candidates()
-                        .iter()
-                        .all(|&candidate| !graph.contains_node((cell, candidate)))
-                })
+                .filter(|cell| cell.candidates().iter().all(|&candidate| !graph.contains_node((cell, candidate))))
                 .find_map(|cell| {
                     fn every_candidate_can_see_color(cell: &UnsolvedCell, color: &Vec<LocatedCandidate>) -> bool {
                         cell.candidates().iter().all(|candidate| {
@@ -211,22 +205,16 @@ fn to_dot(graph: &UnGraphMap<LocatedCandidate, ()>) -> String {
 }
 
 fn create_connected_components(board: &Board<Cell>) -> impl Iterator<Item = UnGraphMap<LocatedCandidate<'_>, ()>> {
-    let same_cell_edges = board
-        .cells()
-        .unsolved_cells()
-        .filter(|cell| cell.candidates().len() == 2)
-        .map(|cell| {
-            let a = (cell, *cell.candidates().first().unwrap());
-            let b = (cell, *cell.candidates().last().unwrap());
-            (a, b)
-        });
+    let same_cell_edges = board.cells().unsolved_cells().filter(|cell| cell.candidates().len() == 2).map(|cell| {
+        let a = (cell, *cell.candidates().first().unwrap());
+        let b = (cell, *cell.candidates().last().unwrap());
+        (a, b)
+    });
     let same_candidate_edges = SudokuNumber::iter().flat_map(|candidate| {
         board
             .units()
             .map(move |unit| {
-                unit.unsolved_cells()
-                    .filter(|cell| cell.candidates().contains(&candidate))
-                    .collect::<Vec<_>>()
+                unit.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect::<Vec<_>>()
             })
             .filter_map(move |unit| match unit[..] {
                 [a, b] => Some(((a, candidate), (b, candidate))),
@@ -246,10 +234,7 @@ mod tests {
 
     #[test]
     fn test_to_dot() {
-        let cells = [
-            UnsolvedCell::with_all_candidates(0, 0),
-            UnsolvedCell::with_all_candidates(0, 0),
-        ];
+        let cells = [UnsolvedCell::with_all_candidates(0, 0), UnsolvedCell::with_all_candidates(0, 0)];
         let cells: Vec<_> = cells.iter().unsolved_cells().collect();
         let a = (cells[0], SudokuNumber::Two);
         let b = (cells[1], SudokuNumber::Six);

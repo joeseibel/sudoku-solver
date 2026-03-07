@@ -16,18 +16,10 @@ pub fn hidden_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
             SudokuNumber::iter()
                 .zip_every_pair()
                 .flat_map(move |(a, b)| {
-                    let cells_with_a: Vec<_> = unit
-                        .iter()
-                        .copied()
-                        .unsolved_cells()
-                        .filter(|cell| cell.candidates().contains(&a))
-                        .collect();
-                    let cells_with_b: Vec<_> = unit
-                        .iter()
-                        .copied()
-                        .unsolved_cells()
-                        .filter(|cell| cell.candidates().contains(&b))
-                        .collect();
+                    let cells_with_a: Vec<_> =
+                        unit.iter().copied().unsolved_cells().filter(|cell| cell.candidates().contains(&a)).collect();
+                    let cells_with_b: Vec<_> =
+                        unit.iter().copied().unsolved_cells().filter(|cell| cell.candidates().contains(&b)).collect();
                     if cells_with_a.len() == 2 && cells_with_a == cells_with_b {
                         let removals = cells_with_a.into_iter().flat_map(move |cell| {
                             let mut to_remove = cell.candidates().clone();
@@ -63,10 +55,7 @@ mod tests {
             {16}{169}54{1679}32{79}8\
             {12468}{1234689}{23}{19}{16789}{69}{459}{34579}{34579}\
         ";
-        let expected = [
-            remove_candidates!(0, 7, 2, 3, 4, 5, 9),
-            remove_candidates!(0, 8, 3, 4, 5, 9),
-        ];
+        let expected = [remove_candidates!(0, 7, 2, 3, 4, 5, 9), remove_candidates!(0, 8, 3, 4, 5, 9)];
         assertions::assert_logical_solution(&expected, board, hidden_pairs);
     }
 

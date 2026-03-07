@@ -54,11 +54,7 @@ impl FromStr for Board<Option<SudokuNumber>> {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let chars: Vec<_> = s.chars().collect();
         if chars.len() != board::UNIT_SIZE_SQUARED {
-            return Err(format!(
-                "str.chars().count() is {}, must be {}.",
-                chars.len(),
-                board::UNIT_SIZE_SQUARED
-            ));
+            return Err(format!("str.chars().count() is {}, must be {}.", chars.len(), board::UNIT_SIZE_SQUARED));
         }
         let chunks = chars.chunks_exact(board::UNIT_SIZE);
         assert!(chunks.remainder().is_empty());
@@ -86,20 +82,13 @@ impl FromStr for Board<SudokuNumber> {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let chars: Vec<_> = s.chars().collect();
         if chars.len() != board::UNIT_SIZE_SQUARED {
-            return Err(format!(
-                "str.chars().count() is {}, must be {}.",
-                chars.len(),
-                board::UNIT_SIZE_SQUARED
-            ));
+            return Err(format!("str.chars().count() is {}, must be {}.", chars.len(), board::UNIT_SIZE_SQUARED));
         }
         let chunks = chars.chunks_exact(board::UNIT_SIZE);
         assert!(chunks.remainder().is_empty());
         let rows = chunks
             .map(|row| -> Result<[SudokuNumber; 9], String> {
-                row.iter()
-                    .map(TryInto::try_into)
-                    .collect::<Result<Vec<_>, _>>()
-                    .map(|row| row.try_into().unwrap())
+                row.iter().map(TryInto::try_into).collect::<Result<Vec<_>, _>>().map(|row| row.try_into().unwrap())
             })
             .collect::<Result<Vec<_>, _>>()?
             .try_into()
@@ -114,25 +103,16 @@ mod tests {
 
     #[test]
     fn test_try_from_unexpected_char() {
-        assert_eq!(
-            "char is 'a', must be between '1' and '9'.",
-            SudokuNumber::try_from('a').unwrap_err()
-        );
+        assert_eq!("char is 'a', must be between '1' and '9'.", SudokuNumber::try_from('a').unwrap_err());
     }
 
     #[test]
     fn test_parse_optional_board_wrong_length() {
-        assert_eq!(
-            "str.chars().count() is 0, must be 81.",
-            "".parse::<Board<Option<SudokuNumber>>>().unwrap_err()
-        );
+        assert_eq!("str.chars().count() is 0, must be 81.", "".parse::<Board<Option<SudokuNumber>>>().unwrap_err());
     }
 
     #[test]
     fn test_parse_board_wrong_length() {
-        assert_eq!(
-            "str.chars().count() is 0, must be 81.",
-            "".parse::<Board<SudokuNumber>>().unwrap_err()
-        );
+        assert_eq!("str.chars().count() is 0, must be 81.", "".parse::<Board<SudokuNumber>>().unwrap_err());
     }
 }

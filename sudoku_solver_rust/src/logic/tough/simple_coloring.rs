@@ -80,11 +80,7 @@ fn create_connected_components(
 ) -> impl Iterator<Item = UnGraphMap<&UnsolvedCell, ()>> {
     let edges = board
         .units()
-        .map(|unit| {
-            unit.unsolved_cells()
-                .filter(|cell| cell.candidates().contains(&candidate))
-                .collect::<Vec<_>>()
-        })
+        .map(|unit| unit.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect::<Vec<_>>())
         .filter_map(|with_candidate| match with_candidate[..] {
             [a, b] => Some((a, b)),
             _ => None,
@@ -102,10 +98,7 @@ mod tests {
 
     #[test]
     fn test_to_dot() {
-        let cells = [
-            UnsolvedCell::with_all_candidates(0, 0),
-            UnsolvedCell::with_all_candidates(0, 3),
-        ];
+        let cells = [UnsolvedCell::with_all_candidates(0, 0), UnsolvedCell::with_all_candidates(0, 3)];
         let cells: Vec<_> = cells.iter().unsolved_cells().collect();
         let a = cells[0];
         let b = cells[1];
@@ -210,11 +203,7 @@ mod tests {
             {69}72{4569}1{459}{45}38\
             {69}38{4569}{56}21{45}7\
         ";
-        let expected = [
-            remove_candidates!(5, 6, 5),
-            remove_candidates!(8, 4, 5),
-            remove_candidates!(8, 7, 5),
-        ];
+        let expected = [remove_candidates!(5, 6, 5), remove_candidates!(8, 4, 5), remove_candidates!(8, 7, 5)];
         assertions::assert_logical_solution(&expected, board, simple_coloring_rule_2);
     }
 
@@ -265,11 +254,7 @@ mod tests {
             287934561\
             519{267}{67}8{37}{237}4\
         ";
-        let expected = [
-            remove_candidates!(3, 4, 7),
-            remove_candidates!(4, 0, 7),
-            remove_candidates!(8, 3, 7),
-        ];
+        let expected = [remove_candidates!(3, 4, 7), remove_candidates!(4, 0, 7), remove_candidates!(8, 3, 7)];
         assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4);
     }
 
@@ -320,11 +305,7 @@ mod tests {
             24{68}7193{58}{568}\
             {39}{39}{67}58412{67}\
         ";
-        let expected = [
-            remove_candidates!(0, 7, 7, 8),
-            remove_candidates!(2, 7, 8),
-            remove_candidates!(4, 8, 7),
-        ];
+        let expected = [remove_candidates!(0, 7, 7, 8), remove_candidates!(2, 7, 8), remove_candidates!(4, 8, 7)];
         assertions::assert_logical_solution(&expected, board, simple_coloring_rule_4);
     }
 }

@@ -22,11 +22,8 @@ pub fn pointing_pairs_pointing_triples(board: &Board<Cell>) -> Vec<BoardModifica
             let block_index = block.peek().unwrap().block();
             let unsolved: Vec<_> = block.unsolved_cells().collect();
             SudokuNumber::iter().flat_map(move |candidate| {
-                let with_candidate: Vec<_> = unsolved
-                    .iter()
-                    .copied()
-                    .filter(|cell| cell.candidates().contains(&candidate))
-                    .collect();
+                let with_candidate: Vec<_> =
+                    unsolved.iter().copied().filter(|cell| cell.candidates().contains(&candidate)).collect();
 
                 fn pointing_pairs_pointing_triples<'a, T: IteratorCellExt<'a>>(
                     block_index: usize,

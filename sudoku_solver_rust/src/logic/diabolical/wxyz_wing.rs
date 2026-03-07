@@ -37,10 +37,8 @@ pub fn wxyz_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                 if let Some(&non_restricted) = non_restricted_iter.next()
                     && non_restricted_iter.next().is_none()
                 {
-                    let with_candidate: Vec<_> = quad
-                        .iter()
-                        .filter(|cell| cell.candidates().contains(&non_restricted))
-                        .collect();
+                    let with_candidate: Vec<_> =
+                        quad.iter().filter(|cell| cell.candidates().contains(&non_restricted)).collect();
                     let removals = board
                         .cells()
                         .unsolved_cells()
@@ -117,11 +115,7 @@ mod tests {
             {148}75{68}93{46}{18}2\
             {48}962{14}537{18}\
         ";
-        let expected = [
-            remove_candidates!(1, 2, 1),
-            remove_candidates!(6, 4, 1),
-            remove_candidates!(8, 4, 4),
-        ];
+        let expected = [remove_candidates!(1, 2, 1), remove_candidates!(6, 4, 1), remove_candidates!(8, 4, 4)];
         assertions::assert_logical_solution(&expected, board, wxyz_wing);
     }
 
@@ -177,11 +171,7 @@ mod tests {
             {789}2{179}5{1379}{179}4{3679}{3678}\
             6{1589}{1579}{34789}{12379}{12479}{2359}{2379}{3578}\
         ";
-        let expected = [
-            remove_candidates!(1, 6, 3),
-            remove_candidates!(1, 7, 3),
-            remove_candidates!(1, 8, 3),
-        ];
+        let expected = [remove_candidates!(1, 6, 3), remove_candidates!(1, 7, 3), remove_candidates!(1, 8, 3)];
         assertions::assert_logical_solution(&expected, board, wxyz_wing);
     }
 
@@ -220,11 +210,7 @@ mod tests {
             {24}35{2489}1{2489}6{28}7\
             6{18}97{238}5{12}4{13}\
         ";
-        let expected = [
-            remove_candidates!(3, 7, 9),
-            remove_candidates!(3, 8, 9),
-            remove_candidates!(4, 1, 8),
-        ];
+        let expected = [remove_candidates!(3, 7, 9), remove_candidates!(3, 8, 9), remove_candidates!(4, 1, 8)];
         assertions::assert_logical_solution(&expected, board, wxyz_wing);
     }
 }

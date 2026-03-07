@@ -79,11 +79,7 @@ mod tests {
             {157}8{157}{1457}{1457}2936\
             9246{378}{38}51{78}\
         ";
-        let expected = [
-            remove_candidates!(1, 6, 4),
-            remove_candidates!(1, 8, 4),
-            remove_candidates!(2, 8, 4),
-        ];
+        let expected = [remove_candidates!(1, 6, 4), remove_candidates!(1, 8, 4), remove_candidates!(2, 8, 4)];
         assertions::assert_logical_solution(&expected, board, box_line_reduction);
     }
 

@@ -43,12 +43,7 @@ pub fn aligned_pair_exclusion(board: &Board<Cell>) -> Vec<BoardModification> {
             let (valid_a_candidates, valid_b_candidates): (Vec<SudokuNumber>, Vec<SudokuNumber>) = cell_a
                 .candidates()
                 .iter()
-                .flat_map(|&candidate_a| {
-                    cell_b
-                        .candidates()
-                        .iter()
-                        .map(move |&candidate_b| (candidate_a, candidate_b))
-                })
+                .flat_map(|&candidate_a| cell_b.candidates().iter().map(move |&candidate_b| (candidate_a, candidate_b)))
                 .filter(|&(candidate_a, candidate_b)| {
                     if candidate_a == candidate_b {
                         !cell_a.is_in_same_unit(cell_b)
@@ -87,10 +82,8 @@ fn get_almost_locked_sets(
             cell != cell_a && cell != cell_b && cell.is_in_same_unit(cell_a) && cell.is_in_same_unit(cell_b)
         })
         .collect();
-    let almost_locked_sets_1 = visible
-        .iter()
-        .map(|cell| cell.candidates().clone())
-        .filter(|candidates| candidates.len() == 2);
+    let almost_locked_sets_1 =
+        visible.iter().map(|cell| cell.candidates().clone()).filter(|candidates| candidates.len() == 2);
     let almost_locked_sets_2 = visible
         .iter()
         .zip_every_pair()
@@ -129,11 +122,7 @@ fn get_almost_locked_sets(
             candidates
         })
         .filter(|candidates| candidates.len() == 5);
-    almost_locked_sets_1
-        .chain(almost_locked_sets_2)
-        .chain(almost_locked_sets_3)
-        .chain(almost_locked_sets_4)
-        .collect()
+    almost_locked_sets_1.chain(almost_locked_sets_2).chain(almost_locked_sets_3).chain(almost_locked_sets_4).collect()
 }
 
 #[cfg(test)]
@@ -354,11 +343,7 @@ mod tests {
             {67}{246}{47}{14}389{125}{245}\
             135{469}{26}{269}{2478}{28}{2478}\
         ";
-        let expected = [
-            remove_candidates!(1, 6, 7),
-            remove_candidates!(1, 8, 7),
-            remove_candidates!(2, 5, 7),
-        ];
+        let expected = [remove_candidates!(1, 6, 7), remove_candidates!(1, 8, 7), remove_candidates!(2, 5, 7)];
         assertions::assert_logical_solution(&expected, board, aligned_pair_exclusion);
     }
 
@@ -375,11 +360,7 @@ mod tests {
             84{579}2{67}{567}{579}13\
             {579}63{45}{47}1{2579}{2579}8\
         ";
-        let expected = [
-            remove_candidates!(1, 4, 4),
-            remove_candidates!(2, 4, 4),
-            remove_candidates!(4, 5, 4),
-        ];
+        let expected = [remove_candidates!(1, 4, 4), remove_candidates!(2, 4, 4), remove_candidates!(4, 5, 4)];
         assertions::assert_logical_solution(&expected, board, aligned_pair_exclusion);
     }
 
@@ -413,11 +394,7 @@ mod tests {
             {23789}{27}{2389}{357}{1348}{13457}{2468}{12368}{123468}\
             {38}5629{134}7{138}{1348}\
         ";
-        let expected = [
-            remove_candidates!(4, 0, 4, 8),
-            remove_candidates!(4, 2, 4, 8),
-            remove_candidates!(7, 0, 2),
-        ];
+        let expected = [remove_candidates!(4, 0, 4, 8), remove_candidates!(4, 2, 4, 8), remove_candidates!(7, 0, 2)];
         assertions::assert_logical_solution(&expected, board, aligned_pair_exclusion);
     }
 }

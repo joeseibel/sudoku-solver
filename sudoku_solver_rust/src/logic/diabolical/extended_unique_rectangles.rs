@@ -15,9 +15,7 @@ use std::collections::{BTreeSet, HashSet};
 // Pattern. If there is one cell with additional candidates, then the removal of such candidates would lead to a Deadly
 // Pattern. The common candidates can be removed from the cell leaving only the additional candidates remaining.
 pub fn extended_unique_rectangles(board: &Board<Cell>) -> Vec<BoardModification> {
-    get_removals(board.rows())
-        .chain(get_removals(board.columns()))
-        .merge_to_remove_candidates()
+    get_removals(board.rows()).chain(get_removals(board.columns())).merge_to_remove_candidates()
 }
 
 fn get_removals<'a, U: Iterator<Item = &'a Cell>>(
@@ -39,19 +37,11 @@ fn get_removals<'a, U: Iterator<Item = &'a Cell>>(
                 })
                 .zip_every_triple()
         })
-        .map(
-            |((other_a_a, other_a_b), (other_b_a, other_b_b), (other_c_a, other_c_b))| {
-                ([other_a_a, other_b_a, other_c_a], [other_a_b, other_b_b, other_c_b])
-            },
-        )
+        .map(|((other_a_a, other_a_b), (other_b_a, other_b_b), (other_c_a, other_c_b))| {
+            ([other_a_a, other_b_a, other_c_a], [other_a_b, other_b_b, other_c_b])
+        })
         .filter(|(unit_a, unit_b)| {
-            unit_a
-                .iter()
-                .chain(unit_b)
-                .map(|cell| cell.block())
-                .collect::<HashSet<_>>()
-                .len()
-                == 3
+            unit_a.iter().chain(unit_b).map(|cell| cell.block()).collect::<HashSet<_>>().len() == 3
         })
         .flat_map(|(unit_a, unit_b)| {
             let unit_a_candidates: BTreeSet<_> = unit_a.iter().flat_map(|cell| cell.candidates()).copied().collect();
@@ -72,9 +62,7 @@ fn get_unit_removals<'a>(
     unit_candidates: &BTreeSet<SudokuNumber>,
 ) -> Vec<LocatedCandidate<'a>> {
     if unit_candidates.len() > 3 && unit_candidates.is_superset(common_candidates) {
-        let mut with_additional_iter = unit
-            .iter()
-            .filter(|cell| !common_candidates.is_superset(cell.candidates()));
+        let mut with_additional_iter = unit.iter().filter(|cell| !common_candidates.is_superset(cell.candidates()));
         if let Some(&with_additional) = with_additional_iter.next()
             && with_additional_iter.next().is_none()
         {

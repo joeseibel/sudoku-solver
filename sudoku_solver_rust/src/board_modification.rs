@@ -68,11 +68,7 @@ impl RemoveCandidates {
                 cell.column()
             );
         }
-        BoardModification::RemoveCandidates(Self {
-            row: cell.row(),
-            column: cell.column(),
-            candidates,
-        })
+        BoardModification::RemoveCandidates(Self { row: cell.row(), column: cell.column(), candidates })
     }
 
     pub fn candidates(&self) -> &BTreeSet<SudokuNumber> {
@@ -99,11 +95,7 @@ impl SetValue {
             cell.row(),
             cell.column()
         );
-        BoardModification::SetValue(Self {
-            row: cell.row(),
-            column: cell.column(),
-            value,
-        })
+        BoardModification::SetValue(Self { row: cell.row(), column: cell.column(), value })
     }
 
     pub fn value(&self) -> SudokuNumber {
@@ -139,11 +131,7 @@ mod tests {
         pub fn from_indices(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> BoardModification {
             board::validate_row_and_column(row, column);
             RemoveCandidates::validate_candidates(&candidates);
-            BoardModification::RemoveCandidates(Self {
-                row,
-                column,
-                candidates,
-            })
+            BoardModification::RemoveCandidates(Self { row, column, candidates })
         }
     }
 
@@ -163,11 +151,7 @@ mod tests {
     impl SetValue {
         pub fn from_indices(row: usize, column: usize, value: usize) -> BoardModification {
             board::validate_row_and_column(row, column);
-            BoardModification::SetValue(Self {
-                row,
-                column,
-                value: SudokuNumber::VARIANTS[value - 1],
-            })
+            BoardModification::SetValue(Self { row, column, value: SudokuNumber::VARIANTS[value - 1] })
         }
     }
 
@@ -181,10 +165,7 @@ mod tests {
     #[should_panic(expected = "candidates must not be empty.")]
     fn test_remove_candidates_from_cell_candidates_are_empty() {
         RemoveCandidates::from_cell(
-            once(&UnsolvedCell::with_all_candidates(0, 0))
-                .unsolved_cells()
-                .next()
-                .unwrap(),
+            once(&UnsolvedCell::with_all_candidates(0, 0)).unsolved_cells().next().unwrap(),
             BTreeSet::new(),
         );
     }

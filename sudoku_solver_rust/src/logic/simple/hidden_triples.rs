@@ -72,11 +72,8 @@ mod tests {
             {57}{25}6{257}19843\
             3{12458}{247}{24578}{478}{2578}{269}{16}{129}\
         ";
-        let expected = [
-            remove_candidates!(0, 3, 4, 7, 8),
-            remove_candidates!(0, 6, 4, 9),
-            remove_candidates!(0, 8, 4, 7, 8, 9),
-        ];
+        let expected =
+            [remove_candidates!(0, 3, 4, 7, 8), remove_candidates!(0, 6, 4, 9), remove_candidates!(0, 8, 4, 7, 8, 9)];
         assertions::assert_logical_solution(&expected, board, hidden_triples);
     }
 }

@@ -59,68 +59,63 @@ pub fn grouped_x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
         .flat_map(|candidate| {
             let mut graph = build_graph(board, candidate);
             trim!(graph);
-            graphs::get_weak_edges_in_alternating_cycle(&graph)
-                .into_iter()
-                .flat_map(move |edge_index| {
-                    let (source_index, target_index) = graph.edge_endpoints(edge_index).unwrap();
-                    let source = &graph[source_index];
-                    let target = &graph[target_index];
+            graphs::get_weak_edges_in_alternating_cycle(&graph).into_iter().flat_map(move |edge_index| {
+                let (source_index, target_index) = graph.edge_endpoints(edge_index).unwrap();
+                let source = &graph[source_index];
+                let target = &graph[target_index];
 
-                    fn remove_from_unit<'a, U: IteratorCellExt<'a>>(
-                        candidate: SudokuNumber,
-                        source: &dyn Node,
-                        target: &dyn Node,
-                        source_unit_index: Option<usize>,
-                        target_unit_index: Option<usize>,
-                        get_unit: impl FnOnce(usize) -> U,
-                    ) -> impl Iterator<Item = LocatedCandidate<'a>> {
-                        let removals = if source_unit_index == target_unit_index
-                            && let Some(source_unit_index) = source_unit_index
-                        {
-                            let removals = get_unit(source_unit_index)
-                                .unsolved_cells()
-                                .filter(move |cell| {
-                                    cell.candidates().contains(&candidate)
-                                        && !source.cells().contains(cell)
-                                        && !target.cells().contains(cell)
-                                })
-                                .map(move |cell| (cell, candidate));
-                            Some(removals)
-                        } else {
-                            None
-                        };
-                        removals.into_iter().flatten()
-                    }
+                fn remove_from_unit<'a, U: IteratorCellExt<'a>>(
+                    candidate: SudokuNumber,
+                    source: &dyn Node,
+                    target: &dyn Node,
+                    source_unit_index: Option<usize>,
+                    target_unit_index: Option<usize>,
+                    get_unit: impl FnOnce(usize) -> U,
+                ) -> impl Iterator<Item = LocatedCandidate<'a>> {
+                    let removals = if source_unit_index == target_unit_index
+                        && let Some(source_unit_index) = source_unit_index
+                    {
+                        let removals = get_unit(source_unit_index)
+                            .unsolved_cells()
+                            .filter(move |cell| {
+                                cell.candidates().contains(&candidate)
+                                    && !source.cells().contains(cell)
+                                    && !target.cells().contains(cell)
+                            })
+                            .map(move |cell| (cell, candidate));
+                        Some(removals)
+                    } else {
+                        None
+                    };
+                    removals.into_iter().flatten()
+                }
 
-                    let row_removals = remove_from_unit(
-                        candidate,
-                        source.as_ref(),
-                        target.as_ref(),
-                        source.row(),
-                        target.row(),
-                        |index| board.get_row(index),
-                    );
-                    let column_removals = remove_from_unit(
-                        candidate,
-                        source.as_ref(),
-                        target.as_ref(),
-                        source.column(),
-                        target.column(),
-                        |index| board.get_column(index),
-                    );
-                    let block_removals = remove_from_unit(
-                        candidate,
-                        source.as_ref(),
-                        target.as_ref(),
-                        Some(source.block()),
-                        Some(target.block()),
-                        |index| board.get_block(index),
-                    );
-                    row_removals
-                        .chain(column_removals)
-                        .chain(block_removals)
-                        .collect::<Vec<_>>()
-                })
+                let row_removals = remove_from_unit(
+                    candidate,
+                    source.as_ref(),
+                    target.as_ref(),
+                    source.row(),
+                    target.row(),
+                    |index| board.get_row(index),
+                );
+                let column_removals = remove_from_unit(
+                    candidate,
+                    source.as_ref(),
+                    target.as_ref(),
+                    source.column(),
+                    target.column(),
+                    |index| board.get_column(index),
+                );
+                let block_removals = remove_from_unit(
+                    candidate,
+                    source.as_ref(),
+                    target.as_ref(),
+                    Some(source.block()),
+                    Some(target.block()),
+                    |index| board.get_block(index),
+                );
+                row_removals.chain(column_removals).chain(block_removals).collect::<Vec<_>>()
+            })
         })
         .merge_to_remove_candidates()
 }
@@ -136,14 +131,12 @@ pub fn grouped_x_cycles_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
             let graph = build_graph(board, candidate);
-            graph
-                .node_indices()
-                .flat_map(move |index| match graph[index].as_cell_node() {
-                    Ok(cell) if graphs::alternating_cycle_exists(&graph, index, Strength::Strong) => {
-                        Some(SetValue::from_cell(cell, candidate))
-                    }
-                    _ => None,
-                })
+            graph.node_indices().flat_map(move |index| match graph[index].as_cell_node() {
+                Ok(cell) if graphs::alternating_cycle_exists(&graph, index, Strength::Strong) => {
+                    Some(SetValue::from_cell(cell, candidate))
+                }
+                _ => None,
+            })
         })
         .collect()
 }
@@ -159,14 +152,10 @@ pub fn grouped_x_cycles_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
             let graph = build_graph(board, candidate);
-            graph
-                .node_indices()
-                .flat_map(move |index| match graph[index].as_cell_node() {
-                    Ok(cell) if graphs::alternating_cycle_exists(&graph, index, Strength::Weak) => {
-                        Some((cell, candidate))
-                    }
-                    _ => None,
-                })
+            graph.node_indices().flat_map(move |index| match graph[index].as_cell_node() {
+                Ok(cell) if graphs::alternating_cycle_exists(&graph, index, Strength::Weak) => Some((cell, candidate)),
+                _ => None,
+            })
         })
         .merge_to_remove_candidates()
 }
@@ -187,17 +176,9 @@ fn build_graph(board: &Board<Cell>, candidate: SudokuNumber) -> UnGraph<Box<dyn 
     // Connect cells.
     board
         .units()
-        .map(|unit| {
-            unit.unsolved_cells()
-                .filter(|cell| cell.candidates().contains(&candidate))
-                .collect::<Vec<_>>()
-        })
+        .map(|unit| unit.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect::<Vec<_>>())
         .for_each(|with_candidate| {
-            let strength = if with_candidate.len() == 2 {
-                Strength::Strong
-            } else {
-                Strength::Weak
-            };
+            let strength = if with_candidate.len() == 2 { Strength::Strong } else { Strength::Weak };
             for (&a, &b) in with_candidate.iter().zip_every_pair() {
                 let a_index = graph
                     .node_indices()
@@ -231,12 +212,9 @@ fn build_graph(board: &Board<Cell>, candidate: SudokuNumber) -> UnGraph<Box<dyn 
             .collect()
     }
 
-    let row_group_indices = create_groups(candidate, &mut graph, board.rows(), |group| {
-        Box::new(RowGroup::new(group))
-    });
-    let column_group_indices = create_groups(candidate, &mut graph, board.columns(), |group| {
-        Box::new(ColumnGroup::new(group))
-    });
+    let row_group_indices = create_groups(candidate, &mut graph, board.rows(), |group| Box::new(RowGroup::new(group)));
+    let column_group_indices =
+        create_groups(candidate, &mut graph, board.columns(), |group| Box::new(ColumnGroup::new(group)));
     let mut group_indices = row_group_indices.clone();
     group_indices.extend(column_group_indices.iter());
 
@@ -254,11 +232,7 @@ fn build_graph(board: &Board<Cell>, candidate: SudokuNumber) -> UnGraph<Box<dyn 
                 .unsolved_cells()
                 .filter(|cell| cell.candidates().contains(&candidate) && !group.cells().contains(cell))
                 .collect();
-            let strength = if other_cells_in_unit.len() == 1 {
-                Strength::Strong
-            } else {
-                Strength::Weak
-            };
+            let strength = if other_cells_in_unit.len() == 1 { Strength::Strong } else { Strength::Weak };
             for cell in other_cells_in_unit {
                 let cell_index = graph
                     .node_indices()
@@ -283,13 +257,7 @@ fn build_graph(board: &Board<Cell>, candidate: SudokuNumber) -> UnGraph<Box<dyn 
         |index| board.get_column(index),
         |node| node.column().unwrap(),
     );
-    connect_groups_to_cells(
-        candidate,
-        &mut graph,
-        &group_indices,
-        |index| board.get_block(index),
-        |node| node.block(),
-    );
+    connect_groups_to_cells(candidate, &mut graph, &group_indices, |index| board.get_block(index), |node| node.block());
 
     // Connect groups to groups.
     fn connect_groups_to_groups<'a, U: IteratorCellExt<'a>>(
@@ -308,11 +276,7 @@ fn build_graph(board: &Board<Cell>, candidate: SudokuNumber) -> UnGraph<Box<dyn 
                 let mut other_cells_in_unit = get_unit(get_unit_index(a.as_ref())).unsolved_cells().filter(|cell| {
                     cell.candidates().contains(&candidate) && !a.cells().contains(cell) && !b.cells().contains(cell)
                 });
-                let strength = if other_cells_in_unit.next().is_none() {
-                    Strength::Strong
-                } else {
-                    Strength::Weak
-                };
+                let strength = if other_cells_in_unit.next().is_none() { Strength::Strong } else { Strength::Weak };
                 graph.add_edge(a_index, b_index, strength);
             }
         }
@@ -440,14 +404,7 @@ impl<'a> Node<'a> for RowGroup<'a> {
     }
 
     fn vertex_label(&self) -> String {
-        format!(
-            "{{{}}}",
-            self.cells
-                .iter()
-                .map(|cell| cell.vertex_label())
-                .collect::<Vec<_>>()
-                .join(", ")
-        )
+        format!("{{{}}}", self.cells.iter().map(|cell| cell.vertex_label()).collect::<Vec<_>>().join(", "))
     }
 }
 
@@ -490,14 +447,7 @@ impl<'a> Node<'a> for ColumnGroup<'a> {
     }
 
     fn vertex_label(&self) -> String {
-        format!(
-            "{{{}}}",
-            self.cells
-                .iter()
-                .map(|cell| cell.vertex_label())
-                .collect::<Vec<_>>()
-                .join(", ")
-        )
+        format!("{{{}}}", self.cells.iter().map(|cell| cell.vertex_label()).collect::<Vec<_>>().join(", "))
     }
 }
 
@@ -523,9 +473,7 @@ mod tests {
 
     #[test]
     fn test_to_dot() {
-        let Cell::UnsolvedCell(a) = UnsolvedCell::with_all_candidates(6, 1) else {
-            panic!()
-        };
+        let Cell::UnsolvedCell(a) = UnsolvedCell::with_all_candidates(6, 1) else { panic!() };
         let a = Box::new(&a);
         let b_cells = [
             UnsolvedCell::with_all_candidates(6, 6),
@@ -533,10 +481,7 @@ mod tests {
             UnsolvedCell::with_all_candidates(6, 8),
         ];
         let b = Box::new(RowGroup::new(b_cells.iter().unsolved_cells().collect()));
-        let c_cells = [
-            UnsolvedCell::with_all_candidates(6, 2),
-            UnsolvedCell::with_all_candidates(8, 2),
-        ];
+        let c_cells = [UnsolvedCell::with_all_candidates(6, 2), UnsolvedCell::with_all_candidates(8, 2)];
         let c = Box::new(ColumnGroup::new(c_cells.iter().unsolved_cells().collect()));
         let mut graph: UnGraph<Box<dyn Node>, _> = Graph::new_undirected();
         let a_index = graph.add_node(a);
@@ -578,30 +523,21 @@ mod tests {
     #[test]
     #[should_panic(expected = "Group cells must be in the same block.")]
     fn test_group_not_in_same_block() {
-        let cells = [
-            UnsolvedCell::with_all_candidates(0, 0),
-            UnsolvedCell::with_all_candidates(0, 3),
-        ];
+        let cells = [UnsolvedCell::with_all_candidates(0, 0), UnsolvedCell::with_all_candidates(0, 3)];
         RowGroup::new(cells.iter().unsolved_cells().collect());
     }
 
     #[test]
     #[should_panic(expected = "RowGroup cells must be in the same row.")]
     fn test_row_group_not_in_same_row() {
-        let cells = [
-            UnsolvedCell::with_all_candidates(0, 0),
-            UnsolvedCell::with_all_candidates(1, 1),
-        ];
+        let cells = [UnsolvedCell::with_all_candidates(0, 0), UnsolvedCell::with_all_candidates(1, 1)];
         RowGroup::new(cells.iter().unsolved_cells().collect());
     }
 
     #[test]
     #[should_panic(expected = "ColumnGroup cells must be in the same column.")]
     fn test_column_group_not_in_same_column() {
-        let cells = [
-            UnsolvedCell::with_all_candidates(0, 0),
-            UnsolvedCell::with_all_candidates(1, 1),
-        ];
+        let cells = [UnsolvedCell::with_all_candidates(0, 0), UnsolvedCell::with_all_candidates(1, 1)];
         ColumnGroup::new(cells.iter().unsolved_cells().collect());
     }
 
@@ -791,11 +727,7 @@ mod tests {
             {2468}{28}7{458}{2568}39{258}1\
             931{458}{2568}{268}{25678}{258}{245678}\
         ";
-        let expected = [
-            remove_candidates!(2, 0, 2),
-            remove_candidates!(2, 2, 2),
-            remove_candidates!(7, 1, 2),
-        ];
+        let expected = [remove_candidates!(2, 0, 2), remove_candidates!(2, 2, 2), remove_candidates!(7, 1, 2)];
         assertions::assert_logical_solution(&expected, board, grouped_x_cycles_rule_3);
     }
 

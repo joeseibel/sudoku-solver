@@ -22,17 +22,11 @@ impl<'a> Rectangle<'a> {
     }
 
     pub fn floor(&self) -> Vec<&'a UnsolvedCell> {
-        self.cells
-            .into_iter()
-            .filter(|cell| cell.candidates().len() == 2)
-            .collect()
+        self.cells.into_iter().filter(|cell| cell.candidates().len() == 2).collect()
     }
 
     pub fn roof(&self) -> Vec<&'a UnsolvedCell> {
-        self.cells
-            .into_iter()
-            .filter(|cell| cell.candidates().len() > 2)
-            .collect()
+        self.cells.into_iter().filter(|cell| cell.candidates().len() > 2).collect()
     }
 }
 
@@ -56,10 +50,7 @@ pub fn create_rectangles(board: &Board<Cell>) -> impl Iterator<Item = Rectangle<
                     .collect::<Vec<_>>()
                     .try_into()
                     .ok()
-                    .map(|common_candidates| Rectangle {
-                        cells,
-                        common_candidates,
-                    })
+                    .map(|common_candidates| Rectangle { cells, common_candidates })
             })
     })
 }

@@ -156,11 +156,7 @@ pub fn finned_x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
 
 impl PartialEq<Cell> for UnsolvedCell {
     fn eq(&self, other: &Cell) -> bool {
-        if let Cell::UnsolvedCell(other) = other {
-            self == other
-        } else {
-            false
-        }
+        if let Cell::UnsolvedCell(other) = other { self == other } else { false }
     }
 }
 

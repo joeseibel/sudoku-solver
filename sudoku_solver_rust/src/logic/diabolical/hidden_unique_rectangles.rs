@@ -41,25 +41,15 @@ fn type_1<'a>(board: &Board<Cell>, rectangle: &Rectangle<'a>, floor: &UnsolvedCe
     let column: Vec<_> = board.get_column(floor.column()).unsolved_cells().collect();
     let mut strong_candidates = rectangle.common_candidates().iter().filter(|candidate| {
         row.iter().filter(|cell| cell.candidates().contains(candidate)).count() == 2
-            && column
-                .iter()
-                .filter(|cell| cell.candidates().contains(candidate))
-                .count()
-                == 2
+            && column.iter().filter(|cell| cell.candidates().contains(candidate)).count() == 2
     });
     if let Some(strong_candidate) = strong_candidates.next()
         && strong_candidates.next().is_none()
     {
-        let &opposite_cell = rectangle
-            .cells()
-            .iter()
-            .find(|cell| cell.row() != floor.row() && cell.column() != floor.column())
-            .unwrap();
-        let &other_candidate = rectangle
-            .common_candidates()
-            .iter()
-            .find(|&candidate| candidate != strong_candidate)
-            .unwrap();
+        let &opposite_cell =
+            rectangle.cells().iter().find(|cell| cell.row() != floor.row() && cell.column() != floor.column()).unwrap();
+        let &other_candidate =
+            rectangle.common_candidates().iter().find(|&candidate| candidate != strong_candidate).unwrap();
         Some((opposite_cell, other_candidate))
     } else {
         None
@@ -95,33 +85,13 @@ fn type_2<'a>(
         let &[candidate_a, candidate_b] = common_candidates;
         let unit_a: Vec<_> = get_unit(get_unit_index(roof_a)).unsolved_cells().collect();
         let unit_b: Vec<_> = get_unit(get_unit_index(roof_b)).unsolved_cells().collect();
-        if unit_a
-            .iter()
-            .filter(|cell| cell.candidates().contains(&candidate_a))
-            .count()
-            == 2
-        {
+        if unit_a.iter().filter(|cell| cell.candidates().contains(&candidate_a)).count() == 2 {
             Some((roof_b, candidate_b))
-        } else if unit_a
-            .iter()
-            .filter(|cell| cell.candidates().contains(&candidate_b))
-            .count()
-            == 2
-        {
+        } else if unit_a.iter().filter(|cell| cell.candidates().contains(&candidate_b)).count() == 2 {
             Some((roof_b, candidate_a))
-        } else if unit_b
-            .iter()
-            .filter(|cell| cell.candidates().contains(&candidate_a))
-            .count()
-            == 2
-        {
+        } else if unit_b.iter().filter(|cell| cell.candidates().contains(&candidate_a)).count() == 2 {
             Some((roof_a, candidate_b))
-        } else if unit_b
-            .iter()
-            .filter(|cell| cell.candidates().contains(&candidate_b))
-            .count()
-            == 2
-        {
+        } else if unit_b.iter().filter(|cell| cell.candidates().contains(&candidate_b)).count() == 2 {
             Some((roof_a, candidate_a))
         } else {
             None
@@ -129,13 +99,9 @@ fn type_2<'a>(
     }
 
     if roof_a.row() == roof_b.row() {
-        get_removal(roof_a, roof_b, common_candidates, UnsolvedCell::column, |index| {
-            board.get_column(index)
-        })
+        get_removal(roof_a, roof_b, common_candidates, UnsolvedCell::column, |index| board.get_column(index))
     } else if roof_a.column() == roof_b.column() {
-        get_removal(roof_a, roof_b, common_candidates, UnsolvedCell::row, |index| {
-            board.get_row(index)
-        })
+        get_removal(roof_a, roof_b, common_candidates, UnsolvedCell::row, |index| board.get_row(index))
     } else {
         None
     }
@@ -176,11 +142,7 @@ mod tests {
             293{57}48{57}61\
             18{47}{257}63{24579}{24579}{27}\
         ";
-        let expected = [
-            remove_candidates!(2, 7, 7),
-            remove_candidates!(8, 6, 7),
-            remove_candidates!(8, 7, 7),
-        ];
+        let expected = [remove_candidates!(2, 7, 7), remove_candidates!(8, 6, 7), remove_candidates!(8, 7, 7)];
         assertions::assert_logical_solution(&expected, board, hidden_unique_rectangles);
     }
 

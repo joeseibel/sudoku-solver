@@ -49,10 +49,7 @@ fn valid_board(board: &str) -> Result<String, String> {
     if board.len() == board::UNIT_SIZE_SQUARED && board.chars().all(|cell| cell.is_ascii_digit()) {
         Ok(board.to_owned())
     } else {
-        Err(format!(
-            "board must be {} numbers with blanks expressed as 0",
-            board::UNIT_SIZE_SQUARED
-        ))
+        Err(format!("board must be {} numbers with blanks expressed as 0", board::UNIT_SIZE_SQUARED))
     }
 }
 
@@ -208,11 +205,7 @@ fn perform_next_solution(board: &Board<Cell>) -> Vec<BoardModification> {
         alternating_inference_chains::alternating_inference_chains_rule_3,
         sue_de_coq::sue_de_coq,
     ];
-    solutions
-        .iter()
-        .map(|solution| solution(board))
-        .find(|modifications| !modifications.is_empty())
-        .unwrap_or_default()
+    solutions.iter().map(|solution| solution(board)).find(|modifications| !modifications.is_empty()).unwrap_or_default()
 }
 
 #[cfg(test)]
@@ -267,10 +260,7 @@ mod tests {
             47{23}{139}8{159}{259}6{39}
             {2389}16{39}4{59}{25}{58}7
             {38}{39}52761{48}{349}"};
-        assert_eq!(
-            SolverError::UnableToSolve(String::from(expected)),
-            solve(board.parse().unwrap()).unwrap_err()
-        );
+        assert_eq!(SolverError::UnableToSolve(String::from(expected)), solve(board.parse().unwrap()).unwrap_err());
     }
 
     #[test]
@@ -282,9 +272,6 @@ mod tests {
     #[test]
     fn test_multiple_solutions() {
         let board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
-        assert_eq!(
-            SolverError::MultipleSolutions,
-            solve(board.parse().unwrap()).unwrap_err()
-        );
+        assert_eq!(SolverError::MultipleSolutions, solve(board.parse().unwrap()).unwrap_err());
     }
 }

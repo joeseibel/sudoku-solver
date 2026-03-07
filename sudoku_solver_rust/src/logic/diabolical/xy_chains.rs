@@ -69,15 +69,11 @@ fn to_dot(graph: &UnGraphMap<LocatedCandidate, Strength>) -> String {
 }
 
 fn create_strong_links(board: &Board<Cell>) -> UnGraphMap<LocatedCandidate<'_>, Strength> {
-    let edges = board
-        .cells()
-        .unsolved_cells()
-        .filter(|cell| cell.candidates().len() == 2)
-        .map(|cell| {
-            let source = (cell, *cell.candidates().first().unwrap());
-            let target = (cell, *cell.candidates().last().unwrap());
-            (source, target, Strength::Strong)
-        });
+    let edges = board.cells().unsolved_cells().filter(|cell| cell.candidates().len() == 2).map(|cell| {
+        let source = (cell, *cell.candidates().first().unwrap());
+        let target = (cell, *cell.candidates().last().unwrap());
+        (source, target, Strength::Strong)
+    });
     GraphMap::from_edges(edges)
 }
 

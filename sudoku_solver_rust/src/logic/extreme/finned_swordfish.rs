@@ -44,11 +44,7 @@ pub fn finned_swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
                 get_finned_cell: impl Fn(usize, usize) -> &'a Cell,
             ) -> impl Iterator<Item = LocatedCandidate<'a>> {
                 let units_with_candidate: Vec<_> = units
-                    .map(|unit| {
-                        unit.unsolved_cells()
-                            .filter(|cell| cell.candidates().contains(&candidate))
-                            .collect()
-                    })
+                    .map(|unit| unit.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect())
                     .filter(|unit: &Vec<_>| !unit.is_empty())
                     .collect();
                 units_with_candidate
@@ -56,11 +52,8 @@ pub fn finned_swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
                     .filter(|unit| (2..=3).contains(&unit.len()))
                     .zip_every_pair()
                     .flat_map(|(base_unit_a, base_unit_b)| {
-                        let other_unit_indices: HashSet<_> = base_unit_a
-                            .iter()
-                            .chain(base_unit_b)
-                            .map(|&cell| get_other_unit_index(cell))
-                            .collect();
+                        let other_unit_indices: HashSet<_> =
+                            base_unit_a.iter().chain(base_unit_b).map(|&cell| get_other_unit_index(cell)).collect();
                         if other_unit_indices.len() == 3 {
                             let removals = units_with_candidate
                                 .iter()

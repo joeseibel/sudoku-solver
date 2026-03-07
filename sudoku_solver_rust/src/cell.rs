@@ -75,12 +75,7 @@ pub struct SolvedCell {
 impl SolvedCell {
     pub fn from_indices(row: usize, column: usize, value: SudokuNumber) -> Cell {
         board::validate_row_and_column(row, column);
-        Cell::SolvedCell(Self {
-            row,
-            column,
-            block: board::get_block_index(row, column),
-            value,
-        })
+        Cell::SolvedCell(Self { row, column, block: board::get_block_index(row, column), value })
     }
 
     pub fn value(&self) -> SudokuNumber {
@@ -106,12 +101,7 @@ impl UnsolvedCell {
     pub fn from_indices(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> Cell {
         board::validate_row_and_column(row, column);
         assert!(!candidates.is_empty(), "candidates must not be empty.");
-        Cell::UnsolvedCell(Self {
-            row,
-            column,
-            block: board::get_block_index(row, column),
-            candidates,
-        })
+        Cell::UnsolvedCell(Self { row, column, block: board::get_block_index(row, column), candidates })
     }
 
     pub fn with_all_candidates(row: usize, column: usize) -> Cell {
@@ -228,11 +218,7 @@ impl FromStr for Board<Cell> {
 
 fn parse_simple_cells(chars: &[char]) -> Result<Board<Cell>, String> {
     if chars.len() != board::UNIT_SIZE_SQUARED {
-        return Err(format!(
-            "str.chars().count() is {}, must be {}.",
-            chars.len(),
-            board::UNIT_SIZE_SQUARED
-        ));
+        return Err(format!("str.chars().count() is {}, must be {}.", chars.len(), board::UNIT_SIZE_SQUARED));
     }
     let chunks = chars.chunks_exact(board::UNIT_SIZE);
     assert!(chunks.remainder().is_empty());
@@ -243,9 +229,7 @@ fn parse_simple_cells(chars: &[char]) -> Result<Board<Cell>, String> {
                 .enumerate()
                 .map(|(column_index, cell)| match cell {
                     '0' => Ok(UnsolvedCell::with_all_candidates(row_index, column_index)),
-                    _ => cell
-                        .try_into()
-                        .map(|cell| SolvedCell::from_indices(row_index, column_index, cell)),
+                    _ => cell.try_into().map(|cell| SolvedCell::from_indices(row_index, column_index, cell)),
                 })
                 .collect::<Result<Vec<_>, _>>()
                 .map(|row| row.try_into().unwrap())
@@ -275,31 +259,21 @@ fn parse_cells_with_candidates(chars: &[char]) -> Result<Board<Cell>, String> {
                 if chars_in_braces.contains(&'{') {
                     return Err(String::from("Nested '{'."));
                 }
-                let candidates = chars_in_braces
-                    .iter()
-                    .map(|ch| ch.try_into())
-                    .collect::<Result<BTreeSet<_>, _>>()?;
-                cell_builders.push(Box::new(move |row, column| {
-                    UnsolvedCell::from_indices(row, column, candidates.clone())
-                }));
+                let candidates = chars_in_braces.iter().map(|ch| ch.try_into()).collect::<Result<BTreeSet<_>, _>>()?;
+                cell_builders
+                    .push(Box::new(move |row, column| UnsolvedCell::from_indices(row, column, candidates.clone())));
                 index = closing_brace + 1;
             }
             '}' => return Err(String::from("Unmatched '}'.")),
             ch => {
                 let value = ch.try_into()?;
-                cell_builders.push(Box::new(move |row, column| {
-                    SolvedCell::from_indices(row, column, value)
-                }));
+                cell_builders.push(Box::new(move |row, column| SolvedCell::from_indices(row, column, value)));
                 index += 1;
             }
         }
     }
     if cell_builders.len() != board::UNIT_SIZE_SQUARED {
-        return Err(format!(
-            "Found {} cells, required {}.",
-            cell_builders.len(),
-            board::UNIT_SIZE_SQUARED
-        ));
+        return Err(format!("Found {} cells, required {}.", cell_builders.len(), board::UNIT_SIZE_SQUARED));
     }
     let chunks = cell_builders.chunks_exact(board::UNIT_SIZE);
     assert!(chunks.remainder().is_empty());
@@ -365,10 +339,7 @@ mod tests {
 
     #[test]
     fn test_parse_simple_cells_wrong_length() {
-        assert_eq!(
-            "str.chars().count() is 0, must be 81.",
-            "".parse::<Board<Cell>>().unwrap_err()
-        );
+        assert_eq!("str.chars().count() is 0, must be 81.", "".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
@@ -388,10 +359,7 @@ mod tests {
 
     #[test]
     fn test_parse_cells_with_candidates_invalid_character_in_braces() {
-        assert_eq!(
-            "char is 'a', must be between '1' and '9'.",
-            "{a}".parse::<Board<Cell>>().unwrap_err()
-        );
+        assert_eq!("char is 'a', must be between '1' and '9'.", "{a}".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]
@@ -401,10 +369,7 @@ mod tests {
 
     #[test]
     fn test_parse_cells_with_candidates_invalid_character() {
-        assert_eq!(
-            "char is 'a', must be between '1' and '9'.",
-            "a{".parse::<Board<Cell>>().unwrap_err()
-        );
+        assert_eq!("char is 'a', must be between '1' and '9'.", "a{".parse::<Board<Cell>>().unwrap_err());
     }
 
     #[test]

@@ -181,11 +181,7 @@ where
             .filter(|edge| edge.weight().is_compatible_with(next_type))
             .map(|edge| (edge, get_opposite_vertex(edge, current_vertex)))
             .collect();
-        if next_type == Strength::Strong
-            && next_edges_and_vertices
-                .iter()
-                .any(|&(_, next_vertex)| next_vertex == end)
-        {
+        if next_type == Strength::Strong && next_edges_and_vertices.iter().any(|&(_, next_vertex)| next_vertex == end) {
             weak_edges
         } else {
             next_edges_and_vertices
@@ -227,60 +223,49 @@ pub fn alternating_cycle_exists<
     vertex: G::NodeId,
     adjacent_edges_type: Strength,
 ) -> bool {
-    graph
-        .edges(vertex)
-        .filter(|edge| *edge.weight() == adjacent_edges_type)
-        .zip_every_pair()
-        .any(|(edge_a, edge_b)| {
-            let start = get_opposite_vertex(edge_a, vertex);
-            let end = get_opposite_vertex(edge_b, vertex);
+    graph.edges(vertex).filter(|edge| *edge.weight() == adjacent_edges_type).zip_every_pair().any(|(edge_a, edge_b)| {
+        let start = get_opposite_vertex(edge_a, vertex);
+        let end = get_opposite_vertex(edge_b, vertex);
 
-            fn alternating_cycle_exists<
-                G: GraphProp<EdgeType = Undirected> + IntoEdges<EdgeWeight = Strength, NodeId: Eq + Hash>,
-            >(
-                graph: G,
-                adjacent_edges_type: Strength,
-                end: G::NodeId,
-                current_vertex: G::NodeId,
-                next_type: Strength,
-                visisted: HashSet<G::NodeId>,
-            ) -> bool {
-                let mut next_vertices: HashSet<_> = graph
-                    .edges(current_vertex)
-                    .filter(|edge| edge.weight().is_compatible_with(next_type))
-                    .map(|edge| get_opposite_vertex(edge, current_vertex))
-                    .collect();
-                if adjacent_edges_type.opposite() == next_type && next_vertices.contains(&end) {
-                    true
-                } else {
-                    next_vertices.retain(|&vertex| !visisted.contains(&vertex) && vertex != end);
-                    next_vertices.iter().any(|&next_vertex| {
-                        let mut next_visited = visisted.clone();
-                        next_visited.insert(next_vertex);
-                        alternating_cycle_exists(
-                            graph,
-                            adjacent_edges_type,
-                            end,
-                            next_vertex,
-                            next_type.opposite(),
-                            next_visited,
-                        )
-                    })
-                }
+        fn alternating_cycle_exists<
+            G: GraphProp<EdgeType = Undirected> + IntoEdges<EdgeWeight = Strength, NodeId: Eq + Hash>,
+        >(
+            graph: G,
+            adjacent_edges_type: Strength,
+            end: G::NodeId,
+            current_vertex: G::NodeId,
+            next_type: Strength,
+            visisted: HashSet<G::NodeId>,
+        ) -> bool {
+            let mut next_vertices: HashSet<_> = graph
+                .edges(current_vertex)
+                .filter(|edge| edge.weight().is_compatible_with(next_type))
+                .map(|edge| get_opposite_vertex(edge, current_vertex))
+                .collect();
+            if adjacent_edges_type.opposite() == next_type && next_vertices.contains(&end) {
+                true
+            } else {
+                next_vertices.retain(|&vertex| !visisted.contains(&vertex) && vertex != end);
+                next_vertices.iter().any(|&next_vertex| {
+                    let mut next_visited = visisted.clone();
+                    next_visited.insert(next_vertex);
+                    alternating_cycle_exists(
+                        graph,
+                        adjacent_edges_type,
+                        end,
+                        next_vertex,
+                        next_type.opposite(),
+                        next_visited,
+                    )
+                })
             }
+        }
 
-            let mut visited = HashSet::new();
-            visited.insert(vertex);
-            visited.insert(start);
-            alternating_cycle_exists(
-                graph,
-                adjacent_edges_type,
-                end,
-                start,
-                adjacent_edges_type.opposite(),
-                visited,
-            )
-        })
+        let mut visited = HashSet::new();
+        visited.insert(vertex);
+        visited.insert(start);
+        alternating_cycle_exists(graph, adjacent_edges_type, end, start, adjacent_edges_type.opposite(), visited)
+    })
 }
 
 pub fn to_dot<
@@ -292,12 +277,8 @@ pub fn to_dot<
 ) -> String {
     let edge_attributes = |_, edge| get_edge_attributes(edge);
     let node_attributes = |_, vertex| format!(r#"label = "{}""#, get_node_attributes(vertex));
-    let dot = Dot::with_attr_getters(
-        graph,
-        &[Config::EdgeNoLabel, Config::NodeNoLabel],
-        &edge_attributes,
-        &node_attributes,
-    );
+    let dot =
+        Dot::with_attr_getters(graph, &[Config::EdgeNoLabel, Config::NodeNoLabel], &edge_attributes, &node_attributes);
     format!("{dot:?}")
 }
 

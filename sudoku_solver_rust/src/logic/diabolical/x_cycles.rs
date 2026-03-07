@@ -60,9 +60,8 @@ pub fn x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
 
                     let row_removals =
                         remove_from_unit(candidate, source, target, Location::row, |index| board.get_row(index));
-                    let column_removals = remove_from_unit(candidate, source, target, Location::column, |index| {
-                        board.get_column(index)
-                    });
+                    let column_removals =
+                        remove_from_unit(candidate, source, target, Location::column, |index| board.get_column(index));
                     let block_removals = remove_from_unit(candidate, source, target, UnsolvedCell::block, |index| {
                         board.get_block(index)
                     });
@@ -124,11 +123,7 @@ fn to_dot(graph: &UnGraphMap<&UnsolvedCell, Strength>) -> String {
 fn create_strong_links(board: &Board<Cell>, candidate: SudokuNumber) -> UnGraphMap<&UnsolvedCell, Strength> {
     let edges = board
         .units()
-        .map(|unit| {
-            unit.unsolved_cells()
-                .filter(|cell| cell.candidates().contains(&candidate))
-                .collect::<Vec<_>>()
-        })
+        .map(|unit| unit.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect::<Vec<_>>())
         .filter_map(|with_candidate| match with_candidate[..] {
             [a, b] => Some((a, b, Strength::Strong)),
             _ => None,

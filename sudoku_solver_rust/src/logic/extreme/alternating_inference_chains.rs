@@ -45,10 +45,7 @@ pub fn alternating_inference_chains_rule_1(board: &Board<Cell>) -> Vec<BoardModi
                 let mut candidates = source_cell.candidates().clone();
                 candidates.remove(&source_candidate);
                 candidates.remove(&target_candidate);
-                candidates
-                    .iter()
-                    .map(|&candidate| (source_cell, candidate))
-                    .collect::<Vec<_>>()
+                candidates.iter().map(|&candidate| (source_cell, candidate)).collect::<Vec<_>>()
             } else {
                 fn remove_from_unit<'a, U: Iterator<Item = &'a Cell>>(
                     source_cell: &UnsolvedCell,
@@ -148,35 +145,17 @@ fn build_graph(board: &Board<Cell>) -> UnGraphMap<LocatedCandidate<'_>, Strength
     let same_candidate_edges = board.units().flat_map(|unit| {
         let unit: Vec<_> = unit.collect();
         SudokuNumber::iter().flat_map(move |candidate| {
-            let with_candidates: Vec<_> = unit
-                .iter()
-                .copied()
-                .unsolved_cells()
-                .filter(|cell| cell.candidates().contains(&candidate))
-                .collect();
-            let strength = if with_candidates.len() == 2 {
-                Strength::Strong
-            } else {
-                Strength::Weak
-            };
-            with_candidates
-                .into_iter()
-                .zip_every_pair()
-                .map(move |(a, b)| ((a, candidate), (b, candidate), strength))
+            let with_candidates: Vec<_> =
+                unit.iter().copied().unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect();
+            let strength = if with_candidates.len() == 2 { Strength::Strong } else { Strength::Weak };
+            with_candidates.into_iter().zip_every_pair().map(move |(a, b)| ((a, candidate), (b, candidate), strength))
         })
     });
 
     // Connect candidates in cells.
     let same_cell_edges = board.cells().unsolved_cells().flat_map(|cell| {
-        let strength = if cell.candidates().len() == 2 {
-            Strength::Strong
-        } else {
-            Strength::Weak
-        };
-        cell.candidates()
-            .iter()
-            .zip_every_pair()
-            .map(move |(&a, &b)| ((cell, a), (cell, b), strength))
+        let strength = if cell.candidates().len() == 2 { Strength::Strong } else { Strength::Weak };
+        cell.candidates().iter().zip_every_pair().map(move |(&a, &b)| ((cell, a), (cell, b), strength))
     });
 
     GraphMap::from_edges(same_candidate_edges.chain(same_cell_edges))
@@ -187,11 +166,8 @@ fn alternating_cycle_exists(
     vertex @ (_, vertex_candidate): LocatedCandidate,
     adjacent_edges_type: Strength,
 ) -> bool {
-    graph
-        .edges(vertex)
-        .filter(|&(_, _, &strength)| strength == adjacent_edges_type)
-        .zip_every_pair()
-        .any(|(edge_a, edge_b)| {
+    graph.edges(vertex).filter(|&(_, _, &strength)| strength == adjacent_edges_type).zip_every_pair().any(
+        |(edge_a, edge_b)| {
             let start @ (_, start_candidate) = graphs::get_opposite_vertex(edge_a, vertex);
             let end @ (_, end_candidate) = graphs::get_opposite_vertex(edge_b, vertex);
 
@@ -250,7 +226,8 @@ fn alternating_cycle_exists(
                 visited,
                 visited_candidates,
             )
-        })
+        },
+    )
 }
 
 #[cfg(test)]
@@ -359,11 +336,8 @@ mod tests {
             {146}{34}{16}{35}7{15}892\
             {15}278{13}9{35}46\
         ";
-        let expected = [
-            SetValue::from_indices(0, 1, 5),
-            SetValue::from_indices(1, 5, 8),
-            SetValue::from_indices(6, 0, 8),
-        ];
+        let expected =
+            [SetValue::from_indices(0, 1, 5), SetValue::from_indices(1, 5, 8), SetValue::from_indices(6, 0, 8)];
         assertions::assert_logical_solution(&expected, board, alternating_inference_chains_rule_2);
     }
 

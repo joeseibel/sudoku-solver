@@ -94,24 +94,12 @@ fn get_intersections(board: &Board<Cell>, candidate: SudokuNumber) -> impl Itera
     (0..board::UNIT_SIZE).flat_map(move |row| {
         let row_in_block = row % board::UNIT_SIZE_SQUARE_ROOT;
         let rectangle_row_1 = if row_in_block == 0 { row + 1 } else { row - row_in_block };
-        let rectangle_row_2 = if row_in_block == 2 {
-            row - 1
-        } else {
-            row - row_in_block + 2
-        };
+        let rectangle_row_2 = if row_in_block == 2 { row - 1 } else { row - row_in_block + 2 };
         (0..board::UNIT_SIZE)
             .filter(move |&column| {
                 let column_in_block = column % board::UNIT_SIZE_SQUARE_ROOT;
-                let rectangle_column_1 = if column_in_block == 0 {
-                    column + 1
-                } else {
-                    column - column_in_block
-                };
-                let rectangle_column_2 = if column_in_block == 2 {
-                    column - 1
-                } else {
-                    column - column_in_block + 2
-                };
+                let rectangle_column_1 = if column_in_block == 0 { column + 1 } else { column - column_in_block };
+                let rectangle_column_2 = if column_in_block == 2 { column - 1 } else { column - column_in_block + 2 };
                 // Check that the rectangle is empty.
                 !board[(rectangle_row_1, rectangle_column_1)].has_candidate(candidate)
                     && !board[(rectangle_row_1, rectangle_column_2)].has_candidate(candidate)

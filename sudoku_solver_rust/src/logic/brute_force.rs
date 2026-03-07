@@ -27,11 +27,7 @@ pub enum BruteForceError {
 pub fn brute_force(board: &Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, BruteForceError> {
     if board.cells().all(Option::is_some) {
         let filled_board = board.map_cells(|cell| cell.unwrap());
-        return if is_solved(&filled_board) {
-            Ok(filled_board)
-        } else {
-            Err(BruteForceError::NoSolutions)
-        };
+        return if is_solved(&filled_board) { Ok(filled_board) } else { Err(BruteForceError::NoSolutions) };
     }
 
     let mut trial_and_error = board.clone();
@@ -61,12 +57,8 @@ pub fn brute_force(board: &Board<Option<SudokuNumber>>) -> Result<Board<SudokuNu
             let row_invalid = trial_and_error.get_row(row_index);
             let column_invalid = trial_and_error.get_column(column_index);
             let block_invalid = trial_and_error.get_block(board::get_block_index(row_index, column_index));
-            let invalid: HashSet<_> = row_invalid
-                .chain(column_invalid)
-                .chain(block_invalid)
-                .flatten()
-                .copied()
-                .collect();
+            let invalid: HashSet<_> =
+                row_invalid.chain(column_invalid).chain(block_invalid).flatten().copied().collect();
             let valid = SudokuNumber::iter().filter(|number| !invalid.contains(number));
             let mut single_solution = None;
             for guess in valid {
@@ -93,15 +85,9 @@ pub fn brute_force(board: &Board<Option<SudokuNumber>>) -> Result<Board<SudokuNu
 }
 
 fn is_solved(board: &Board<SudokuNumber>) -> bool {
-    let rows_solved = board
-        .rows()
-        .all(|row| row.collect::<HashSet<_>>().len() == board::UNIT_SIZE);
-    let columns_solved = board
-        .columns()
-        .all(|column| column.collect::<HashSet<_>>().len() == board::UNIT_SIZE);
-    let blocks_solved = board
-        .blocks()
-        .all(|block| block.collect::<HashSet<_>>().len() == board::UNIT_SIZE);
+    let rows_solved = board.rows().all(|row| row.collect::<HashSet<_>>().len() == board::UNIT_SIZE);
+    let columns_solved = board.columns().all(|column| column.collect::<HashSet<_>>().len() == board::UNIT_SIZE);
+    let blocks_solved = board.blocks().all(|block| block.collect::<HashSet<_>>().len() == board::UNIT_SIZE);
 
     rows_solved && columns_solved && blocks_solved
 }
@@ -126,10 +112,7 @@ mod tests {
     #[test]
     fn test_brute_force_multiple_solutions() {
         let board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
-        assert_eq!(
-            Err(BruteForceError::MultipleSolutions),
-            brute_force(&board.parse().unwrap())
-        );
+        assert_eq!(Err(BruteForceError::MultipleSolutions), brute_force(&board.parse().unwrap()));
     }
 
     #[test]

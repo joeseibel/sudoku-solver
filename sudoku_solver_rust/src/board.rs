@@ -78,11 +78,7 @@ impl<T> Board<T> {
     }
 
     pub fn get_block(&self, block_index: usize) -> impl Iterator<Item = &T> {
-        assert!(
-            block_index < UNIT_SIZE,
-            "block_index is {block_index}, must be between 0 and {}.",
-            UNIT_SIZE - 1
-        );
+        assert!(block_index < UNIT_SIZE, "block_index is {block_index}, must be between 0 and {}.", UNIT_SIZE - 1);
         let row_index = block_index / UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
         let column_index = block_index % UNIT_SIZE_SQUARE_ROOT * UNIT_SIZE_SQUARE_ROOT;
         self.rows
@@ -93,9 +89,7 @@ impl<T> Board<T> {
     }
 
     pub fn map_cells<B: Debug>(&self, mut f: impl FnMut(&T) -> B) -> Board<B> {
-        let rows = self
-            .rows()
-            .map(|row| row.map(&mut f).collect::<Vec<_>>().try_into().unwrap());
+        let rows = self.rows().map(|row| row.map(&mut f).collect::<Vec<_>>().try_into().unwrap());
         Board::new(rows.collect::<Vec<_>>().try_into().unwrap())
     }
 
@@ -153,16 +147,8 @@ pub fn get_block_index(row_index: usize, column_index: usize) -> usize {
 }
 
 pub fn validate_row_and_column(row: usize, column: usize) {
-    assert!(
-        row < UNIT_SIZE,
-        "row is {row}, must be between 0 and {}.",
-        UNIT_SIZE - 1
-    );
-    assert!(
-        column < UNIT_SIZE,
-        "column is {column}, must be between 0 and {}.",
-        UNIT_SIZE - 1
-    );
+    assert!(row < UNIT_SIZE, "row is {row}, must be between 0 and {}.", UNIT_SIZE - 1);
+    assert!(column < UNIT_SIZE, "column is {column}, must be between 0 and {}.", UNIT_SIZE - 1);
 }
 
 #[cfg(test)]

@@ -21,15 +21,9 @@ pub fn naked_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
                 .zip_every_pair()
                 .filter(|(a, b)| a.candidates() == b.candidates())
                 .flat_map(|(a, b)| {
-                    unit.iter()
-                        .copied()
-                        .unsolved_cells()
-                        .filter(move |&cell| cell != a && cell != b)
-                        .flat_map(|cell| {
-                            cell.candidates()
-                                .intersection(a.candidates())
-                                .map(move |&candidate| (cell, candidate))
-                        })
+                    unit.iter().copied().unsolved_cells().filter(move |&cell| cell != a && cell != b).flat_map(|cell| {
+                        cell.candidates().intersection(a.candidates()).map(move |&candidate| (cell, candidate))
+                    })
                 })
                 .collect::<Vec<_>>()
         })

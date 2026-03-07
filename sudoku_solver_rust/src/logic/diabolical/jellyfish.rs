@@ -29,22 +29,14 @@ pub fn jellyfish(board: &Board<Cell>) -> Vec<BoardModification> {
                 units
                     .zip_every_quad()
                     .flat_map(move |(unit_a, unit_b, unit_c, unit_d)| {
-                        let a_with_candidate: Vec<_> = unit_a
-                            .unsolved_cells()
-                            .filter(|cell| cell.candidates().contains(&candidate))
-                            .collect();
-                        let b_with_candidate: Vec<_> = unit_b
-                            .unsolved_cells()
-                            .filter(|cell| cell.candidates().contains(&candidate))
-                            .collect();
-                        let c_with_candidate: Vec<_> = unit_c
-                            .unsolved_cells()
-                            .filter(|cell| cell.candidates().contains(&candidate))
-                            .collect();
-                        let d_with_candidate: Vec<_> = unit_d
-                            .unsolved_cells()
-                            .filter(|cell| cell.candidates().contains(&candidate))
-                            .collect();
+                        let a_with_candidate: Vec<_> =
+                            unit_a.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect();
+                        let b_with_candidate: Vec<_> =
+                            unit_b.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect();
+                        let c_with_candidate: Vec<_> =
+                            unit_c.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect();
+                        let d_with_candidate: Vec<_> =
+                            unit_d.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect();
                         if (2..=4).contains(&a_with_candidate.len())
                             && (2..=4).contains(&b_with_candidate.len())
                             && (2..=4).contains(&c_with_candidate.len())
@@ -79,12 +71,7 @@ pub fn jellyfish(board: &Board<Cell>) -> Vec<BoardModification> {
                     .flatten()
             }
 
-            let row_removals = jellyfish(
-                candidate,
-                board.rows(),
-                |index| board.get_column(index),
-                Location::column,
-            );
+            let row_removals = jellyfish(candidate, board.rows(), |index| board.get_column(index), Location::column);
             let column_removals = jellyfish(candidate, board.columns(), |index| board.get_row(index), Location::row);
             row_removals.chain(column_removals)
         })

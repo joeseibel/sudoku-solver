@@ -13,18 +13,10 @@ pub fn prune_candidates(board: &Board<Cell>) -> Vec<BoardModification> {
             let same_row = board.get_row(cell.row());
             let same_column = board.get_column(cell.column());
             let same_block = board.get_block(cell.block());
-            let visible_values = same_row
-                .chain(same_column)
-                .chain(same_block)
-                .solved_cells()
-                .map(SolvedCell::value)
-                .collect();
+            let visible_values =
+                same_row.chain(same_column).chain(same_block).solved_cells().map(SolvedCell::value).collect();
             let to_remove = cell.candidates() & &visible_values;
-            if to_remove.is_empty() {
-                None
-            } else {
-                Some(RemoveCandidates::from_cell(cell, to_remove))
-            }
+            if to_remove.is_empty() { None } else { Some(RemoveCandidates::from_cell(cell, to_remove)) }
         })
         .collect()
 }
