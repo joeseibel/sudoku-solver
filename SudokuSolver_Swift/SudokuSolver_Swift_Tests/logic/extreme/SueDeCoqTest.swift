@@ -19,7 +19,7 @@ final class SueDeCoqTest: XCTestCase {
             BoardModification(row: 6, column: 1, candidates: 2),
             BoardModification(row: 8, column: 1, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: sueDeCoq)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: sueDeCoq)
     }
     
     func test2() {
@@ -42,7 +42,7 @@ final class SueDeCoqTest: XCTestCase {
             BoardModification(row: 4, column: 5, candidates: 8),
             BoardModification(row: 5, column: 7, candidates: 1, 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: sueDeCoq)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: sueDeCoq)
     }
     
     func test3() {
@@ -63,6 +63,6 @@ final class SueDeCoqTest: XCTestCase {
             BoardModification(row: 4, column: 2, candidates: 8),
             BoardModification(row: 5, column: 7, candidates: 1, 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: sueDeCoq)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: sueDeCoq)
     }
 }

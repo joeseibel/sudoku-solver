@@ -17,7 +17,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
             BoardModification(row: 0, column: 5, candidates: 2, 4),
             BoardModification(row: 3, column: 2, candidates: 6)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
     func testType1Test2() {
@@ -37,7 +37,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
             BoardModification(row: 8, column: 6, candidates: 7),
             BoardModification(row: 8, column: 7, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
     func testType2Test1() {
@@ -56,7 +56,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
             BoardModification(row: 3, column: 2, candidates: 6),
             BoardModification(row: 3, column: 6, candidates: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
     func testType2Test2() {
@@ -75,7 +75,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
             BoardModification(row: 8, column: 6, candidates: 7),
             BoardModification(row: 8, column: 7, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
     func testType2BTest1() {
@@ -94,7 +94,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
             BoardModification(row: 7, column: 2, candidates: 7),
             BoardModification(row: 7, column: 5, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
     func testType2BTest2() {
@@ -110,6 +110,6 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
             18{47}{257}63{24579}{2459}{27}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 8, column: 6, candidates: 7)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
 }

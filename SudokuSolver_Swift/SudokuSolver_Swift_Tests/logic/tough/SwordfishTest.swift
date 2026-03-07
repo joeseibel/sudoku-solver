@@ -20,7 +20,7 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 2, column: 8, candidates: 8),
             BoardModification(row: 3, column: 5, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
     
     func test2() {
@@ -43,7 +43,7 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 8, column: 5, candidates: 9),
             BoardModification(row: 8, column: 6, candidates: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
     
     func test3() {
@@ -71,7 +71,7 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 6, column: 6, candidates: 4),
             BoardModification(row: 6, column: 8, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
     
     func test4() {
@@ -99,7 +99,7 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 5, column: 5, candidates: 2),
             BoardModification(row: 5, column: 6, candidates: 2)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
     
     func test5() {
@@ -125,6 +125,6 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 7, column: 2, candidates: 7, 8),
             BoardModification(row: 7, column: 3, candidates: 7, 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
 }

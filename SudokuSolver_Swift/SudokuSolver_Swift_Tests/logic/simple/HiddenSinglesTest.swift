@@ -24,6 +24,6 @@ final class HiddenSinglesTest: XCTestCase {
             BoardModification(row: 7, column: 8, value: 7),
             BoardModification(row: 8, column: 7, value: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenSingles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenSingles)
     }
 }

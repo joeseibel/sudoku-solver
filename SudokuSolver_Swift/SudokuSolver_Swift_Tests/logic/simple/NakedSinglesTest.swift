@@ -17,6 +17,6 @@ final class NakedSinglesTest: XCTestCase {
             BoardModification(row: 0, column: 7, value: 9),
             BoardModification(row: 8, column: 7, value: 6)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedSingles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: nakedSingles)
     }
 }

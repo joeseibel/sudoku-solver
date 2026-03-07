@@ -17,7 +17,7 @@ final class HiddenPairsTest: XCTestCase {
             BoardModification(row: 0, column: 7, candidates: 2, 3, 4, 5, 9),
             BoardModification(row: 0, column: 8, candidates: 3, 4, 5, 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenPairs)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenPairs)
     }
     
     func test2() {
@@ -38,6 +38,6 @@ final class HiddenPairsTest: XCTestCase {
             BoardModification(row: 4, column: 6, candidates: 6, 9),
             BoardModification(row: 5, column: 6, candidates: 1, 5, 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenPairs)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenPairs)
     }
 }

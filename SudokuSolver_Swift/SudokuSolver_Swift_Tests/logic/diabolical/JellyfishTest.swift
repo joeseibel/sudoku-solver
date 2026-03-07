@@ -23,7 +23,7 @@ final class JellyfishTest: XCTestCase {
             BoardModification(row: 7, column: 0, candidates: 2),
             BoardModification(row: 7, column: 8, candidates: 2)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: jellyfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: jellyfish)
     }
     
     func test2() {
@@ -61,7 +61,7 @@ final class JellyfishTest: XCTestCase {
             BoardModification(row: 7, column: 3, candidates: 8),
             BoardModification(row: 7, column: 5, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: jellyfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: jellyfish)
     }
     
     func test3() {
@@ -87,7 +87,7 @@ final class JellyfishTest: XCTestCase {
             BoardModification(row: 5, column: 2, candidates: 2),
             BoardModification(row: 5, column: 8, candidates: 2)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: jellyfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: jellyfish)
     }
     
     func test4() {
@@ -126,7 +126,7 @@ final class JellyfishTest: XCTestCase {
             BoardModification(row: 8, column: 6, candidates: 9),
             BoardModification(row: 8, column: 7, candidates: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: jellyfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: jellyfish)
     }
     
     func test5() {
@@ -147,7 +147,7 @@ final class JellyfishTest: XCTestCase {
             BoardModification(row: 3, column: 8, candidates: 5),
             BoardModification(row: 8, column: 6, candidates: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: jellyfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: jellyfish)
     }
     
     func test6() {
@@ -176,7 +176,7 @@ final class JellyfishTest: XCTestCase {
             BoardModification(row: 7, column: 5, candidates: 5),
             BoardModification(row: 7, column: 6, candidates: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: jellyfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: jellyfish)
     }
     
     func test7() {
@@ -199,7 +199,7 @@ final class JellyfishTest: XCTestCase {
             BoardModification(row: 6, column: 3, candidates: 5, 8),
             BoardModification(row: 6, column: 5, candidates: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: jellyfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: jellyfish)
     }
     
     func test8() {
@@ -238,7 +238,7 @@ final class JellyfishTest: XCTestCase {
             BoardModification(row: 8, column: 2, candidates: 8),
             BoardModification(row: 8, column: 3, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: jellyfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: jellyfish)
     }
     
     func test9() {
@@ -277,6 +277,6 @@ final class JellyfishTest: XCTestCase {
             BoardModification(row: 7, column: 4, candidates: 7),
             BoardModification(row: 7, column: 5, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: jellyfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: jellyfish)
     }
 }

@@ -58,6 +58,6 @@ final class PruneCandidatesTest: XCTestCase {
             BoardModification(row: 8, column: 7, candidates: 1, 2, 3, 4, 5, 7, 8, 9),
             BoardModification(row: 8, column: 8, candidates: 3, 4, 5, 8, 9)
         ]
-        assertLogicalSolution(expected: expected, board: Board(simpleBoard: board), logicFunction: pruneCandidates)
+        assertLogicalSolutionXCTest(expected: expected, board: Board(simpleBoard: board), logicFunction: pruneCandidates)
     }
 }

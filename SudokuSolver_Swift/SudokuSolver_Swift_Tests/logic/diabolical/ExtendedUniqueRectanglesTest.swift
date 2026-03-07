@@ -14,7 +14,7 @@ final class ExtendedUniqueRectanglesTest: XCTestCase {
             428673591
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 2, column: 0, candidates: 1, 5)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: extendedUniqueRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: extendedUniqueRectangles)
     }
     
     func test2() {
@@ -30,7 +30,7 @@ final class ExtendedUniqueRectanglesTest: XCTestCase {
             397{56}4{56}128
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 4, column: 7, candidates: 4, 7)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: extendedUniqueRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: extendedUniqueRectangles)
     }
     
     func test3() {
@@ -46,6 +46,6 @@ final class ExtendedUniqueRectanglesTest: XCTestCase {
             {23}485{123}9{37}6{137}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 3, column: 1, candidates: 3, 8)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: extendedUniqueRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: extendedUniqueRectangles)
     }
 }

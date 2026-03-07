@@ -19,7 +19,7 @@ final class NakedTriplesTest: XCTestCase {
             BoardModification(row: 4, column: 6, candidates: 5, 8, 9),
             BoardModification(row: 4, column: 7, candidates: 5, 8, 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedTriples)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: nakedTriples)
     }
 
     func test2() {
@@ -45,6 +45,6 @@ final class NakedTriplesTest: XCTestCase {
             BoardModification(row: 5, column: 6, candidates: 8),
             BoardModification(row: 5, column: 7, candidates: 2, 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedTriples)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: nakedTriples)
     }
 }

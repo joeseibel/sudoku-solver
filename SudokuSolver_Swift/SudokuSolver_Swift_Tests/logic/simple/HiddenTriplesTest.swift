@@ -18,6 +18,6 @@ final class HiddenTriplesTest: XCTestCase {
             BoardModification(row: 0, column: 6, candidates: 4, 9),
             BoardModification(row: 0, column: 8, candidates: 4, 7, 8, 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenTriples)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenTriples)
     }
 }

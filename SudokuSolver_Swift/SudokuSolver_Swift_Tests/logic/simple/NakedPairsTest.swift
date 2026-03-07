@@ -24,7 +24,7 @@ final class NakedPairsTest: XCTestCase {
             BoardModification(row: 5, column: 4, candidates: 8),
             BoardModification(row: 5, column: 8, candidates: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedPairs)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: nakedPairs)
     }
     
     func test2() {
@@ -48,6 +48,6 @@ final class NakedPairsTest: XCTestCase {
             BoardModification(row: 7, column: 4, candidates: 3, 7),
             BoardModification(row: 8, column: 2, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedPairs)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: nakedPairs)
     }
 }

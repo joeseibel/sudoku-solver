@@ -42,7 +42,7 @@ final class XYChainsTest: XCTestCase {
             BoardModification(row: 2, column: 8, candidates: 5),
             BoardModification(row: 7, column: 0, candidates: 6)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyChains)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xyChains)
     }
     
     func test2() {
@@ -66,7 +66,7 @@ final class XYChainsTest: XCTestCase {
             BoardModification(row: 4, column: 7, candidates: 2),
             BoardModification(row: 5, column: 2, candidates: 6)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyChains)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xyChains)
     }
     
     func test3() {
@@ -85,7 +85,7 @@ final class XYChainsTest: XCTestCase {
             BoardModification(row: 3, column: 4, candidates: 9),
             BoardModification(row: 4, column: 6, candidates: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyChains)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xyChains)
     }
     
     func test4() {
@@ -124,7 +124,7 @@ final class XYChainsTest: XCTestCase {
             BoardModification(row: 7, column: 6, candidates: 7),
             BoardModification(row: 7, column: 8, candidates: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyChains)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xyChains)
     }
     
     func test5() {
@@ -145,6 +145,6 @@ final class XYChainsTest: XCTestCase {
             BoardModification(row: 1, column: 4, candidates: 3, 6),
             BoardModification(row: 6, column: 8, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyChains)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xyChains)
     }
 }

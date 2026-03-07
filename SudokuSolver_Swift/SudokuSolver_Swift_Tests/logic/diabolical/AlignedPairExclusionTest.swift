@@ -17,7 +17,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 6, column: 2, candidates: 8),
             BoardModification(row: 7, column: 6, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test2() {
@@ -33,7 +33,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             36{1258}{2458}{258}{25}{2489}7{1289}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 6, candidates: 8)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test3() {
@@ -52,7 +52,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 2, column: 1, candidates: 1),
             BoardModification(row: 2, column: 2, candidates: 3)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test4() {
@@ -71,7 +71,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 1, column: 2, candidates: 7),
             BoardModification(row: 6, column: 7, candidates: 1)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test5() {
@@ -90,7 +90,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 0, column: 5, candidates: 9),
             BoardModification(row: 1, column: 8, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test6() {
@@ -112,7 +112,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 7, column: 5, candidates: 9),
             BoardModification(row: 8, column: 5, candidates: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test7() {
@@ -134,7 +134,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 3, column: 8, candidates: 4),
             BoardModification(row: 5, column: 8, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test8() {
@@ -155,7 +155,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 3, column: 8, candidates: 4),
             BoardModification(row: 5, column: 8, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test9() {
@@ -179,7 +179,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 3, column: 2, candidates: 4),
             BoardModification(row: 5, column: 0, candidates: 6)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test10() {
@@ -200,7 +200,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 2, column: 3, candidates: 7),
             BoardModification(row: 2, column: 5, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test11() {
@@ -220,7 +220,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 1, column: 8, candidates: 7),
             BoardModification(row: 2, column: 5, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test12() {
@@ -240,7 +240,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 2, column: 4, candidates: 4),
             BoardModification(row: 4, column: 5, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test13() {
@@ -256,7 +256,7 @@ final class AlignedPairExclusionTest: XCTestCase {
             {579}63{45}{47}1{2579}{2579}8
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 4, column: 4, candidates: 2)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
     func test14() {
@@ -276,6 +276,6 @@ final class AlignedPairExclusionTest: XCTestCase {
             BoardModification(row: 4, column: 2, candidates: 4, 8),
             BoardModification(row: 7, column: 0, candidates: 2)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
 }

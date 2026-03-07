@@ -14,7 +14,7 @@ final class HiddenQuadsTest: XCTestCase {
             13{246}75{46}{26}98
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 6, candidates: 6)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenQuads)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenQuads)
     }
     
     func test2() {
@@ -35,6 +35,6 @@ final class HiddenQuadsTest: XCTestCase {
             BoardModification(row: 5, column: 3, candidates: 3, 7, 8),
             BoardModification(row: 5, column: 5, candidates: 3, 5, 7, 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenQuads)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenQuads)
     }
 }

@@ -14,7 +14,7 @@ final class EmptyRectanglesTest: XCTestCase {
             {36}{16}{136}279854
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 3, column: 8, candidates: 6)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
     
     func test2() {
@@ -33,7 +33,7 @@ final class EmptyRectanglesTest: XCTestCase {
             BoardModification(row: 4, column: 8, candidates: 6),
             BoardModification(row: 7, column: 2, candidates: 6)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
     
     func test3() {
@@ -49,7 +49,7 @@ final class EmptyRectanglesTest: XCTestCase {
             {37}{3578}{378}{23}{235}1694
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 8, column: 4, candidates: 3)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
     
     func test4() {
@@ -70,7 +70,7 @@ final class EmptyRectanglesTest: XCTestCase {
             BoardModification(row: 7, column: 7, candidates: 7),
             BoardModification(row: 8, column: 4, candidates: 2)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
     
     func test5() {
@@ -86,6 +86,6 @@ final class EmptyRectanglesTest: XCTestCase {
             {2345}168{345}{45}{237}9{237}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 6, column: 7, candidates: 3)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
 }

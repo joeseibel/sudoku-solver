@@ -42,7 +42,7 @@ final class SimpleColoringTest: XCTestCase {
             BoardModification(row: 7, column: 4, candidates: 5),
             BoardModification(row: 8, column: 8, candidates: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule2)
     }
     
     func testRule2Test2() {
@@ -67,7 +67,7 @@ final class SimpleColoringTest: XCTestCase {
             BoardModification(row: 7, column: 4, candidates: 7),
             BoardModification(row: 8, column: 1, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule2)
     }
     
     func testRule2Test3() {
@@ -89,7 +89,7 @@ final class SimpleColoringTest: XCTestCase {
             BoardModification(row: 4, column: 1, candidates: 9),
             BoardModification(row: 5, column: 3, candidates: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule2)
     }
     
     func testRule2Test4() {
@@ -109,7 +109,7 @@ final class SimpleColoringTest: XCTestCase {
             BoardModification(row: 8, column: 4, candidates: 5),
             BoardModification(row: 8, column: 7, candidates: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule2)
     }
     
     func testRule4Test1() {
@@ -128,7 +128,7 @@ final class SimpleColoringTest: XCTestCase {
             BoardModification(row: 4, column: 0, candidates: 5),
             BoardModification(row: 4, column: 2, candidates: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
     }
     
     func testRule4Test2() {
@@ -147,7 +147,7 @@ final class SimpleColoringTest: XCTestCase {
             BoardModification(row: 1, column: 4, candidates: 3),
             BoardModification(row: 1, column: 8, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
     }
     
     func testRule4Test3() {
@@ -167,7 +167,7 @@ final class SimpleColoringTest: XCTestCase {
             BoardModification(row: 4, column: 0, candidates: 7),
             BoardModification(row: 8, column: 3, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
     }
     
     func testRule4Test4() {
@@ -183,7 +183,7 @@ final class SimpleColoringTest: XCTestCase {
             5{4678}{78}193{246}{2467}{24}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 1, column: 7, candidates: 2, 4)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
     }
     
     func testRule4Test5() {
@@ -199,7 +199,7 @@ final class SimpleColoringTest: XCTestCase {
             178{46}29{456}3{456}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 1, column: 7, candidates: 6)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
     }
     
     func testRule4Test6() {
@@ -219,6 +219,6 @@ final class SimpleColoringTest: XCTestCase {
             BoardModification(row: 2, column: 7, candidates: 8),
             BoardModification(row: 4, column: 8, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: simpleColoringRule4)
     }
 }

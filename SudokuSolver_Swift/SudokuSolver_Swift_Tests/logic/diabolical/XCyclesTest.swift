@@ -41,7 +41,7 @@ final class XCyclesTest: XCTestCase {
             BoardModification(row: 6, column: 2, candidates: 8),
             BoardModification(row: 6, column: 8, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule1)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule1)
     }
     
     func testRule2() {
@@ -57,7 +57,7 @@ final class XCyclesTest: XCTestCase {
             {139}{39}84265{19}7
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 8, column: 0, value: 1)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule2)
     }
     
     func testRule3Test1() {
@@ -73,7 +73,7 @@ final class XCyclesTest: XCTestCase {
             4578{12}36{29}{129}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 2, column: 2, candidates: 1)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
     }
     
     func testRule3Test2() {
@@ -92,7 +92,7 @@ final class XCyclesTest: XCTestCase {
             BoardModification(row: 5, column: 7, candidates: 1),
             BoardModification(row: 8, column: 2, candidates: 1)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
     }
     
     func testRule3Test3() {
@@ -108,7 +108,7 @@ final class XCyclesTest: XCTestCase {
             {145679}{145}{15679}32{57}{1489}{46}{15689}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 4, column: 8, candidates: 2, 9)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
     }
     
     func testRule3Test4() {
@@ -127,6 +127,6 @@ final class XCyclesTest: XCTestCase {
             BoardModification(row: 8, column: 1, candidates: 8),
             BoardModification(row: 8, column: 2, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
     }
 }

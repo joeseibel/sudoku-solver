@@ -14,7 +14,7 @@ final class BUGTest: XCTestCase {
             7563{14}9{14}82
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 3, column: 7, value: 2)]
-        assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
     func test2() {
@@ -30,7 +30,7 @@ final class BUGTest: XCTestCase {
             157{38}{68}{36}429
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 4, column: 1, value: 6)]
-        assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
     func test3() {
@@ -46,7 +46,7 @@ final class BUGTest: XCTestCase {
             813647952
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 5, column: 2, value: 8)]
-        assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
     func test4() {
@@ -62,7 +62,7 @@ final class BUGTest: XCTestCase {
             419782536
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 4, value: 4)]
-        assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
     func test5() {
@@ -78,7 +78,7 @@ final class BUGTest: XCTestCase {
             {89}653427{89}1
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 1, column: 2, value: 7)]
-        assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
     func test6() {
@@ -94,7 +94,7 @@ final class BUGTest: XCTestCase {
             238195647
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 4, column: 4, value: 8)]
-        assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
     func test7() {
@@ -110,7 +110,7 @@ final class BUGTest: XCTestCase {
             61{45}7{45}8239
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 1, value: 2)]
-        assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
     func test8() {
@@ -126,6 +126,6 @@ final class BUGTest: XCTestCase {
             561394287
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 0, column: 4, value: 4)]
-        assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
 }

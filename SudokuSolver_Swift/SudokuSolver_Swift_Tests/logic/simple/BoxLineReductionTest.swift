@@ -18,7 +18,7 @@ final class BoxLineReductionTest: XCTestCase {
             BoardModification(row: 1, column: 8, candidates: 4),
             BoardModification(row: 2, column: 8, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: boxLineReduction)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: boxLineReduction)
     }
     
     func test2() {
@@ -47,6 +47,6 @@ final class BoxLineReductionTest: XCTestCase {
             BoardModification(row: 8, column: 2, candidates: 1, 3),
             BoardModification(row: 8, column: 4, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: boxLineReduction)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: boxLineReduction)
     }
 }

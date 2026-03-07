@@ -14,7 +14,7 @@ final class FinnedSwordfishTest: XCTestCase {
             7{234}{234}8{345}16{345}9
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 6, column: 3, candidates: 3)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
     func test2() {
@@ -30,7 +30,7 @@ final class FinnedSwordfishTest: XCTestCase {
             6{459}{489}{1257}{1258}{1278}{12579}{129}3
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 0, candidates: 3)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
     func test3() {
@@ -49,7 +49,7 @@ final class FinnedSwordfishTest: XCTestCase {
             BoardModification(row: 1, column: 5, candidates: 7),
             BoardModification(row: 7, column: 5, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
     func test4() {
@@ -65,7 +65,7 @@ final class FinnedSwordfishTest: XCTestCase {
             68{359}{257}{2357}{579}{237}41
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 5, candidates: 7)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
     func test5() {
@@ -81,7 +81,7 @@ final class FinnedSwordfishTest: XCTestCase {
             {19}{348}5{378}2{89}6{148}{1378}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 5, column: 4, candidates: 6)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
     func test6() {
@@ -97,6 +97,6 @@ final class FinnedSwordfishTest: XCTestCase {
             1{38}5{378}2964{78}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 0, candidates: 6)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
 }

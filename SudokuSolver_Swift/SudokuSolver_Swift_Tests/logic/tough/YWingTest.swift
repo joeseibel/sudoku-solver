@@ -18,7 +18,7 @@ final class YWingTest: XCTestCase {
             BoardModification(row: 2, column: 0, candidates: 8),
             BoardModification(row: 7, column: 2, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: yWing)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: yWing)
     }
     
     func test2() {
@@ -37,7 +37,7 @@ final class YWingTest: XCTestCase {
             BoardModification(row: 7, column: 1, candidates: 9),
             BoardModification(row: 7, column: 3, candidates: 6)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: yWing)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: yWing)
     }
     
     func test3() {
@@ -56,7 +56,7 @@ final class YWingTest: XCTestCase {
             BoardModification(row: 0, column: 4, candidates: 9),
             BoardModification(row: 1, column: 7, candidates: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: yWing)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: yWing)
     }
     
     func test4() {
@@ -78,6 +78,6 @@ final class YWingTest: XCTestCase {
             BoardModification(row: 7, column: 6, candidates: 6),
             BoardModification(row: 7, column: 7, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: yWing)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: yWing)
     }
 }

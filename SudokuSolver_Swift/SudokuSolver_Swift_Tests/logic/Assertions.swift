@@ -1,18 +1,18 @@
 import XCTest
 
-func assertLogicalSolution(
+func assertLogicalSolutionXCTest(
     expected: [BoardModification],
     withCandidates: String,
     logicFunction: (Board<Cell>) -> [BoardModification]
 ) {
-    assertLogicalSolution(
+    assertLogicalSolutionXCTest(
         expected: expected,
         board: Board(withCandidates: withCandidates),
         logicFunction: logicFunction
     )
 }
 
-func assertLogicalSolution(
+func assertLogicalSolutionXCTest(
     expected: [BoardModification],
     board: Board<Cell>,
     logicFunction: (Board<Cell>) -> [BoardModification]

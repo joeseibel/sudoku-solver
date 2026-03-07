@@ -23,7 +23,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 5, column: 0, candidates: 7),
             BoardModification(row: 8, column: 4, candidates: 6)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule1)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule1)
     }
     
     func testRule1Test2() {
@@ -42,7 +42,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 0, column: 7, candidates: 4, 9),
             BoardModification(row: 7, column: 0, candidates: 8, 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule1)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule1)
     }
     
     func testRule1Test3() {
@@ -61,7 +61,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 0, column: 0, candidates: 4),
             BoardModification(row: 2, column: 5, candidates: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule1)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule1)
     }
     
     func testRule2Test1() {
@@ -88,7 +88,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 7, column: 4, value: 4),
             BoardModification(row: 8, column: 8, value: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
     func testRule2Test2() {
@@ -108,7 +108,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 1, column: 5, value: 8),
             BoardModification(row: 6, column: 0, value: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
     func testRule2Test3() {
@@ -140,7 +140,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 8, column: 7, value: 5),
             BoardModification(row: 8, column: 8, value: 3)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
     func testRule2Test4() {
@@ -167,7 +167,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 8, column: 5, value: 4),
             BoardModification(row: 8, column: 6, value: 9)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
     func testRule2Test5() {
@@ -188,7 +188,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 6, column: 5, value: 5),
             BoardModification(row: 7, column: 6, value: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
     func testRule2Test6() {
@@ -204,7 +204,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             {28}{46}1{2467}3{48}5{2679}{469}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 8, column: 7, value: 9)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
     func testRule2Test7() {
@@ -223,7 +223,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 4, column: 3, value: 8),
             BoardModification(row: 8, column: 3, value: 6)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
     func testRule2Test8() {
@@ -245,7 +245,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 4, column: 3, value: 5),
             BoardModification(row: 6, column: 0, value: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
     func testRule2Test9() {
@@ -264,7 +264,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 4, column: 3, value: 8),
             BoardModification(row: 6, column: 6, value: 5)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
     func testRule3Test1() {
@@ -283,7 +283,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 2, column: 5, candidates: 9),
             BoardModification(row: 8, column: 3, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule3)
     }
     
     func testRule3Test2() {
@@ -302,7 +302,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 0, column: 1, candidates: 5),
             BoardModification(row: 8, column: 3, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule3)
     }
     
     func testRule3Test3() {
@@ -323,6 +323,6 @@ final class AlternatingInferenceChainsTest: XCTestCase {
             BoardModification(row: 6, column: 7, candidates: 1),
             BoardModification(row: 8, column: 6, candidates: 3)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule3)
     }
 }

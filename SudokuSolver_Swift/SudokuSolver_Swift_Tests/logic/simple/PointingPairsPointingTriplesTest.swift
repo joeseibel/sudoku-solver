@@ -24,7 +24,7 @@ final class PointingPairsPointingTriplesTest: XCTestCase {
             BoardModification(row: 6, column: 1, candidates: 2, 8),
             BoardModification(row: 6, column: 6, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: pointingPairsPointingTriples)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: pointingPairsPointingTriples)
     }
     
     func test2() {
@@ -55,7 +55,7 @@ final class PointingPairsPointingTriplesTest: XCTestCase {
             BoardModification(row: 6, column: 4, candidates: 4, 7),
             BoardModification(row: 7, column: 5, candidates: 7)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: pointingPairsPointingTriples)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: pointingPairsPointingTriples)
     }
     
     func test3() {
@@ -83,6 +83,6 @@ final class PointingPairsPointingTriplesTest: XCTestCase {
             BoardModification(row: 8, column: 1, candidates: 2),
             BoardModification(row: 8, column: 2, candidates: 2)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: pointingPairsPointingTriples)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: pointingPairsPointingTriples)
     }
 }

@@ -41,7 +41,7 @@ final class GroupedXCyclesTest: XCTestCase {
             BoardModification(row: 7, column: 5, candidates: 4),
             BoardModification(row: 7, column: 8, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule1)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule1)
     }
     
     func testRule1Test2() {
@@ -66,7 +66,7 @@ final class GroupedXCyclesTest: XCTestCase {
             BoardModification(row: 6, column: 6, candidates: 8),
             BoardModification(row: 6, column: 7, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule1)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule1)
     }
     
     func testRule1Test3() {
@@ -88,7 +88,7 @@ final class GroupedXCyclesTest: XCTestCase {
             BoardModification(row: 6, column: 2, candidates: 8),
             BoardModification(row: 6, column: 7, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule1)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule1)
     }
     
     func testRule2Test1() {
@@ -104,7 +104,7 @@ final class GroupedXCyclesTest: XCTestCase {
             {356}9{26}8{12}4{235}7{123}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 4, column: 0, value: 2)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule2)
     }
     
     func testRule2Test2() {
@@ -123,7 +123,7 @@ final class GroupedXCyclesTest: XCTestCase {
             BoardModification(row: 0, column: 7, value: 8),
             BoardModification(row: 6, column: 8, value: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule2)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule2)
     }
     
     func testRule3Test1() {
@@ -139,7 +139,7 @@ final class GroupedXCyclesTest: XCTestCase {
             {28}513{68}79{2468}{2468}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 2, column: 3, candidates: 8)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
     func testRule3Test2() {
@@ -155,7 +155,7 @@ final class GroupedXCyclesTest: XCTestCase {
             {38}5629{134}7{138}{1348}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 1, column: 6, candidates: 2)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
     func testRule3Test3() {
@@ -174,7 +174,7 @@ final class GroupedXCyclesTest: XCTestCase {
             BoardModification(row: 7, column: 6, candidates: 8),
             BoardModification(row: 7, column: 7, candidates: 8)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
     func testRule3Test4() {
@@ -190,7 +190,7 @@ final class GroupedXCyclesTest: XCTestCase {
             {38}5629{134}7{138}{1348}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 7, candidates: 8)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
     func testRule3Test5() {
@@ -210,7 +210,7 @@ final class GroupedXCyclesTest: XCTestCase {
             BoardModification(row: 2, column: 2, candidates: 2),
             BoardModification(row: 7, column: 1, candidates: 2)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
     func testRule3Test6() {
@@ -234,6 +234,6 @@ final class GroupedXCyclesTest: XCTestCase {
             BoardModification(row: 6, column: 4, candidates: 4),
             BoardModification(row: 6, column: 5, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
 }

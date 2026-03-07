@@ -14,7 +14,7 @@ final class FinnedXWingTest: XCTestCase {
             {346}1{37}5{23679}{24679}{347}{267}8
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 8, candidates: 7)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedXWing)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedXWing)
     }
     
     func test2() {
@@ -30,7 +30,7 @@ final class FinnedXWingTest: XCTestCase {
             {124}{146}{126}859{24}73
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 5, column: 0, candidates: 3, 5)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedXWing)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedXWing)
     }
     
     func test3() {
@@ -46,7 +46,7 @@ final class FinnedXWingTest: XCTestCase {
             {124}{146}{126}859{24}73
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 5, column: 0, candidates: 5)]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedXWing)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedXWing)
     }
     
     func testSashimi() {
@@ -65,6 +65,6 @@ final class FinnedXWingTest: XCTestCase {
             BoardModification(row: 4, column: 5, candidates: 4),
             BoardModification(row: 5, column: 5, candidates: 4)
         ]
-        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedXWing)
+        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedXWing)
     }
 }
