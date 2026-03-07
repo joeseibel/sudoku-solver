@@ -15,10 +15,8 @@ use crate::{
 pub fn hidden_unique_rectangles(board: &Board<Cell>) -> Vec<BoardModification> {
     rectangles::create_rectangles(board)
         .flat_map(|rectangle| {
-            let (floor, roof): (Vec<_>, Vec<_>) = rectangle
-                .cells()
-                .iter()
-                .partition(|cell| cell.candidates().len() == 2);
+            let (floor, roof): (Vec<_>, Vec<_>) =
+                rectangle.cells().iter().partition(|cell| cell.candidates().len() == 2);
             if let [floor] = floor[..] {
                 type_1(board, &rectangle, floor)
             } else if let [roof_a, roof_b] = roof[..] {
@@ -38,18 +36,11 @@ pub fn hidden_unique_rectangles(board: &Board<Cell>) -> Vec<BoardModification> {
 // candidate as the value to that cell would lead to the Deadly Pattern. Therefore, the other common candidate cannot be
 // the solution to that cell. The other common candidate can be removed from the roof cell which is opposite of the one
 // floor cell.
-fn type_1<'a>(
-    board: &Board<Cell>,
-    rectangle: &Rectangle<'a>,
-    floor: &UnsolvedCell,
-) -> Option<LocatedCandidate<'a>> {
+fn type_1<'a>(board: &Board<Cell>, rectangle: &Rectangle<'a>, floor: &UnsolvedCell) -> Option<LocatedCandidate<'a>> {
     let row: Vec<_> = board.get_row(floor.row()).unsolved_cells().collect();
     let column: Vec<_> = board.get_column(floor.column()).unsolved_cells().collect();
     let mut strong_candidates = rectangle.common_candidates().iter().filter(|candidate| {
-        row.iter()
-            .filter(|cell| cell.candidates().contains(candidate))
-            .count()
-            == 2
+        row.iter().filter(|cell| cell.candidates().contains(candidate)).count() == 2
             && column
                 .iter()
                 .filter(|cell| cell.candidates().contains(candidate))
@@ -138,21 +129,13 @@ fn type_2<'a>(
     }
 
     if roof_a.row() == roof_b.row() {
-        get_removal(
-            roof_a,
-            roof_b,
-            common_candidates,
-            UnsolvedCell::column,
-            |index| board.get_column(index),
-        )
+        get_removal(roof_a, roof_b, common_candidates, UnsolvedCell::column, |index| {
+            board.get_column(index)
+        })
     } else if roof_a.column() == roof_b.column() {
-        get_removal(
-            roof_a,
-            roof_b,
-            common_candidates,
-            UnsolvedCell::row,
-            |index| board.get_row(index),
-        )
+        get_removal(roof_a, roof_b, common_candidates, UnsolvedCell::row, |index| {
+            board.get_row(index)
+        })
     } else {
         None
     }

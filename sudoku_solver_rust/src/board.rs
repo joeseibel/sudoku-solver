@@ -74,8 +74,7 @@ impl<T> Board<T> {
     }
 
     pub fn get_column(&self, column_index: usize) -> impl Iterator<Item = &T> {
-        self.rows()
-            .map(move |mut row| row.nth(column_index).unwrap())
+        self.rows().map(move |mut row| row.nth(column_index).unwrap())
     }
 
     pub fn get_block(&self, block_index: usize) -> impl Iterator<Item = &T> {
@@ -100,10 +99,7 @@ impl<T> Board<T> {
         Board::new(rows.collect::<Vec<_>>().try_into().unwrap())
     }
 
-    pub fn map_cells_indexed<B: Debug>(
-        &self,
-        mut f: impl FnMut(usize, usize, &T) -> B,
-    ) -> Board<B> {
+    pub fn map_cells_indexed<B: Debug>(&self, mut f: impl FnMut(usize, usize, &T) -> B) -> Board<B> {
         let rows = self.rows().enumerate().map(|(row_index, row)| {
             row.enumerate()
                 .map(|(column_index, cell)| f(row_index, column_index, cell))

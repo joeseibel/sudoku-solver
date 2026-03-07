@@ -48,14 +48,11 @@ pub fn sue_de_coq(board: &Board<Cell>) -> Vec<BoardModification> {
                                 .copied()
                                 .filter(|cell| cell.block() != block_index)
                                 .collect();
-                            let block: Vec<_> =
-                                board.get_block(block_index).unsolved_cells().collect();
+                            let block: Vec<_> = board.get_block(block_index).unsolved_cells().collect();
                             let other_cells_in_block: Vec<_> = block
                                 .iter()
                                 .copied()
-                                .filter(|cell| {
-                                    get_unit_index(cell) != get_unit_index(unit.first().unwrap())
-                                })
+                                .filter(|cell| get_unit_index(cell) != get_unit_index(unit.first().unwrap()))
                                 .collect();
 
                             fn get_group_removals<'a>(
@@ -65,60 +62,45 @@ pub fn sue_de_coq(board: &Board<Cell>) -> Vec<BoardModification> {
                                 other_cells_in_block: &[&UnsolvedCell],
                                 group: &[&UnsolvedCell],
                             ) -> Vec<LocatedCandidate<'a>> {
-                                let candidates: BTreeSet<_> = group
-                                    .iter()
-                                    .flat_map(|cell| cell.candidates())
-                                    .copied()
-                                    .collect();
+                                let candidates: BTreeSet<_> =
+                                    group.iter().flat_map(|cell| cell.candidates()).copied().collect();
                                 if candidates.len() >= group.len() + 2 {
                                     get_almost_locked_sets(other_cells_in_unit, &candidates)
                                         .flat_map(|unit_als| {
-                                            get_almost_locked_sets(
-                                                other_cells_in_block,
-                                                &candidates,
-                                            )
-                                            .filter(|block_als| {
-                                                unit_als.candidates.len()
-                                                    + block_als.candidates.len()
-                                                    == candidates.len()
-                                                    && unit_als
-                                                        .candidates
-                                                        .intersection(&block_als.candidates)
-                                                        .next()
-                                                        .is_none()
-                                            })
-                                            .flat_map(|block_als| {
-                                                let unit_removals = unit
-                                                    .iter()
-                                                    .filter(|&cell| {
-                                                        !group.contains(cell)
-                                                            && !unit_als.cells.contains(cell)
-                                                    })
-                                                    .flat_map(|&cell| {
-                                                        cell.candidates()
-                                                            .intersection(&unit_als.candidates)
-                                                            .map(move |&candidate| {
-                                                                (cell, candidate)
-                                                            })
-                                                    });
-                                                let block_removals = block
-                                                    .iter()
-                                                    .filter(|&cell| {
-                                                        !group.contains(cell)
-                                                            && !block_als.cells.contains(cell)
-                                                    })
-                                                    .flat_map(|&cell| {
-                                                        cell.candidates()
+                                            get_almost_locked_sets(other_cells_in_block, &candidates)
+                                                .filter(|block_als| {
+                                                    unit_als.candidates.len() + block_als.candidates.len()
+                                                        == candidates.len()
+                                                        && unit_als
+                                                            .candidates
                                                             .intersection(&block_als.candidates)
-                                                            .map(move |&candidate| {
-                                                                (cell, candidate)
-                                                            })
-                                                    });
-                                                unit_removals
-                                                    .chain(block_removals)
-                                                    .collect::<Vec<_>>()
-                                            })
-                                            .collect::<Vec<_>>()
+                                                            .next()
+                                                            .is_none()
+                                                })
+                                                .flat_map(|block_als| {
+                                                    let unit_removals = unit
+                                                        .iter()
+                                                        .filter(|&cell| {
+                                                            !group.contains(cell) && !unit_als.cells.contains(cell)
+                                                        })
+                                                        .flat_map(|&cell| {
+                                                            cell.candidates()
+                                                                .intersection(&unit_als.candidates)
+                                                                .map(move |&candidate| (cell, candidate))
+                                                        });
+                                                    let block_removals = block
+                                                        .iter()
+                                                        .filter(|&cell| {
+                                                            !group.contains(cell) && !block_als.cells.contains(cell)
+                                                        })
+                                                        .flat_map(|&cell| {
+                                                            cell.candidates()
+                                                                .intersection(&block_als.candidates)
+                                                                .map(move |&candidate| (cell, candidate))
+                                                        });
+                                                    unit_removals.chain(block_removals).collect::<Vec<_>>()
+                                                })
+                                                .collect::<Vec<_>>()
                                         })
                                         .collect()
                                 } else {
@@ -142,16 +124,15 @@ pub fn sue_de_coq(board: &Board<Cell>) -> Vec<BoardModification> {
                                     &other_cells_in_block,
                                     &unit_by_block,
                                 );
-                                let by_pairs =
-                                    unit_by_block.iter().zip_every_pair().flat_map(|(&a, b)| {
-                                        get_group_removals(
-                                            &unit,
-                                            &other_cells_in_unit,
-                                            &block,
-                                            &other_cells_in_block,
-                                            &[a, b],
-                                        )
-                                    });
+                                let by_pairs = unit_by_block.iter().zip_every_pair().flat_map(|(&a, b)| {
+                                    get_group_removals(
+                                        &unit,
+                                        &other_cells_in_unit,
+                                        &block,
+                                        &other_cells_in_block,
+                                        &[a, b],
+                                    )
+                                });
                                 all_three.into_iter().chain(by_pairs).collect()
                             } else {
                                 Vec::new()
@@ -165,9 +146,7 @@ pub fn sue_de_coq(board: &Board<Cell>) -> Vec<BoardModification> {
 
     let row_removals = sue_de_coq(board, board.rows(), Location::row);
     let column_removals = sue_de_coq(board, board.columns(), Location::column);
-    row_removals
-        .chain(column_removals)
-        .merge_to_remove_candidates()
+    row_removals.chain(column_removals).merge_to_remove_candidates()
 }
 
 struct Als<'a> {
@@ -181,9 +160,7 @@ fn get_almost_locked_sets<'a>(
 ) -> impl Iterator<Item = Als<'a>> {
     let almost_locked_sets_1 = cells
         .iter()
-        .filter(|cell| {
-            cell.candidates().len() == 2 && group_candidates.is_superset(cell.candidates())
-        })
+        .filter(|cell| cell.candidates().len() == 2 && group_candidates.is_superset(cell.candidates()))
         .map(|&cell| {
             let mut cells = HashSet::new();
             cells.insert(cell);

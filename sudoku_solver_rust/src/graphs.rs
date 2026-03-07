@@ -6,8 +6,8 @@ use petgraph::{
     graphmap::NodeTrait,
     prelude::{GraphMap, UnGraphMap},
     visit::{
-        self, DfsEvent, EdgeRef, GraphBase, GraphProp, IntoEdgeReferences, IntoEdges,
-        IntoNeighbors, IntoNodeIdentifiers, IntoNodeReferences, NodeIndexable, Visitable,
+        self, DfsEvent, EdgeRef, GraphBase, GraphProp, IntoEdgeReferences, IntoEdges, IntoNeighbors,
+        IntoNodeIdentifiers, IntoNodeReferences, NodeIndexable, Visitable,
     },
 };
 use std::{
@@ -33,10 +33,7 @@ impl VertexColor {
 }
 
 pub fn color_to_map<
-    G: GraphProp<EdgeType = Undirected>
-        + IntoNeighbors
-        + IntoNodeIdentifiers<NodeId: Eq + Hash>
-        + Visitable,
+    G: GraphProp<EdgeType = Undirected> + IntoNeighbors + IntoNodeIdentifiers<NodeId: Eq + Hash> + Visitable,
 >(
     graph: G,
 ) -> HashMap<G::NodeId, VertexColor> {
@@ -52,9 +49,7 @@ pub fn color_to_map<
     colors
 }
 
-pub fn color_to_lists<
-    G: GraphProp<EdgeType = Undirected> + IntoNeighbors + IntoNodeIdentifiers + Visitable,
->(
+pub fn color_to_lists<G: GraphProp<EdgeType = Undirected> + IntoNeighbors + IntoNodeIdentifiers + Visitable>(
     graph: G,
 ) -> (Vec<G::NodeId>, Vec<G::NodeId>) {
     let mut color_one = Vec::new();
@@ -125,10 +120,7 @@ macro_rules! trim {
         loop {
             let to_remove = $graph.node_identifiers().find(|&vertex| {
                 let edges: Vec<_> = $graph.edges(vertex).collect();
-                edges.len() < 2
-                    || !edges
-                        .iter()
-                        .any(|edge| *EdgeRef::weight(edge) == Strength::Strong)
+                edges.len() < 2 || !edges.iter().any(|edge| *EdgeRef::weight(edge) == Strength::Strong)
             });
             match to_remove {
                 Some(to_remove) => $graph.remove_node(to_remove),
@@ -150,10 +142,7 @@ where
     &'a G: IntoEdges<EdgeWeight = Strength> + GraphBase<EdgeId = G::EdgeId, NodeId = G::NodeId>,
 {
     let mut weak_edges_in_alternating_cycle = HashSet::new();
-    for edge in graph
-        .edge_references()
-        .filter(|edge| *edge.weight() == Strength::Weak)
-    {
+    for edge in graph.edge_references().filter(|edge| *edge.weight() == Strength::Weak) {
         if !weak_edges_in_alternating_cycle.contains(&edge.id()) {
             weak_edges_in_alternating_cycle.extend(get_alternating_cycle_weak_edges(graph, edge));
         }
@@ -173,11 +162,7 @@ where
     G::NodeId: Eq + Hash,
     &'a G: IntoEdges<EdgeWeight = Strength> + GraphBase<EdgeId = G::EdgeId, NodeId = G::NodeId>,
 {
-    assert_eq!(
-        *start_edge.weight(),
-        Strength::Weak,
-        "start_edge must be weak."
-    );
+    assert_eq!(*start_edge.weight(), Strength::Weak, "start_edge must be weak.");
     let start = start_edge.source();
     let end = start_edge.target();
 
@@ -229,25 +214,14 @@ where
 
     let mut visited = HashSet::new();
     visited.insert(start);
-    let weak_edges = get_alternating_cycle_weak_edges(
-        graph,
-        end,
-        start,
-        Strength::Strong,
-        visited,
-        vec![start_edge.id()],
-    );
-    assert!(
-        !weak_edges
-            .iter()
-            .any(|&edge| graph[edge] == Strength::Strong)
-    );
+    let weak_edges =
+        get_alternating_cycle_weak_edges(graph, end, start, Strength::Strong, visited, vec![start_edge.id()]);
+    assert!(!weak_edges.iter().any(|&edge| graph[edge] == Strength::Strong));
     weak_edges
 }
 
 pub fn alternating_cycle_exists<
-    G: GraphProp<EdgeType = Undirected>
-        + IntoEdges<Edges: Clone, EdgeWeight = Strength, NodeId: Eq + Hash>,
+    G: GraphProp<EdgeType = Undirected> + IntoEdges<Edges: Clone, EdgeWeight = Strength, NodeId: Eq + Hash>,
 >(
     graph: G,
     vertex: G::NodeId,
@@ -262,8 +236,7 @@ pub fn alternating_cycle_exists<
             let end = get_opposite_vertex(edge_b, vertex);
 
             fn alternating_cycle_exists<
-                G: GraphProp<EdgeType = Undirected>
-                    + IntoEdges<EdgeWeight = Strength, NodeId: Eq + Hash>,
+                G: GraphProp<EdgeType = Undirected> + IntoEdges<EdgeWeight = Strength, NodeId: Eq + Hash>,
             >(
                 graph: G,
                 adjacent_edges_type: Strength,
@@ -311,10 +284,7 @@ pub fn alternating_cycle_exists<
 }
 
 pub fn to_dot<
-    G: GraphProp
-        + IntoNodeReferences<NodeWeight: Debug>
-        + IntoEdgeReferences<EdgeWeight: Debug>
-        + NodeIndexable,
+    G: GraphProp + IntoNodeReferences<NodeWeight: Debug> + IntoEdgeReferences<EdgeWeight: Debug> + NodeIndexable,
 >(
     graph: G,
     get_edge_attributes: impl Fn(G::EdgeRef) -> String,
@@ -331,9 +301,7 @@ pub fn to_dot<
     format!("{dot:?}")
 }
 
-pub fn connected_components<N: NodeTrait + PartialEq>(
-    graph: &UnGraphMap<N, ()>,
-) -> Vec<UnGraphMap<N, ()>> {
+pub fn connected_components<N: NodeTrait + PartialEq>(graph: &UnGraphMap<N, ()>) -> Vec<UnGraphMap<N, ()>> {
     // If I don't annotate the type of components, then I get an error later stating that the type of subgraph in the
     // for loop can't be inferred. I suspect this is a bug in the compiler's type inference algorithm. It would be good
     // for me to create a simple example and file a bug report.

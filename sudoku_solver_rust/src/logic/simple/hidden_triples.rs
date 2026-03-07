@@ -17,42 +17,38 @@ pub fn hidden_triples(board: &Board<Cell>) -> Vec<BoardModification> {
         .units()
         .flat_map(|unit| {
             let unit: Vec<_> = unit.collect();
-            SudokuNumber::iter()
-                .zip_every_triple()
-                .flat_map(move |(a, b, c)| {
-                    let cells: Vec<_> = unit
-                        .iter()
-                        .copied()
-                        .unsolved_cells()
-                        .filter(|cell| {
-                            cell.candidates().contains(&a)
-                                || cell.candidates().contains(&b)
-                                || cell.candidates().contains(&c)
-                        })
-                        .collect();
-                    if cells.len() == 3 {
-                        let mut union: HashSet<SudokuNumber> = HashSet::new();
-                        for cell in &cells {
-                            union.extend(cell.candidates());
-                        }
-                        if union.contains(&a) && union.contains(&b) && union.contains(&c) {
-                            let removals = cells.into_iter().flat_map(move |cell| {
-                                let mut to_remove = cell.candidates().clone();
-                                to_remove.remove(&a);
-                                to_remove.remove(&b);
-                                to_remove.remove(&c);
-                                to_remove
-                                    .into_iter()
-                                    .map(move |candidate| (cell, candidate))
-                            });
-                            Some(removals)
-                        } else {
-                            None
-                        }
+            SudokuNumber::iter().zip_every_triple().flat_map(move |(a, b, c)| {
+                let cells: Vec<_> = unit
+                    .iter()
+                    .copied()
+                    .unsolved_cells()
+                    .filter(|cell| {
+                        cell.candidates().contains(&a)
+                            || cell.candidates().contains(&b)
+                            || cell.candidates().contains(&c)
+                    })
+                    .collect();
+                if cells.len() == 3 {
+                    let mut union: HashSet<SudokuNumber> = HashSet::new();
+                    for cell in &cells {
+                        union.extend(cell.candidates());
+                    }
+                    if union.contains(&a) && union.contains(&b) && union.contains(&c) {
+                        let removals = cells.into_iter().flat_map(move |cell| {
+                            let mut to_remove = cell.candidates().clone();
+                            to_remove.remove(&a);
+                            to_remove.remove(&b);
+                            to_remove.remove(&c);
+                            to_remove.into_iter().map(move |candidate| (cell, candidate))
+                        });
+                        Some(removals)
                     } else {
                         None
                     }
-                })
+                } else {
+                    None
+                }
+            })
         })
         .flatten()
         .merge_to_remove_candidates()

@@ -24,9 +24,7 @@ pub enum BruteForceError {
 // The second reason for implementing brute force is to check for the number of solutions for a board before trying the
 // logical solutions. If a board cannot be solved or if it has multiple solutions, then I don't bother with the logical
 // solutions. The logical solutions are written assuming that they are operating on a board with only one solution.
-pub fn brute_force(
-    board: &Board<Option<SudokuNumber>>,
-) -> Result<Board<SudokuNumber>, BruteForceError> {
+pub fn brute_force(board: &Board<Option<SudokuNumber>>) -> Result<Board<SudokuNumber>, BruteForceError> {
     if board.cells().all(Option::is_some) {
         let filled_board = board.map_cells(|cell| cell.unwrap());
         return if is_solved(&filled_board) {
@@ -62,8 +60,7 @@ pub fn brute_force(
         } else {
             let row_invalid = trial_and_error.get_row(row_index);
             let column_invalid = trial_and_error.get_column(column_index);
-            let block_invalid =
-                trial_and_error.get_block(board::get_block_index(row_index, column_index));
+            let block_invalid = trial_and_error.get_block(board::get_block_index(row_index, column_index));
             let invalid: HashSet<_> = row_invalid
                 .chain(column_invalid)
                 .chain(block_invalid)
@@ -115,30 +112,20 @@ mod tests {
 
     #[test]
     fn test_brute_force_single_solution() {
-        let board =
-            "010040560230615080000800100050020008600781005900060020006008000080473056045090010";
-        let expected =
-            "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
-        assert_eq!(
-            Ok(expected.parse().unwrap()),
-            brute_force(&board.parse().unwrap())
-        );
+        let board = "010040560230615080000800100050020008600781005900060020006008000080473056045090010";
+        let expected = "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
+        assert_eq!(Ok(expected.parse().unwrap()), brute_force(&board.parse().unwrap()));
     }
 
     #[test]
     fn test_brute_force_no_solutions() {
-        let board =
-            "710040560230615080000800100050020008600781005900060020006008000080473056045090010";
-        assert_eq!(
-            Err(BruteForceError::NoSolutions),
-            brute_force(&board.parse().unwrap())
-        );
+        let board = "710040560230615080000800100050020008600781005900060020006008000080473056045090010";
+        assert_eq!(Err(BruteForceError::NoSolutions), brute_force(&board.parse().unwrap()));
     }
 
     #[test]
     fn test_brute_force_multiple_solutions() {
-        let board =
-            "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
+        let board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
         assert_eq!(
             Err(BruteForceError::MultipleSolutions),
             brute_force(&board.parse().unwrap())
@@ -147,21 +134,13 @@ mod tests {
 
     #[test]
     fn test_brute_force_already_solved() {
-        let board =
-            "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
-        assert_eq!(
-            Ok(board.parse().unwrap()),
-            brute_force(&board.parse().unwrap())
-        );
+        let board = "817942563234615789569837142451329678623781495978564321796158234182473956345296817";
+        assert_eq!(Ok(board.parse().unwrap()), brute_force(&board.parse().unwrap()));
     }
 
     #[test]
     fn test_brute_force_invalid_solution() {
-        let board =
-            "817942563234615789569837142451329678623781495978564321796158234182473956345296818";
-        assert_eq!(
-            Err(BruteForceError::NoSolutions),
-            brute_force(&board.parse().unwrap())
-        );
+        let board = "817942563234615789569837142451329678623781495978564321796158234182473956345296818";
+        assert_eq!(Err(BruteForceError::NoSolutions), brute_force(&board.parse().unwrap()));
     }
 }

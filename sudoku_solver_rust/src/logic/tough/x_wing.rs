@@ -71,12 +71,7 @@ pub fn x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                 |index| board.get_column(index),
                 Location::column,
             );
-            let column_removals = x_wing(
-                candidate,
-                board.columns(),
-                |index| board.get_row(index),
-                Location::row,
-            );
+            let column_removals = x_wing(candidate, board.columns(), |index| board.get_row(index), Location::row);
             row_removals.chain(column_removals)
         })
         .merge_to_remove_candidates()

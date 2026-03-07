@@ -15,17 +15,15 @@ use indoc::formatdoc;
 use logic::{
     brute_force::{self, BruteForceError},
     diabolical::{
-        aligned_pair_exclusion, bug, extended_unique_rectangles, hidden_unique_rectangles,
-        jellyfish, medusa, unique_rectangles, wxyz_wing, x_cycles, xy_chains,
+        aligned_pair_exclusion, bug, extended_unique_rectangles, hidden_unique_rectangles, jellyfish, medusa,
+        unique_rectangles, wxyz_wing, x_cycles, xy_chains,
     },
     extreme::{
-        alternating_inference_chains, empty_rectangles, finned_swordfish, finned_x_wing,
-        grouped_x_cycles, sue_de_coq,
+        alternating_inference_chains, empty_rectangles, finned_swordfish, finned_x_wing, grouped_x_cycles, sue_de_coq,
     },
     simple::{
-        box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples,
-        naked_pairs, naked_quads, naked_singles, naked_triples, pointing_pairs_pointing_triples,
-        prune_candidates,
+        box_line_reduction, hidden_pairs, hidden_quads, hidden_singles, hidden_triples, naked_pairs, naked_quads,
+        naked_singles, naked_triples, pointing_pairs_pointing_triples, prune_candidates,
     },
     tough::{simple_coloring, swordfish, x_wing, xyz_wing, y_wing},
 };
@@ -224,8 +222,7 @@ mod tests {
 
     #[test]
     fn test_solution() {
-        let board =
-            "010040560230615080000800100050020008600781005900060020006008000080473056045090010";
+        let board = "010040560230615080000800100050020008600781005900060020006008000080473056045090010";
         let expected = indoc! {"
             8 1 7 | 9 4 2 | 5 6 3
             2 3 4 | 6 1 5 | 7 8 9
@@ -243,8 +240,7 @@ mod tests {
 
     #[test]
     fn test_unable_to_solve() {
-        let board =
-            "004007830000050470720030695080700300649513728007008010470080060016040007005276100";
+        let board = "004007830000050470720030695080700300649513728007008010470080060016040007005276100";
         let expected = indoc! {"
             Unable to solve:
             0 0 4 | 0 0 7 | 8 3 0
@@ -279,18 +275,13 @@ mod tests {
 
     #[test]
     fn test_no_solutions() {
-        let board =
-            "710040560230615080000800100050020008600781005900060020006008000080473056045090010";
-        assert_eq!(
-            SolverError::NoSolutions,
-            solve(board.parse().unwrap()).unwrap_err()
-        );
+        let board = "710040560230615080000800100050020008600781005900060020006008000080473056045090010";
+        assert_eq!(SolverError::NoSolutions, solve(board.parse().unwrap()).unwrap_err());
     }
 
     #[test]
     fn test_multiple_solutions() {
-        let board =
-            "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
+        let board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010";
         assert_eq!(
             SolverError::MultipleSolutions,
             solve(board.parse().unwrap()).unwrap_err()

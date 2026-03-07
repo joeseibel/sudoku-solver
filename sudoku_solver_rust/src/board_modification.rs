@@ -122,9 +122,7 @@ impl<'a, I: Iterator<Item = LocatedCandidate<'a>>> IteratorRemoveCandidatesExt f
     fn merge_to_remove_candidates(self) -> Vec<BoardModification> {
         self.into_group_map()
             .into_iter()
-            .map(|(cell, candidates)| {
-                RemoveCandidates::from_cell(cell, candidates.into_iter().collect())
-            })
+            .map(|(cell, candidates)| RemoveCandidates::from_cell(cell, candidates.into_iter().collect()))
             .collect()
     }
 }
@@ -138,11 +136,7 @@ mod tests {
     use strum::VariantArray;
 
     impl RemoveCandidates {
-        pub fn from_indices(
-            row: usize,
-            column: usize,
-            candidates: BTreeSet<SudokuNumber>,
-        ) -> BoardModification {
+        pub fn from_indices(row: usize, column: usize, candidates: BTreeSet<SudokuNumber>) -> BoardModification {
             board::validate_row_and_column(row, column);
             RemoveCandidates::validate_candidates(&candidates);
             BoardModification::RemoveCandidates(Self {
@@ -199,14 +193,10 @@ mod tests {
     #[should_panic(expected = "1 is not a candidate for [0, 0].")]
     fn test_remove_candidates_not_a_candidate_for_cell() {
         RemoveCandidates::from_cell(
-            once(&UnsolvedCell::from_indices(
-                0,
-                0,
-                BTreeSet::from([SudokuNumber::Two]),
-            ))
-            .unsolved_cells()
-            .next()
-            .unwrap(),
+            once(&UnsolvedCell::from_indices(0, 0, BTreeSet::from([SudokuNumber::Two])))
+                .unsolved_cells()
+                .next()
+                .unwrap(),
             BTreeSet::from([SudokuNumber::One]),
         );
     }
@@ -215,14 +205,10 @@ mod tests {
     #[should_panic(expected = "1 is not a candidate for [0, 0].")]
     fn test_set_value_not_a_candidate_for_cell() {
         SetValue::from_cell(
-            once(&UnsolvedCell::from_indices(
-                0,
-                0,
-                BTreeSet::from([SudokuNumber::Two]),
-            ))
-            .unsolved_cells()
-            .next()
-            .unwrap(),
+            once(&UnsolvedCell::from_indices(0, 0, BTreeSet::from([SudokuNumber::Two])))
+                .unsolved_cells()
+                .next()
+                .unwrap(),
             SudokuNumber::One,
         );
     }

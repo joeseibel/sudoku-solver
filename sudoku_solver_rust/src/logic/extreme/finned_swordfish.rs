@@ -70,56 +70,43 @@ pub fn finned_swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
                                     let get_finned_cell = &get_finned_cell;
                                     let get_other_unit = &get_other_unit;
                                     move |finned_unit| {
-                                        let finned_unit_index =
-                                            get_unit_index(finned_unit.first().unwrap());
+                                        let finned_unit_index = get_unit_index(finned_unit.first().unwrap());
                                         let mut unit_indices = HashSet::new();
                                         unit_indices.insert(finned_unit_index);
-                                        unit_indices
-                                            .insert(get_unit_index(base_unit_a.first().unwrap()));
-                                        unit_indices
-                                            .insert(get_unit_index(base_unit_b.first().unwrap()));
+                                        unit_indices.insert(get_unit_index(base_unit_a.first().unwrap()));
+                                        unit_indices.insert(get_unit_index(base_unit_b.first().unwrap()));
                                         if unit_indices.len() == 3 {
                                             let outside_other_unit_indices: Vec<_> = finned_unit
                                                 .iter()
                                                 .filter(|&&cell| {
-                                                    !other_unit_indices
-                                                        .contains(&get_other_unit_index(cell))
+                                                    !other_unit_indices.contains(&get_other_unit_index(cell))
                                                 })
                                                 .collect();
                                             if (1..=2).contains(&outside_other_unit_indices.len()) {
-                                                let block_indices: HashSet<_> =
-                                                    outside_other_unit_indices
-                                                        .iter()
-                                                        .map(|cell| cell.block())
-                                                        .collect();
+                                                let block_indices: HashSet<_> = outside_other_unit_indices
+                                                    .iter()
+                                                    .map(|cell| cell.block())
+                                                    .collect();
                                                 if block_indices.len() == 1 {
-                                                    let &block_index =
-                                                        block_indices.iter().next().unwrap();
+                                                    let &block_index = block_indices.iter().next().unwrap();
                                                     let mut finned_cells = other_unit_indices
                                                         .iter()
                                                         .map(|&other_unit_index| {
-                                                            get_finned_cell(
-                                                                finned_unit_index,
-                                                                other_unit_index,
-                                                            )
+                                                            get_finned_cell(finned_unit_index, other_unit_index)
                                                         })
-                                                        .filter(|finned_cell| {
-                                                            finned_cell.block() == block_index
-                                                        });
+                                                        .filter(|finned_cell| finned_cell.block() == block_index);
                                                     if let Some(finned_cell) = finned_cells.next()
                                                         && finned_cells.next().is_none()
                                                     {
-                                                        let removals = get_other_unit(
-                                                            get_other_unit_index(finned_cell),
-                                                        )
-                                                        .unsolved_cells()
-                                                        .filter(move |cell| {
-                                                            cell.candidates().contains(&candidate)
-                                                                && cell.block() == block_index
-                                                                && !unit_indices
-                                                                    .contains(&get_unit_index(cell))
-                                                        })
-                                                        .map(move |cell| (cell, candidate));
+                                                        let removals =
+                                                            get_other_unit(get_other_unit_index(finned_cell))
+                                                                .unsolved_cells()
+                                                                .filter(move |cell| {
+                                                                    cell.candidates().contains(&candidate)
+                                                                        && cell.block() == block_index
+                                                                        && !unit_indices.contains(&get_unit_index(cell))
+                                                                })
+                                                                .map(move |cell| (cell, candidate));
                                                         Some(removals)
                                                     } else {
                                                         None

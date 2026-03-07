@@ -41,10 +41,7 @@ fn get_removals<'a, U: Iterator<Item = &'a Cell>>(
         })
         .map(
             |((other_a_a, other_a_b), (other_b_a, other_b_b), (other_c_a, other_c_b))| {
-                (
-                    [other_a_a, other_b_a, other_c_a],
-                    [other_a_b, other_b_b, other_c_b],
-                )
+                ([other_a_a, other_b_a, other_c_a], [other_a_b, other_b_b, other_c_b])
             },
         )
         .filter(|(unit_a, unit_b)| {
@@ -57,16 +54,8 @@ fn get_removals<'a, U: Iterator<Item = &'a Cell>>(
                 == 3
         })
         .flat_map(|(unit_a, unit_b)| {
-            let unit_a_candidates: BTreeSet<_> = unit_a
-                .iter()
-                .flat_map(|cell| cell.candidates())
-                .copied()
-                .collect();
-            let unit_b_candidates = unit_b
-                .iter()
-                .flat_map(|cell| cell.candidates())
-                .copied()
-                .collect();
+            let unit_a_candidates: BTreeSet<_> = unit_a.iter().flat_map(|cell| cell.candidates()).copied().collect();
+            let unit_b_candidates = unit_b.iter().flat_map(|cell| cell.candidates()).copied().collect();
             if unit_a_candidates.len() == 3 {
                 get_unit_removals(&unit_a_candidates, &unit_b, &unit_b_candidates)
             } else if unit_b_candidates.len() == 3 {

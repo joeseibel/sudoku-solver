@@ -35,19 +35,13 @@ pub fn pointing_pairs_pointing_triples(board: &Board<Cell>) -> Vec<BoardModifica
                     get_unit: impl FnOnce(usize) -> T,
                     get_unit_index: impl Fn(&UnsolvedCell) -> usize,
                 ) -> impl Iterator<Item = LocatedCandidate<'a>> {
-                    let unit_indices: HashSet<_> = with_candidate
-                        .iter()
-                        .map(|cell| get_unit_index(cell))
-                        .collect();
+                    let unit_indices: HashSet<_> = with_candidate.iter().map(|cell| get_unit_index(cell)).collect();
                     let removals = if let Some(&unit_index) = unit_indices.iter().next()
                         && unit_indices.len() == 1
                     {
                         let removals = get_unit(unit_index)
                             .unsolved_cells()
-                            .filter(move |cell| {
-                                cell.block() != block_index
-                                    && cell.candidates().contains(&candidate)
-                            })
+                            .filter(move |cell| cell.block() != block_index && cell.candidates().contains(&candidate))
                             .map(move |cell| (cell, candidate));
                         Some(removals)
                     } else {
@@ -70,9 +64,7 @@ pub fn pointing_pairs_pointing_triples(board: &Board<Cell>) -> Vec<BoardModifica
                     |index| board.get_column(index),
                     Location::column,
                 );
-                row_modifications
-                    .chain(column_modifications)
-                    .collect::<Vec<_>>()
+                row_modifications.chain(column_modifications).collect::<Vec<_>>()
             })
         })
         .merge_to_remove_candidates()

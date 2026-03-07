@@ -56,18 +56,15 @@ pub fn jellyfish(board: &Board<Cell>) -> Vec<BoardModification> {
                                 .chain(c_with_candidate.iter())
                                 .chain(d_with_candidate.iter())
                                 .collect();
-                            let other_unit_indices: HashSet<_> = with_candidate
-                                .iter()
-                                .map(|cell| get_other_unit_index(cell))
-                                .collect();
+                            let other_unit_indices: HashSet<_> =
+                                with_candidate.iter().map(|cell| get_other_unit_index(cell)).collect();
                             if other_unit_indices.len() == 4 {
                                 let removals = other_unit_indices
                                     .iter()
                                     .flat_map(|&other_unit_index| get_other_unit(other_unit_index))
                                     .unsolved_cells()
                                     .filter(|cell| {
-                                        cell.candidates().contains(&candidate)
-                                            && !with_candidate.contains(cell)
+                                        cell.candidates().contains(&candidate) && !with_candidate.contains(cell)
                                     })
                                     .map(|cell| (cell, candidate))
                                     .collect::<Vec<_>>();
@@ -88,12 +85,7 @@ pub fn jellyfish(board: &Board<Cell>) -> Vec<BoardModification> {
                 |index| board.get_column(index),
                 Location::column,
             );
-            let column_removals = jellyfish(
-                candidate,
-                board.columns(),
-                |index| board.get_row(index),
-                Location::row,
-            );
+            let column_removals = jellyfish(candidate, board.columns(), |index| board.get_row(index), Location::row);
             row_removals.chain(column_removals)
         })
         .merge_to_remove_candidates()

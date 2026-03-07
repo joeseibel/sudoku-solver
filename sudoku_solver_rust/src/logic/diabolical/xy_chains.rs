@@ -50,9 +50,7 @@ pub fn xy_chains(board: &Board<Cell>) -> Vec<BoardModification> {
                                     && cell.is_in_same_unit(cell_b)
                             })
                             .peekable();
-                        if visible_cells.peek().is_some()
-                            && alternating_path_exists(graph, vertex_a, vertex_b)
-                        {
+                        if visible_cells.peek().is_some() && alternating_path_exists(graph, vertex_a, vertex_b) {
                             Some(visible_cells)
                         } else {
                             None
@@ -67,9 +65,7 @@ pub fn xy_chains(board: &Board<Cell>) -> Vec<BoardModification> {
 
 #[allow(dead_code)]
 fn to_dot(graph: &UnGraphMap<LocatedCandidate, Strength>) -> String {
-    graphs::to_dot(graph, graphs::edge_attributes, |(vertex, _)| {
-        vertex.vertex_label()
-    })
+    graphs::to_dot(graph, graphs::edge_attributes, |(vertex, _)| vertex.vertex_label())
 }
 
 fn create_strong_links(board: &Board<Cell>) -> UnGraphMap<LocatedCandidate<'_>, Strength> {
@@ -135,9 +131,7 @@ fn alternating_path_exists(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{
-        cell::UnsolvedCell, logic::assertions, remove_candidates, sudoku_number::SudokuNumber,
-    };
+    use crate::{cell::UnsolvedCell, logic::assertions, remove_candidates, sudoku_number::SudokuNumber};
     use indoc::indoc;
 
     #[test]

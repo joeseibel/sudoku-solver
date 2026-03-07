@@ -48,9 +48,7 @@ pub fn x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
                             let removals = get_unit(get_unit_index(source))
                                 .unsolved_cells()
                                 .filter(move |&cell| {
-                                    cell.candidates().contains(&candidate)
-                                        && cell != source
-                                        && cell != target
+                                    cell.candidates().contains(&candidate) && cell != source && cell != target
                                 })
                                 .map(move |cell| (cell, candidate));
                             Some(removals)
@@ -61,17 +59,13 @@ pub fn x_cycles_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
                     }
 
                     let row_removals =
-                        remove_from_unit(candidate, source, target, Location::row, |index| {
-                            board.get_row(index)
-                        });
-                    let column_removals =
-                        remove_from_unit(candidate, source, target, Location::column, |index| {
-                            board.get_column(index)
-                        });
-                    let block_removals =
-                        remove_from_unit(candidate, source, target, UnsolvedCell::block, |index| {
-                            board.get_block(index)
-                        });
+                        remove_from_unit(candidate, source, target, Location::row, |index| board.get_row(index));
+                    let column_removals = remove_from_unit(candidate, source, target, Location::column, |index| {
+                        board.get_column(index)
+                    });
+                    let block_removals = remove_from_unit(candidate, source, target, UnsolvedCell::block, |index| {
+                        board.get_block(index)
+                    });
                     row_removals.chain(column_removals).chain(block_removals)
                 })
                 .collect::<Vec<_>>()
@@ -124,15 +118,10 @@ pub fn x_cycles_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
 
 #[allow(dead_code)]
 fn to_dot(graph: &UnGraphMap<&UnsolvedCell, Strength>) -> String {
-    graphs::to_dot(graph, graphs::edge_attributes, |(cell, _)| {
-        cell.vertex_label()
-    })
+    graphs::to_dot(graph, graphs::edge_attributes, |(cell, _)| cell.vertex_label())
 }
 
-fn create_strong_links(
-    board: &Board<Cell>,
-    candidate: SudokuNumber,
-) -> UnGraphMap<&UnsolvedCell, Strength> {
+fn create_strong_links(board: &Board<Cell>, candidate: SudokuNumber) -> UnGraphMap<&UnsolvedCell, Strength> {
     let edges = board
         .units()
         .map(|unit| {

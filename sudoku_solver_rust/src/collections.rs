@@ -45,13 +45,14 @@ impl<T: Clone, I: Iterator<Item = T>> IteratorZipExt<T> for I {
                     .enumerate()
                     .skip(first_index + 1)
                     .flat_map(|(second_index, second)| {
-                        list.iter().enumerate().skip(second_index + 1).flat_map(
-                            |(third_index, third)| {
-                                list.iter().skip(third_index + 1).map(|fourth| {
-                                    (first.clone(), second.clone(), third.clone(), fourth.clone())
-                                })
-                            },
-                        )
+                        list.iter()
+                            .enumerate()
+                            .skip(second_index + 1)
+                            .flat_map(|(third_index, third)| {
+                                list.iter()
+                                    .skip(third_index + 1)
+                                    .map(|fourth| (first.clone(), second.clone(), third.clone(), fourth.clone()))
+                            })
                     })
             })
             .collect::<Vec<_>>()

@@ -53,10 +53,8 @@ pub fn empty_rectangles(board: &Board<Cell>) -> Vec<BoardModification> {
                         if let Some(strong_link_2) = other_unit.next()
                             && other_unit.next().is_none()
                             && strong_link_1.block() != strong_link_2.block()
-                            && let Cell::UnsolvedCell(removal_cell) = &board[(
-                                get_removal_row(strong_link_2),
-                                get_removal_column(strong_link_2),
-                            )]
+                            && let Cell::UnsolvedCell(removal_cell) =
+                                &board[(get_removal_row(strong_link_2), get_removal_column(strong_link_2))]
                             && removal_cell.candidates().contains(&candidate)
                         {
                             Some((removal_cell, candidate))
@@ -92,17 +90,10 @@ pub fn empty_rectangles(board: &Board<Cell>) -> Vec<BoardModification> {
         .merge_to_remove_candidates()
 }
 
-fn get_intersections(
-    board: &Board<Cell>,
-    candidate: SudokuNumber,
-) -> impl Iterator<Item = (usize, usize)> {
+fn get_intersections(board: &Board<Cell>, candidate: SudokuNumber) -> impl Iterator<Item = (usize, usize)> {
     (0..board::UNIT_SIZE).flat_map(move |row| {
         let row_in_block = row % board::UNIT_SIZE_SQUARE_ROOT;
-        let rectangle_row_1 = if row_in_block == 0 {
-            row + 1
-        } else {
-            row - row_in_block
-        };
+        let rectangle_row_1 = if row_in_block == 0 { row + 1 } else { row - row_in_block };
         let rectangle_row_2 = if row_in_block == 2 {
             row - 1
         } else {

@@ -49,18 +49,15 @@ pub fn swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
                             with_candidate.extend(a_with_candidate);
                             with_candidate.extend(b_with_candidate);
                             with_candidate.extend(c_with_candidate);
-                            let other_unit_indices: HashSet<_> = with_candidate
-                                .iter()
-                                .map(|cell| get_other_unit_index(cell))
-                                .collect();
+                            let other_unit_indices: HashSet<_> =
+                                with_candidate.iter().map(|cell| get_other_unit_index(cell)).collect();
                             if other_unit_indices.len() == 3 {
                                 let removals = other_unit_indices
                                     .iter()
                                     .flat_map(|&index| get_other_unit(index))
                                     .unsolved_cells()
                                     .filter(|cell| {
-                                        cell.candidates().contains(&candidate)
-                                            && !with_candidate.contains(cell)
+                                        cell.candidates().contains(&candidate) && !with_candidate.contains(cell)
                                     })
                                     .map(|cell| (cell, candidate))
                                     .collect::<Vec<_>>();
@@ -81,12 +78,7 @@ pub fn swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
                 |index| board.get_column(index),
                 Location::column,
             );
-            let column_removals = swordfish(
-                candidate,
-                board.columns(),
-                |index| board.get_row(index),
-                Location::row,
-            );
+            let column_removals = swordfish(candidate, board.columns(), |index| board.get_row(index), Location::row);
             row_removals.chain(column_removals)
         })
         .merge_to_remove_candidates()

@@ -40,73 +40,68 @@ pub fn alternating_inference_chains_rule_1(board: &Board<Cell>) -> Vec<BoardModi
     trim!(graph);
     graphs::get_weak_edges_in_alternating_cycle(&graph)
         .iter()
-        .flat_map(
-            |&((source_cell, source_candidate), (target_cell, target_candidate))| {
-                if source_cell == target_cell {
-                    let mut candidates = source_cell.candidates().clone();
-                    candidates.remove(&source_candidate);
-                    candidates.remove(&target_candidate);
-                    candidates
-                        .iter()
-                        .map(|&candidate| (source_cell, candidate))
-                        .collect::<Vec<_>>()
-                } else {
-                    fn remove_from_unit<'a, U: Iterator<Item = &'a Cell>>(
-                        source_cell: &UnsolvedCell,
-                        source_candidate: SudokuNumber,
-                        target_cell: &UnsolvedCell,
-                        source_unit_index: usize,
-                        target_unit_index: usize,
-                        get_unit: impl FnOnce(usize) -> U,
-                    ) -> impl Iterator<Item = LocatedCandidate<'a>> {
-                        let removals = if source_unit_index == target_unit_index {
-                            let removals = get_unit(source_unit_index)
-                                .unsolved_cells()
-                                .filter(move |&cell| {
-                                    cell.candidates().contains(&source_candidate)
-                                        && cell != source_cell
-                                        && cell != target_cell
-                                })
-                                .map(move |cell| (cell, source_candidate));
-                            Some(removals)
-                        } else {
-                            None
-                        };
-                        removals.into_iter().flatten()
-                    }
-
-                    let row_removals = remove_from_unit(
-                        source_cell,
-                        source_candidate,
-                        target_cell,
-                        source_cell.row(),
-                        target_cell.row(),
-                        |index| board.get_row(index),
-                    );
-                    let column_removals = remove_from_unit(
-                        source_cell,
-                        source_candidate,
-                        target_cell,
-                        source_cell.column(),
-                        target_cell.column(),
-                        |index| board.get_column(index),
-                    );
-                    let block_removals = remove_from_unit(
-                        source_cell,
-                        source_candidate,
-                        target_cell,
-                        source_cell.block(),
-                        target_cell.block(),
-                        |index| board.get_block(index),
-                    );
-
-                    row_removals
-                        .chain(column_removals)
-                        .chain(block_removals)
-                        .collect()
+        .flat_map(|&((source_cell, source_candidate), (target_cell, target_candidate))| {
+            if source_cell == target_cell {
+                let mut candidates = source_cell.candidates().clone();
+                candidates.remove(&source_candidate);
+                candidates.remove(&target_candidate);
+                candidates
+                    .iter()
+                    .map(|&candidate| (source_cell, candidate))
+                    .collect::<Vec<_>>()
+            } else {
+                fn remove_from_unit<'a, U: Iterator<Item = &'a Cell>>(
+                    source_cell: &UnsolvedCell,
+                    source_candidate: SudokuNumber,
+                    target_cell: &UnsolvedCell,
+                    source_unit_index: usize,
+                    target_unit_index: usize,
+                    get_unit: impl FnOnce(usize) -> U,
+                ) -> impl Iterator<Item = LocatedCandidate<'a>> {
+                    let removals = if source_unit_index == target_unit_index {
+                        let removals = get_unit(source_unit_index)
+                            .unsolved_cells()
+                            .filter(move |&cell| {
+                                cell.candidates().contains(&source_candidate)
+                                    && cell != source_cell
+                                    && cell != target_cell
+                            })
+                            .map(move |cell| (cell, source_candidate));
+                        Some(removals)
+                    } else {
+                        None
+                    };
+                    removals.into_iter().flatten()
                 }
-            },
-        )
+
+                let row_removals = remove_from_unit(
+                    source_cell,
+                    source_candidate,
+                    target_cell,
+                    source_cell.row(),
+                    target_cell.row(),
+                    |index| board.get_row(index),
+                );
+                let column_removals = remove_from_unit(
+                    source_cell,
+                    source_candidate,
+                    target_cell,
+                    source_cell.column(),
+                    target_cell.column(),
+                    |index| board.get_column(index),
+                );
+                let block_removals = remove_from_unit(
+                    source_cell,
+                    source_candidate,
+                    target_cell,
+                    source_cell.block(),
+                    target_cell.block(),
+                    |index| board.get_block(index),
+                );
+
+                row_removals.chain(column_removals).chain(block_removals).collect()
+            }
+        })
         .merge_to_remove_candidates()
 }
 
@@ -214,31 +209,28 @@ fn alternating_cycle_exists(
                     .filter(|(_, _, strength)| strength.is_compatible_with(next_type))
                     .map(|edge| graphs::get_opposite_vertex(edge, current_vertex))
                     .filter(|&(_, opposite_candidate)| {
-                        opposite_candidate == current_candidate
-                            || !visisted_candidates.contains(&opposite_candidate)
+                        opposite_candidate == current_candidate || !visisted_candidates.contains(&opposite_candidate)
                     })
                     .collect();
                 adjacent_edges_type.opposite() == next_type && next_vertices.contains(&end) || {
                     next_vertices.retain(|&vertex| !visited.contains(&vertex) && vertex != end);
-                    next_vertices
-                        .iter()
-                        .any(|&next_vertex @ (_, next_candidate)| {
-                            let mut next_visited = visited.clone();
-                            next_visited.insert(next_vertex);
-                            let mut next_visited_candidates = visisted_candidates.clone();
-                            if current_candidate != next_candidate {
-                                next_visited_candidates.insert(next_candidate);
-                            }
-                            alternating_cycle_exists(
-                                graph,
-                                adjacent_edges_type,
-                                end,
-                                next_vertex,
-                                next_type.opposite(),
-                                next_visited,
-                                next_visited_candidates,
-                            )
-                        })
+                    next_vertices.iter().any(|&next_vertex @ (_, next_candidate)| {
+                        let mut next_visited = visited.clone();
+                        next_visited.insert(next_vertex);
+                        let mut next_visited_candidates = visisted_candidates.clone();
+                        if current_candidate != next_candidate {
+                            next_visited_candidates.insert(next_candidate);
+                        }
+                        alternating_cycle_exists(
+                            graph,
+                            adjacent_edges_type,
+                            end,
+                            next_vertex,
+                            next_type.opposite(),
+                            next_visited,
+                            next_visited_candidates,
+                        )
+                    })
                 }
             }
 
@@ -305,10 +297,7 @@ mod tests {
             {2689}3{569}{458}{4568}1{245}7{459}\
             4{579}{15679}{357}2{3567}{135}{359}8\
         ";
-        let expected = [
-            remove_candidates!(0, 7, 4, 9),
-            remove_candidates!(7, 0, 8, 9),
-        ];
+        let expected = [remove_candidates!(0, 7, 4, 9), remove_candidates!(7, 0, 8, 9)];
         assertions::assert_logical_solution(&expected, board, alternating_inference_chains_rule_1);
     }
 
@@ -491,10 +480,7 @@ mod tests {
             19{357}{35}{357}8426\
             {2348}{23458}{2345}{356}{1456}{15}{19}7{189}\
         ";
-        let expected = [
-            SetValue::from_indices(4, 3, 8),
-            SetValue::from_indices(8, 3, 6),
-        ];
+        let expected = [SetValue::from_indices(4, 3, 8), SetValue::from_indices(8, 3, 6)];
         assertions::assert_logical_solution(&expected, board, alternating_inference_chains_rule_2);
     }
 
@@ -534,10 +520,7 @@ mod tests {
             19{357}{35}{357}8426\
             {2348}{23458}{2345}{356}{1456}{15}{159}7{189}\
         ";
-        let expected = [
-            SetValue::from_indices(4, 3, 8),
-            SetValue::from_indices(6, 6, 5),
-        ];
+        let expected = [SetValue::from_indices(4, 3, 8), SetValue::from_indices(6, 6, 5)];
         assertions::assert_logical_solution(&expected, board, alternating_inference_chains_rule_2);
     }
 

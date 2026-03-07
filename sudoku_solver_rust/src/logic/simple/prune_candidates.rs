@@ -36,8 +36,7 @@ mod tests {
 
     #[test]
     fn test() {
-        let board =
-            "000105000140000670080002400063070010900000003010090520007200080026000035000409000";
+        let board = "000105000140000670080002400063070010900000003010090520007200080026000035000409000";
         let expected = [
             remove_candidates!(0, 0, 1, 4, 5, 8, 9),
             remove_candidates!(0, 1, 1, 2, 4, 5, 6, 8),
@@ -93,10 +92,6 @@ mod tests {
             remove_candidates!(8, 7, 1, 2, 3, 4, 5, 7, 8, 9),
             remove_candidates!(8, 8, 3, 4, 5, 8, 9),
         ];
-        assertions::assert_logical_solution_with_parsed(
-            &expected,
-            &board.parse().unwrap(),
-            prune_candidates,
-        );
+        assertions::assert_logical_solution_with_parsed(&expected, &board.parse().unwrap(), prune_candidates);
     }
 }

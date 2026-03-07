@@ -40,27 +40,26 @@ pub fn aligned_pair_exclusion(board: &Board<Cell>) -> Vec<BoardModification> {
         .zip_every_pair()
         .flat_map(|(cell_a, cell_b)| {
             let almost_locked_sets = get_almost_locked_sets(board, cell_a, cell_b);
-            let (valid_a_candidates, valid_b_candidates): (Vec<SudokuNumber>, Vec<SudokuNumber>) =
-                cell_a
-                    .candidates()
-                    .iter()
-                    .flat_map(|&candidate_a| {
-                        cell_b
-                            .candidates()
-                            .iter()
-                            .map(move |&candidate_b| (candidate_a, candidate_b))
-                    })
-                    .filter(|&(candidate_a, candidate_b)| {
-                        if candidate_a == candidate_b {
-                            !cell_a.is_in_same_unit(cell_b)
-                        } else {
-                            let mut pair = BTreeSet::new();
-                            pair.insert(candidate_a);
-                            pair.insert(candidate_b);
-                            !almost_locked_sets.iter().any(|als| als.is_superset(&pair))
-                        }
-                    })
-                    .unzip();
+            let (valid_a_candidates, valid_b_candidates): (Vec<SudokuNumber>, Vec<SudokuNumber>) = cell_a
+                .candidates()
+                .iter()
+                .flat_map(|&candidate_a| {
+                    cell_b
+                        .candidates()
+                        .iter()
+                        .map(move |&candidate_b| (candidate_a, candidate_b))
+                })
+                .filter(|&(candidate_a, candidate_b)| {
+                    if candidate_a == candidate_b {
+                        !cell_a.is_in_same_unit(cell_b)
+                    } else {
+                        let mut pair = BTreeSet::new();
+                        pair.insert(candidate_a);
+                        pair.insert(candidate_b);
+                        !almost_locked_sets.iter().any(|als| als.is_superset(&pair))
+                    }
+                })
+                .unzip();
             let removals_a = cell_a
                 .candidates()
                 .iter()
@@ -85,10 +84,7 @@ fn get_almost_locked_sets(
         .cells()
         .unsolved_cells()
         .filter(|&cell| {
-            cell != cell_a
-                && cell != cell_b
-                && cell.is_in_same_unit(cell_a)
-                && cell.is_in_same_unit(cell_b)
+            cell != cell_a && cell != cell_b && cell.is_in_same_unit(cell_a) && cell.is_in_same_unit(cell_b)
         })
         .collect();
     let almost_locked_sets_1 = visible
@@ -105,9 +101,7 @@ fn get_almost_locked_sets(
         .iter()
         .zip_every_triple()
         .filter(|(als_a, als_b, als_c)| {
-            als_a.is_in_same_unit(als_b)
-                && als_a.is_in_same_unit(als_c)
-                && als_b.is_in_same_unit(als_c)
+            als_a.is_in_same_unit(als_b) && als_a.is_in_same_unit(als_c) && als_b.is_in_same_unit(als_c)
         })
         .map(|(als_a, als_b, als_c)| {
             let mut candidates = als_a.candidates().clone();

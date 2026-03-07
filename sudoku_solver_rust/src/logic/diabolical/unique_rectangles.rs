@@ -122,9 +122,7 @@ pub fn unique_rectangles_type_3(board: &Board<Cell>) -> Vec<BoardModification> {
                             .find(|cell| cell.candidates() == additional_candidates)
                             .map(|&pair_cell| {
                                 unit.iter()
-                                    .filter(|&&cell| {
-                                        cell != pair_cell && cell != roof_a && cell != roof_b
-                                    })
+                                    .filter(|&&cell| cell != pair_cell && cell != roof_a && cell != roof_b)
                                     .flat_map(|&cell| {
                                         cell.candidates()
                                             .intersection(additional_candidates)
@@ -138,27 +136,16 @@ pub fn unique_rectangles_type_3(board: &Board<Cell>) -> Vec<BoardModification> {
                     removals.into_iter().flatten()
                 }
 
-                let row_removals = get_removals(
-                    roof_a,
-                    roof_b,
-                    &additional_candidates,
-                    Location::row,
-                    |index| board.get_row(index),
-                );
-                let column_removals = get_removals(
-                    roof_a,
-                    roof_b,
-                    &additional_candidates,
-                    Location::column,
-                    |index| board.get_column(index),
-                );
-                let block_removals = get_removals(
-                    roof_a,
-                    roof_b,
-                    &additional_candidates,
-                    UnsolvedCell::block,
-                    |index| board.get_block(index),
-                );
+                let row_removals = get_removals(roof_a, roof_b, &additional_candidates, Location::row, |index| {
+                    board.get_row(index)
+                });
+                let column_removals = get_removals(roof_a, roof_b, &additional_candidates, Location::column, |index| {
+                    board.get_column(index)
+                });
+                let block_removals =
+                    get_removals(roof_a, roof_b, &additional_candidates, UnsolvedCell::block, |index| {
+                        board.get_block(index)
+                    });
                 let removals = row_removals
                     .chain(column_removals)
                     .chain(block_removals)
@@ -178,9 +165,7 @@ pub fn unique_rectangles_type_3(board: &Board<Cell>) -> Vec<BoardModification> {
 // and the union of candidates among the roof cells' additional candidates and the other cells' candidates is three
 // candidates, then the roof cells and the other two cells effectively form a Naked Triple. The three candidates in the
 // union can be removed from any other cell in the unit.
-pub fn unique_rectangles_type_3_b_with_triple_pseudo_cells(
-    board: &Board<Cell>,
-) -> Vec<BoardModification> {
+pub fn unique_rectangles_type_3_b_with_triple_pseudo_cells(board: &Board<Cell>) -> Vec<BoardModification> {
     rectangles::create_rectangles(board)
         .flat_map(|rectangle| {
             if let [roof_a, roof_b] = rectangle.roof()[..] {
@@ -235,27 +220,16 @@ pub fn unique_rectangles_type_3_b_with_triple_pseudo_cells(
                     removals.into_iter().flatten()
                 }
 
-                let row_removals = get_removals(
-                    roof_a,
-                    roof_b,
-                    &additional_candidates,
-                    Location::row,
-                    |index| board.get_row(index),
-                );
-                let column_removals = get_removals(
-                    roof_a,
-                    roof_b,
-                    &additional_candidates,
-                    Location::column,
-                    |index| board.get_column(index),
-                );
-                let block_removals = get_removals(
-                    roof_a,
-                    roof_b,
-                    &additional_candidates,
-                    UnsolvedCell::block,
-                    |index| board.get_block(index),
-                );
+                let row_removals = get_removals(roof_a, roof_b, &additional_candidates, Location::row, |index| {
+                    board.get_row(index)
+                });
+                let column_removals = get_removals(roof_a, roof_b, &additional_candidates, Location::column, |index| {
+                    board.get_column(index)
+                });
+                let block_removals =
+                    get_removals(roof_a, roof_b, &additional_candidates, UnsolvedCell::block, |index| {
+                        board.get_block(index)
+                    });
                 let removals = row_removals
                     .chain(column_removals)
                     .chain(block_removals)
@@ -291,8 +265,7 @@ pub fn unique_rectangles_type_4(board: &Board<Cell>) -> Vec<BoardModification> {
                     let index_b = get_unit_index(roof_b);
                     let removals = if index_a == index_b {
                         let unit = get_unit(index_a).unsolved_cells().collect();
-                        let &[common_candidate_a, common_candidate_b] =
-                            rectangle.common_candidates();
+                        let &[common_candidate_a, common_candidate_b] = rectangle.common_candidates();
 
                         fn search_unit<'a>(
                             roof: &[&'a UnsolvedCell],
@@ -300,28 +273,18 @@ pub fn unique_rectangles_type_4(board: &Board<Cell>) -> Vec<BoardModification> {
                             search: SudokuNumber,
                             removal: SudokuNumber,
                         ) -> impl Iterator<Item = LocatedCandidate<'a>> {
-                            let removals = if unit
-                                .iter()
-                                .filter(|cell| cell.candidates().contains(&search))
-                                .count()
-                                == 2
-                            {
-                                Some(roof.iter().map(move |&roof_cell| (roof_cell, removal)))
-                            } else {
-                                None
-                            };
+                            let removals =
+                                if unit.iter().filter(|cell| cell.candidates().contains(&search)).count() == 2 {
+                                    Some(roof.iter().map(move |&roof_cell| (roof_cell, removal)))
+                                } else {
+                                    None
+                                };
                             removals.into_iter().flatten()
                         }
 
-                        let removals =
-                            search_unit(roof, &unit, common_candidate_a, common_candidate_b)
-                                .chain(search_unit(
-                                    roof,
-                                    &unit,
-                                    common_candidate_b,
-                                    common_candidate_a,
-                                ))
-                                .collect::<Vec<_>>();
+                        let removals = search_unit(roof, &unit, common_candidate_a, common_candidate_b)
+                            .chain(search_unit(roof, &unit, common_candidate_b, common_candidate_a))
+                            .collect::<Vec<_>>();
                         Some(removals)
                     } else {
                         None
@@ -329,26 +292,15 @@ pub fn unique_rectangles_type_4(board: &Board<Cell>) -> Vec<BoardModification> {
                     removals.into_iter().flatten()
                 }
 
-                let row_removals =
-                    get_removals(roof, roof_a, roof_b, &rectangle, Location::row, |index| {
-                        board.get_row(index)
-                    });
-                let column_removals = get_removals(
-                    roof,
-                    roof_a,
-                    roof_b,
-                    &rectangle,
-                    Location::column,
-                    |index| board.get_column(index),
-                );
-                let block_removals = get_removals(
-                    roof,
-                    roof_a,
-                    roof_b,
-                    &rectangle,
-                    UnsolvedCell::block,
-                    |index| board.get_block(index),
-                );
+                let row_removals = get_removals(roof, roof_a, roof_b, &rectangle, Location::row, |index| {
+                    board.get_row(index)
+                });
+                let column_removals = get_removals(roof, roof_a, roof_b, &rectangle, Location::column, |index| {
+                    board.get_column(index)
+                });
+                let block_removals = get_removals(roof, roof_a, roof_b, &rectangle, UnsolvedCell::block, |index| {
+                    board.get_block(index)
+                });
                 let removals = row_removals
                     .chain(column_removals)
                     .chain(block_removals)
@@ -383,10 +335,7 @@ pub fn unique_rectangles_type_5(board: &Board<Cell>) -> Vec<BoardModification> {
                     .common_candidates()
                     .iter()
                     .find(|&&candidate| {
-                        fn has_strong_link<'a>(
-                            candidate: SudokuNumber,
-                            unit: impl IteratorCellExt<'a>,
-                        ) -> bool {
+                        fn has_strong_link<'a>(candidate: SudokuNumber, unit: impl IteratorCellExt<'a>) -> bool {
                             unit.unsolved_cells()
                                 .filter(|cell| cell.candidates().contains(&candidate))
                                 .count()
@@ -402,9 +351,7 @@ pub fn unique_rectangles_type_5(board: &Board<Cell>) -> Vec<BoardModification> {
                     .flat_map(|&strong_link_candidate| {
                         floor
                             .iter()
-                            .map(|floor_cell| {
-                                SetValue::from_cell(floor_cell, strong_link_candidate)
-                            })
+                            .map(|floor_cell| SetValue::from_cell(floor_cell, strong_link_candidate))
                             .collect::<Vec<_>>()
                     })
                     .collect::<Vec<_>>();
@@ -679,11 +626,7 @@ mod tests {
             {569}3{569}874{169}2{16}\
         ";
         let expected = [remove_candidates!(7, 0, 6, 9)];
-        assertions::assert_logical_solution(
-            &expected,
-            board,
-            unique_rectangles_type_3_b_with_triple_pseudo_cells,
-        );
+        assertions::assert_logical_solution(&expected, board, unique_rectangles_type_3_b_with_triple_pseudo_cells);
     }
 
     #[test]
@@ -704,11 +647,7 @@ mod tests {
             remove_candidates!(4, 2, 2, 6),
             remove_candidates!(5, 6, 2),
         ];
-        assertions::assert_logical_solution(
-            &expected,
-            board,
-            unique_rectangles_type_3_b_with_triple_pseudo_cells,
-        );
+        assertions::assert_logical_solution(&expected, board, unique_rectangles_type_3_b_with_triple_pseudo_cells);
     }
 
     #[test]
@@ -853,10 +792,7 @@ mod tests {
             5{189}{12789}{27}{2678}3{19}4{267}\
             6{48}{278}1{2478}9{257}{257}3\
         ";
-        let expected = [
-            SetValue::from_indices(4, 5, 8),
-            SetValue::from_indices(5, 0, 8),
-        ];
+        let expected = [SetValue::from_indices(4, 5, 8), SetValue::from_indices(5, 0, 8)];
         assertions::assert_logical_solution(&expected, board, unique_rectangles_type_5);
     }
 
@@ -873,10 +809,7 @@ mod tests {
             {279}{237}{239}{167}{17}548{267}\
             8{247}6{47}93{127}{17}5\
         ";
-        let expected = [
-            SetValue::from_indices(6, 1, 4),
-            SetValue::from_indices(8, 3, 4),
-        ];
+        let expected = [SetValue::from_indices(6, 1, 4), SetValue::from_indices(8, 3, 4)];
         assertions::assert_logical_solution(&expected, board, unique_rectangles_type_5);
     }
 }

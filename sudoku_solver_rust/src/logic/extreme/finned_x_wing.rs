@@ -70,8 +70,7 @@ pub fn finned_x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                             let removals = units
                                 .iter()
                                 .filter(|finned_unit| {
-                                    finned_unit.first().unwrap().block()
-                                        != base_unit.first().unwrap().block()
+                                    finned_unit.first().unwrap().block() != base_unit.first().unwrap().block()
                                 })
                                 .flat_map(|finned_unit| {
                                     let finned_unit_by_block = finned_unit
@@ -85,22 +84,15 @@ pub fn finned_x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                                             board: &'a Board<Cell>,
                                             candidate: SudokuNumber,
                                             get_other_unit_index: F,
-                                            finned_unit_by_block: &HashMap<
-                                                usize,
-                                                Vec<&UnsolvedCell>,
-                                            >,
+                                            finned_unit_by_block: &HashMap<usize, Vec<&UnsolvedCell>>,
                                             finned_corner: &'a Cell,
                                             other_corner: &Cell,
-                                        ) -> Option<
-                                            impl Iterator<Item = LocatedCandidate<'a>> + use<'a, F>,
-                                        > {
-                                            if let Some(finned_block) =
-                                                finned_unit_by_block.get(&finned_corner.block())
+                                        ) -> Option<impl Iterator<Item = LocatedCandidate<'a>> + use<'a, F>>
+                                        {
+                                            if let Some(finned_block) = finned_unit_by_block.get(&finned_corner.block())
                                                 && let Some(other_block) =
                                                     finned_unit_by_block.get(&other_corner.block())
-                                                && finned_block
-                                                    .iter()
-                                                    .any(|&cell| cell != finned_corner)
+                                                && finned_block.iter().any(|&cell| cell != finned_corner)
                                                 && let [other_block] = other_block[..]
                                                 && other_block == other_corner
                                             {
@@ -111,9 +103,7 @@ pub fn finned_x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                                                         get_other_unit_index(cell)
                                                             == get_other_unit_index(finned_corner)
                                                             && cell != finned_corner
-                                                            && cell
-                                                                .candidates()
-                                                                .contains(&candidate)
+                                                            && cell.candidates().contains(&candidate)
                                                     })
                                                     .map(move |cell| (cell, candidate));
                                                 Some(removals)
@@ -122,10 +112,8 @@ pub fn finned_x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                                             }
                                         }
 
-                                        let finned_unit_cell_1 =
-                                            finned_unit[get_other_unit_index(base_unit_cell_1)];
-                                        let finned_unit_cell_2 =
-                                            finned_unit[get_other_unit_index(base_unit_cell_2)];
+                                        let finned_unit_cell_1 = finned_unit[get_other_unit_index(base_unit_cell_1)];
+                                        let finned_unit_cell_2 = finned_unit[get_other_unit_index(base_unit_cell_2)];
                                         try_fin(
                                             board,
                                             candidate,
@@ -159,10 +147,8 @@ pub fn finned_x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                     .into_iter()
             }
 
-            let row_removals =
-                finned_x_wing(board, candidate, board.rows(), |location| location.column());
-            let column_removals =
-                finned_x_wing(board, candidate, board.columns(), |location| location.row());
+            let row_removals = finned_x_wing(board, candidate, board.rows(), |location| location.column());
+            let column_removals = finned_x_wing(board, candidate, board.columns(), |location| location.row());
             row_removals.chain(column_removals)
         })
         .merge_to_remove_candidates()

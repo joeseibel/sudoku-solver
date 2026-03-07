@@ -6,20 +6,14 @@ pub mod tough;
 
 #[cfg(test)]
 mod assertions {
-    use crate::{
-        board::Board, board_modification::BoardModification, cell::Cell, logic::brute_force,
-    };
+    use crate::{board::Board, board_modification::BoardModification, cell::Cell, logic::brute_force};
 
     pub fn assert_logical_solution(
         expected: &[BoardModification],
         with_candidates: &str,
         logic_function: impl FnOnce(&Board<Cell>) -> Vec<BoardModification>,
     ) {
-        assert_logical_solution_with_parsed(
-            expected,
-            &with_candidates.parse().unwrap(),
-            logic_function,
-        );
+        assert_logical_solution_with_parsed(expected, &with_candidates.parse().unwrap(), logic_function);
     }
 
     pub fn assert_logical_solution_with_parsed(

@@ -409,9 +409,6 @@ mod tests {
 
     #[test]
     fn test_parse_cells_with_candidates_wrong_length() {
-        assert_eq!(
-            "Found 1 cells, required 81.",
-            "{1}".parse::<Board<Cell>>().unwrap_err()
-        );
+        assert_eq!("Found 1 cells, required 81.", "{1}".parse::<Board<Cell>>().unwrap_err());
     }
 }

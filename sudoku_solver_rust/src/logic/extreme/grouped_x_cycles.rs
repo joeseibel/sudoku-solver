@@ -139,9 +139,7 @@ pub fn grouped_x_cycles_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
             graph
                 .node_indices()
                 .flat_map(move |index| match graph[index].as_cell_node() {
-                    Ok(cell)
-                        if graphs::alternating_cycle_exists(&graph, index, Strength::Strong) =>
-                    {
+                    Ok(cell) if graphs::alternating_cycle_exists(&graph, index, Strength::Strong) => {
                         Some(SetValue::from_cell(cell, candidate))
                     }
                     _ => None,
@@ -175,9 +173,7 @@ pub fn grouped_x_cycles_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
 
 #[allow(dead_code)]
 fn to_dot<'a>(graph: &UnGraph<Box<dyn Node + 'a>, Strength>) -> String {
-    graphs::to_dot(graph, graphs::edge_attributes, |(_, vertex)| {
-        vertex.vertex_label()
-    })
+    graphs::to_dot(graph, graphs::edge_attributes, |(_, vertex)| vertex.vertex_label())
 }
 
 // In grouped_x_cycles, Graph is used instead of GraphMap. This is different from every other graph-based logical
@@ -185,10 +181,7 @@ fn to_dot<'a>(graph: &UnGraph<Box<dyn Node + 'a>, Strength>) -> String {
 // Copy. grouped_x_cycles has a vertex type of Box<dyn Node> and Box does not implement Copy. The reason for this is
 // that Copy cannot be implemented for any type that also implements Drop, which Box does. See this explaination:
 // https://doc.rust-lang.org/std/marker/trait.Copy.html#when-cant-my-type-be-copy
-fn build_graph(
-    board: &Board<Cell>,
-    candidate: SudokuNumber,
-) -> UnGraph<Box<dyn Node<'_> + '_>, Strength> {
+fn build_graph(board: &Board<Cell>, candidate: SudokuNumber) -> UnGraph<Box<dyn Node<'_> + '_>, Strength> {
     let mut graph: UnGraph<Box<dyn Node>, _> = Graph::new_undirected();
 
     // Connect cells.
@@ -208,19 +201,11 @@ fn build_graph(
             for (&a, &b) in with_candidate.iter().zip_every_pair() {
                 let a_index = graph
                     .node_indices()
-                    .find(|&index| {
-                        graph[index]
-                            .as_cell_node()
-                            .is_ok_and(|cell_node| cell_node == a)
-                    })
+                    .find(|&index| graph[index].as_cell_node().is_ok_and(|cell_node| cell_node == a))
                     .unwrap_or_else(|| graph.add_node(Box::new(a)));
                 let b_index = graph
                     .node_indices()
-                    .find(|&index| {
-                        graph[index]
-                            .as_cell_node()
-                            .is_ok_and(|cell_node| cell_node == b)
-                    })
+                    .find(|&index| graph[index].as_cell_node().is_ok_and(|cell_node| cell_node == b))
                     .unwrap_or_else(|| graph.add_node(Box::new(b)));
                 graph.add_edge(a_index, b_index, strength);
             }
@@ -267,9 +252,7 @@ fn build_graph(
             let group = &graph[group_index];
             let other_cells_in_unit: Vec<_> = get_unit(get_unit_index(group.as_ref()))
                 .unsolved_cells()
-                .filter(|cell| {
-                    cell.candidates().contains(&candidate) && !group.cells().contains(cell)
-                })
+                .filter(|cell| cell.candidates().contains(&candidate) && !group.cells().contains(cell))
                 .collect();
             let strength = if other_cells_in_unit.len() == 1 {
                 Strength::Strong
@@ -279,11 +262,7 @@ fn build_graph(
             for cell in other_cells_in_unit {
                 let cell_index = graph
                     .node_indices()
-                    .find(|&index| {
-                        graph[index]
-                            .as_cell_node()
-                            .is_ok_and(|cell_node| cell_node == cell)
-                    })
+                    .find(|&index| graph[index].as_cell_node().is_ok_and(|cell_node| cell_node == cell))
                     .unwrap();
                 graph.add_edge(group_index, cell_index, strength);
             }
@@ -326,13 +305,9 @@ fn build_graph(
             if get_unit_index(a.as_ref()) == get_unit_index(b.as_ref())
                 && a.cells().intersection(&b.cells()).next().is_none()
             {
-                let mut other_cells_in_unit = get_unit(get_unit_index(a.as_ref()))
-                    .unsolved_cells()
-                    .filter(|cell| {
-                        cell.candidates().contains(&candidate)
-                            && !a.cells().contains(cell)
-                            && !b.cells().contains(cell)
-                    });
+                let mut other_cells_in_unit = get_unit(get_unit_index(a.as_ref())).unsolved_cells().filter(|cell| {
+                    cell.candidates().contains(&candidate) && !a.cells().contains(cell) && !b.cells().contains(cell)
+                });
                 let strength = if other_cells_in_unit.next().is_none() {
                     Strength::Strong
                 } else {
@@ -435,11 +410,7 @@ impl<'a> RowGroup<'a> {
     fn new(cells: BTreeSet<&'a UnsolvedCell>) -> Self {
         validate_group(&cells);
         assert_eq!(
-            cells
-                .iter()
-                .map(|cell| cell.row())
-                .collect::<HashSet<_>>()
-                .len(),
+            cells.iter().map(|cell| cell.row()).collect::<HashSet<_>>().len(),
             1,
             "RowGroup cells must be in the same row."
         );
@@ -489,11 +460,7 @@ impl<'a> ColumnGroup<'a> {
     fn new(cells: BTreeSet<&'a UnsolvedCell>) -> Self {
         validate_group(&cells);
         assert_eq!(
-            cells
-                .iter()
-                .map(|cell| cell.column())
-                .collect::<HashSet<_>>()
-                .len(),
+            cells.iter().map(|cell| cell.column()).collect::<HashSet<_>>().len(),
             1,
             "ColumnGroup cells must be in the same column."
         );
@@ -542,11 +509,7 @@ fn validate_group(cells: &BTreeSet<&UnsolvedCell>) {
         cells.len()
     );
     assert_eq!(
-        cells
-            .iter()
-            .map(|cell| cell.block())
-            .collect::<HashSet<_>>()
-            .len(),
+        cells.iter().map(|cell| cell.block()).collect::<HashSet<_>>().len(),
         1,
         "Group cells must be in the same block."
     );
@@ -743,10 +706,7 @@ mod tests {
             92{18}{16}{168}3457\
             4{1678}{178}2{18}53{168}9\
         ";
-        let expected = [
-            SetValue::from_indices(0, 7, 8),
-            SetValue::from_indices(6, 8, 8),
-        ];
+        let expected = [SetValue::from_indices(0, 7, 8), SetValue::from_indices(6, 8, 8)];
         assertions::assert_logical_solution(&expected, board, grouped_x_cycles_rule_2);
     }
 

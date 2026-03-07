@@ -31,9 +31,7 @@ pub fn medusa_rule_1(board: &Board<Cell>) -> Vec<BoardModification> {
             graph
                 .nodes()
                 .zip_every_pair()
-                .find(|(a @ (cell_a, _), b @ (cell_b, _))| {
-                    cell_a == cell_b && colors[a] == colors[b]
-                })
+                .find(|(a @ (cell_a, _), b @ (cell_b, _))| cell_a == cell_b && colors[a] == colors[b])
                 .map(|(a, _)| colors[&a].opposite())
                 .iter()
                 .flat_map(|&color_to_set| {
@@ -63,9 +61,7 @@ pub fn medusa_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
                 .nodes()
                 .zip_every_pair()
                 .find(|(a @ (cell_a, candidate_a), b @ (cell_b, candidate_b))| {
-                    candidate_a == candidate_b
-                        && colors[a] == colors[b]
-                        && cell_a.is_in_same_unit(cell_b)
+                    candidate_a == candidate_b && colors[a] == colors[b] && cell_a.is_in_same_unit(cell_b)
                 })
                 .map(|(a, _)| colors[&a].opposite())
                 .iter()
@@ -95,9 +91,7 @@ pub fn medusa_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
                 .nodes()
                 .filter(|(cell, _)| cell.candidates().len() > 2)
                 .zip_every_pair()
-                .find(|(a @ (cell_a, _), b @ (cell_b, _))| {
-                    cell_a == cell_b && colors[a] != colors[b]
-                })
+                .find(|(a @ (cell_a, _), b @ (cell_b, _))| cell_a == cell_b && colors[a] != colors[b])
                 .map(|((cell, _), _)| cell)
                 .iter()
                 .flat_map(|&cell| {
@@ -124,11 +118,7 @@ pub fn medusa_rule_4(board: &Board<Cell>) -> Vec<BoardModification> {
             board
                 .cells()
                 .unsolved_cells()
-                .flat_map(|cell| {
-                    cell.candidates()
-                        .iter()
-                        .map(move |&candidate| (cell, candidate))
-                })
+                .flat_map(|cell| cell.candidates().iter().map(move |&candidate| (cell, candidate)))
                 .filter(move |&removal @ (cell, candidate)| {
                     !graph.contains_node(removal)
                         && can_see_color(cell, candidate, &color_one)
@@ -138,14 +128,10 @@ pub fn medusa_rule_4(board: &Board<Cell>) -> Vec<BoardModification> {
         .merge_to_remove_candidates()
 }
 
-fn can_see_color(
-    cell: &UnsolvedCell,
-    candidate: SudokuNumber,
-    color: &Vec<LocatedCandidate>,
-) -> bool {
-    color.iter().any(|&(colored_cell, colored_candidate)| {
-        candidate == colored_candidate && cell.is_in_same_unit(colored_cell)
-    })
+fn can_see_color(cell: &UnsolvedCell, candidate: SudokuNumber, color: &Vec<LocatedCandidate>) -> bool {
+    color
+        .iter()
+        .any(|&(colored_cell, colored_candidate)| candidate == colored_candidate && cell.is_in_same_unit(colored_cell))
 }
 
 // Rule 5: Two colors Unit + Cell
@@ -161,11 +147,7 @@ pub fn medusa_rule_5(board: &Board<Cell>) -> Vec<BoardModification> {
             board
                 .cells()
                 .unsolved_cells()
-                .flat_map(|cell| {
-                    cell.candidates()
-                        .iter()
-                        .map(move |&candidate| (cell, candidate))
-                })
+                .flat_map(|cell| cell.candidates().iter().map(move |&candidate| (cell, candidate)))
                 .filter(move |&removal @ (cell, candidate)| {
                     fn color_in_cell(cell: &UnsolvedCell, color: &Vec<LocatedCandidate>) -> bool {
                         cell.candidates()
@@ -174,10 +156,8 @@ pub fn medusa_rule_5(board: &Board<Cell>) -> Vec<BoardModification> {
                     }
 
                     !graph.contains_node(removal)
-                        && (can_see_color(cell, candidate, &color_one)
-                            && color_in_cell(cell, &color_two)
-                            || can_see_color(cell, candidate, &color_two)
-                                && color_in_cell(cell, &color_one))
+                        && (can_see_color(cell, candidate, &color_one) && color_in_cell(cell, &color_two)
+                            || can_see_color(cell, candidate, &color_two) && color_in_cell(cell, &color_one))
                 })
         })
         .merge_to_remove_candidates()
@@ -201,10 +181,7 @@ pub fn medusa_rule_6(board: &Board<Cell>) -> Vec<BoardModification> {
                         .all(|&candidate| !graph.contains_node((cell, candidate)))
                 })
                 .find_map(|cell| {
-                    fn every_candidate_can_see_color(
-                        cell: &UnsolvedCell,
-                        color: &Vec<LocatedCandidate>,
-                    ) -> bool {
+                    fn every_candidate_can_see_color(cell: &UnsolvedCell, color: &Vec<LocatedCandidate>) -> bool {
                         cell.candidates().iter().all(|candidate| {
                             color.iter().any(|(colored_cell, colored_candidate)| {
                                 candidate == colored_candidate && cell.is_in_same_unit(colored_cell)
@@ -222,9 +199,7 @@ pub fn medusa_rule_6(board: &Board<Cell>) -> Vec<BoardModification> {
                 })
                 .into_iter()
                 .flatten()
-                .map(|&(colored_cell, colored_candidate)| {
-                    SetValue::from_cell(colored_cell, colored_candidate)
-                })
+                .map(|&(colored_cell, colored_candidate)| SetValue::from_cell(colored_cell, colored_candidate))
                 .collect::<Vec<_>>()
         })
         .collect()
@@ -232,16 +207,10 @@ pub fn medusa_rule_6(board: &Board<Cell>) -> Vec<BoardModification> {
 
 #[allow(dead_code)]
 fn to_dot(graph: &UnGraphMap<LocatedCandidate, ()>) -> String {
-    graphs::to_dot(
-        graph,
-        |_| String::new(),
-        |(vertex, _)| vertex.vertex_label(),
-    )
+    graphs::to_dot(graph, |_| String::new(), |(vertex, _)| vertex.vertex_label())
 }
 
-fn create_connected_components(
-    board: &Board<Cell>,
-) -> impl Iterator<Item = UnGraphMap<LocatedCandidate<'_>, ()>> {
+fn create_connected_components(board: &Board<Cell>) -> impl Iterator<Item = UnGraphMap<LocatedCandidate<'_>, ()>> {
     let same_cell_edges = board
         .cells()
         .unsolved_cells()

@@ -40,8 +40,7 @@ pub fn box_line_reduction(board: &Board<Cell>) -> Vec<BoardModification> {
                                 .get_block(block_index)
                                 .unsolved_cells()
                                 .filter(|&cell| {
-                                    get_unit_index(cell) != unit_index
-                                        && cell.candidates().contains(&candidate)
+                                    get_unit_index(cell) != unit_index && cell.candidates().contains(&candidate)
                                 })
                                 .map(|cell| (cell, candidate))
                                 .collect::<Vec<_>>();
@@ -55,12 +54,8 @@ pub fn box_line_reduction(board: &Board<Cell>) -> Vec<BoardModification> {
                     .into_iter()
             }
 
-            let row_removals =
-                box_line_reduction(board, candidate, board.rows(), |location| location.row());
-            let column_removals =
-                box_line_reduction(board, candidate, board.columns(), |location| {
-                    location.column()
-                });
+            let row_removals = box_line_reduction(board, candidate, board.rows(), |location| location.row());
+            let column_removals = box_line_reduction(board, candidate, board.columns(), |location| location.column());
             row_removals.chain(column_removals)
         })
         .merge_to_remove_candidates()

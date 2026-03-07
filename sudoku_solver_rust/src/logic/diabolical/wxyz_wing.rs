@@ -47,9 +47,9 @@ pub fn wxyz_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                         .filter(|cell| {
                             cell.candidates().contains(&non_restricted)
                                 && !quad.contains(cell)
-                                && with_candidate.iter().all(|with_candidate_cell| {
-                                    cell.is_in_same_unit(with_candidate_cell)
-                                })
+                                && with_candidate
+                                    .iter()
+                                    .all(|with_candidate_cell| cell.is_in_same_unit(with_candidate_cell))
                         })
                         .map(|cell| (cell, non_restricted))
                         .collect::<Vec<_>>();

@@ -16,13 +16,9 @@ pub fn hidden_singles(board: &Board<Cell>) -> Vec<BoardModification> {
         .flat_map(|unit| {
             let unsolved: Vec<_> = unit.unsolved_cells().collect();
             SudokuNumber::iter().flat_map(move |candidate| {
-                let mut with_candidate = unsolved
-                    .iter()
-                    .filter(|cell| cell.candidates().contains(&candidate));
+                let mut with_candidate = unsolved.iter().filter(|cell| cell.candidates().contains(&candidate));
                 match with_candidate.next() {
-                    Some(cell) if with_candidate.next().is_none() => {
-                        Some(SetValue::from_cell(cell, candidate))
-                    }
+                    Some(cell) if with_candidate.next().is_none() => Some(SetValue::from_cell(cell, candidate)),
                     _ => None,
                 }
             })

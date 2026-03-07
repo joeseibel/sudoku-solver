@@ -1,9 +1,7 @@
 use crate::board_modification::IteratorRemoveCandidatesExt;
 use crate::cell::IteratorCellExt;
 use crate::collections::IteratorZipExt;
-use crate::{
-    board::Board, board_modification::BoardModification, cell::Cell, sudoku_number::SudokuNumber,
-};
+use crate::{board::Board, board_modification::BoardModification, cell::Cell, sudoku_number::SudokuNumber};
 use strum::IntoEnumIterator;
 
 // http://www.sudokuwiki.org/Hidden_Candidates#HP
@@ -35,9 +33,7 @@ pub fn hidden_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
                             let mut to_remove = cell.candidates().clone();
                             to_remove.remove(&a);
                             to_remove.remove(&b);
-                            to_remove
-                                .into_iter()
-                                .map(move |candidate| (cell, candidate))
+                            to_remove.into_iter().map(move |candidate| (cell, candidate))
                         });
                         Some(removals)
                     } else {
