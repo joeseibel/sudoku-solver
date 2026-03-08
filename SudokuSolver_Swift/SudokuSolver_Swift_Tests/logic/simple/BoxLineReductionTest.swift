@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class BoxLineReductionTest: XCTestCase {
-    func test1() {
+struct BoxLineReductionTest {
+    @Test func test1() {
         let board = """
             {45}16{245}{2459}78{49}3
             {345}928{3456}{3456}{147}{47}{1457}
@@ -18,10 +18,10 @@ final class BoxLineReductionTest: XCTestCase {
             BoardModification(row: 1, column: 8, candidates: 4),
             BoardModification(row: 2, column: 8, candidates: 4)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: boxLineReduction)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: boxLineReduction)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             {68}2{68}943715
             9{13}4{1578}{127}{157}6{23}{28}
@@ -47,6 +47,6 @@ final class BoxLineReductionTest: XCTestCase {
             BoardModification(row: 8, column: 2, candidates: 1, 3),
             BoardModification(row: 8, column: 4, candidates: 7)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: boxLineReduction)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: boxLineReduction)
     }
 }
