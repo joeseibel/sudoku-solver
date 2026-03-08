@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class HiddenQuadsTest: XCTestCase {
-    func test1() {
+struct HiddenQuadsTest {
+    @Test func test1() {
         let board = """
             65{139}{13}87{19}24
             {278}{28}{1378}649{18}5{37}
@@ -14,10 +14,10 @@ final class HiddenQuadsTest: XCTestCase {
             13{246}75{46}{26}98
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 6, candidates: 6)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenQuads)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenQuads)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             9{37}15{28}{28}{37}46
             425{367}9{367}{37}81
@@ -35,6 +35,6 @@ final class HiddenQuadsTest: XCTestCase {
             BoardModification(row: 5, column: 3, candidates: 3, 7, 8),
             BoardModification(row: 5, column: 5, candidates: 3, 5, 7, 8)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenQuads)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenQuads)
     }
 }
