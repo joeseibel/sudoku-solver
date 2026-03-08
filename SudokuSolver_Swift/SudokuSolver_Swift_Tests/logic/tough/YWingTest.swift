@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class YWingTest: XCTestCase {
-    func test1() {
+struct YWingTest {
+    @Test func test1() {
         let board = """
             9{38}{1368}24{1378}{57}{58}{568}
             {478}5{48}69{78}231
@@ -18,10 +18,10 @@ final class YWingTest: XCTestCase {
             BoardModification(row: 2, column: 0, candidates: 8),
             BoardModification(row: 7, column: 2, candidates: 4)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: yWing)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: yWing)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             65{379}{3478}{347}{34789}1{37}2
             2{19}8{16}{37}{169}4{37}5
@@ -37,10 +37,10 @@ final class YWingTest: XCTestCase {
             BoardModification(row: 7, column: 1, candidates: 9),
             BoardModification(row: 7, column: 3, candidates: 6)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: yWing)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: yWing)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             {35}{69}28{579}4{79}{3679}1
             {35}{19}4{179}6{159}2{379}8
@@ -56,10 +56,10 @@ final class YWingTest: XCTestCase {
             BoardModification(row: 0, column: 4, candidates: 9),
             BoardModification(row: 1, column: 7, candidates: 9)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: yWing)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: yWing)
     }
     
-    func test4() {
+    @Test func test4() {
         let board = """
             {46}9172385{46}
             7{346}{24}851{346}{269}{469}
@@ -78,6 +78,6 @@ final class YWingTest: XCTestCase {
             BoardModification(row: 7, column: 6, candidates: 6),
             BoardModification(row: 7, column: 7, candidates: 7)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: yWing)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: yWing)
     }
 }
