@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class NakedPairsTest: XCTestCase {
-    func test1() {
+struct NakedPairsTest {
+    @Test func test1() {
         let board = """
             4{16}{16}{125}{12567}{2567}938
             {78}32{58}941{56}{567}
@@ -24,10 +24,10 @@ final class NakedPairsTest: XCTestCase {
             BoardModification(row: 5, column: 4, candidates: 8),
             BoardModification(row: 5, column: 8, candidates: 5)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: nakedPairs)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedPairs)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             {1467}8{567}{12457}9{12}{247}3{24}
             {147}3{57}{12457}{1278}{128}{247}69
@@ -48,6 +48,6 @@ final class NakedPairsTest: XCTestCase {
             BoardModification(row: 7, column: 4, candidates: 3, 7),
             BoardModification(row: 8, column: 2, candidates: 7)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: nakedPairs)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedPairs)
     }
 }
