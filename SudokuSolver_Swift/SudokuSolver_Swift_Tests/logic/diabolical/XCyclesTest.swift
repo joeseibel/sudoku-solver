@@ -1,8 +1,8 @@
 import SwiftGraph
-import XCTest
+import Testing
 
-final class XCyclesTest: XCTestCase {
-    func testToDOT() {
+struct XCyclesTest {
+    @Test func testToDOT() {
         let graph = WeightedUniqueElementsGraph<UnsolvedCell, Strength>()
         let cells = [Cell(row: 0, column: 0), Cell(row: 0, column: 3), Cell(row: 2, column: 5)].unsolvedCells
         let a = cells[0]
@@ -20,10 +20,10 @@ final class XCyclesTest: XCTestCase {
               "[0,3]" -- "[2,5]" [style = dashed]
             }
             """
-        XCTAssertEqual(expected, actual)
+        #expect(expected == actual)
     }
     
-    func testRule1() {
+    @Test func testRule1() {
         let board = """
             {59}241{35}{58}67{389}
             {59}6{38}{238}7{258}41{389}
@@ -41,10 +41,10 @@ final class XCyclesTest: XCTestCase {
             BoardModification(row: 6, column: 2, candidates: 8),
             BoardModification(row: 6, column: 8, candidates: 8)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule1)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule1)
     }
     
-    func testRule2() {
+    @Test func testRule2() {
         let board = """
             8{19}4537{169}{126}{12}
             {79}23614{79}85
@@ -57,10 +57,10 @@ final class XCyclesTest: XCTestCase {
             {139}{39}84265{19}7
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 8, column: 0, value: 1)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule2)
     }
     
-    func testRule3Test1() {
+    @Test func testRule3Test1() {
         let board = """
             {158}762{35}{89}4{589}{1389}
             {58}941{35}7{2358}6{238}
@@ -73,10 +73,10 @@ final class XCyclesTest: XCTestCase {
             4578{12}36{29}{129}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 2, column: 2, candidates: 1)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
     }
     
-    func testRule3Test2() {
+    @Test func testRule3Test2() {
         let board = """
             {2478}{23}{247}{357}1{357}96{28}
             {127}{1239}{1279}68{37}45{12}
@@ -92,10 +92,10 @@ final class XCyclesTest: XCTestCase {
             BoardModification(row: 5, column: 7, candidates: 1),
             BoardModification(row: 8, column: 2, candidates: 1)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
     }
     
-    func testRule3Test3() {
+    @Test func testRule3Test3() {
         let board = """
             {12456}{145}{1256}978{24}{2346}{236}
             {27}83{46}{46}159{27}
@@ -108,10 +108,10 @@ final class XCyclesTest: XCTestCase {
             {145679}{145}{15679}32{57}{1489}{46}{15689}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 4, column: 8, candidates: 2, 9)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
     }
     
-    func testRule3Test4() {
+    @Test func testRule3Test4() {
         let board = """
             {23678}{23489}{24689}{168}5{69}{12378}{13467}{23467}
             {67}{48}12{48}39{67}5
@@ -127,6 +127,6 @@ final class XCyclesTest: XCTestCase {
             BoardModification(row: 8, column: 1, candidates: 8),
             BoardModification(row: 8, column: 2, candidates: 8)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xCyclesRule3)
     }
 }
