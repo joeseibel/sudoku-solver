@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class NakedQuadsTest: XCTestCase {
-    func test() {
+struct NakedQuadsTest {
+    @Test func test() {
         let board = """
             {15}{1245}{2457}{45}3{19}{79}86
             {1568}{1568}{35678}{56}2{19}{79}4{13}
@@ -19,6 +19,6 @@ final class NakedQuadsTest: XCTestCase {
             BoardModification(row: 1, column: 2, candidates: 5, 6, 8),
             BoardModification(row: 2, column: 2, candidates: 6)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: nakedQuads)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedQuads)
     }
 }
