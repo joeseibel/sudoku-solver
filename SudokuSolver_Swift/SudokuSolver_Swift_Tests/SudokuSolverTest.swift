@@ -1,8 +1,9 @@
 import Testing
 
-@Test func testSolution() throws {
-    let board = "010040560230615080000800100050020008600781005900060020006008000080473056045090010"
-    let expected = """
+struct SudokuSolverTest {
+    @Test func testSolution() throws {
+        let board = "010040560230615080000800100050020008600781005900060020006008000080473056045090010"
+        let expected = """
         8 1 7 | 9 4 2 | 5 6 3
         2 3 4 | 6 1 5 | 7 8 9
         5 6 9 | 8 3 7 | 1 4 2
@@ -15,12 +16,12 @@ import Testing
         1 8 2 | 4 7 3 | 9 5 6
         3 4 5 | 2 9 6 | 8 1 7
         """
-    #expect(expected == String(describing: try solve(input: Board(optionalBoard: board))))
-}
+        #expect(expected == String(describing: try solve(input: Board(optionalBoard: board))))
+    }
 
-@Test func testUnableToSolve() throws {
-    let board = "004007830000050470720030695080700300649513728007008010470080060016040007005276100"
-    let expected = """
+    @Test func testUnableToSolve() throws {
+        let board = "004007830000050470720030695080700300649513728007008010470080060016040007005276100"
+        let expected = """
         Unable to solve:
         0 0 4 | 0 0 7 | 8 3 0
         0 0 0 | 0 5 0 | 4 7 0
@@ -47,16 +48,17 @@ import Testing
         {2389}16{39}4{59}{25}{58}7
         {38}{39}52761{48}{349}
         """
-    let error = try #require(throws: UnableToSolveError.self) { try solve(input: Board(optionalBoard: board)) }
-    #expect(expected == error.message)
-}
+        let error = try #require(throws: UnableToSolveError.self) { try solve(input: Board(optionalBoard: board)) }
+        #expect(expected == error.message)
+    }
 
-@Test func testNoSolutions() {
-    let board = "710040560230615080000800100050020008600781005900060020006008000080473056045090010"
-    #expect(throws: BruteForceError.noSolutions) { try solve(input: Board(optionalBoard: board)) }
-}
+    @Test func testNoSolutions() {
+        let board = "710040560230615080000800100050020008600781005900060020006008000080473056045090010"
+        #expect(throws: BruteForceError.noSolutions) { try solve(input: Board(optionalBoard: board)) }
+    }
 
-@Test func testMultipleSolutions() {
-    let board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010"
-    #expect(throws: BruteForceError.multipleSolutions) { try solve(input: Board(optionalBoard: board)) }
+    @Test func testMultipleSolutions() {
+        let board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010"
+        #expect(throws: BruteForceError.multipleSolutions) { try solve(input: Board(optionalBoard: board)) }
+    }
 }
