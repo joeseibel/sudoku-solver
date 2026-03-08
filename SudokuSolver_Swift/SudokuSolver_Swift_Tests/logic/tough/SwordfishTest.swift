@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class SwordfishTest: XCTestCase {
-    func test1() {
+struct SwordfishTest {
+    @Test func test1() {
         let board = """
             52941{68}7{68}3
             {478}{148}6{59}{789}3{18}{14589}2
@@ -20,10 +20,10 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 2, column: 8, candidates: 8),
             BoardModification(row: 3, column: 5, candidates: 8)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             926{3458}{48}{3578}1{57}{578}
             537{689}1{689}42{89}
@@ -43,10 +43,10 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 8, column: 5, candidates: 9),
             BoardModification(row: 8, column: 6, candidates: 9)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             {157}2{1578}{17}43{1578}69
             {1457}{145}38962{45}{1457}
@@ -71,10 +71,10 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 6, column: 6, candidates: 4),
             BoardModification(row: 6, column: 8, candidates: 4)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
     
-    func test4() {
+    @Test func test4() {
         let board = """
             1673{259}{259}{289}4{589}
             8{23}{239}{245}{12459}6{1279}{2579}{159}
@@ -99,10 +99,10 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 5, column: 5, candidates: 2),
             BoardModification(row: 5, column: 6, candidates: 2)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
     
-    func test5() {
+    @Test func test5() {
         let board = """
             3{26789}{12678}{1689}4{1269}{126}5{16}
             {12}{269}{1256}{1569}37{126}48
@@ -125,6 +125,6 @@ final class SwordfishTest: XCTestCase {
             BoardModification(row: 7, column: 2, candidates: 7, 8),
             BoardModification(row: 7, column: 3, candidates: 7, 8)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: swordfish)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: swordfish)
     }
 }
