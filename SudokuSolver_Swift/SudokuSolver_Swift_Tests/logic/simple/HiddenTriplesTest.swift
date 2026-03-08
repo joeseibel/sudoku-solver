@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class HiddenTriplesTest: XCTestCase {
-    func test() {
+struct HiddenTriplesTest {
+    @Test func test() {
         let board = """
             {4789}{489}{47}{245678}{478}1{2469}3{245789}
             231{45678}9{578}{46}{56}{4578}
@@ -18,6 +18,6 @@ final class HiddenTriplesTest: XCTestCase {
             BoardModification(row: 0, column: 6, candidates: 4, 9),
             BoardModification(row: 0, column: 8, candidates: 4, 7, 8, 9)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: hiddenTriples)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenTriples)
     }
 }
