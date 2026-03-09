@@ -1,8 +1,8 @@
 import SwiftGraph
-import XCTest
+import Testing
 
-final class MedusaTest: XCTestCase {
-    func testToDOT() {
+struct MedusaTest {
+    @Test func testToDOT() {
         let graph = UnweightedUniqueElementsGraph<CodableLocatedCandidate>()
         let cells = [Cell(row: 0, column: 0), Cell(row: 0, column: 0)].unsolvedCells
         let a = CodableLocatedCandidate(cell: cells[0], candidate: .two)
@@ -16,10 +16,10 @@ final class MedusaTest: XCTestCase {
               "[0,0] : 2" -- "[0,0] : 6"
             }
             """
-        XCTAssertEqual(expected, actual)
+        #expect(expected == actual)
     }
     
-    func testRule1Test1() {
+    @Test func testRule1Test1() {
         let board = """
             {17}9382456{17}
             {147}856{39}{13}{49}{137}2
@@ -43,10 +43,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 8, column: 1, value: 3),
             BoardModification(row: 8, column: 4, value: 9)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule1)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule1)
     }
     
-    func testRule1Test2() {
+    @Test func testRule1Test2() {
         let board = """
             {567}{267}{26}9{16}843{15}
             {59}{359}47{13}268{15}
@@ -93,10 +93,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 8, column: 6, value: 7),
             BoardModification(row: 8, column: 8, value: 3)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule1)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule1)
     }
     
-    func testRule2Test1() {
+    @Test func testRule2Test1() {
         let board = """
             3{168}{1679}{189}52{46}{479}{789}
             25{679}3{489}{49}{67}1{789}
@@ -117,10 +117,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 5, column: 3, value: 9),
             BoardModification(row: 8, column: 3, value: 7)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule2)
     }
     
-    func testRule2Test2() {
+    @Test func testRule2Test2() {
         let board = """
             748156{39}{29}{23}
             359284{67}1{67}
@@ -149,10 +149,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 8, column: 0, value: 1),
             BoardModification(row: 8, column: 2, value: 3)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule2)
     }
     
-    func testRule3Test1() {
+    @Test func testRule3Test1() {
         let board = """
             29{1467}{56}{57}{46}83{156}
             {145}{18}{1468}{3568}2{3468}97{156}
@@ -165,10 +165,10 @@ final class MedusaTest: XCTestCase {
             {17}5{127}{269}{19}{26}384
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 2, column: 1, candidates: 8)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule3)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule3)
     }
     
-    func testRule3Test2() {
+    @Test func testRule3Test2() {
         let board = """
             9{35}8{13}2{134}{45}76
             6{25}{24}{389}{359}71{48}{389}
@@ -181,10 +181,10 @@ final class MedusaTest: XCTestCase {
             21957{68}3{68}4
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 8, candidates: 2, 9)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule3)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule3)
     }
     
-    func testRule3Test3() {
+    @Test func testRule3Test3() {
         let board = """
             {2567}{2567}{26}9{16}843{15}
             {359}{359}47{13}268{15}
@@ -197,10 +197,10 @@ final class MedusaTest: XCTestCase {
             4{239}{2389}1{38}6{279}5{37}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 8, column: 6, candidates: 9)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule3)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule3)
     }
     
-    func testRule4Test1() {
+    @Test func testRule4Test1() {
         let board = """
             1{79}{29}{278}56{478}{489}3
             {256}43{1278}9{78}{1578}{568}{68}
@@ -216,10 +216,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 1, column: 0, candidates: 6),
             BoardModification(row: 2, column: 7, candidates: 6)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule4)
     }
     
-    func testRule4Test2() {
+    @Test func testRule4Test2() {
         let board = """
             1{79}{29}{278}56{478}{489}3
             {25}43{1278}9{78}{1578}{568}{68}
@@ -238,10 +238,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 5, column: 7, candidates: 6),
             BoardModification(row: 7, column: 2, candidates: 4)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule4)
     }
     
-    func testRule4Test3() {
+    @Test func testRule4Test3() {
         let board = """
             9{35}8{13}2{134}{45}76
             6{235}{234}{389}{359}71{48}{389}
@@ -257,10 +257,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 1, column: 1, candidates: 3),
             BoardModification(row: 1, column: 2, candidates: 3)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule4)
     }
     
-    func testRule4Test4() {
+    @Test func testRule4Test4() {
         let board = """
             9{35}8{13}2{134}{45}76
             6{25}{24}{389}{359}71{48}{389}
@@ -273,10 +273,10 @@ final class MedusaTest: XCTestCase {
             21957{68}3{68}4
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 6, column: 8, candidates: 8)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule4)
     }
     
-    func testRule5Test1() {
+    @Test func testRule5Test1() {
         let board = """
             9234{68}7{68}15
             876{13}5{13}924
@@ -294,10 +294,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 4, column: 3, candidates: 6),
             BoardModification(row: 4, column: 4, candidates: 1)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule5)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule5)
     }
     
-    func testRule5Test2() {
+    @Test func testRule5Test2() {
         let board = """
             3{168}{1679}{189}52{4679}{479}{789}
             25{679}3{489}{49}{67}1{789}
@@ -313,10 +313,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 0, column: 6, candidates: 7, 9),
             BoardModification(row: 4, column: 4, candidates: 4)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule5)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule5)
     }
     
-    func testRule5Test3() {
+    @Test func testRule5Test3() {
         let board = """
             9{35}8{13}2{134}{45}76
             6{235}{234}{389}{3459}71{48}{389}
@@ -332,10 +332,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 1, column: 4, candidates: 4),
             BoardModification(row: 7, column: 8, candidates: 2)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule5)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule5)
     }
     
-    func testRule5Test4() {
+    @Test func testRule5Test4() {
         let board = """
             9{35}8{13}2{134}{45}76
             6{25}{24}{389}{359}71{48}{389}
@@ -351,10 +351,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 2, column: 4, candidates: 3),
             BoardModification(row: 6, column: 3, candidates: 8)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule5)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule5)
     }
     
-    func testRule5Test5() {
+    @Test func testRule5Test5() {
         let board = """
             {28}19{36}4{38}75{26}
             {78}5{24}{68}{79}{19}{13}{236}{246}
@@ -376,10 +376,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 7, column: 1, candidates: 2, 7),
             BoardModification(row: 7, column: 7, candidates: 6)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule5)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule5)
     }
     
-    func testRule5Test6() {
+    @Test func testRule5Test6() {
         let board = """
             748156{39}{29}{23}
             359284{67}1{67}
@@ -392,10 +392,10 @@ final class MedusaTest: XCTestCase {
             {189}{369}{13}{489}25{6789}{689}{467}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 5, column: 1, candidates: 2)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule5)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule5)
     }
     
-    func testRule6Test1() {
+    @Test func testRule6Test1() {
         let board = """
             986721345
             3{12}4956{18}{128}7
@@ -416,10 +416,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 6, column: 6, value: 1),
             BoardModification(row: 7, column: 7, value: 5)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule6)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule6)
     }
     
-    func testRule6Test2() {
+    @Test func testRule6Test2() {
         let board = """
             9{35}8{13}2{134}{45}76
             6{25}{24}{389}{359}71{48}{389}
@@ -458,10 +458,10 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 8, column: 5, value: 8),
             BoardModification(row: 8, column: 7, value: 6)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule6)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule6)
     }
     
-    func testRule6Test3() {
+    @Test func testRule6Test3() {
         let board = """
             2{147}{179}35{679}{4679}8{69}
             5{47}{79}{269}81{24679}{2467}3
@@ -480,6 +480,6 @@ final class MedusaTest: XCTestCase {
             BoardModification(row: 4, column: 3, value: 9),
             BoardModification(row: 5, column: 3, value: 5)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: medusaRule6)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: medusaRule6)
     }
 }
