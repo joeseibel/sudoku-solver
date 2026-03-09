@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class FinnedXWingTest: XCTestCase {
-    func test1() {
+struct FinnedXWingTest {
+    @Test func test1() {
         let board = """
             754{126}{269}8{12}3{1269}
             836{14}{279}{12479}{57}{279}{12579}
@@ -14,10 +14,10 @@ final class FinnedXWingTest: XCTestCase {
             {346}1{37}5{23679}{24679}{347}{267}8
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 8, candidates: 7)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedXWing)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedXWing)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             9{156}{1256}{25}4{1567}38{267}
             7{136}4{23}8{136}95{26}
@@ -30,10 +30,10 @@ final class FinnedXWingTest: XCTestCase {
             {124}{146}{126}859{24}73
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 5, column: 0, candidates: 3, 5)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedXWing)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedXWing)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             9{156}{1256}{25}4{1567}38{267}
             7{136}4{23}8{136}95{26}
@@ -46,10 +46,10 @@ final class FinnedXWingTest: XCTestCase {
             {124}{146}{126}859{24}73
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 5, column: 0, candidates: 5)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedXWing)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedXWing)
     }
     
-    func testSashimi() {
+    @Test func testSashimi() {
         let board = """
             3{467}{67}{46}12598
             {249}{245}1{49}8{459}763
@@ -65,6 +65,6 @@ final class FinnedXWingTest: XCTestCase {
             BoardModification(row: 4, column: 5, candidates: 4),
             BoardModification(row: 5, column: 5, candidates: 4)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: finnedXWing)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedXWing)
     }
 }
