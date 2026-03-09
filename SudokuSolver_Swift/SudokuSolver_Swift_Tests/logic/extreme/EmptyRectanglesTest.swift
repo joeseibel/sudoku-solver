@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class EmptyRectanglesTest: XCTestCase {
-    func test1() {
+struct EmptyRectanglesTest {
+    @Test func test1() {
         let board = """
             4{256}{567}1{269}3{67}{678}{789}
             {36}8{13}5{69}742{1369}
@@ -14,10 +14,10 @@ final class EmptyRectanglesTest: XCTestCase {
             {36}{16}{136}279854
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 3, column: 8, candidates: 6)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             75{148}96{148}32{18}
             {3468}{36}{13469}7{48}2{689}5{1689}
@@ -33,10 +33,10 @@ final class EmptyRectanglesTest: XCTestCase {
             BoardModification(row: 4, column: 8, candidates: 6),
             BoardModification(row: 7, column: 2, candidates: 6)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             9{37}15{28}{28}{37}46
             425{367}9{367}{37}81
@@ -49,10 +49,10 @@ final class EmptyRectanglesTest: XCTestCase {
             {37}{3578}{378}{23}{235}1694
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 8, column: 4, candidates: 3)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
     
-    func test4() {
+    @Test func test4() {
         let board = """
             695{237}1{278}{2347}{23478}{2378}
             {137}8{137}4{237}96{237}5
@@ -70,10 +70,10 @@ final class EmptyRectanglesTest: XCTestCase {
             BoardModification(row: 7, column: 7, candidates: 7),
             BoardModification(row: 8, column: 4, candidates: 2)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
     
-    func test5() {
+    @Test func test5() {
         let board = """
             695{23}1{278}{2347}{23478}{238}
             {137}8{137}4{237}96{237}5
@@ -86,6 +86,6 @@ final class EmptyRectanglesTest: XCTestCase {
             {2345}168{345}{45}{237}9{237}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 6, column: 7, candidates: 3)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: emptyRectangles)
     }
 }
