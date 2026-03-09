@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class UniqueRectanglesTest: XCTestCase {
-    func testType1Test1() {
+struct UniqueRectanglesTest {
+    @Test func testType1Test1() {
         let board = """
             {79}{79}6324815
             85{23}691{24}7{34}
@@ -14,10 +14,10 @@ final class UniqueRectanglesTest: XCTestCase {
             {146}{14}82597{36}{346}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 3, column: 0, candidates: 2, 9)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType1)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType1)
     }
     
-    func testType1Test2() {
+    @Test func testType1Test2() {
         let board = """
             {589}{15}{169}{69}3{25}{24578}{1578}{12457}
             37418{25}{25}69
@@ -30,10 +30,10 @@ final class UniqueRectanglesTest: XCTestCase {
             165748923
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 0, column: 6, candidates: 2, 5)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType1)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType1)
     }
     
-    func testType1Test3() {
+    @Test func testType1Test3() {
         let board = """
             {4569}8{469}72{59}{456}13
             {345679}{45679}{234679}8{46}1{456}{49}{27}
@@ -46,10 +46,10 @@ final class UniqueRectanglesTest: XCTestCase {
             {389}{19}{389}452{13}76
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 3, column: 0, candidates: 7, 8)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType1)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType1)
     }
     
-    func testType1Test4() {
+    @Test func testType1Test4() {
         let board = """
             12{58}{568}{568}7943
             96{35}{345}1{34}872
@@ -62,10 +62,10 @@ final class UniqueRectanglesTest: XCTestCase {
             2347{68}15{68}9
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 6, column: 4, candidates: 6, 8)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType1)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType1)
     }
     
-    func testType2Test1() {
+    @Test func testType2Test1() {
         let board = """
             42{157}9{157}{157}386
             {135}6{135}2{1358}{158}794
@@ -81,10 +81,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 0, column: 2, candidates: 7),
             BoardModification(row: 2, column: 5, candidates: 7)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
     }
     
-    func testType2Test2() {
+    @Test func testType2Test2() {
         let board = """
             {145}7{146}9{156}3{456}82
             {13458}{35689}{13469}{1568}2{168}{345679}{3579}{347}
@@ -103,10 +103,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 7, column: 8, candidates: 8),
             BoardModification(row: 8, column: 4, candidates: 8)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
     }
     
-    func testType2Test3() {
+    @Test func testType2Test3() {
         let board = """
             {589}{15}{169}{69}3{25}{478}{1578}{12457}
             37418{25}{25}69
@@ -124,10 +124,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 4, column: 2, candidates: 1),
             BoardModification(row: 5, column: 2, candidates: 1)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
     }
     
-    func testType2Test4() {
+    @Test func testType2Test4() {
         let board = """
             319856{47}{47}2
             245973{16}{16}8
@@ -147,10 +147,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 8, column: 2, candidates: 7),
             BoardModification(row: 8, column: 6, candidates: 1)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
     }
     
-    func testType2Test5() {
+    @Test func testType2Test5() {
         let board = """
             654728{19}{139}{39}
             321964{58}7{58}
@@ -166,10 +166,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 5, column: 0, candidates: 2),
             BoardModification(row: 7, column: 2, candidates: 2)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
     }
     
-    func testType2B() {
+    @Test func testType2B() {
         let board = """
             {27}4186539{27}
             {278}9{257}{13}4{13}{578}6{278}
@@ -182,10 +182,10 @@ final class UniqueRectanglesTest: XCTestCase {
             98{347}2{357}61{57}{47}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 1, column: 6, candidates: 8)]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
     }
     
-    func testType2C() {
+    @Test func testType2C() {
         let board = """
             8{247}9{234}{146}{26}{37}5{1367}
             53{16}8{146}7{269}{1246}{29}
@@ -201,10 +201,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 0, column: 8, candidates: 6),
             BoardModification(row: 2, column: 8, candidates: 6)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType2)
     }
     
-    func testType3() {
+    @Test func testType3() {
         let board = """
             {69}{69}{128}5{12}347{18}
             5{37}{12}8{127}4{139}6{39}
@@ -220,10 +220,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 2, column: 6, candidates: 1),
             BoardModification(row: 7, column: 6, candidates: 1, 7)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType3)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType3)
     }
     
-    func testType3B() {
+    @Test func testType3B() {
         let board = """
             419{78}2{37}{3578}{35}6
             {25}6{25}1{378}9{3478}{34}{347}
@@ -240,10 +240,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 4, column: 1, candidates: 8),
             BoardModification(row: 4, column: 8, candidates: 3)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType3)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType3)
     }
     
-    func testType3BWithTriplePseudoCellsTest1() {
+    @Test func testType3BWithTriplePseudoCellsTest1() {
         let board = """
             7529{36}8{16}4{136}
             3{48}{48}21{56}{79}{79}{56}
@@ -256,14 +256,14 @@ final class UniqueRectanglesTest: XCTestCase {
             {569}3{569}874{169}2{16}
             """.replacing("\n", with: "")
         let expected = [BoardModification(row: 7, column: 0, candidates: 6, 9)]
-        assertLogicalSolutionXCTest(
+        assertLogicalSolution(
             expected: expected,
             withCandidates: board,
             logicFunction: uniqueRectanglesType3BWithTriplePseudoCells
         )
     }
     
-    func testType3BWithTriplePseudoCellsTest2() {
+    @Test func testType3BWithTriplePseudoCellsTest2() {
         let board = """
             654728{19}{139}{39}
             321964{58}7{58}
@@ -280,14 +280,14 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 4, column: 2, candidates: 2, 6),
             BoardModification(row: 5, column: 6, candidates: 2)
         ]
-        assertLogicalSolutionXCTest(
+        assertLogicalSolution(
             expected: expected,
             withCandidates: board,
             logicFunction: uniqueRectanglesType3BWithTriplePseudoCells
         )
     }
     
-    func testType4Test1() {
+    @Test func testType4Test1() {
         let board = """
             {79}{79}6324815
             85{23}691{24}7{34}
@@ -303,10 +303,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 7, column: 0, candidates: 9),
             BoardModification(row: 7, column: 1, candidates: 9)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
     }
     
-    func testType4Test2() {
+    @Test func testType4Test2() {
         let board = """
             {4569}8{469}72{59}{456}13
             {345679}{45679}{234679}8{46}1{456}{49}{27}
@@ -322,10 +322,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 1, column: 2, candidates: 7),
             BoardModification(row: 2, column: 2, candidates: 7)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
     }
     
-    func testType4Test3() {
+    @Test func testType4Test3() {
         let board = """
             12{58}{568}{568}7943
             96{35}{345}1{34}872
@@ -341,10 +341,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 6, column: 4, candidates: 5),
             BoardModification(row: 7, column: 4, candidates: 5)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
     }
     
-    func testType4Test4() {
+    @Test func testType4Test4() {
         let board = """
             31{789}2{789}{89}645
             {26789}{78}5{3679}4{689}1{28}{37}
@@ -362,10 +362,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 2, column: 0, candidates: 8),
             BoardModification(row: 2, column: 3, candidates: 7)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
     }
     
-    func testType4Test5() {
+    @Test func testType4Test5() {
         let board = """
             173924{58}{58}6
             249865317
@@ -383,10 +383,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 7, column: 1, candidates: 2),
             BoardModification(row: 7, column: 6, candidates: 2)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
     }
     
-    func testType4BTest1() {
+    @Test func testType4BTest1() {
         let board = """
             748359126
             {359}{59}172684{39}
@@ -402,10 +402,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 4, column: 5, candidates: 5),
             BoardModification(row: 4, column: 6, candidates: 5)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
     }
     
-    func testType4BTest2() {
+    @Test func testType4BTest2() {
         let board = """
             173924{58}{58}6
             249865317
@@ -421,10 +421,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 7, column: 1, candidates: 2),
             BoardModification(row: 7, column: 6, candidates: 2)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType4)
     }
     
-    func testType5Test1() {
+    @Test func testType5Test1() {
         let board = """
             7{589}{3589}4{259}6{28}{238}1
             {49}2{369}8{179}{17}{467}{367}5
@@ -440,10 +440,10 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 4, column: 5, value: 8),
             BoardModification(row: 5, column: 0, value: 8)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType5)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType5)
     }
     
-    func testType5Test2() {
+    @Test func testType5Test2() {
         let board = """
             {267}{1267}895{167}3{167}4
             {567}94{17}3{167}{28}{1567}{28}
@@ -459,6 +459,6 @@ final class UniqueRectanglesTest: XCTestCase {
             BoardModification(row: 6, column: 1, value: 4),
             BoardModification(row: 8, column: 3, value: 4)
         ]
-        assertLogicalSolutionXCTest(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType5)
+        assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: uniqueRectanglesType5)
     }
 }
