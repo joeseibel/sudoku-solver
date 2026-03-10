@@ -60,7 +60,7 @@ import java.io.StringWriter
  * the vertices.
  */
 fun groupedXCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
-    SudokuNumber.entries.map { candidate ->
+    SudokuNumber.entries.flatMap { candidate ->
         val graph = buildGraph(board, candidate).trim()
         getWeakEdgesInAlternatingCycle(graph).flatMap { edge ->
             val source = graph.getEdgeSource(edge)
@@ -80,7 +80,7 @@ fun groupedXCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
             val blockRemovals = removeFromUnit(source.block, target.block, board::getBlock)
             rowRemovals + columnRemovals + blockRemovals
         }
-    }.flatten().mergeToRemoveCandidates()
+    }.mergeToRemoveCandidates()
 
 /*
  * Rule 2:

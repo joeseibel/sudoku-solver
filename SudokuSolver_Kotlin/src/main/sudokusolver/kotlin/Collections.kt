@@ -30,22 +30,22 @@ inline fun <reified T : Enum<T>, reified R : Enum<R>> Iterable<Pair<T, R>>.enumU
     }
 
 fun <T> List<T>.zipEveryPair(): List<Pair<T, T>> =
-    mapIndexed { firstIndex, first -> drop(firstIndex + 1).map { second -> first to second } }.flatten()
+    flatMapIndexed { firstIndex, first -> drop(firstIndex + 1).map { second -> first to second } }
 
 fun <T> List<T>.zipEveryTriple(): List<Triple<T, T, T>> =
-    mapIndexed { firstIndex, first ->
+    flatMapIndexed { firstIndex, first ->
         withIndex().drop(firstIndex + 1).flatMap { (secondIndex, second) ->
             drop(secondIndex + 1).map { third -> Triple(first, second, third) }
         }
-    }.flatten()
+    }
 
 data class Quad<out A, out B, out C, out D>(val first: A, val second: B, val third: C, val fourth: D)
 
 fun <T> List<T>.zipEveryQuad(): List<Quad<T, T, T, T>> =
-    mapIndexed { firstIndex, first ->
+    flatMapIndexed { firstIndex, first ->
         withIndex().drop(firstIndex + 1).flatMap { (secondIndex, second) ->
             withIndex().drop(secondIndex + 1).flatMap { (thirdIndex, third) ->
                 drop(thirdIndex + 1).map { fourth -> Quad(first, second, third, fourth) }
             }
         }
-    }.flatten()
+    }
