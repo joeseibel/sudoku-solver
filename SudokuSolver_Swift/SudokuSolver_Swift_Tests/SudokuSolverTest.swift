@@ -18,7 +18,7 @@ struct SudokuSolverTest {
             """
         #expect(expected == String(describing: try solve(input: Board(optionalBoard: board))))
     }
-
+    
     @Test func testUnableToSolve() throws {
         let board = "004007830000050470720030695080700300649513728007008010470080060016040007005276100"
         let expected = """
@@ -51,12 +51,12 @@ struct SudokuSolverTest {
         let error = try #require(throws: UnableToSolveError.self) { try solve(input: Board(optionalBoard: board)) }
         #expect(expected == error.message)
     }
-
+    
     @Test func testNoSolutions() {
         let board = "710040560230615080000800100050020008600781005900060020006008000080473056045090010"
         #expect(throws: BruteForceError.noSolutions) { try solve(input: Board(optionalBoard: board)) }
     }
-
+    
     @Test func testMultipleSolutions() {
         let board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010"
         #expect(throws: BruteForceError.multipleSolutions) { try solve(input: Board(optionalBoard: board)) }
