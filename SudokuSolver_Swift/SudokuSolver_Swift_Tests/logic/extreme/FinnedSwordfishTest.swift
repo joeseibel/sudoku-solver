@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class FinnedSwordfishTest: XCTestCase {
-    func test1() {
+struct FinnedSwordfishTest {
+    @Test func test1() {
         let board = """
             6{379}5418{379}{37}2
             8{349}{349}{3569}72{3459}{3456}1
@@ -17,7 +17,7 @@ final class FinnedSwordfishTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             2{349}{3489}{1359}{1358}{1389}6{19}7
             {189}7{89}6{128}4{1259}3{1259}
@@ -33,7 +33,7 @@ final class FinnedSwordfishTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             42{36}{17}{678}{18}{1367}95
             {3589}{357}{3569}{1257}4{157}{12367}{267}{2378}
@@ -52,7 +52,7 @@ final class FinnedSwordfishTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
-    func test4() {
+    @Test func test4() {
         let board = """
             42{36}{17}{678}{18}{1367}95
             {3589}{357}{3569}{1257}4{15}{12367}{267}{2378}
@@ -68,7 +68,7 @@ final class FinnedSwordfishTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
-    func test5() {
+    @Test func test5() {
         let board = """
             {2456}{2567}3{245}8{259}1{456}{79}
             {124568}9{1468}{2345}{1345}7{348}{4568}{3568}
@@ -84,7 +84,7 @@ final class FinnedSwordfishTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: finnedSwordfish)
     }
     
-    func test6() {
+    @Test func test6() {
         let board = """
             {256}7348{25}1{56}9
             {26}9{16}{235}{135}74{568}{568}

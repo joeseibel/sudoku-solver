@@ -1,8 +1,8 @@
 import SwiftGraph
-import XCTest
+import Testing
 
-final class GroupedXCyclesTest: XCTestCase {
-    func testToDOT() {
+struct GroupedXCyclesTest {
+    @Test func testToDOT() {
         let graph = WeightedUniqueElementsGraph<Node, Strength>()
         let a = Node.cell([Cell(row: 6, column: 1)].unsolvedCells.first!)
         let bCells = [Cell(row: 6, column: 6), Cell(row: 6, column: 7), Cell(row: 6, column: 8)].unsolvedCells
@@ -20,10 +20,10 @@ final class GroupedXCyclesTest: XCTestCase {
               "[6,1]" -- "{[6,2], [8,2]}"
             }
             """
-        XCTAssertEqual(expected, actual)
+        #expect(expected == actual)
     }
     
-    func testRule1Test1() {
+    @Test func testRule1Test1() {
         let board = """
             185{49}2637{49}
             {234}6{234}{3579}{134}{1357}{2458}{28}{2589}
@@ -44,7 +44,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule1)
     }
     
-    func testRule1Test2() {
+    @Test func testRule1Test2() {
         let board = """
             3{279}1{89}{258}4{259}6{257}
             8{279}4{69}{256}{59}{2359}1{2357}
@@ -69,7 +69,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule1)
     }
     
-    func testRule1Test3() {
+    @Test func testRule1Test3() {
         let board = """
             3{279}1{89}{258}4{259}6{257}
             8{279}4{69}{256}{59}{2359}1{2357}
@@ -91,7 +91,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule1)
     }
     
-    func testRule2Test1() {
+    @Test func testRule2Test1() {
         let board = """
             {123}8{249}5{12}7{234}6{12349}
             7{36}{25}94{126}{235}{1235}8
@@ -107,7 +107,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule2)
     }
     
-    func testRule2Test2() {
+    @Test func testRule2Test2() {
         let board = """
             2{168}4{16}{36}79{38}5
             {168}9{178}5{136}2{167}4{38}
@@ -126,7 +126,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule2)
     }
     
-    func testRule3Test1() {
+    @Test func testRule3Test1() {
         let board = """
             {128}{124}37{89}65{2489}{49}
             7{248}{48}5{2389}{38}6{2489}1
@@ -142,7 +142,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
-    func testRule3Test2() {
+    @Test func testRule3Test2() {
         let board = """
             185{49}2637{49}
             {234}6{234}{3579}{134}{1357}{2458}{28}{59}
@@ -158,7 +158,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
-    func testRule3Test3() {
+    @Test func testRule3Test3() {
         let board = """
             185{49}2637{49}
             {234}6{23}{3579}{134}{1357}{458}{28}{59}
@@ -177,7 +177,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
-    func testRule3Test4() {
+    @Test func testRule3Test4() {
         let board = """
             185{49}2637{49}
             {234}6{23}{3579}{134}{1357}{458}{28}{59}
@@ -193,7 +193,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
-    func testRule3Test5() {
+    @Test func testRule3Test5() {
         let board = """
             1{278}5{37}{238}946{278}
             3496{28}{278}{2578}1{2578}
@@ -213,7 +213,7 @@ final class GroupedXCyclesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: groupedXCyclesRule3)
     }
     
-    func testRule3Test6() {
+    @Test func testRule3Test6() {
         let board = """
             62{489}{48}53{489}71
             31{489}{478}{24789}{249}{2489}{56}{56}

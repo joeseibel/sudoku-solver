@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class SueDeCoqTest: XCTestCase {
-    func test1() {
+struct SueDeCoqTest {
+    @Test func test1() {
         let board = """
             {47}1{34}958{346}{467}2
             {289}{28}634751{89}
@@ -22,7 +22,7 @@ final class SueDeCoqTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: sueDeCoq)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             15{78}432{78}69
             9{27}4186{23}{237}5
@@ -45,7 +45,7 @@ final class SueDeCoqTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: sueDeCoq)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             15{78}432{78}69
             9{27}4186{23}{237}5

@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class PointingPairsPointingTriplesTest: XCTestCase {
-    func test1() {
+struct PointingPairsPointingTriplesTest {
+    @Test func test1() {
         let board = """
             {2458}179{245}36{48}{248}
             {23456}{2345}{36}{1257}8{57}{139}{149}{12349}
@@ -27,7 +27,7 @@ final class PointingPairsPointingTriplesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: pointingPairsPointingTriples)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             {789}32{478}{4578}61{4589}{78}
             41{5689}{2378}{3578}{2357}{23679}{23589}{23678}
@@ -58,7 +58,7 @@ final class PointingPairsPointingTriplesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: pointingPairsPointingTriples)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             93{147}{47}5{18}{24678}{1246}{1267}
             2{147}{147}63{18}{478}95

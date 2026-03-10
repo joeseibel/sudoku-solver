@@ -1,8 +1,8 @@
 import SwiftGraph
-import XCTest
+import Testing
 
-final class XYChainsTest: XCTestCase {
-    func testToDOT() {
+struct XYChainsTest {
+    @Test func testToDOT() {
         let graph = WeightedUniqueElementsGraph<CodableLocatedCandidate, Strength>()
         let cells = [Cell(row: 0, column: 0), Cell(row: 0, column: 0), Cell(row: 0, column: 4)].unsolvedCells
         let a = CodableLocatedCandidate(cell: cells[0], candidate: .two)
@@ -20,10 +20,10 @@ final class XYChainsTest: XCTestCase {
               "[0,0] : 2" -- "[0,4] : 2" [style = dashed]
             }
             """
-        XCTAssertEqual(expected, actual)
+        #expect(expected == actual)
     }
     
-    func test1() {
+    @Test func test1() {
         let board = """
             {26}8{245}1{29}3{59}7{456}
             {37}9{24}5{27}6{18}{14}{348}
@@ -45,7 +45,7 @@ final class XYChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyChains)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             {48}92{145}{18}{158}376
             {478}1{68}{24679}3{2689}5{28}{248}
@@ -69,7 +69,7 @@ final class XYChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyChains)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             931672458
             672854193
@@ -88,7 +88,7 @@ final class XYChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyChains)
     }
     
-    func test4() {
+    @Test func test4() {
         let board = """
             {45}938{24}716{25}
             286591437
@@ -127,7 +127,7 @@ final class XYChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyChains)
     }
     
-    func test5() {
+    @Test func test5() {
         let board = """
             9{246}3{458}{267}1{478}{245}{2578}
             8{246}{46}{345}{2367}{56}{3479}{1245}{12579}

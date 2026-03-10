@@ -1,4 +1,4 @@
-import XCTest
+import Testing
 
 func assertLogicalSolution(
     expected: [BoardModification],
@@ -48,17 +48,16 @@ func assertLogicalSolution(
         let solution = bruteForceSolution[row, column]
         switch modification {
         case .removeCandidates(let removeCandidates):
-            XCTAssertFalse(
-                removeCandidates.candidates.contains(solution),
+            #expect(
+                !removeCandidates.candidates.contains(solution),
                 "Cannot remove candidate \(solution) from [\(row), \(column)]"
             )
         case .setValue(let setValue):
-            XCTAssertEqual(
-                solution,
-                setValue.value,
+            #expect(
+                solution == setValue.value,
                 "Cannot set value \(setValue.value) to [\(row), \(column)]. Solution is \(solution)"
             )
         }
     }
-    XCTAssertEqual(expected, actual)
+    #expect(expected == actual)
 }

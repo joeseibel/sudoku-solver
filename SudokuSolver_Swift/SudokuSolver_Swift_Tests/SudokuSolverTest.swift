@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class SudokuSolverTest: XCTestCase {
-    func testSolution() {
+struct SudokuSolverTest {
+    @Test func testSolution() throws {
         let board = "010040560230615080000800100050020008600781005900060020006008000080473056045090010"
         let expected = """
             8 1 7 | 9 4 2 | 5 6 3
@@ -16,10 +16,10 @@ final class SudokuSolverTest: XCTestCase {
             1 8 2 | 4 7 3 | 9 5 6
             3 4 5 | 2 9 6 | 8 1 7
             """
-        XCTAssertNoThrow(XCTAssertEqual(expected, String(describing: try solve(input: Board(optionalBoard: board)))))
+        #expect(expected == String(describing: try solve(input: Board(optionalBoard: board))))
     }
     
-    func testUnableToSolve() {
+    @Test func testUnableToSolve() throws {
         let board = "004007830000050470720030695080700300649513728007008010470080060016040007005276100"
         let expected = """
             Unable to solve:
@@ -48,22 +48,17 @@ final class SudokuSolverTest: XCTestCase {
             {2389}16{39}4{59}{25}{58}7
             {38}{39}52761{48}{349}
             """
-        XCTAssertThrowsError(try solve(input: Board(optionalBoard: board))) {
-            XCTAssertEqual(expected, ($0 as! UnableToSolveError).message)
-        }
+        let error = try #require(throws: UnableToSolveError.self) { try solve(input: Board(optionalBoard: board)) }
+        #expect(expected == error.message)
     }
     
-    func testNoSolutions() {
+    @Test func testNoSolutions() {
         let board = "710040560230615080000800100050020008600781005900060020006008000080473056045090010"
-        XCTAssertThrowsError(try solve(input: Board(optionalBoard: board))) {
-            XCTAssertEqual(.noSolutions, $0 as! BruteForceError)
-        }
+        #expect(throws: BruteForceError.noSolutions) { try solve(input: Board(optionalBoard: board)) }
     }
     
-    func testMultipleSolutions() {
+    @Test func testMultipleSolutions() {
         let board = "000000560230615080000800100050020008600781005900060020006008000080473056045090010"
-        XCTAssertThrowsError(try solve(input: Board(optionalBoard: board))) {
-            XCTAssertEqual(.multipleSolutions, $0 as! BruteForceError)
-        }
+        #expect(throws: BruteForceError.multipleSolutions) { try solve(input: Board(optionalBoard: board)) }
     }
 }

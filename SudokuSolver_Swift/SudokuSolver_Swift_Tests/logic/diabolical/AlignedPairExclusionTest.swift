@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class AlignedPairExclusionTest: XCTestCase {
-    func test1() {
+struct AlignedPairExclusionTest {
+    @Test func test1() {
         let board = """
             {568}971{258}3{268}4{258}
             {568}3{128}{258}4{259}7{1269}{2589}
@@ -20,7 +20,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             {56}971{258}3{268}4{25}
             {568}3{128}{258}4{259}7{1269}{2589}
@@ -36,7 +36,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             {17}{1458}{457}{14}23{69}{69}{78}
             62{37}598{137}{137}4
@@ -55,7 +55,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test4() {
+    @Test func test4() {
         let board = """
             {17}{1458}{457}{14}23{69}{69}{78}
             62{37}598{137}{137}4
@@ -74,7 +74,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test5() {
+    @Test func test5() {
         let board = """
             {124}{159}{2589}{689}{568}{49}37{15}
             7{1459}6{89}{458}3{128}{458}{1245}
@@ -93,7 +93,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test6() {
+    @Test func test6() {
         let board = """
             {18}24{19}536{1789}{78}
             {168}{13678}5{1789}4{89}{139}{189}2
@@ -115,7 +115,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test7() {
+    @Test func test7() {
         let board = """
             45{37}9{136}{367}{278}{168}{1268}
             {127}{123}68{134}{3457}9{15}{14}
@@ -137,7 +137,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test8() {
+    @Test func test8() {
         let board = """
             45{37}9{136}{367}{278}{168}{1268}
             {27}{123}68{134}{3457}9{15}{14}
@@ -158,7 +158,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test9() {
+    @Test func test9() {
         let board = """
             9{45}{47}{378}{28}{237}1{235}6
             {67}{16}259{1367}{478}{38}{478}
@@ -182,7 +182,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test10() {
+    @Test func test10() {
         let board = """
             9{45}{47}{378}{28}{237}1{235}6
             {67}{16}259{1367}{478}{38}{478}
@@ -203,7 +203,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test11() {
+    @Test func test11() {
         let board = """
             9{45}{47}{378}{28}{237}1{235}6
             {67}{16}259{1367}{478}{38}{478}
@@ -223,7 +223,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test12() {
+    @Test func test12() {
         let board = """
             {135}72{159}8{35}64{59}
             {1345}967{124}{2345}8{235}{25}
@@ -243,7 +243,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test13() {
+    @Test func test13() {
         let board = """
             {135}72{159}8{35}64{59}
             {1345}967{12}{2345}8{235}{25}
@@ -259,7 +259,7 @@ final class AlignedPairExclusionTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alignedPairExclusion)
     }
     
-    func test14() {
+    @Test func test14() {
         let board = """
             185{49}2637{49}
             {234}6{234}{3579}{134}{1357}{2458}{28}{2589}

@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class XYZWingTest: XCTestCase {
-    func test1() {
+struct XYZWingTest {
+    @Test func test1() {
         let board = """
             {38}92{46}{48}175{346}
             5{134}{1467}2{47}{679}{346}{19}8
@@ -17,7 +17,7 @@ final class XYZWingTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyzWing)
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             6{79}{13479}{57}{23457}{234}{125}{145}8
             5{13}{134}9{2346}8{1246}{146}7
@@ -33,7 +33,7 @@ final class XYZWingTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyzWing)
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             9{46}{46}1{38}{38}{25}{25}7
             312{45}7{45}986
@@ -49,7 +49,7 @@ final class XYZWingTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: xyzWing)
     }
     
-    func test4() {
+    @Test func test4() {
         let board = """
             9{47}{2347}85{467}{24}{36}1
             85{34}2{69}1{49}{36}7

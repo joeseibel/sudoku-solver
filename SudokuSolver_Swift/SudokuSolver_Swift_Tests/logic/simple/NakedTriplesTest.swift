@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class NakedTriplesTest: XCTestCase {
-    func test1() {
+struct NakedTriplesTest {
+    @Test func test1() {
         let board = """
             {36}7{16}4{135}8{135}29
             {369}{169}2{1579}{135}{5679}{1358}{3568}4
@@ -22,7 +22,7 @@ final class NakedTriplesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: nakedTriples)
     }
 
-    func test2() {
+    @Test func test2() {
         let board = """
             294513{78}{78}6
             6{57}{57}842319

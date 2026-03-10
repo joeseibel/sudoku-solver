@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class HiddenUniqueRectanglesTest: XCTestCase {
-    func testType1Test1() {
+struct HiddenUniqueRectanglesTest {
+    @Test func testType1Test1() {
         let board = """
             1{24}957{2468}3{26}{2468}
             {568}7{56}39{24}{68}1{24}
@@ -20,7 +20,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
-    func testType1Test2() {
+    @Test func testType1Test2() {
         let board = """
             518472639
             3{27}6859{127}{127}4
@@ -40,7 +40,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
-    func testType2Test1() {
+    @Test func testType2Test1() {
         let board = """
             5{47}{47}291836
             {68}3{68}475{29}1{29}
@@ -59,7 +59,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
-    func testType2Test2() {
+    @Test func testType2Test2() {
         let board = """
             518472639
             3{27}6859{127}{127}4
@@ -78,7 +78,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
-    func testType2BTest1() {
+    @Test func testType2BTest1() {
         let board = """
             {147}2{479}58{469}{679}3{179}
             35{79}{129}{12}{1269}{679}84
@@ -97,7 +97,7 @@ final class HiddenUniqueRectanglesTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: hiddenUniqueRectangles)
     }
     
-    func testType2BTest2() {
+    @Test func testType2BTest2() {
         let board = """
             518472639
             3{27}6859{127}{127}4

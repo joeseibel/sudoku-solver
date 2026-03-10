@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class PruneCandidatesTest: XCTestCase {
-    func test() {
+struct PruneCandidatesTest {
+    @Test func test() {
         let board = "000105000140000670080002400063070010900000003010090520007200080026000035000409000"
         let expected = [
             BoardModification(row: 0, column: 0, candidates: 1, 4, 5, 8, 9),

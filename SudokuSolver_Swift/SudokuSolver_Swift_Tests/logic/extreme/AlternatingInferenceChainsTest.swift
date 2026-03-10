@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class AlternatingInferenceChainsTest: XCTestCase {
-    func testRule1Test1() {
+struct AlternatingInferenceChainsTest {
+    @Test func testRule1Test1() {
         let board = """
             {179}384{27}{125}{259}{1569}{269}
             2{47}{17}9{67}{156}{45}38
@@ -26,7 +26,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule1)
     }
     
-    func testRule1Test2() {
+    @Test func testRule1Test2() {
         let board = """
             5{489}{469}{1248}7{248}{124}{2469}3
             {39}1{3479}6{345}{2345}{2457}8{4579}
@@ -45,7 +45,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule1)
     }
     
-    func testRule1Test3() {
+    @Test func testRule1Test3() {
         let board = """
             {4589}{48}613{479}{57}2{789}
             {89}31{79}5264{789}
@@ -64,7 +64,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule1)
     }
     
-    func testRule2Test1() {
+    @Test func testRule2Test1() {
         let board = """
             {179}384{27}{125}{259}{1569}{269}
             2{47}{17}9{67}{156}{45}38
@@ -91,7 +91,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
-    func testRule2Test2() {
+    @Test func testRule2Test2() {
         let board = """
             7{158}{168}9{136}{168}42{1358}
             {156}92{34}{346}{18}{56}{367}{1578}
@@ -111,7 +111,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
-    func testRule2Test3() {
+    @Test func testRule2Test3() {
         let board = """
             869{47}51{247}{23}{34}
             347286915
@@ -143,7 +143,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
-    func testRule2Test4() {
+    @Test func testRule2Test4() {
         let board = """
             {689}{145}3{145}2{46}7{15689}{5689}
             {69}{145}27{45}83{1569}{569}
@@ -170,7 +170,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
-    func testRule2Test5() {
+    @Test func testRule2Test5() {
         let board = """
             9{1267}3{267}54{1267}{127}8
             5{1267}{1267}{2367}8{3679}{1267}{12379}4
@@ -191,7 +191,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
-    func testRule2Test6() {
+    @Test func testRule2Test6() {
         let board = """
             415{69}{69}2387
             382147{69}5{69}
@@ -207,7 +207,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
-    func testRule2Test7() {
+    @Test func testRule2Test7() {
         let board = """
             {23468}1{234}{568}{689}{25}{79}{48}{479}
             7{28}94{18}{12}365
@@ -226,7 +226,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
-    func testRule2Test8() {
+    @Test func testRule2Test8() {
         let board = """
             79{36}21{36}584
             {356}284{357}{367}{139}{1369}{16}
@@ -248,7 +248,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
-    func testRule2Test9() {
+    @Test func testRule2Test9() {
         let board = """
             {23468}1{234}{568}{689}{25}{79}{48}{479}
             7{28}94{18}{12}365
@@ -267,7 +267,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule2)
     }
     
-    func testRule3Test1() {
+    @Test func testRule3Test1() {
         let board = """
             {4589}{48}613{479}{57}2{789}
             {89}31{79}5264{789}
@@ -286,7 +286,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule3)
     }
     
-    func testRule3Test2() {
+    @Test func testRule3Test2() {
         let board = """
             {4589}{458}613{479}{57}2{789}
             {89}31{79}5264{789}
@@ -305,7 +305,7 @@ final class AlternatingInferenceChainsTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board, logicFunction: alternatingInferenceChainsRule3)
     }
     
-    func testRule3Test3() {
+    @Test func testRule3Test3() {
         let board = """
             {23468}1{234}{568}{689}{25}{379}{348}{479}
             7{238}94{18}{12}{13}65

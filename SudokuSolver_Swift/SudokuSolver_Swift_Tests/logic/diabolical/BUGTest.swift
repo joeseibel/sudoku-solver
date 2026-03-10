@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class BUGTest: XCTestCase {
-    func test1() {
+struct BUGTest {
+    @Test func test1() {
         let board = """
             174832596
             593461278
@@ -17,7 +17,7 @@ final class BUGTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
-    func test2() {
+    @Test func test2() {
         let board = """
             821{39}{59}{35}746
             736{28}{48}{24}915
@@ -33,7 +33,7 @@ final class BUGTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
-    func test3() {
+    @Test func test3() {
         let board = """
             289476531
             751238496
@@ -49,7 +49,7 @@ final class BUGTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
-    func test4() {
+    @Test func test4() {
         let board = """
             142895763
             {57}{89}62{47}3{49}1{58}
@@ -65,7 +65,7 @@ final class BUGTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
-    func test5() {
+    @Test func test5() {
         let board = """
             4{38}{39}56{89}127
             {67}{27}{267}413859
@@ -81,7 +81,7 @@ final class BUGTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
-    func test6() {
+    @Test func test6() {
         let board = """
             8915{24}7{34}6{23}
             425631789
@@ -97,7 +97,7 @@ final class BUGTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
-    func test7() {
+    @Test func test7() {
         let board = """
             {48}{58}9{45}12376
             {57}{67}389{56}412
@@ -113,7 +113,7 @@ final class BUGTest: XCTestCase {
         assertLogicalSolution(expected: expected, withCandidates: board) { [bug(board: $0)!] }
     }
     
-    func test8() {
+    @Test func test8() {
         let board = """
             916{47}{347}852{34}
             7451{36}2{36}98

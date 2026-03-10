@@ -1,7 +1,7 @@
-import XCTest
+import Testing
 
-final class NakedSinglesTest: XCTestCase {
-    func test() {
+struct NakedSinglesTest {
+    @Test func test() {
         let board = """
             {2367}{379}{29}1{3468}5{2389}{9}{289}
             14{259}{389}{38}{38}67{289}
