@@ -55,7 +55,7 @@ public class Swordfish {
             ToIntFunction<Cell> getOtherUnitIndex
     ) {
         return units.stream()
-                .collect(Triple.zipEveryTriple())
+                .gather(Triple.zipEveryTriple())
                 .flatMap(triple -> {
                     var unitA = triple.first();
                     var unitB = triple.second();

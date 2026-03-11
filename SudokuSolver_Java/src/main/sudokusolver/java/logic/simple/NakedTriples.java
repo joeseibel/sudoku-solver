@@ -24,7 +24,7 @@ public class NakedTriples {
                 .flatMap(unit -> unit.stream()
                         .filter(UnsolvedCell.class::isInstance)
                         .map(UnsolvedCell.class::cast)
-                        .collect(Triple.zipEveryTriple())
+                        .gather(Triple.zipEveryTriple())
                         .flatMap(triple -> {
                             var a = triple.first();
                             var b = triple.second();

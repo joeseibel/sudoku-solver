@@ -27,7 +27,7 @@ public class YWing {
                 .filter(UnsolvedCell.class::isInstance)
                 .map(UnsolvedCell.class::cast)
                 .filter(cell -> cell.candidates().size() == 2)
-                .collect(Triple.zipEveryTriple())
+                .gather(Triple.zipEveryTriple())
                 .filter(triple -> {
                     var a = triple.first();
                     var b = triple.second();

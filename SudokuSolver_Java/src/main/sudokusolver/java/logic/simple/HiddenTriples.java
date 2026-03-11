@@ -25,7 +25,7 @@ public class HiddenTriples {
         return board.getUnits()
                 .stream()
                 .flatMap(unit -> Arrays.stream(SudokuNumber.values())
-                        .collect(Triple.zipEveryTriple())
+                        .gather(Triple.zipEveryTriple())
                         .flatMap(triple -> {
                             var a = triple.first();
                             var b = triple.second();

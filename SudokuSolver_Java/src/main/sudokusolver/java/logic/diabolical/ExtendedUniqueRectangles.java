@@ -42,7 +42,7 @@ public class ExtendedUniqueRectangles {
                     var unitIndexB = unitIndices.second();
                     return IntStream.range(0, Board.UNIT_SIZE)
                             .boxed()
-                            .collect(Triple.zipEveryTriple())
+                            .gather(Triple.zipEveryTriple())
                             .map(otherUnitIndices -> {
                                 var otherUnitIndexA = otherUnitIndices.first();
                                 var otherUnitIndexB = otherUnitIndices.second();

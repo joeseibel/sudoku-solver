@@ -116,7 +116,7 @@ public class AlignedPairExclusion {
                 })
                 .filter(candidates -> candidates.size() == 3);
         var almostLockedSets3 = visible.stream()
-                .collect(Triple.zipEveryTriple())
+                .gather(Triple.zipEveryTriple())
                 .filter(triple -> {
                     var alsA = triple.first();
                     var alsB = triple.second();
