@@ -98,7 +98,7 @@ public class SudokuSolver {
             SueDeCoq::sueDeCoq
     );
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("usage: java sudokusolver.javanostreams.SudokuSolver board");
         } else {
