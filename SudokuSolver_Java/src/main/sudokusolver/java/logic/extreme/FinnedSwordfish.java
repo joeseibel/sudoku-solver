@@ -86,7 +86,7 @@ public class FinnedSwordfish {
                 .toList();
         return unitsWithCandidate.stream()
                 .filter(unit -> unit.size() == 2 || unit.size() == 3)
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .flatMap(pair -> {
                     var baseUnitA = pair.first();
                     var baseUnitB = pair.second();

@@ -244,7 +244,7 @@ public class UniqueRectangles {
                     .filter(cell -> !cell.equals(roofA) && !cell.equals(roofB))
                     .toList();
             return unit.stream()
-                    .collect(Pair.zipEveryPair())
+                    .gather(Pair.zipEveryPair())
                     .flatMap(pair -> {
                         var tripleA = pair.first();
                         var tripleB = pair.second();

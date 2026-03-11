@@ -49,7 +49,7 @@ public class AlignedPairExclusion {
                 .stream()
                 .filter(UnsolvedCell.class::isInstance)
                 .map(UnsolvedCell.class::cast)
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .flatMap(pair -> {
                     var cellA = pair.first();
                     var cellB = pair.second();
@@ -101,7 +101,7 @@ public class AlignedPairExclusion {
                 .map(UnsolvedCell::candidates)
                 .filter(candidates -> candidates.size() == 2);
         var almostLockedSets2 = visible.stream()
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .filter(pair -> {
                     var alsA = pair.first();
                     var alsB = pair.second();

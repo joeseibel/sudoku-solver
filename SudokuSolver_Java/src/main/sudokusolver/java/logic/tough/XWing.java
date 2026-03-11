@@ -52,7 +52,7 @@ public class XWing {
             IntFunction<List<Cell>> getOtherUnit,
             ToIntFunction<Cell> getOtherUnitIndex
     ) {
-        return units.stream().collect(Pair.zipEveryPair()).flatMap(pair -> {
+        return units.stream().gather(Pair.zipEveryPair()).flatMap(pair -> {
             var unitA = pair.first();
             var unitB = pair.second();
             var aWithCandidate = unitA.stream()

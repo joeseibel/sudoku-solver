@@ -53,7 +53,7 @@ public class XYChains {
                     var candidate = entry.getKey();
                     var vertices = entry.getValue();
                     return vertices.stream()
-                            .collect(Pair.zipEveryPair())
+                            .gather(Pair.zipEveryPair())
                             .flatMap(pair -> {
                                 var vertexA = pair.first();
                                 var vertexB = pair.second();
@@ -106,7 +106,7 @@ public class XYChains {
     private static void addWeakLinks(Graph<LocatedCandidate, StrengthEdge> graph) {
         graph.vertexSet()
                 .stream()
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .filter(pair -> {
                     var vertexA = pair.first();
                     var cellA = vertexA.cell();

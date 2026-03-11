@@ -148,7 +148,7 @@ public enum Strength {
         return graph.edgesOf(vertex)
                 .stream()
                 .filter(edge -> edge.getStrength() == adjacentEdgesType)
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .anyMatch(pair -> {
                     var edgeA = pair.first();
                     var edgeB = pair.second();

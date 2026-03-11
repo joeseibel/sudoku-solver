@@ -48,7 +48,7 @@ public class Medusa {
                     var colors = VertexColor.colorToMap(graph);
                     return graph.vertexSet()
                             .stream()
-                            .collect(Pair.zipEveryPair())
+                            .gather(Pair.zipEveryPair())
                             .filter(pair -> {
                                 var a = pair.first();
                                 var b = pair.second();
@@ -80,7 +80,7 @@ public class Medusa {
                     var colors = VertexColor.colorToMap(graph);
                     return graph.vertexSet()
                             .stream()
-                            .collect(Pair.zipEveryPair())
+                            .gather(Pair.zipEveryPair())
                             .filter(pair -> {
                                 var a = pair.first();
                                 var b = pair.second();
@@ -116,7 +116,7 @@ public class Medusa {
                     return graph.vertexSet()
                             .stream()
                             .filter(vertex -> vertex.cell().candidates().size() > 2)
-                            .collect(Pair.zipEveryPair())
+                            .gather(Pair.zipEveryPair())
                             .filter(pair -> {
                                 var a = pair.first();
                                 var b = pair.second();

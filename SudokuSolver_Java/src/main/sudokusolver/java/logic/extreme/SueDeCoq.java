@@ -84,7 +84,7 @@ public class SueDeCoq {
                                         unitByBlock
                                 );
                                 var byPairs = unitByBlock.stream()
-                                        .collect(Pair.zipEveryPair())
+                                        .gather(Pair.zipEveryPair())
                                         .flatMap(pair -> {
                                             var a = pair.first();
                                             var b = pair.second();
@@ -154,7 +154,7 @@ public class SueDeCoq {
                 .filter(cell -> cell.candidates().size() == 2 && groupCandidates.containsAll(cell.candidates()))
                 .map(cell -> new ALS(Set.of(cell), cell.candidates()));
         var almostLockedSets2 = cells.stream()
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .map(pair -> {
                     var a = pair.first();
                     var b = pair.second();

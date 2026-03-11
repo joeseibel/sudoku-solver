@@ -31,7 +31,7 @@ public class XYZWing {
                         .stream()
                         .filter(UnsolvedCell.class::isInstance)
                         .map(UnsolvedCell.class::cast)
-                        .collect(Pair.zipEveryPair())
+                        .gather(Pair.zipEveryPair())
                         .filter(pair -> {
                             var wingA = pair.first();
                             var wingB = pair.second();

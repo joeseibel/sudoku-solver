@@ -174,7 +174,7 @@ public class AlternatingInferenceChains {
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             var strength = withCandidates.size() == 2 ? Strength.STRONG : Strength.WEAK;
-            withCandidates.stream().collect(Pair.zipEveryPair()).forEach(pair -> {
+            withCandidates.stream().gather(Pair.zipEveryPair()).forEach(pair -> {
                 var a = pair.first();
                 var b = pair.second();
                 builder.addEdge(
@@ -188,7 +188,7 @@ public class AlternatingInferenceChains {
         // Connect candidates in cells.
         board.getCells().stream().filter(UnsolvedCell.class::isInstance).map(UnsolvedCell.class::cast).forEach(cell -> {
             var strength = cell.candidates().size() == 2 ? Strength.STRONG : Strength.WEAK;
-            cell.candidates().stream().collect(Pair.zipEveryPair()).forEach(pair -> {
+            cell.candidates().stream().gather(Pair.zipEveryPair()).forEach(pair -> {
                 var a = pair.first();
                 var b = pair.second();
                 builder.addEdge(
@@ -210,7 +210,7 @@ public class AlternatingInferenceChains {
         return graph.edgesOf(vertex)
                 .stream()
                 .filter(edge -> edge.getStrength() == adjacentEdgesType)
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .anyMatch(pair -> {
                     var edgeA = pair.first();
                     var edgeB = pair.second();

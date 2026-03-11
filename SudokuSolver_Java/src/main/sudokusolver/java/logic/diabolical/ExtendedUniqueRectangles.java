@@ -36,7 +36,7 @@ public class ExtendedUniqueRectangles {
     private static Stream<LocatedCandidate> getRemovals(BiFunction<Integer, Integer, Cell> getCell) {
         return IntStream.range(0, Board.UNIT_SIZE)
                 .boxed()
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .flatMap(unitIndices -> {
                     var unitIndexA = unitIndices.first();
                     var unitIndexB = unitIndices.second();

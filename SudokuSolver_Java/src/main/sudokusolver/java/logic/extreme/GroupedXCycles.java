@@ -237,7 +237,7 @@ public class GroupedXCycles {
                         .toList())
                 .forEach(withCandidate -> {
                     var strength = withCandidate.size() == 2 ? Strength.STRONG : Strength.WEAK;
-                    withCandidate.stream().collect(Pair.zipEveryPair()).forEach(pair -> {
+                    withCandidate.stream().gather(Pair.zipEveryPair()).forEach(pair -> {
                         var a = pair.first();
                         var b = pair.second();
                         builder.addEdge(new CellNode(a), new CellNode(b), new StrengthEdge(strength));
@@ -309,7 +309,7 @@ public class GroupedXCycles {
             ToIntFunction<Group> getUnitIndex
     ) {
         groups.stream()
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .filter(pair -> {
                     var a = pair.first();
                     var b = pair.second();

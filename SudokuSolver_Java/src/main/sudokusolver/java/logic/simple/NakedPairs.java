@@ -24,7 +24,7 @@ public class NakedPairs {
                         .filter(UnsolvedCell.class::isInstance)
                         .map(UnsolvedCell.class::cast)
                         .filter(cell -> cell.candidates().size() == 2)
-                        .collect(Pair.zipEveryPair())
+                        .gather(Pair.zipEveryPair())
                         .filter(pair -> pair.first().candidates().equals(pair.second().candidates()))
                         .flatMap(pair -> {
                             var a = pair.first();

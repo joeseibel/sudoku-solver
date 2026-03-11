@@ -24,7 +24,7 @@ public class HiddenPairs {
         return board.getUnits()
                 .stream()
                 .flatMap(unit -> Arrays.stream(SudokuNumber.values())
-                        .collect(Pair.zipEveryPair())
+                        .gather(Pair.zipEveryPair())
                         .flatMap(pair -> {
                             var a = pair.first();
                             var b = pair.second();

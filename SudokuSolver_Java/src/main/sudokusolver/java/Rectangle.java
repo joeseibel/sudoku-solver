@@ -35,13 +35,13 @@ public class Rectangle {
     public static List<Rectangle> createRectangles(Board<Cell> board) {
         return IntStream.range(0, Board.UNIT_SIZE)
                 .boxed()
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .flatMap(rowIndices -> {
                     var rowA = rowIndices.first();
                     var rowB = rowIndices.second();
                     return IntStream.range(0, Board.UNIT_SIZE)
                             .boxed()
-                            .collect(Pair.zipEveryPair())
+                            .gather(Pair.zipEveryPair())
                             .map(columnIndices -> {
                                 var columnA = columnIndices.first();
                                 var columnB = columnIndices.second();

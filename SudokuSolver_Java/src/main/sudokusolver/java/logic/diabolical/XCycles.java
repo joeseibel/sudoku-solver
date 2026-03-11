@@ -178,7 +178,7 @@ public class XCycles {
     private static void addWeakLinks(Graph<UnsolvedCell, StrengthEdge> graph) {
         graph.vertexSet()
                 .stream()
-                .collect(Pair.zipEveryPair())
+                .gather(Pair.zipEveryPair())
                 .filter(pair -> {
                     var a = pair.first();
                     var b = pair.second();

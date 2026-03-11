@@ -45,7 +45,7 @@ public class WXYZWing {
                         var nonRestrictedList = candidates.stream()
                                 .filter(candidate -> quadList.stream()
                                         .filter(cell -> cell.candidates().contains(candidate))
-                                        .collect(Pair.zipEveryPair())
+                                        .gather(Pair.zipEveryPair())
                                         .anyMatch(pair -> !pair.first().isInSameUnit(pair.second())))
                                 .toList();
                         if (nonRestrictedList.size() == 1) {
