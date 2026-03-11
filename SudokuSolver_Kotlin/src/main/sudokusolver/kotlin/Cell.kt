@@ -14,7 +14,7 @@ import java.util.EnumSet
  *
  * While this can be done, it makes the logic functions much more complicated because they must maintain the index
  * through every call to filter, map, and flatMap. It is harder to understand the flow of the logic functions because
- * there is so much boilerplate in maintaining the indices. Granted, Kotlin helps make this boilerplate minimal through
+ * there is so much boilerplate in maintaining the indices. Granted, Kotlin helps make this boilerplate minimal. It has
  * the data class IndexedValue, the ability to destructure an IndexedValue in a lambda's parameter list, and the ability
  * to ignore a destructured element or lambda parameter by replacing its name with an underscore. However, even though
  * the boilerplate is minimal, it is still there.
