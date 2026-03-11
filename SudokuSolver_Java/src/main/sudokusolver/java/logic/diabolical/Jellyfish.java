@@ -54,7 +54,7 @@ public class Jellyfish {
             IntFunction<List<Cell>> getOtherUnit,
             ToIntFunction<Cell> getOtherUnitIndex
     ) {
-        return units.stream().collect(Quad.zipEveryQuad()).flatMap(quad -> {
+        return units.stream().gather(Quad.zipEveryQuad()).flatMap(quad -> {
             var unitA = quad.first();
             var unitB = quad.second();
             var unitC = quad.third();

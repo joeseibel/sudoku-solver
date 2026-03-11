@@ -25,7 +25,7 @@ public class HiddenQuads {
         return board.getUnits()
                 .stream()
                 .flatMap(unit -> Arrays.stream(SudokuNumber.values())
-                        .collect(Quad.zipEveryQuad())
+                        .gather(Quad.zipEveryQuad())
                         .flatMap(quad -> {
                             var a = quad.first();
                             var b = quad.second();

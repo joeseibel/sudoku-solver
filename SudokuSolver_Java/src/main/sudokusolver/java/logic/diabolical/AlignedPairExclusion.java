@@ -134,7 +134,7 @@ public class AlignedPairExclusion {
                 })
                 .filter(candidates -> candidates.size() == 4);
         var almostLockedSets4 = visible.stream()
-                .collect(Quad.zipEveryQuad())
+                .gather(Quad.zipEveryQuad())
                 .filter(quad -> {
                     var alsA = quad.first();
                     var alsB = quad.second();

@@ -176,7 +176,7 @@ public class SueDeCoq {
                 })
                 .filter(als -> als.candidates().size() == 4 && groupCandidates.containsAll(als.candidates()));
         var almostLockedSets4 = cells.stream()
-                .collect(Quad.zipEveryQuad())
+                .gather(Quad.zipEveryQuad())
                 .map(quad -> {
                     var a = quad.first();
                     var b = quad.second();

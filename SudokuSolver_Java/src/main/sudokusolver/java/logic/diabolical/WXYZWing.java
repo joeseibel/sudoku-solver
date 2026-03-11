@@ -30,7 +30,7 @@ public class WXYZWing {
                 .filter(UnsolvedCell.class::isInstance)
                 .map(UnsolvedCell.class::cast)
                 .filter(cell -> cell.candidates().size() <= 4)
-                .collect(Quad.zipEveryQuad())
+                .gather(Quad.zipEveryQuad())
                 .flatMap(quad -> {
                     var a = quad.first();
                     var b = quad.second();
