@@ -23,8 +23,9 @@ public record RemoveCandidates(int row, int column, EnumSet<SudokuNumber> candid
     }
 
     public RemoveCandidates(int row, int column, int... candidates) {
-        this(row, column, Arrays.stream(candidates)
+        var candidatesSet = Arrays.stream(candidates)
                 .mapToObj(candidate -> SudokuNumber.values()[candidate - 1])
-                .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class))));
+                .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
+        this(row, column, candidatesSet);
     }
 }
