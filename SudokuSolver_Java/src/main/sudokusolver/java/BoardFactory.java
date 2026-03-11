@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.stream.Gatherers;
 import java.util.stream.IntStream;
 
 public class BoardFactory {
@@ -12,12 +13,12 @@ public class BoardFactory {
             var message = "board.length() is " + board.length() + ", must be " + Board.UNIT_SIZE_SQUARED + '.';
             throw new IllegalArgumentException(message);
         }
-        var boardAsNumbers = IntStream.range(0, Board.UNIT_SIZE)
-                .mapToObj(row -> IntStream.range(0, Board.UNIT_SIZE)
-                        .mapToObj(column -> {
-                            var ch = board.charAt(row * Board.UNIT_SIZE + column);
-                            return ch == '0' ? Optional.<SudokuNumber>empty() : Optional.of(SudokuNumber.valueOf(ch));
-                        })
+        var boardAsNumbers = board.chars()
+                .mapToObj(cell -> (char) cell)
+                .gather(Gatherers.windowFixed(Board.UNIT_SIZE))
+                .map(row -> row.stream()
+                        .map(cell ->
+                                cell == '0' ? Optional.<SudokuNumber>empty() : Optional.of(SudokuNumber.valueOf(cell)))
                         .toList())
                 .toList();
         return new Board<>(boardAsNumbers);
@@ -28,10 +29,10 @@ public class BoardFactory {
             var message = "board.length() is " + board.length() + ", must be " + Board.UNIT_SIZE_SQUARED + '.';
             throw new IllegalArgumentException(message);
         }
-        var boardAsNumbers = IntStream.range(0, Board.UNIT_SIZE)
-                .mapToObj(row -> IntStream.range(0, Board.UNIT_SIZE)
-                        .mapToObj(column -> SudokuNumber.valueOf(board.charAt(row * Board.UNIT_SIZE + column)))
-                        .toList())
+        var boardAsNumbers = board.chars()
+                .mapToObj(cell -> (char) cell)
+                .gather(Gatherers.windowFixed(Board.UNIT_SIZE))
+                .map(row -> row.stream().map(SudokuNumber::valueOf).toList())
                 .toList();
         return new Board<>(boardAsNumbers);
     }
