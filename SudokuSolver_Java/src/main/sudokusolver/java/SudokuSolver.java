@@ -43,7 +43,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class SudokuSolver {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("usage: java sudokusolver.java.SudokuSolver board");
         } else {
