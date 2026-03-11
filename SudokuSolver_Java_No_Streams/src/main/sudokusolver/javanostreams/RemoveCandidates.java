@@ -21,14 +21,10 @@ public record RemoveCandidates(int row, int column, EnumSet<SudokuNumber> candid
     }
 
     public RemoveCandidates(int row, int column, int... candidates) {
-        this(row, column, convertCandidates(candidates));
-    }
-
-    private static EnumSet<SudokuNumber> convertCandidates(int[] candidates) {
-        var candidatesSet = EnumSet.noneOf(SudokuNumber.class);
+        var candidateSet = EnumSet.noneOf(SudokuNumber.class);
         for (var candidate : candidates) {
-            candidatesSet.add(SudokuNumber.values()[candidate - 1]);
+            candidateSet.add(SudokuNumber.values()[candidate - 1]);
         }
-        return candidatesSet;
+        this(row, column, candidateSet);
     }
 }
