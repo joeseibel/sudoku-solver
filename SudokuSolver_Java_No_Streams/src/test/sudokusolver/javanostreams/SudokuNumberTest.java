@@ -17,7 +17,7 @@ class SudokuNumberTest {
                          * specifically testing for the fact that the method doesn't return properly. Wrapping this in a
                          * call to println is enough to convince IntelliJ that the result of valueOf is used.
                          */
-                        () -> System.out.println(SudokuNumber.valueOf('a'))
+                        () -> IO.println(SudokuNumber.valueOf('a'))
                 ).getMessage()
         );
     }
