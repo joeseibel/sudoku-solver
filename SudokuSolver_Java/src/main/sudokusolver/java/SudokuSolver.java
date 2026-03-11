@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 public class SudokuSolver {
     static void main(String[] args) {
         if (args.length != 1) {
-            System.out.println("usage: java sudokusolver.java.SudokuSolver board");
+            IO.println("usage: java sudokusolver.java.SudokuSolver board");
         } else {
             var board = args[0];
             var showError = board.length() != Board.UNIT_SIZE_SQUARED;
@@ -56,16 +56,16 @@ public class SudokuSolver {
                 }
             }
             if (showError) {
-                System.out.println("board must be " + Board.UNIT_SIZE_SQUARED + " numbers with blanks expressed as 0");
+                IO.println("board must be " + Board.UNIT_SIZE_SQUARED + " numbers with blanks expressed as 0");
             } else {
                 try {
-                    System.out.println(solve(BoardFactory.parseOptionalBoard(board)));
+                    IO.println(solve(BoardFactory.parseOptionalBoard(board)));
                 } catch (NoSolutionsException e) {
-                    System.out.println("No Solutions");
+                    IO.println("No Solutions");
                 } catch (MultipleSolutionsException e) {
-                    System.out.println("Multiple Solutions");
+                    IO.println("Multiple Solutions");
                 } catch (UnableToSolveException e) {
-                    System.out.println(e.getMessage());
+                    IO.println(e.getMessage());
                 }
             }
         }
