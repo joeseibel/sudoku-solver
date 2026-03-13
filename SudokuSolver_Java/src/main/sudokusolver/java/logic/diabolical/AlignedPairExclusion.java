@@ -24,8 +24,8 @@ import java.util.stream.Stream;
  * ALS if they can see each other and the union of candidates has a size of three. If there are three cells that see
  * each other and there are four candidates across those three cells, then those three cells are an ALS.
  *
- * Aligned Pair Exclusion considers a pair of unsolved cells, which may or may not see each other, and checks for
- * solution combinations for that pair which would cause problems for that pair or for Almost Locks Sets which are
+ * Aligned Pair Exclusion considers a pair of unsolved cells, which may or may not see each other. It then checks for
+ * solution combinations for that pair which would cause problems for that pair or for Almost Locked Sets which are
  * visible to that pair. This will result in a list of solution combinations for the pair, some of which are known to be
  * invalid, and the others which could potentially be valid. If a particular candidate in one of the cells of the pair
  * only appears among the invalid combinations, then that candidate cannot be the solution to that cell and can be
