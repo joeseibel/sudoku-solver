@@ -17,11 +17,11 @@ use std::collections::BTreeSet;
 // board contains the Deadly Pattern, then the board cannot have a single solution, but would have multiple solutions.
 // The advantage of recognizing this pattern comes when a board contains a pattern which is close to the Deadly Pattern
 // and the removal of certain candidates would lead to the Deadly Pattern. If a valid board contains a pattern which is
-// close to the Deadly Pattern, it is known that the board will never enter into the Deadly Pattern and candidates can
-// be removed if setting those candidates as values would lead to the Deadly Pattern. A rectangle can be further
-// described by identifying its floor cells and its roof cells. A rectangle's floor are the cells that only contain the
-// two common candidates. A rectangle's roof are the cells that contain the two common candidates as well as additional
-// candidates.
+// close to the Deadly Pattern, it is known that the board will never enter into the Deadly Pattern. Therefore,
+// candidates can be removed if setting those candidates as values would lead to the Deadly Pattern. A rectangle can be
+// further described by identifying its floor cells and its roof cells. A rectangle's floor are the cells that only
+// contain the two common candidates. A rectangle's roof are the cells that contain the two common candidates as well as
+// additional candidates.
 //
 // Type 1
 //
