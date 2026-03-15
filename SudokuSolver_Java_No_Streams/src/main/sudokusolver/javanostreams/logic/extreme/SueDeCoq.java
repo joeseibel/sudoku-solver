@@ -17,10 +17,10 @@ import java.util.function.ToIntFunction;
 /*
  * https://www.sudokuwiki.org/Sue_De_Coq
  *
- * This solution starts with looking for two or three cells in the same linear unit (row or column) and block and the
- * union of candidates across the cells has a size which is at least two more than the number of cells. In other words,
- * if two cells are selected, then they must have at least four candidates. If three cells are selected, they must have
- * at least five candidates. These cells are the main group in this solution.
+ * This solution starts with looking for two or three cells in the same linear unit (row or column) and the same block.
+ * The union of candidates across these cells must have a size which is at least two more than the number of cells. In
+ * other words, if two cells are selected, then they must have at least four candidates. If three cells are selected,
+ * they must have at least five candidates. These cells are the main group in this solution.
  *
  * Once the main group is identified, this solution then searches for an Almost Locked Set in the same linear unit as
  * the main group and also for an ALS in the same block as the main group. As a reminder, an ALS is a set of n unsolved
