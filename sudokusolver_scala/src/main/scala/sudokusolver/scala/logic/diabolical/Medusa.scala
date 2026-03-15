@@ -22,6 +22,7 @@ import sudokusolver.scala.*
  * If there are two vertices with the same color that are in the same cell, then that color cannot be the solution and
  * the opposite color must be the solution. All vertices with the opposite color can be set as the solution.
  */
+//noinspection DuplicatedCode
 def medusaRule1(board: Board[Cell]): Seq[SetValue] =
   createConnectedComponents(board).toSeq.flatMap { graph =>
     val colors = graph.colorToMap
@@ -51,6 +52,7 @@ def medusaRule1(board: Board[Cell]): Seq[SetValue] =
  * cannot be the solution and the opposite color must be the solution. All vertices with the opposite color can be set
  * as the solution.
  */
+//noinspection DuplicatedCode
 def medusaRule2(board: Board[Cell]): Seq[SetValue] =
   createConnectedComponents(board).toSeq.flatMap { graph =>
     val colors = graph.colorToMap
@@ -110,6 +112,7 @@ def medusaRule3(board: Board[Cell]): Seq[RemoveCandidates] =
  * one of the other cells, and it cannot be the solution to the first cell with the uncolored candidate. The uncolored
  * candidate can be removed from the first cell.
  */
+//noinspection DuplicatedCode
 def medusaRule4(board: Board[Cell]): Seq[RemoveCandidates] =
   createConnectedComponents(board).toSeq.flatMap { graph =>
     val (colorOne, colorTwo) = graph.colorToLists
@@ -136,6 +139,7 @@ def medusaRule4(board: Board[Cell]): Seq[RemoveCandidates] =
  * same unit is the solution for that cell or the candidate in the same cell is the solution. In either case, the
  * uncolored candidate cannot be the solution and can be removed from the unsolved cell.
  */
+//noinspection DuplicatedCode
 def medusaRule5(board: Board[Cell]): Seq[RemoveCandidates] =
   createConnectedComponents(board).toSeq.flatMap { graph =>
     val (colorOne, colorTwo) = graph.colorToLists

@@ -59,6 +59,7 @@ def simpleColoringRule4(board: Board[Cell]): Seq[RemoveCandidates] =
 extension (graph: Graph[UnsolvedCell, UnDiEdge[UnsolvedCell]])
   def toDOT(candidate: SudokuNumber): String = graph.toDOTCommon(Some(candidate.toString), _.getVertexLabel)
 
+//noinspection DuplicatedCode
 private def createConnectedComponents(
                                        board: Board[Cell],
                                        candidate: SudokuNumber

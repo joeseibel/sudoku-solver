@@ -120,6 +120,7 @@ private def buildGraphGroupedXCycles(board: Board[Cell], candidate: SudokuNumber
   yield StrengthEdge(a, b, strength)
 
   // Add groups.
+  //noinspection DuplicatedCode
   def createGroups[G <: Group](units: IndexedSeq[Seq[Cell]], groupConstructor: Set[UnsolvedCell] => G) =
     units.flatMap { unit =>
       unit.collect { case cell: UnsolvedCell if cell.candidates.contains(candidate) => cell }

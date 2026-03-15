@@ -23,6 +23,7 @@ object RemoveCandidates:
 case class SetValue(override val row: Int, override val column: Int, value: SudokuNumber) extends BoardModification
 
 object SetValue:
+  //noinspection DuplicatedCode
   def apply(cell: UnsolvedCell, value: SudokuNumber): SetValue =
     require(cell.candidates.contains(value), s"$value is not a candidate for [${cell.row}, ${cell.column}].")
     SetValue(cell.row, cell.column, value)

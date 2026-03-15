@@ -31,6 +31,7 @@ def sueDeCoq(board: Board[Cell]): Seq[RemoveCandidates] =
         val block = board.getBlock(blockIndex).collect { case cell: UnsolvedCell => cell }
         val otherCellsInBlock = block.filter(getUnitIndex(_) != getUnitIndex(unit.head))
 
+        //noinspection DuplicatedCode
         def getGroupRemovals(group: Seq[UnsolvedCell]) =
           val candidates = group.map(_.candidates).reduce(_ | _)
           if candidates.size >= group.size + 2 then

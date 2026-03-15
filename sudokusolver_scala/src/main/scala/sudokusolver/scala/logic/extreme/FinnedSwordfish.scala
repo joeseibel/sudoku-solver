@@ -31,6 +31,7 @@ import sudokusolver.scala.*
 def finnedSwordfish(board: Board[Cell]): Seq[RemoveCandidates] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
 
+    //noinspection DuplicatedCode
     def finnedSwordfish(
                          units: Seq[Seq[Cell]],
                          getUnitIndex: Cell => Int,

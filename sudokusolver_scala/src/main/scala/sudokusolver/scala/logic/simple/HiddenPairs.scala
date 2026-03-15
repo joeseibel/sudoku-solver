@@ -8,6 +8,7 @@ import sudokusolver.scala.*
  * If a pair of candidates exists in exactly two cells in a unit, then those two candidates must be placed in those two
  * cells. All other candidates can be removed from those two cells.
  */
+//noinspection DuplicatedCode
 def hiddenPairs(board: Board[Cell]): Seq[RemoveCandidates] =
   board.units.flatMap { unit =>
     SudokuNumber.values.toIndexedSeq.zipEveryPair.flatMap { (a, b) =>

@@ -39,6 +39,7 @@ def uniqueRectanglesType1(board: Board[Cell]): Seq[RemoveCandidates] =
  * lead to a Deadly Pattern, therefore the additional candidate must be the solution for one of the two roof cells. The
  * common candidate can be removed from any other cell that can see both of the roof cells.
  */
+//noinspection DuplicatedCode
 def uniqueRectanglesType2(board: Board[Cell]): Seq[RemoveCandidates] =
   createRectangles(board).flatMap { rectangle =>
     rectangle.roof match

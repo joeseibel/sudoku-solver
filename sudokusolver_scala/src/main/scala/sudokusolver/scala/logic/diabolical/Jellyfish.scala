@@ -16,6 +16,7 @@ import sudokusolver.scala.*
 def jellyfish(board: Board[Cell]): Seq[RemoveCandidates] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
 
+    //noinspection DuplicatedCode
     def jellyfish(units: Seq[Seq[Cell]], getOtherUnit: Int => Seq[Cell], getOtherUnitIndex: Cell => Int) =
       units.toIndexedSeq.zipEveryQuad.flatMap { (unitA, unitB, unitC, unitD) =>
         val aWithCandidate = unitA.collect { case cell: UnsolvedCell if cell.candidates.contains(candidate) => cell }
