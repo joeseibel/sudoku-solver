@@ -65,8 +65,9 @@ public class Rectangle {
                              *
                              * Obviously, the compiler has somehow lost the type of the stream at
                              * ".map(Rectangle::new)". However, if I don't use a method reference, but instead have a
-                             * normal constructor call in a normal lambda, then the compiler is happy, but the IDE gives
-                             * a warning stating that the lambda can be converted to a method reference.
+                             * normal constructor call in a normal lambda, then the compiler is happy. But in that case,
+                             * the IDE then gives a warning stating that the lambda can be converted to a method
+                             * reference.
                              *
                              * Also, I can explicitly add type information to the above map so that it looks like this:
                              * ".<List<UnsolvedCell>>map(columnIndices -> ...". In that case, the compiler is happy, but
