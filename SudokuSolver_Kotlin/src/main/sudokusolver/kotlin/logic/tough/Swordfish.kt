@@ -22,6 +22,7 @@ import sudokusolver.kotlin.zipEveryTriple
 fun swordfish(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.entries.flatMap { candidate ->
 
+        @Suppress("DuplicatedCode")
         fun swordfish(units: List<List<Cell>>, getOtherUnit: (Int) -> List<Cell>, getOtherUnitIndex: (Cell) -> Int) =
             units.zipEveryTriple().mapNotNull { (unitA, unitB, unitC) ->
                 val aWithCandidate = unitA.filterIsInstance<UnsolvedCell>().filter { candidate in it.candidates }

@@ -59,6 +59,7 @@ import java.io.StringWriter
  * be removed from any cell which is in the same unit as both vertices of a weak link, but not contained in either of
  * the vertices.
  */
+@Suppress("DuplicatedCode")
 fun groupedXCyclesRule1(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.entries.flatMap { candidate ->
         val graph = buildGraph(board, candidate).trim()
