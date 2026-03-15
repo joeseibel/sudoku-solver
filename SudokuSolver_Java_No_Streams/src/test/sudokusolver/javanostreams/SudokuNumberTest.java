@@ -8,8 +8,10 @@ class SudokuNumberTest {
     public void testUnexpectedChar() {
         Assertions.assertEquals(
                 "ch is 'a', must be between '1' and '9'.",
-                Assertions.assertThrows(IllegalArgumentException.class, () -> SudokuNumber.valueOf('a'))
-                        .getMessage()
+                Assertions.assertThrows(
+                        IllegalArgumentException.class,
+                        () -> SudokuNumber.valueOf('a')
+                ).getMessage()
         );
     }
 }
