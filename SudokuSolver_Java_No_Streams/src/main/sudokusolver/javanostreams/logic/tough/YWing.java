@@ -4,7 +4,6 @@ import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
 import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
-import sudokusolver.javanostreams.Triple;
 import sudokusolver.javanostreams.UnsolvedCell;
 
 import java.util.ArrayList;
@@ -28,17 +27,21 @@ public class YWing {
                 cells.add(unsolved);
             }
         }
-        for (var triple : Triple.zipEveryTriple(cells)) {
-            var a = triple.first();
-            var b = triple.second();
-            var c = triple.third();
-            var allCandidates = EnumSet.copyOf(a.candidates());
-            allCandidates.addAll(b.candidates());
-            allCandidates.addAll(c.candidates());
-            if (allCandidates.size() == 3) {
-                tryHinge(removals, board, a, b, c);
-                tryHinge(removals, board, b, a, c);
-                tryHinge(removals, board, c, a, b);
+        for (var i = 0; i < cells.size() - 2; i++) {
+            var a = cells.get(i);
+            for (var j = i + 1; j < cells.size() - 1; j++) {
+                var b = cells.get(j);
+                for (var k = j + 1; k < cells.size(); k++) {
+                    var c = cells.get(k);
+                    var allCandidates = EnumSet.copyOf(a.candidates());
+                    allCandidates.addAll(b.candidates());
+                    allCandidates.addAll(c.candidates());
+                    if (allCandidates.size() == 3) {
+                        tryHinge(removals, board, a, b, c);
+                        tryHinge(removals, board, b, a, c);
+                        tryHinge(removals, board, c, a, b);
+                    }
+                }
             }
         }
         return removals.toList();

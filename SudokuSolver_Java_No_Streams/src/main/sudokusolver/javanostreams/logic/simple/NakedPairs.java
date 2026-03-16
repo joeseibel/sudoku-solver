@@ -2,7 +2,6 @@ package sudokusolver.javanostreams.logic.simple;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.Pair;
 import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.UnsolvedCell;
@@ -20,17 +19,19 @@ public class NakedPairs {
     public static List<RemoveCandidates> nakedPairs(Board<Cell> board) {
         var removals = new Removals();
         for (var unit : board.getUnits()) {
-            for (var pair : Pair.zipEveryPair(unit)) {
-                if (pair.first() instanceof UnsolvedCell a &&
-                        a.candidates().size() == 2 &&
-                        pair.second() instanceof UnsolvedCell b &&
-                        a.candidates().equals(b.candidates())
-                ) {
-                    for (var cell : unit) {
-                        if (cell instanceof UnsolvedCell unsolved && !unsolved.equals(a) && !unsolved.equals(b)) {
-                            var toRemove = EnumSet.copyOf(unsolved.candidates());
-                            toRemove.retainAll(a.candidates());
-                            removals.add(unsolved, toRemove);
+            for (var i = 0; i < unit.size() - 1; i++) {
+                if (unit.get(i) instanceof UnsolvedCell a && a.candidates().size() == 2) {
+                    for (var j = i + 1; j < unit.size(); j++) {
+                        if (unit.get(j) instanceof UnsolvedCell b && a.candidates().equals(b.candidates())) {
+                            for (var cell : unit) {
+                                if (cell instanceof UnsolvedCell unsolved &&
+                                        !unsolved.equals(a) && !unsolved.equals(b)
+                                ) {
+                                    var toRemove = EnumSet.copyOf(unsolved.candidates());
+                                    toRemove.retainAll(a.candidates());
+                                    removals.add(unsolved, toRemove);
+                                }
+                            }
                         }
                     }
                 }

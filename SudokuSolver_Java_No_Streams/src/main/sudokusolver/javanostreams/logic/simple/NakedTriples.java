@@ -4,7 +4,6 @@ import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
 import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
-import sudokusolver.javanostreams.Triple;
 import sudokusolver.javanostreams.UnsolvedCell;
 
 import java.util.EnumSet;
@@ -20,24 +19,29 @@ public class NakedTriples {
     public static List<RemoveCandidates> nakedTriples(Board<Cell> board) {
         var removals = new Removals();
         for (var unit : board.getUnits()) {
-            for (var triple : Triple.zipEveryTriple(unit)) {
-                if (triple.first() instanceof UnsolvedCell a &&
-                        triple.second() instanceof UnsolvedCell b &&
-                        triple.third() instanceof UnsolvedCell c
-                ) {
-                    var unionOfCandidates = EnumSet.copyOf(a.candidates());
-                    unionOfCandidates.addAll(b.candidates());
-                    unionOfCandidates.addAll(c.candidates());
-                    if (unionOfCandidates.size() == 3) {
-                        for (var cell : unit) {
-                            if (cell instanceof UnsolvedCell unsolved &&
-                                    !unsolved.equals(a) &&
-                                    !unsolved.equals(b) &&
-                                    !unsolved.equals(c)
-                            ) {
-                                var toRemove = EnumSet.copyOf(unsolved.candidates());
-                                toRemove.retainAll(unionOfCandidates);
-                                removals.add(unsolved, toRemove);
+            for (var i = 0; i < unit.size() - 2; i++) {
+                if (unit.get(i) instanceof UnsolvedCell a) {
+                    for (var j = i + 1; j < unit.size() - 1; j++) {
+                        if (unit.get(j) instanceof UnsolvedCell b) {
+                            for (var k = j + 1; k < unit.size(); k++) {
+                                if (unit.get(k) instanceof UnsolvedCell c) {
+                                    var unionOfCandidates = EnumSet.copyOf(a.candidates());
+                                    unionOfCandidates.addAll(b.candidates());
+                                    unionOfCandidates.addAll(c.candidates());
+                                    if (unionOfCandidates.size() == 3) {
+                                        for (var cell : unit) {
+                                            if (cell instanceof UnsolvedCell unsolved &&
+                                                    !unsolved.equals(a) &&
+                                                    !unsolved.equals(b) &&
+                                                    !unsolved.equals(c)
+                                            ) {
+                                                var toRemove = EnumSet.copyOf(unsolved.candidates());
+                                                toRemove.retainAll(unionOfCandidates);
+                                                removals.add(unsolved, toRemove);
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

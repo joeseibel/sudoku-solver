@@ -2,7 +2,6 @@ package sudokusolver.javanostreams.logic.diabolical;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.Pair;
 import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
@@ -43,27 +42,32 @@ import java.util.List;
 public class AlignedPairExclusion {
     public static List<RemoveCandidates> alignedPairExclusion(Board<Cell> board) {
         var removals = new Removals();
-        for (var pair : Pair.zipEveryPair(board.getCells())) {
-            if (pair.first() instanceof UnsolvedCell cellA && pair.second() instanceof UnsolvedCell cellB) {
-                var almostLockedSets = getAlmostLockedSets(board, cellA, cellB);
-                var validACandidates = EnumSet.noneOf(SudokuNumber.class);
-                var validBCandidates = EnumSet.noneOf(SudokuNumber.class);
-                for (var candidateA : cellA.candidates()) {
-                    for (var candidateB : cellB.candidates()) {
-                        if (isValid(candidateA, candidateB, cellA, cellB, almostLockedSets)) {
-                            validACandidates.add(candidateA);
-                            validBCandidates.add(candidateB);
+        var cells = board.getCells();
+        for (var i = 0; i < cells.size() - 1; i++) {
+            if (cells.get(i) instanceof UnsolvedCell cellA) {
+                for (var j = i + 1; j < cells.size(); j++) {
+                    if (cells.get(j) instanceof UnsolvedCell cellB) {
+                        var almostLockedSets = getAlmostLockedSets(cells, cellA, cellB);
+                        var validACandidates = EnumSet.noneOf(SudokuNumber.class);
+                        var validBCandidates = EnumSet.noneOf(SudokuNumber.class);
+                        for (var candidateA : cellA.candidates()) {
+                            for (var candidateB : cellB.candidates()) {
+                                if (isValid(candidateA, candidateB, cellA, cellB, almostLockedSets)) {
+                                    validACandidates.add(candidateA);
+                                    validBCandidates.add(candidateB);
+                                }
+                            }
                         }
-                    }
-                }
-                for (var candidate : cellA.candidates()) {
-                    if (!validACandidates.contains(candidate)) {
-                        removals.add(cellA, candidate);
-                    }
-                }
-                for (var candidate : cellB.candidates()) {
-                    if (!validBCandidates.contains(candidate)) {
-                        removals.add(cellB, candidate);
+                        for (var candidate : cellA.candidates()) {
+                            if (!validACandidates.contains(candidate)) {
+                                removals.add(cellA, candidate);
+                            }
+                        }
+                        for (var candidate : cellB.candidates()) {
+                            if (!validBCandidates.contains(candidate)) {
+                                removals.add(cellB, candidate);
+                            }
+                        }
                     }
                 }
             }
@@ -72,12 +76,12 @@ public class AlignedPairExclusion {
     }
 
     private static List<EnumSet<SudokuNumber>> getAlmostLockedSets(
-            Board<Cell> board,
+            List<Cell> cells,
             UnsolvedCell cellA,
             UnsolvedCell cellB
     ) {
         var visible = new ArrayList<UnsolvedCell>();
-        for (var cell : board.getCells()) {
+        for (var cell : cells) {
             if (cell instanceof UnsolvedCell unsolved &&
                     !unsolved.equals(cellA) &&
                     !unsolved.equals(cellB) &&
