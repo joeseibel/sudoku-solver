@@ -2,7 +2,6 @@ package sudokusolver.javanostreams.logic.extreme;
 
 import sudokusolver.javanostreams.Board;
 import sudokusolver.javanostreams.Cell;
-import sudokusolver.javanostreams.Pair;
 import sudokusolver.javanostreams.Removals;
 import sudokusolver.javanostreams.RemoveCandidates;
 import sudokusolver.javanostreams.SudokuNumber;
@@ -157,5 +156,8 @@ public class EmptyRectangles {
 
     private static boolean hasCandidate(Cell cell, SudokuNumber candidate) {
         return cell instanceof UnsolvedCell(_, _, var candidates) && candidates.contains(candidate);
+    }
+
+    private record Pair<A, B>(A first, B second) {
     }
 }
