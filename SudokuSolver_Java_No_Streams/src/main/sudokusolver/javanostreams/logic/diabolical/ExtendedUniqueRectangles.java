@@ -42,70 +42,53 @@ public class ExtendedUniqueRectangles {
                              otherUnitIndexC < Board.UNIT_SIZE;
                              otherUnitIndexC++
                         ) {
-                            getRemovals(removals,
-                                    unitIndexA, unitIndexB,
-                                    otherUnitIndexA, otherUnitIndexB, otherUnitIndexC,
-                                    getCell
-                            );
+                            var unitA = new ArrayList<UnsolvedCell>();
+                            if (getCell.apply(unitIndexA, otherUnitIndexA) instanceof UnsolvedCell unsolved) {
+                                unitA.add(unsolved);
+                            }
+                            if (getCell.apply(unitIndexA, otherUnitIndexB) instanceof UnsolvedCell unsolved) {
+                                unitA.add(unsolved);
+                            }
+                            if (getCell.apply(unitIndexA, otherUnitIndexC) instanceof UnsolvedCell unsolved) {
+                                unitA.add(unsolved);
+                            }
+                            if (unitA.size() == 3) {
+                                var unitB = new ArrayList<UnsolvedCell>();
+                                if (getCell.apply(unitIndexB, otherUnitIndexA) instanceof UnsolvedCell unsolved) {
+                                    unitB.add(unsolved);
+                                }
+                                if (getCell.apply(unitIndexB, otherUnitIndexB) instanceof UnsolvedCell unsolved) {
+                                    unitB.add(unsolved);
+                                }
+                                if (getCell.apply(unitIndexB, otherUnitIndexC) instanceof UnsolvedCell unsolved) {
+                                    unitB.add(unsolved);
+                                }
+                                if (unitB.size() == 3) {
+                                    var blockIndices = new HashSet<Integer>();
+                                    for (var cell : unitA) {
+                                        blockIndices.add(cell.block());
+                                    }
+                                    for (var cell : unitB) {
+                                        blockIndices.add(cell.block());
+                                    }
+                                    if (blockIndices.size() == 3) {
+                                        var unitACandidates = EnumSet.noneOf(SudokuNumber.class);
+                                        for (var cell : unitA) {
+                                            unitACandidates.addAll(cell.candidates());
+                                        }
+                                        var unitBCandidates = EnumSet.noneOf(SudokuNumber.class);
+                                        for (var cell : unitB) {
+                                            unitBCandidates.addAll(cell.candidates());
+                                        }
+                                        if (unitACandidates.size() == 3) {
+                                            getRemovals(removals, unitACandidates, unitB, unitBCandidates);
+                                        } else if (unitBCandidates.size() == 3) {
+                                            getRemovals(removals, unitBCandidates, unitA, unitACandidates);
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            }
-        }
-    }
-
-    /*
-     * This method used to be a part of the previous method, but was extracted to resolve the warning, "Method
-     * 'getRemovals' is too complex to analyze by data flow algorithm."
-     */
-    private static void getRemovals(
-            Removals removals,
-            int unitIndexA, int unitIndexB,
-            int otherUnitIndexA, int otherUnitIndexB, int otherUnitIndexC,
-            BiFunction<Integer, Integer, Cell> getCell
-    ) {
-        var unitA = new ArrayList<UnsolvedCell>();
-        if (getCell.apply(unitIndexA, otherUnitIndexA) instanceof UnsolvedCell unsolved) {
-            unitA.add(unsolved);
-        }
-        if (getCell.apply(unitIndexA, otherUnitIndexB) instanceof UnsolvedCell unsolved) {
-            unitA.add(unsolved);
-        }
-        if (getCell.apply(unitIndexA, otherUnitIndexC) instanceof UnsolvedCell unsolved) {
-            unitA.add(unsolved);
-        }
-        if (unitA.size() == 3) {
-            var unitB = new ArrayList<UnsolvedCell>();
-            if (getCell.apply(unitIndexB, otherUnitIndexA) instanceof UnsolvedCell unsolved) {
-                unitB.add(unsolved);
-            }
-            if (getCell.apply(unitIndexB, otherUnitIndexB) instanceof UnsolvedCell unsolved) {
-                unitB.add(unsolved);
-            }
-            if (getCell.apply(unitIndexB, otherUnitIndexC) instanceof UnsolvedCell unsolved) {
-                unitB.add(unsolved);
-            }
-            if (unitB.size() == 3) {
-                var blockIndices = new HashSet<Integer>();
-                for (var cell : unitA) {
-                    blockIndices.add(cell.block());
-                }
-                for (var cell : unitB) {
-                    blockIndices.add(cell.block());
-                }
-                if (blockIndices.size() == 3) {
-                    var unitACandidates = EnumSet.noneOf(SudokuNumber.class);
-                    for (var cell : unitA) {
-                        unitACandidates.addAll(cell.candidates());
-                    }
-                    var unitBCandidates = EnumSet.noneOf(SudokuNumber.class);
-                    for (var cell : unitB) {
-                        unitBCandidates.addAll(cell.candidates());
-                    }
-                    if (unitACandidates.size() == 3) {
-                        getRemovals(removals, unitACandidates, unitB, unitBCandidates);
-                    } else if (unitBCandidates.size() == 3) {
-                        getRemovals(removals, unitBCandidates, unitA, unitACandidates);
                     }
                 }
             }
