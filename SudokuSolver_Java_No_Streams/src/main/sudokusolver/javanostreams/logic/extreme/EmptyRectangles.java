@@ -94,31 +94,15 @@ public class EmptyRectangles {
                         }
                     }
                 }
-                removeIfValid(removals, board, candidate, getRemovalRow, getRemovalColumn, strongLink1, strongLink2);
+                if (strongLink2 != null &&
+                        strongLink1.block() != strongLink2.block() &&
+                        board.get(getRemovalRow.applyAsInt(strongLink2),
+                                getRemovalColumn.applyAsInt(strongLink2)) instanceof UnsolvedCell removalCell &&
+                        removalCell.candidates().contains(candidate)
+                ) {
+                    removals.add(removalCell, candidate);
+                }
             }
-        }
-    }
-
-    /*
-     * This method was split off from getRemovals due to a warning on which said, "Method 'getRemovals' is too complex
-     * to analyze by data flow algorithm."
-     */
-    private static void removeIfValid(
-            Removals removals,
-            Board<Cell> board,
-            SudokuNumber candidate,
-            ToIntFunction<Cell> getRemovalRow,
-            ToIntFunction<Cell> getRemovalColumn,
-            Cell strongLink1,
-            Cell strongLink2
-    ) {
-        if (strongLink2 != null &&
-                strongLink1.block() != strongLink2.block() &&
-                board.get(getRemovalRow.applyAsInt(strongLink2),
-                        getRemovalColumn.applyAsInt(strongLink2)) instanceof UnsolvedCell removalCell &&
-                removalCell.candidates().contains(candidate)
-        ) {
-            removals.add(removalCell, candidate);
         }
     }
 
