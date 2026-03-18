@@ -22,7 +22,6 @@ import sudokusolver.kotlin.zipEveryQuad
 fun jellyfish(board: Board<Cell>): List<RemoveCandidates> =
     SudokuNumber.entries.flatMap { candidate ->
 
-        @Suppress("DuplicatedCode")
         fun jellyfish(units: List<List<Cell>>, getOtherUnit: (Int) -> List<Cell>, getOtherUnitIndex: (Cell) -> Int) =
             units.zipEveryQuad().mapNotNull { (unitA, unitB, unitC, unitD) ->
                 val aWithCandidate = unitA.filterIsInstance<UnsolvedCell>().filter { candidate in it.candidates }

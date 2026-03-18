@@ -48,7 +48,6 @@ import java.util.EnumSet
  * other cell which is in the same unit as the two vertices. If a weak link connects two candidates of the same cell,
  * then all other candidates can be removed from that cell.
  */
-@Suppress("DuplicatedCode")
 fun alternatingInferenceChainsRule1(board: Board<Cell>): List<RemoveCandidates> {
     val graph = buildGraph(board).trim()
     return getWeakEdgesInAlternatingCycle(graph).flatMap { edge ->
