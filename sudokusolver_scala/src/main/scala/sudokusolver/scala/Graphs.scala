@@ -123,7 +123,6 @@ def alternatingCycleExists[N](graph: Graph[N, StrengthEdge[N]], vertex: N, adjac
     val start = edgeA.outer.getOppositeVertex(vertex)
     val end = edgeB.outer.getOppositeVertex(vertex)
 
-    //noinspection DuplicatedCode
     def alternatingCycleExists(currentVertex: N, nextType: Strength, visited: Set[N]): Boolean =
       val nextVertices = for
         edge <- graph.get(currentVertex).edges

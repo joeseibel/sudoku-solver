@@ -22,7 +22,6 @@ import sudokusolver.scala.*
  * Note that this implementation of XY-Chains can handle cases in which the chain is not strictly alternating between
  * strong and weak links. It is tolerant of cases in which a strong link takes the place of a weak link.
  */
-//noinspection DuplicatedCode
 def xyChains(board: Board[Cell]): Seq[RemoveCandidates] =
   val graph = createStrongLinksXYChains(board).addWeakLinksXYChains()
   graph.nodes.map(_.outer).groupBy((_, candidate) => candidate).toSeq.flatMap { (candidate, vertices) =>
@@ -78,7 +77,6 @@ private def alternatingPathExists(
                                    end: LocatedCandidate
                                  ): Boolean =
 
-  //noinspection DuplicatedCode
   def alternatingPathExists(
                              currentVertex: LocatedCandidate,
                              nextType: Strength,

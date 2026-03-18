@@ -43,7 +43,6 @@ import sudokusolver.scala.*
 def finnedXWing(board: Board[Cell]): Seq[RemoveCandidates] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
 
-    //noinspection DuplicatedCode
     def finnedXWing(units: Seq[Seq[Cell]], getOtherUnitIndex: Cell => Int) =
       units.flatMap { baseUnit =>
         val withCandidate = baseUnit.collect { case cell: UnsolvedCell if cell.candidates.contains(candidate) => cell }

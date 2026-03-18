@@ -113,7 +113,6 @@ extension (graph: Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]])
     yield StrengthEdge(vertex.outer, cell, Strength.WEAK)
     graph ++ additionalEdges
 
-//noinspection DuplicatedCode
 private def createStrongLinksXCycles(
                                       board: Board[Cell],
                                       candidate: SudokuNumber

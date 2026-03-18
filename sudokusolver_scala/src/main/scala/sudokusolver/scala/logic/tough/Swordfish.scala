@@ -16,7 +16,6 @@ import sudokusolver.scala.*
 def swordfish(board: Board[Cell]): Seq[RemoveCandidates] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
 
-    //noinspection DuplicatedCode
     def swordfish(units: Seq[Seq[Cell]], getOtherUnit: Int => Seq[Cell], getOtherUnitIndex: Cell => Int) =
       units.toIndexedSeq.zipEveryTriple.flatMap { (unitA, unitB, unitC) =>
         val aWithCandidate = unitA.collect { case cell: UnsolvedCell if cell.candidates.contains(candidate) => cell }
