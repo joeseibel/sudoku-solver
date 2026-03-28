@@ -1,7 +1,7 @@
 import SwiftGraph
 
 /*
- * http://www.sudokuwiki.org/Singles_Chains
+ * http://www.sudokuwiki.org/Simple_Colouring
  *
  * A single's chain is a graph for a particular candidate that connects two cells when those are the only two cells in a
  * unit with that candidate. Each chain is colored with alternating colors such that for a given vertex with a given
