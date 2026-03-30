@@ -41,6 +41,14 @@ searched for an appropriate graph library to use. The other exception is for uni
 built-in unit testing framework, many do not. For the languages that don't, I use the most common or industry standard
 framework for that language, such as JUnit for Java.
 
+So far, I have implemented the solver in the following languages:
+- [Kotlin](SudokuSolver_Kotlin/)
+- [Java](SudokuSolver_Java/)
+- [Java (no streams)](SudokuSolver_Java_No_Streams/)
+- [Scala](sudokusolver_scala/)
+- [Swift](SudokuSolver_Swift/)
+- [Rust](sudoku_solver_rust/)
+
 ## Basic Functionality
 
 All of the solvers implemented in the various languages share the same basic functionality. They all expect the same
