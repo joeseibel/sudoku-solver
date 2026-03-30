@@ -192,12 +192,11 @@ Each implementation has a number of types defined that are meant to aid in the n
 possible to operate directly on a 2D array of integers, I decided to take advantage of the languages' type systems to
 add more structure to these operations.
 
-Each language has a `Board` type which is a wrapper around a 2D array. This type provides read and write access to each
-location while maintaining the stability of the structure and preventing nonsensical operations such as adding a tenth
-column to the fourth row. The `Board` type also provides methods for viewing the board in different ways such as getting
-all cells, all rows, all columns, all blocks, and all units. I use the term *block* to refer to one of the nine 3x3
-sub-grids in the board and I use the term *unit* as an abstract term which could be a row, column, or block. Finally,
-the `Board` type provides methods for getting a particular row, a particular column, or a particular block.
+Each language has a `Board` type which is a wrapper around a 2D array. This type provides methods for viewing the board
+in different ways such as getting all cells, all rows, all columns, all blocks, and all units. I use the term *block* to
+refer to one of the nine 3x3 sub-grids in the board and I use the term *unit* as an abstract term which could be a row,
+column, or block. Finally, the `Board` type provides methods for getting a particular row, a particular column, or a
+particular block.
 
 Each language also has a `Cell` type that represents either a solved cell or an unsolved cell. In languages that support
 it, the `Cell` type is a tagged union with the variants of `SolvedCell` and `UnsolvedCell`. `SolvedCell` has a `value`
