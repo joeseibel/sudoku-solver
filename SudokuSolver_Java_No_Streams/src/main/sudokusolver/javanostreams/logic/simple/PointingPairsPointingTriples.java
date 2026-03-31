@@ -13,7 +13,7 @@ import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
 
 /*
- * https://www.sudokuwiki.org/Intersection_Removal#IR
+ * https://www.sudokuwiki.org/Intersection_Removal
  *
  * For a given block, if a candidate appears in only one row, then the candidate for that row must be placed in that
  * block. The candidate can be removed from cells which are in the same row, but different blocks.
