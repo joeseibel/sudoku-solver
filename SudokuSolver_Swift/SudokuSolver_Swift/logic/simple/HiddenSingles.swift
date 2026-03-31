@@ -1,5 +1,5 @@
 /*
- * http://www.sudokuwiki.org/Getting_Started
+ * https://www.sudokuwiki.org/Getting_Started
  *
  * If a candidate exists in only one cell in a unit, then the candidate must be placed in that cell.
  */

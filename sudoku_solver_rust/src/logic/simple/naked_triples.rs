@@ -6,7 +6,7 @@ use crate::{
 };
 use std::collections::BTreeSet;
 
-// http://www.sudokuwiki.org/Naked_Candidates#NT
+// https://www.sudokuwiki.org/Naked_Candidates#NT
 //
 // If a unit has three unsolved cells with a total of three candidates among them, then those three candidates must be
 // placed in those three cells. The three candidates can be removed from every other cell in the unit.

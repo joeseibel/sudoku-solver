@@ -9,7 +9,7 @@ import sudokusolver.kotlin.mergeToRemoveCandidates
 import sudokusolver.kotlin.zipEveryTriple
 
 /*
- * http://www.sudokuwiki.org/Sword_Fish_Strategy
+ * https://www.sudokuwiki.org/Sword_Fish_Strategy
  *
  * For a triple of rows, if a candidate appears in two or three cells for each row and the candidate appears in exactly
  * three columns across the three rows, forming a three by three grid, then the candidate must be placed in three of the

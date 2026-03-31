@@ -6,7 +6,7 @@ import sudokusolver.kotlin.SetValue
 import sudokusolver.kotlin.UnsolvedCell
 
 /*
- * http://www.sudokuwiki.org/Getting_Started
+ * https://www.sudokuwiki.org/Getting_Started
  *
  * If an unsolved cell has exactly one candidate, then the candidate must be placed in that cell.
  */

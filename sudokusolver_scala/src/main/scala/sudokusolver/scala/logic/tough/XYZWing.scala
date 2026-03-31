@@ -3,7 +3,7 @@ package sudokusolver.scala.logic.tough
 import sudokusolver.scala.*
 
 /*
- * http://www.sudokuwiki.org/XYZ_Wing
+ * https://www.sudokuwiki.org/XYZ_Wing
  *
  * Given a hinge cell and two wing cells such that the hinge can see both wings, the hinge has three candidates, the
  * wings have two candidates each, there is one candidate shared among all three cells, two candidates are shared

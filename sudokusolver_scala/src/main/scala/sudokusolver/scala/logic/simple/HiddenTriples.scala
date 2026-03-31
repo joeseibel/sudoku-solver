@@ -3,7 +3,7 @@ package sudokusolver.scala.logic.simple
 import sudokusolver.scala.*
 
 /*
- * http://www.sudokuwiki.org/Hidden_Candidates#HT
+ * https://www.sudokuwiki.org/Hidden_Candidates#HT
  *
  * If three candidates exist across three cells in a unit, then those three candidates must be placed in those three
  * cells. All other candidates can be removed from those three cells.

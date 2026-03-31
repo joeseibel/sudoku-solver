@@ -11,7 +11,7 @@ import sudokusolver.kotlin.zipEveryPair
 import java.util.EnumSet
 
 /*
- * http://www.sudokuwiki.org/Hidden_Candidates#HP
+ * https://www.sudokuwiki.org/Hidden_Candidates#HP
  *
  * If a pair of candidates exists in exactly two cells in a unit, then those two candidates must be placed in those two
  * cells. All other candidates can be removed from those two cells.

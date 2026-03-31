@@ -4,7 +4,7 @@ use crate::{
     cell::{Cell, IteratorCellExt},
 };
 
-// http://www.sudokuwiki.org/Getting_Started
+// https://www.sudokuwiki.org/Getting_Started
 //
 // If an unsolved cell has exactly one candidate, then the candidate must be placed in that cell.
 pub fn naked_singles(board: &Board<Cell>) -> Vec<BoardModification> {

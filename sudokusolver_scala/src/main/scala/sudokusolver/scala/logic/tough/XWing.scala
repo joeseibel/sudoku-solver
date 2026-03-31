@@ -3,7 +3,7 @@ package sudokusolver.scala.logic.tough
 import sudokusolver.scala.*
 
 /*
- * http://www.sudokuwiki.org/X_Wing_Strategy
+ * https://www.sudokuwiki.org/X_Wing_Strategy
  *
  * For a pair of rows, if a candidate appears in only two columns of both rows and the columns are the same, forming a
  * rectangle, then the candidate must be placed in opposite corners of the rectangle. The candidate can be removed from

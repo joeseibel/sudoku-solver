@@ -1,5 +1,5 @@
 /*
- * http://www.sudokuwiki.org/Hidden_Candidates#HQ
+ * https://www.sudokuwiki.org/Hidden_Candidates#HQ
  *
  * If four candidates exist across four cells in a unit, then those four candidates must be placed in those four cells.
  * All other candidates can be removed from those four cells.

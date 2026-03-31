@@ -3,7 +3,7 @@ package sudokusolver.scala.logic.tough
 import sudokusolver.scala.*
 
 /*
- * http://www.sudokuwiki.org/Y_Wing_Strategy
+ * https://www.sudokuwiki.org/Y_Wing_Strategy
  *
  * Given a hinge cell and two wing cells such that the hinge can see both wings, all three cells each have two
  * candidates, there are three total candidates across the three cells, the hinge shares one candidate with one wing and

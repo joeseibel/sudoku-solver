@@ -1,5 +1,5 @@
 /*
- * http://www.sudokuwiki.org/Naked_Candidates#NQ
+ * https://www.sudokuwiki.org/Naked_Candidates#NQ
  *
  * If a unit has four unsolved cells with a total of four candidates among them, then those four candidates must be
  * placed in those four cells. The four candidates can be removed from every other cell in the unit.

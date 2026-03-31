@@ -5,8 +5,8 @@ import scalax.collection.io.dot.implicits.{toId, toNodeId}
 import sudokusolver.scala.*
 
 /*
- * http://www.sudokuwiki.org/X_Cycles
- * http://www.sudokuwiki.org/X_Cycles_Part_2
+ * https://www.sudokuwiki.org/X_Cycles
+ * https://www.sudokuwiki.org/X_Cycles_Part_2
  *
  * X-Cycles is based on a graph type which is an extension of single's chain. An X-Cycles graph is for a single
  * candidate and can have either strong or weak links. A strong link connects two cells in a unit when they are the only

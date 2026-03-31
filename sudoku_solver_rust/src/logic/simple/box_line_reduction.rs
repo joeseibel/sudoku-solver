@@ -7,7 +7,7 @@ use crate::{
 use std::collections::HashSet;
 use strum::IntoEnumIterator;
 
-// http://www.sudokuwiki.org/Intersection_Removal#LBR
+// https://www.sudokuwiki.org/Intersection_Removal#LBR
 //
 // For a given row, if a candidate appears in only one block, then the candidate for that block must be placed in that
 // row. The candidate can be removed from the cells which are in the same block, but different rows.

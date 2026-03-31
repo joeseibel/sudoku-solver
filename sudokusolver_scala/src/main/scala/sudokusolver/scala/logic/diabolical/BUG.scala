@@ -3,7 +3,7 @@ package sudokusolver.scala.logic.diabolical
 import sudokusolver.scala.{Board, Cell, SetValue, UnsolvedCell}
 
 /*
- * http://www.sudokuwiki.org/BUG
+ * https://www.sudokuwiki.org/BUG
  *
  * BUG applies to boards with exactly one unsolved cell with three candidates and every other unsolved cell has two
  * candidates. Removing one of the candidates from the cell with three candidates will result in a board in which all of
