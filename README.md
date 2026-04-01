@@ -42,6 +42,7 @@ built-in unit testing framework, many do not. For the languages that don't, I us
 framework for that language, such as JUnit for Java.
 
 So far, I have implemented the solver in the following languages:
+
 - [Kotlin](SudokuSolver_Kotlin/)
 - [Java](SudokuSolver_Java/)
 - [Java (no streams)](SudokuSolver_Java_No_Streams/)
@@ -61,7 +62,7 @@ puzzle. This argument is expected to be a string of 81 numbers in which a `0` re
 nine numbers represent the first row of the puzzle, the second nine numbers represent the second row of the puzzle, and
 so on. For example, if you wanted to solve the following puzzle:
 
-```
+```text
 0 1 0 | 0 4 0 | 5 6 0
 2 3 0 | 6 1 5 | 0 8 0
 0 0 0 | 8 0 0 | 1 0 0
@@ -118,7 +119,7 @@ If the solver was successful, then it will print the solution to stdout and quit
 the string `010040560230615080000800100050020008600781005900060020006008000080473056045090010`, then the solver will
 print this solution:
 
-```
+```text
 8 1 7 | 9 4 2 | 5 6 3
 2 3 4 | 6 1 5 | 7 8 9
 5 6 9 | 8 3 7 | 1 4 2
@@ -141,7 +142,7 @@ any curly braces. For example, if the solver was passed the string
 `004007830000050470720030695080700300649513728007008010470080060016040007005276100`, then the solver will print this
 error message:
 
-```
+```text
 Unable to solve:
 0 0 4 | 0 0 7 | 8 3 0
 0 0 0 | 0 5 0 | 4 7 0
