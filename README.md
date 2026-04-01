@@ -10,7 +10,7 @@ are simple and intuitive, but others are rather challenging.
 
 I used [SudokuWiki.org](https://www.sudokuwiki.org/) to learn about the various solution algorithms. SudokuWiki has a
 web-based solver along with numerous pages describing a multitude of solution algorithms. All of the solutions that I
-implemented were based upon SudokuWiki's desriptions. I have implemented many, but not all of SudokuWiki's described
+implemented were based upon SudokuWiki's descriptions. I have implemented many, but not all of SudokuWiki's described
 algorithms.
 
 ## Exploring Programming Languages
@@ -27,11 +27,11 @@ One of the desires that I had for this project was to select a programming probl
 its purist form. I wanted to explore each language's basic constructs and standard libraries while keeping other aspects
 of a language's use to a minimum. For example, I chose to implement the solver as a command line application as opposed
 to a GUI application. I did not want this project to be an exploration of various GUI frameworks as that varies wildly
-across languages. I also wanted to stay far away things such as networking, database connections, or even concurrency as
-the support for these concepts among languages is highly variable. The Sudoku Solver simply receives input, performs
-calculations, and produces output. It does this though manipulating data structures, lots of iteration, and lots of
-conditionals. These are concepts that are uniformly supported in all programming languages that I know of. In other
-words, I wanted to select a project that could be implemented in any Turing-complete language.
+across languages. I also wanted to stay far away from things such as networking, database connections, or even
+concurrency as the support for these concepts among languages is highly variable. The Sudoku Solver simply receives
+input, performs calculations, and produces output. It does this though manipulating data structures, lots of iteration,
+and lots of conditionals. These are concepts that are uniformly supported in all programming languages that I know of.
+In other words, I wanted to select a project that could be implemented in any Turing-complete language.
 
 I also decided to keep dependencies on third-party libraries to a minimum. This forces me to focus on exploring the
 language itself as opposed to exploring libraries such as Apache Commons or Google Guava, as useful as those libraries
@@ -104,10 +104,10 @@ The solver currently utilizes 32 logical solution algorithms that are grouped in
 tough, diabolical, and extreme. Both the solutions and the categories have been inspired by SudokuWiki. The solver will
 attempt each logical solution in order of increasing difficulty until one of the logical solution algorithms produces a
 result. When that happens, the result is checked against the known solution produced by the brute force algorithm. This
-is done to ensure the correctness of the logcial solution. If the logical solution is not correct, then an error is
+is done to ensure the correctness of the logical solution. If the logical solution is not correct, then an error is
 reported and the solver quits. If the logical solution is correct, then the puzzle is modified and the solver will go
-back and again attempt each logical solution in order of increasing difficulty, this time with the modified state of the
-puzzle. This means that a difficult solution algorithm is only attempted after every algortihm before has been tried
+back and attempt again each logical solution in order of increasing difficulty, this time with the modified state of the
+puzzle. This means that a difficult solution algorithm is only attempted after every algorithm before it has been tried
 without any results.
 
 ### Output Format
@@ -180,11 +180,11 @@ principles, those changes are also documented as in-code comments.
 
 ### Single-Threaded
 
-First of all, each solver is single-threaded. This was done to simplify the project and limit the scope of language
-exploration. I did consider utilizing parallelism in the solvers. I could envision multiple logical solutions being
-executed in parallel or even parallelism being used within a logical solution. Java's parallel streams would make this
-relatively easy to implement, but it could be a challenge in other languages, such as C. Due to the number of questions
-that parallelism opens up, I decided that it would be simpliest to keep my solver single-threaded.
+Each solver is single-threaded. This was done to simplify the project and limit the scope of language exploration. I did
+consider utilizing parallelism in the solvers. I could envision multiple logical solutions being executed in parallel or
+even parallelism being used within a logical solution. Java's parallel streams would make this relatively easy to
+implement, but it could be a challenge in other languages, such as C. Due to the number of questions that parallelism
+opens up, I decided that it would be simplest to keep my solver single-threaded.
 
 ### Navigating a Puzzle
 
@@ -229,13 +229,13 @@ index and a column index, thus identifying which `UnsolvedCell` the `BoardModifi
 ### Unit Tests
 
 When developing the solver, I tried to follow a Test-Driven Development approach, at least for the most part. As such,
-unit tests are a central and critial part of each language's implementation. The vast majority of tests focus on testing
-the logical solutions algorithms. Each logical solution has a set of tests for the solution and they all follow the same
-pattern.
+unit tests are a central and critical part of each language's implementation. The vast majority of tests focus on
+testing the logical solutions algorithms. Each logical solution has a set of tests for the solution and they all follow
+the same pattern.
 
 Each test starts with specifying the initial state of a board, both the values for the `SolvedCell`s and the candidates
 for the `UnsolvedCell`s. This is specified with a string in which a number between `1` and `9` represents the value of a
-`SolvedCell` and a grouping of numbers enclosed by curly braces represents the candidats for an `UnsolvedCell`. All of
+`SolvedCell` and a grouping of numbers enclosed by curly braces represents the candidates for an `UnsolvedCell`. All of
 these individual numbers and groupings put together are expected to add up to 81 items. The first nine items represent
 the first row of the board, the second nine items represent the second row of the board, and so on.
 
@@ -247,4 +247,4 @@ Finally, each test calls the `assertLogicalSolution` helper function. This first
 solution, just to determine what the known solution to the puzzle should be. It will then call the logical solution and
 retrieve its modifications. Each modification is compared with the brute force solution to check that it is a valid
 modification. Finally, the modifications returned from the logical solution are compared with the list of expected
-modficiations.
+modifications.
