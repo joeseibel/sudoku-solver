@@ -35,3 +35,35 @@ Follow these steps to run the unit tests:
 
 1. In the project tool window, right-click on the project `SudokuSolver_Kotlin`.
 2. Select **Run 'All Tests'**.
+
+## My experience with Kotlin
+
+I love programming in Kotlin. It could very well be my favorite language, although Rust is a close second. It was very
+easy to learn Kotlin given my Java background. All of Kotlin's core programming concepts are the same or very similar to
+Java's core concepts, but with syntax that is more concise and in my opinion, more elegant. Don't get me wrong, I don't
+hate Java, but it seems like Kotlin was designed with a deep knowledge of Java's rough edges in mind.
+
+Kotlin is not the first alternative JVM language that I have learned. I was very experienced with
+[Xtend](https://eclipse.dev/Xtext/xtend/) and a little experienced with Scala before coming to Kotlin. Similar to
+Kotlin, Xtend branded itself as "a better Java with less 'noise'". Both Kotlin and Xtend offered lambdas and a
+functional style of programming before the Java 8 streams were released. They both excel in Java interoperability and
+have the same core Java concepts with a more concise syntax. However, I think that Kotlin is the better Java
+alternative. Kotlin's null safety is a huge advantage and Xtend does not have that advantage. I also find Kotlin's
+version of extension methods to be much more readable and predictable than Xtend's version of extension methods. In
+Xtend, it is easy to abuse extension methods and have no idea which method is actually being called, at least not
+without IDE support.
+
+Comparing Kotlin and Scala is a little more interesting. I think that Scala excels when a programmer wants to embrace a
+purely functional style. In my experience, this is primarily due to Scala's custom immutable data structures that are
+tailored to a functional style. In Kotlin, it is possible to embrace a mostly, but not purely, functional style. One
+place where Kotlin shines compared to Scala is in the area of Java interoperability. While it is possible to call Java
+from Scala, the Java interop in Kotlin feels much more seamless. In Kotlin, it is very easy to work with collections
+that are passed back and forth to Java code. The native Kotlin collections are really aliases to Java's collections, so
+the interop is very smooth. Because of these points, working with collections can be a very different experience between
+Kotlin and Scala.
+
+When I started working on the Kotlin implementation, Java was back at version 11. At that point in history, Kotlin had
+so many advantages over Java such as data classes, destructuring, smart-casting, when expressions, etc. Since that time,
+Java has come a long way. They have added records, switch expressions, pattern matching, sealed types, and much more.
+Java still has issues with null safety and it is still more verbose than Kotlin, but I have to admit that Kotlin's
+advantages over Java have been diminishing as Java advances.
