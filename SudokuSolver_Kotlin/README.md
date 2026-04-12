@@ -67,3 +67,68 @@ so many advantages over Java such as data classes, destructuring, smart-casting,
 Java has come a long way. They have added records, switch expressions, pattern matching, sealed types, and much more.
 Java still has issues with null safety and it is still more verbose than Kotlin, but I have to admit that Kotlin's
 advantages over Java have been diminishing as Java advances.
+
+### Null Safety
+
+Kotlin's approach to [null safety](https://kotlinlang.org/docs/null-safety.html) is, in my opinion, the best thing about
+the language. I absolutely love this feature! This addresses one of the most significant frustrations when working in
+Java.
+
+When working with a Java API, it can be difficult to determine when a reference is expected to support null or not.
+Sometimes this is documented and sometimes it is not. Sometimes a library author will use nullability annotations and
+sometimes not. Java 8's `Optional` class is a great help, but there is so much legacy Java code that doesn't make use of
+it. This can lead to random `NullPointerException`s when you least expect them. On the other hand, paranoid programmers
+can put in unnecessary null checks which only add to the confusion of whether a reference supports null or not. In
+addition to the challenges of working with a Java library, it can also be difficult to keep track of which references
+can and cannot be null when multiple developers are working together on a large codebase.
+
+Kotlin addresses most, but not all, of these issues with their approach to null safety. In Kotlin, a value that can be
+null will have its type appended with a `?`. For example, the type `String` cannot be null while the type `String?` can
+be null. When working with pure Kotlin code, it is impossible to encounter a `NullPointerException`, unless if the
+programmer uses the [`!!` operator](https://kotlinlang.org/docs/null-safety.html#not-null-assertion-operator). The
+compiler will also warn against unnecessary null checks. Having the compiler keep track of the nullability of values and
+complain when there are violations is such a breath of fresh air, at least coming from the Java world.
+
+Working with primitives is also abstracted away and very seamless. In Kotlin, a nullable 32-bit integer is represented
+by the type `Int?`, while its non-null version is represented as `Int`. Under the hood, Kotlin will use Java's primitive
+`int` type for the non-null version since Java primitives are not references and can never be null. On the other hand,
+Kotlin will use Java's `java.lang.Integer` wrapper class for nullable 32-bit integers. Kotlin will also use the
+`Integer` wrapper in cases where a reference type is required such as `List<Int>`. This means that the Kotlin types
+`Int` and `Int?` can be backed by two different Java types: `int` and `Integer`. All of this is abstracted away in
+Kotlin, whereas Java developers need to concerns themselves with this distinction.
+
+The one place where Kotlin's null safety gets a bit tricky is when
+[calling Java code from Kotlin](https://kotlinlang.org/docs/java-interop.html#null-safety-and-platform-types). If you
+are calling Java code that has not been annotated with nullability annotations, then the Kotlin compiler cannot
+determine if the references can or cannot be null. Kotlin addresses this by having these uncertain types be appended
+with a `!`. For example, calling a Java method which returns a `String` will result in the Kotlin type `String!`. This
+is treated as a potentially null type. This means that null checks are not required, but it also means that null checks
+are not warned against. In this regard, working with a `String!` in Kotlin is just like working with a `String` in Java.
+Note that it is not possible write the type `String!` in Kotlin, it is only available as an inferred type.
+
+In the solver, I encounter this issue when using JGraphT, since it is a Java library. For example, the logical solution
+[Simple Coloring](src/main/sudokusolver/kotlin/logic/tough/SimpleColoring.kt) makes use of the graph type
+`Graph<UnsolvedCell, DefaultEdge>`. Calling the method `vertexSet()` on a graph will yield the type
+`(Mutable)Set<UnsolvedCell!>!`. This type has three different uncertainties: the returned set may or may not be null,
+the returned set may or may not be mutable, and the elements of the set may or may not be null. In my case, I know that
+the set and its elements cannot be null and I only read from the set, so dealing with these ambiguities is not a problem
+for me.
+
+Kotlin has some nice syntactic sugar to deal with nullable types such as the
+[`?.` operator](https://kotlinlang.org/docs/null-safety.html#safe-call-operator) and the
+[`?:` operator](https://kotlinlang.org/docs/null-safety.html#elvis-operator). These are worth looking into.
+
+Kotlin's approach to dealing with optional values is a bit unique. Other languages such as Scala, Swift, and Rust have
+an `Option(al)` type that is a part of their standard libraries. Kotlin has no `Optional` type. The syntax and the
+compiler handle the distinction between nullable and non-null types. While Kotlin's approach may look syntactically
+similar to Swift's approach, they are actually very different. In Swift, the `?` is simply syntactic sugar for the
+`Optional` type. For example, writing `String?` in Swift is shorthand for writing `Optional<String>`.
+[This article](https://elizarov.medium.com/dealing-with-absence-of-value-307b80534903) by Roman Elizarov, one of the key
+people behind Kotlin, explains the uniqueness of Kotlin's approach.
+
+Finally, Kotlin's null safety shines especially when compared with Xtend. While Xtend has some syntactic sugar for
+dealing with nulls such as the `?.` and `?:` operators, the Xtend compiler does not perform the kind of null safety
+checks that Kotlin performs. In fact, Xtend will even implicitly insert nulls in certain situations. For example, an
+[if expression](https://eclipse.dev/Xtext/xtend/documentation/203_xtend_expressions.html#if-expression) in Xtend that
+does not have an else clause will yield a null if the condition is false. I personally prefer Kotlin's approach that
+requires the programmer to explicitly specify both nullable types and null values.
