@@ -1,7 +1,7 @@
 /*
  * Swift implements Algebraic Data Types as Enumerations with Associated Values. A disadvantage with the way that Swift
  * implements ADTs is that the specific cases of an enum are not types themselves. This is different from Kotlin in
- * which ADTs are implements as sealed classes or interfaces with limited numbers of direct subtypes. In Kotlin, each
+ * which ADTs are implemented as sealed classes or interfaces with limited numbers of direct subtypes. In Kotlin, each
  * subtype of a sealed type is a type itself.
  *
  * Originally, I wanted to define the cases of the Cell enum with the individual fields within the case itself. This
