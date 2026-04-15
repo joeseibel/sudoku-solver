@@ -132,3 +132,119 @@ checks that Kotlin performs. In fact, Xtend will even implicitly insert nulls in
 [if expression](https://eclipse.dev/Xtext/xtend/documentation/203_xtend_expressions.html#if-expression) in Xtend that
 does not have an else clause will yield a null if the condition is false. I personally prefer Kotlin's approach that
 requires the programmer to explicitly specify both nullable types and null values.
+
+### Sealed Types
+
+Kotlin's [sealed classes and interfaces](https://kotlinlang.org/docs/sealed-classes.html) are amazing! I love this
+feature in Kotlin and they solve a specific problem that I've encountered in Java numerous times.
+
+Suppose that you are working with a type hierarchy which has a limited and known set of concrete classes that inherit
+from the same interface or abstract class. Additionally, suppose that you want to perform an action on an object of the
+hierarchy based upon that object's concrete type and it is either not possible or not desirable to add a method to the
+hierarchy. Before Java 21, this would require a chain of if-else statements with instanceof checks. The following
+example is a snippet from OSATE's
+[AADL to SysML Translator](https://github.com/osate/aadl-sysmlv2/blob/ad33c6e53ab5e8a88ee53aeb78aded544ccb6093/aadl2sysml/org.osate.aadl2sysml/src/org/osate/aadl2sysml/Aadl2SysmlTranslator.java#L245-L264):
+
+```java
+if (feature instanceof AbstractFeature) {
+    template.add("kind", "AbstractFeature");
+} else if (feature instanceof DataPort) {
+    template.add("kind", "DataPort");
+} else if (feature instanceof EventDataPort) {
+    template.add("kind", "EventDataPort");
+} else if (feature instanceof EventPort) {
+    template.add("kind", "EventPort");
+} else if (feature instanceof DataAccess) {
+    template.add("kind", "DataAccess");
+} else if (feature instanceof BusAccess busAccess) {
+    template.add("kind", busAccess.isVirtual() ? "VirtualBusAccess" : "BusAccess");
+} else if (feature instanceof SubprogramAccess) {
+    template.add("kind", "SubprogramAccess");
+} else if (feature instanceof SubprogramGroupAccess) {
+    template.add("kind", "SubprogramGroupAccess");
+} else {
+    throw new AssertionError("Unexpected class: " + feature.getClass());
+}
+```
+
+The problem with the above example is that the compiler cannot check that all options for the variable `feature` are
+handled. The best that can be done is to detect this issue at runtime by throwing an exception in the last else branch.
+This can become especially challenging if another type is added to the hierarchy at some later date. Suppose that we add
+`Parameter` as another kind of feature and then forget to update the above snippet. Hopefully there are extensive unit
+tests that would catch this, but there is always a chance that the above code goes into production unchanged.
+
+Kotlin's sealed types solve this specific problem. With sealed types, the entire type hierarchy is known at compile time
+and when combined with Kotlin's when expression or statement, then the compiler can ensure that each case is handled.
+Suppose that the `Feature` hierarchy is sealed, then the above if-else chain would become the following when statement
+in Kotlin:
+
+```kotlin
+when (feature) {
+    is AbstractFeature -> template.add("kind", "AbstractFeature")
+    is DataPort -> template.add("kind", "DataPort")
+    is EventDataPort -> template.add("kind", "EventDataPort")
+    is EventPort -> template.add("kind", "EventPort")
+    is DataAccess -> template.add("kind", "DataAccess")
+    is BusAccess if feature.virtual -> template.add("kind", "VirtualBusAccess")
+    is BusAccess -> template.add("kind", "BusAccess")
+    is SubprogramAccess -> template.add("kind", "SubprogramAccess")
+    is SubprogramGroupAccess -> template.add("kind", "SubprogramGroupAccess")
+}
+```
+
+First of all, Kotlin's when statement is much more concise than the if-else chain from above. More importantly, there is
+no need for an else branch that throws an exception. The compiler is able to determine that the when statement is
+exhaustive and all cases are handled. If we were to now add a `Parameter` type to the hierarchy, then the compiler would
+complain with the following error message:
+
+```txt
+'when' expression must be exhaustive. Add the 'is Parameter' branch or an 'else' branch
+```
+
+Sealed types are actually one of the advances that Java has made in recent years. They have added
+[sealed types](https://openjdk.org/jeps/409) in Java 17 and then added [pattern matching](https://openjdk.org/jeps/441)
+to switch expressions and statements in Java 21. Java's syntax for sealed types is still more verbose than Kotlin's
+syntax, but the two approaches work the same. Sealed types are a welcome addition to Java and I am very happy about it.
+Scala also has sealed types which work the same way. I suspect that Scala's sealed types inspired Kotlin's sealed types
+which then inspired Java's sealed types.
+
+Sealed types are Kotlin's approach to [tagged unions](https://en.wikipedia.org/wiki/Tagged_union), sometimes also called
+[algebraic data types](https://en.wikipedia.org/wiki/Algebraic_data_type). Another approach is to use enumerations with
+associated values such as in
+[Swift](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/enumerations/#Associated-Values)
+and [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html). While the enumeration approach does what it
+needs to do by ensuring exhaustiveness, I much prefer the sealed type approach.
+
+One key advantage that sealed types have over enumerations with associated values is that in a sealed hierarchy, each
+class in the hierarchy is a unique type and can be used as the type of a variable, function parameter, generic type
+parameter, etc. Unfortunately, the variants of enumerations with associated values in Swift and Rust are not themselves
+types. Any time you want to pass a variant around, you have to give it the type of the whole enumeration and lose the
+knowledge that it is a specific variant.
+
+I ran into this issue in the solver with my `Cell` type. In Kotlin, Java, and Scala, `Cell` is a sealed type with the
+classes `SolvedCell` and `UnsolvedCell`. In Kotlin, it is so easy to filter a `List<Cell>` by a specific type and get a
+`List<UnsolvedCell>`. I do this a lot in Kotlin. Unfortunately in Swift and Rust, I can't have a collection of the
+unsolved cell enumeration variant. I instead define the structs `SolvedCell` and `UnsolvedCell` and then define the two
+enumeration variants which are simply wrappers for the structs. This feels overly verbose and unnecessary. I ranted
+about this in the comments on the Swift implementation of [`Cell`](../SudokuSolver_Swift/SudokuSolver_Swift/Cell.swift).
+
+There is another advantage that sealed types have over enumerations with associated values: it is possible for an
+interface or class to be a part of multiple sealed hierarchies. Here is a simple example taken from
+[AADL's meta-model](https://github.com/osate/osate2/blob/master/core/org.osate.aadl2/model/aadl2.ecore) in which I
+recreate a simplified version of the type hierarchies for the types `DirectedFeature` and `TriggerPort`:
+
+```kotlin
+sealed interface DirectedFeature
+interface FeatureGroup : DirectedFeature
+interface Parameter : DirectedFeature
+
+sealed interface TriggerPort
+interface InternalFeature : TriggerPort
+interface PortProxy : TriggerPort
+
+interface AbstractFeature : DirectedFeature, TriggerPort
+interface Port : DirectedFeature, TriggerPort
+```
+
+In this example, the interfaces `AbstractFeature` and `Port` are a part of both the hierarchies of `DirectedFeature` and
+`TriggerPort`. I don't make use of this in the solver, but this kind of pattern shows up a lot in AADL's meta-model.
