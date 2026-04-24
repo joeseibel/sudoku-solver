@@ -248,3 +248,131 @@ interface Port : DirectedFeature, TriggerPort
 
 In this example, the interfaces `AbstractFeature` and `Port` are a part of both the hierarchies of `DirectedFeature` and
 `TriggerPort`. I don't make use of this in the solver, but this kind of pattern shows up a lot in AADL's meta-model.
+
+### Immutable Collections (kind of)
+
+When working with collections, it can be helpful to constrain which collections can be mutated and which cannot. This
+becomes especially useful when different parts of a codebase share multiple references to the same collection. Placing
+restrictions on which collections can be mutated and when they can be mutated helps developers reason about the
+integrity of their collections as they are passed around the codebase.
+
+[Kotlin's collections](https://kotlinlang.org/docs/collections-overview.html) address this by expressing mutability
+intent through their own custom collection interfaces. For example, when working with lists, Kotlin has the interfaces
+`List` and `MutableList`. Operations such as adding items to a list or removing items from a list are only defined for
+the `MutableList` interface and not for the `List` interface. Similar interfaces exist for sets and maps.
+
+Kotlin's approach is an improvement over Java's approach. In Java, the `List` interface has methods for all operations.
+Expressing mutability intent is not possible using Java's statically known collection types. Instead, Java depends upon
+restricting mutation through the use of runtime objects that throw an exception when mutation is attempted. For example,
+the methods `List.of()`, `List.copyOf()`, `Collections.unmodifiableList()`, and `Stream.toList()` all return a `List`,
+but the concrete type will throw an exception when calling a mutating method on that list. One of the problems with
+Java's approach is that when working with a `List` object that came from someone else's code, there is no way to
+determine its mutability at compile time. Lists that are passed across a library boundary are frequently copied either
+to prevent mutation or to ensure mutability without risking a exception. Kotlin's addition of their own `List` and
+`MutableList` interfaces are a very welcome change.
+
+Kotlin's collection interfaces map to Java interfaces and the implementations themselves are often, but not always, a
+concrete Java collection. For example, a Kotlin `MutableList` is often implemented as a Java `ArrayList`. This helps
+interoperability with Java code immensely. For example, if you are calling a Java method that requires a
+`java.util.List` to be passed as an argument, then a `kotlin.collections.List` or a `kotlin.collections.MutableList` can
+be passed in as is without any conversions. On the other hand, if you are calling a Java method that returns a
+`java.util.List`, then this will show up on the Kotlin side as a `kotlin.collections.(Mutable)List`. Kotlin is unable to
+tell if the list is mutable or not, so the resulting list can be used either as a Kotlin `List` or a `MutableList`.
+
+I like Kotlin collections—I really do. However, I have to admit that they are easy to break. Since `List` and
+`MutableList` are simply interfaces and `MutableList` extends from `List`, it is easy to cast a `List` to a
+`MutableList` and wreck havoc on your seemingly immutable data structures. Consider this simple example:
+
+```kotlin
+val immutableList = listOf("a", "b", "c")
+(immutableList as MutableList)[0] = "Oh no, I mutated the immutable collection!!!"
+println(immutableList)
+```
+
+Running this code will produce the following output:
+
+```text
+[Oh no, I mutated the immutable collection!!!, b, c]
+```
+
+How did this happen? Under the hood, the Kotlin function `listOf()` calls the Java method `Arrays.asList()`. This Java
+method returns a semi-mutable list: it supports changing a value at a given index, but not changing the size of the
+list. Due to the underlying type, the cast to `MutableList` is successful, Java's `List.set()` method is called, and the
+mutation is performed without exception. This is probably the simplest example of breaking Kotlin collections and one
+that is easily avoided. Moral of the story: don't cast an immutable collection to a mutable one.
+
+It is also possible to break Kotlin's collections even without casting. Consider the following class that holds onto a
+reference to a `List`:
+
+```kotlin
+class Holder(private val values: List<String>) {
+    fun printValues() = println(values)
+}
+```
+
+The type of the `values` property suggests that it cannot be mutated and that is true within the context of the class
+`Holder`. However, it is possible to pass a `MutableList` to the constructor of `Holder` and then later mutate that
+list:
+
+```kotlin
+val list = mutableListOf("a", "b", "c")
+val holder = Holder(list)
+list += "Extra Item!!!"
+holder.printValues()
+```
+
+The `values` property was indeed mutated as shown in this output:
+
+```text
+[a, b, c, Extra Item!!!]
+```
+
+This problem can be fixed by copying the list before assigning it to `values`:
+
+```kotlin
+class Holder(values: List<String>) {
+    private val values: List<String> = values.toList()
+
+    fun printValues() = println(values)
+}
+```
+
+As a result of this change, the contents of `values` won't be mutated even if the list that was passed to the
+constructor is later mutated.
+
+All of these issues lead to the following consideration for library authors: when writing a public Kotlin class that
+holds a reference to a collection and there is an expectation that the collection is either immutable or mutation is
+confined to the class, then care must be taken to ensure that the collection cannot be mutated by users of that class
+that also hold onto a reference to that collection. When a collection is passed into the class, the collection should be
+copied before being stored. When a collection is passed out of a method of the class, the collection can either be
+copied or wrapped in an unmodifiable view. This issue and its solutions are the same as those faced by Java library
+authors.
+
+Kotlin's approach to collection integrity and mutability is different from other languages that I have explored.
+Kotlin's immutability constraints can be easily broken, but the tradeoff is that Kotlin collections are fully
+interoperable with Java collections. This makes passing collections to and from Java code easy and seamless. In
+contrast, Scala has their own set of immutable and mutable collections. Scala's collections do not suffer from the same
+problem as Kotlin's collections. An immutable collection in Scala is both immutable in its compile-time type and its
+run-time object. The downside to Scala's collections is that they are not fully interoperable with Java collections.
+When writing Scala code that interfaces with Java, it is customary to convert between the Scala collections and the Java
+collections.
+
+Swift and Rust both have wildly different and intriguing solutions to this problem. Swift collections utilize a
+copy-on-write approach which handles all of the necessary copying automatically behind the scenes. Developers are
+encouraged to think of collections as value types and to pass them around as freely as one would pass an integer around.
+As long as a collection is only read from, then there could be numerous references to the same collection with no
+copying at all. As soon as mutation is attempted on a shared collection, then the collection is copied at that point.
+This is a very efficient approach that also hides the details of copying from the developer.
+
+In Rust, this issue is addressed with ownership and reference borrowing. When a piece of Rust code holds a reference to
+a collection, whether that reference is mutable or immutable, it is guaranteed that no other code can mutate that
+collection while the reference is valid. This is great and it also prevents unnecessary copying, it just depends on
+explicitly marking reference mutability as opposed to Swift's automatic handling of copying. The Rust approach perfectly
+preserves collection integrity and makes it very easy to reason about exactly what code can mutate which collections.
+
+With all of these considerations in mind, I think that the creators of Kotlin made the right decision. One of the keys
+to Kotlin's success and ease of adoption is its interoperability with Java. I would go so far as to say that Kotlin can
+be a drop-in replacement for Java. It is so easy to mix Java and Kotlin code in the same codebase and one can convert
+their Java code to Kotlin on a file-by-file basis. One of the features that makes this interaction between the languages
+so easy is the way that Kotlin collections were designed. Even with all of the problems that I've outlined here, I think
+that the tradeoff is worth it!
