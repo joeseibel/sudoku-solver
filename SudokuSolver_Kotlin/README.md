@@ -376,3 +376,77 @@ be a drop-in replacement for Java. It is so easy to mix Java and Kotlin code in 
 their Java code to Kotlin on a file-by-file basis. One of the features that makes this interaction between the languages
 so easy is the way that Kotlin collections were designed. Even with all of the problems that I've outlined here, I think
 that the tradeoff is worth it!
+
+### Data Classes
+
+One common complaint against Java is that there is too much boilerplate for seemingly simple operations or data
+structures. This was especially true when creating a simple class in Java which would also have basic implementations of
+the methods `equals()`, `hashCode()`, and `toString()`. Kotlin solves this issue with
+[data classes](https://kotlinlang.org/docs/data-classes.html). A data class is a class which provides good default
+implementations of `equals()`, `hashCode()`, and `toString()`, as well as supporting destructuring. Ultimately, Kotlin's
+data classes are just syntactic sugar, but they are very nice syntactic sugar.
+
+Java has solved this issue as well when they added [records](https://openjdk.org/jeps/395) to the language. Java's
+records were finalized in Java 16. Just like with many other language features, they showed up in Kotlin and/or Scala
+first, and then found their way into Java.
+
+To see the value of data classes, let us consider an example data type that would represent a person with fields for
+that person's name and age. In Java, before the days of records, it would be customary to write a class like this:
+
+```java
+public final class Person {
+    private final String name;
+    private final int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Person other && Objects.equals(name, other.name) && age == other.age;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" + "name='" + name + "', age=" + age + '}';
+    }
+}
+```
+
+This is a lot of code for a simple data type. Now let's try using a Kotlin data class to represent a person:
+
+```kotlin
+data class Person(val name: String, val age: Int)
+```
+
+Wow! That is quite the reduction, from 32 lines down to 1! It is easy to see why Java developers like me love Kotlin's
+data classes.
+
+Another advantage of Kotlin's data classes is that it supports destructuring. Kotlin doesn't have tuples, but data
+classes are able to solve the problem that tuples solve. Here is a simple example of destructuring a person:
+
+```kotlin
+val (name, age) = person
+```
+
+Destructuring can be used in other places as well such as in lambda parameters. Here is an example of destructuring in a
+lambda and ignoring one of the fields:
+
+```kotlin
+val adults = people.filter { (_, age) -> age >= 18 }
+```
