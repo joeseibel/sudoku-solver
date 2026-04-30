@@ -450,3 +450,83 @@ lambda and ignoring one of the fields:
 ```kotlin
 val adults = people.filter { (_, age) -> age >= 18 }
 ```
+
+### Extensions
+
+Kotlin has the ability to add methods and properties to a type from outside of that type's declaration through the use
+of [extensions](https://kotlinlang.org/docs/extensions.html). I have found this to be useful in two situations: adding
+members to a type that I do not control and adding members to a type with specific generic constraints. One example of
+creating an extension method to a type that I do control is adding the `toSimpleString()` method to the `Board` type. I
+want this method to only be available to the `Board<Cell>` type, but not to other `Board<T>` types. I can accomplish
+this with an extension:
+
+```kotlin
+fun Board<Cell>.toSimpleString(): String = cells.joinToString("")
+```
+
+At the end of the day, Kotlin extensions are simply syntactic sugar. It is possible to not use any extensions and to
+instead use regular functions in which the extension's receiver is instead passed as an argument. The syntactic
+advantage of extensions is that they can help readability when used in a chain of function calls and the extension's
+purpose is intuitive. A good example of this is my extension method `List<T>.zipEveryPair()` which allows callers to
+look at and compare every combination of pairs in a list. The following snippet from the Naked Pairs solution
+demonstrates calling `zipEveryPair()` in the midst of a call chain:
+
+```kotlin
+unit.filterIsInstance<UnsolvedCell>()
+    .filter { it.candidates.size == 2 }
+    .zipEveryPair()
+    .filter { (a, b) -> a.candidates == b.candidates }
+    .flatMap { (a, b) ->
+        unit.filterIsInstance<UnsolvedCell>()
+            .filter { it != a && it != b }
+            .flatMap { cell ->
+                enumIntersect(cell.candidates, a.candidates).map { candidate -> cell to candidate }
+            }
+    }
+```
+
+If `zipEveryPair()` had been a regular function instead of an extension function, then the above snippet would instead
+look like this:
+
+```kotlin
+zipEveryPair(unit.filterIsInstance<UnsolvedCell>().filter { it.candidates.size == 2})
+    .filter { (a, b) -> a.candidates == b.candidates }
+    .flatMap { (a, b) ->
+        unit.filterIsInstance<UnsolvedCell>()
+            .filter { it != a && it != b }
+            .flatMap { cell ->
+                enumIntersect(cell.candidates, a.candidates).map { candidate -> cell to candidate }
+            }
+    }
+```
+
+I think this is a bit harder to read and that in this case, an extension function helps readability by keeping the
+logical flow of the call chain sequential. With the extension function, each line of the call chain indicates a single
+filtering or transformation step and the steps are presented in order. With a normal function, the flow is broken up and
+harder to read.
+
+I will say with great emphasis that extensions can be easily abused to the point that readability is hindered and not
+helped. If every function becomes an extension function, then it can be challenging to understand what is going on and
+intuition is lost. In my opinion, it can take a little practice to see what counts as a good extension and what is
+better served as a regular function. In general, I make a function an extension if I would normally want to make it a
+member of that type. Otherwise, I will use a regular function. As an example, the logic functions such as
+`nakedSingles()`, `hiddenSingles()`, etc., should not be extension functions.
+
+I first encountered extensions when I was learning Xtend. I much prefer Kotlin's extensions to Xtend's
+[extension methods](https://eclipse.dev/Xtext/xtend/documentation/202_xtend_classes_members.html#extension-methods). The
+key difference between Kotlin and Xtend is that Kotlin's extensions are clearly indicated to be extensions at the point
+that they are declared. They can only be called as extensions and not as regular functions. In contrast, Xtend
+effectively allows any method to be used as an extension method. It is even possible to annotation a field or even a
+local variable as an
+[extension provider](https://eclipse.dev/Xtext/xtend/documentation/202_xtend_classes_members.html#extension-provider).
+While this does reduce code size, it can make it very difficult to understand what is going on or even which variables
+are involved when looking at an extension call in Xtend. I am personally guilty of taking Xtend's extension methods way
+too far and absolutely destroying code readability. Due to these lessons learned, I think that Kotlin's approach is so
+much better.
+
+It is worth comparing Kotlin's extensions to Swift's
+[extensions](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/extensions/). Just like
+Kotlin, Swift extensions can be used to add members to an existing type. Unlike Kotlin, Swift extensions also have the
+ability to add protocol conformance to an existing type. In fact, this is one of the main points of Swift's extensions.
+Kotlin does not have this ability. It is not possible to add an interface implementation to an existing type in Kotlin.
+While this would be nice in certain situations, I haven't found this limitation to be a great hindrance.
