@@ -530,3 +530,84 @@ Kotlin, Swift extensions can be used to add members to an existing type. Unlike 
 ability to add protocol conformance to an existing type. In fact, this is one of the main points of Swift's extensions.
 Kotlin does not have this ability. It is not possible to add an interface implementation to an existing type in Kotlin.
 While this would be nice in certain situations, I haven't found this limitation to be a great hindrance.
+
+### Properties
+
+One key difference between writing types in Java and writing types in Kotlin is utilizing Kotlin's
+[properties](https://kotlinlang.org/docs/properties.html). Properties in Kotlin sometimes act like a field in Java and
+sometimes act like a method in Java. They can be used for storing data, but there can also be code associated with a
+property to control the retrieval and modification of that data. To demonstrate how properties are frequently used in
+Kotlin, let's consider a stripped-down mutable `Fraction` type and see how it would be implemented in Java with fields
+and methods and compare that with how it would be implemented in Kotlin with properties. Here is the Java
+implementation:
+
+```java
+public class Fraction {
+    private int numerator;
+    private int denominator;
+
+    public Fraction(int numerator, int denominator) {
+        this.numerator = numerator;
+        setDenominator(denominator);
+    }
+
+    public int getNumerator() {
+        return numerator;
+    }
+
+    public void setNumerator(int numerator) {
+        this.numerator = numerator;
+    }
+
+    public int getDenominator() {
+        return denominator;
+    }
+
+    public void setDenominator(int denominator) {
+        if (denominator == 0) {
+            throw new IllegalArgumentException("denominator cannot be 0");
+        }
+        this.denominator = denominator;
+    }
+
+    public double getDoubleValue() {
+        return (double) numerator / denominator;
+    }
+}
+```
+
+Now compare this to the Kotlin implementation which utilizes properties:
+
+```kotlin
+class Fraction(var numerator: Int, denominator: Int) {
+    var denominator: Int = denominator
+        set(value) {
+            require(value != 0) { "denominator cannot be 0" }
+            field = value
+        }
+
+    init {
+        this.denominator = denominator
+    }
+
+    val doubleValue: Double
+        get() = numerator.toDouble() / denominator
+}
+```
+
+As you can see, this is much less code. Numerous fields and methods have been condensed into properties:
+
+- The field `numerator` and the methods `getNumerator()` and `setNumerator()` have become the single property
+  `numerator`.
+- The field `denominator` and the methods `getDenominator()` and `setDenominator()` have become the single property
+  `denominator`.
+- The method `getDoubleValue()` has become the read-only property `doubleValue` and can be accessed with property syntax
+  instead of method syntax.
+
+I find properties to be very pleasant to work with. However, they do blur the distinction between data and code. In
+Java, this is a very clear distinction. If you are accessing a field in Java, you know that you are directly
+manipulating data and if you are calling a method, you know that you are invoking code. The presence or absence of
+parentheses makes this very clear. In Kotlin, accessing a property isn't that clear. It might be a simple read or write,
+but it might be invoking code. I think this is fine as long as the code of a property is simple and short-running. If a
+property is a long-running task or even blocking, then this might break expectations of what a property does. In my
+opinion, computationally intensive tasks are best left to methods and not properties.
