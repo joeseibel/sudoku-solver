@@ -635,3 +635,21 @@ call `filterIsInstance<UnsolvedCell>()` to get a `List<UnsolvedCell>`.
 Another good example of a reified type parameter is in my function `enumUnion()`. In that function, the type parameter
 `T` is reified because I need access to `T`'s `Class` object. If this feature was not available to me, then I would need
 to both have a generic type parameter and pass in a `Class` object.
+
+### Companion Objects
+
+I fully embrace most of the features that Kotlin adds to the programming experience, but
+[companion objects](https://kotlinlang.org/docs/object-declarations.html#companion-objects) aren't one of them. I just
+don't get them. I understand what they do and how they operate, but I don't really understand the "why" behind them.
+They seem to take the place of Java's static methods, but I don't understand why it is valuable to have an object in
+memory that you can pass around. Java's static methods don't have an object taking up space in memory, but Kotlin's
+companion objects do. I understand the argument that static methods break the object-oriented paradigm, but I feel that
+most static methods can be replaced with top-level functions.
+
+I do have one companion object in my solver. It is in the class `AbstractBoard` and it serves the purpose of providing a
+a method that would be a protected static method in Java. The method is called `requireSize()` and it is used to
+validate the arguments passed to the constructors of both `Board` and `MutableBoard`. I have this method in a protected
+companion object just to limit its scope to the type hierarchy of `AbstractBoard`. However, I could easily replace it
+with a private top-level function and everything would be fine.
+
+Perhaps some day, someone will convince me of the value of companion objects, but that day is not today.
