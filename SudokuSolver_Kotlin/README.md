@@ -611,3 +611,27 @@ parentheses makes this very clear. In Kotlin, accessing a property isn't that cl
 but it might be invoking code. I think this is fine as long as the code of a property is simple and short-running. If a
 property is a long-running task or even blocking, then this might break expectations of what a property does. In my
 opinion, computationally intensive tasks are best left to methods and not properties.
+
+### Reified Generics
+
+One of my favorite features in Java is generics. I vividly remember when they were introduced in Java 5 and there was
+much rejoicing. Java's decision to use
+[type erasure](https://docs.oracle.com/javase/tutorial/java/generics/erasure.html) allowed them to add generics without
+breaking existing code. Even though I love Java generics, I will admit that it is sometime useful to be able to access a
+generic type at runtime, such as getting a type's `Class` object or using that type in an `instanceof` check. This is
+not possible in Java due to type erasure.
+
+Kotlin solves this problem with
+[reified type parameters](https://kotlinlang.org/docs/inline-functions.html#reified-type-parameters). This is an option
+for [inlined functions](https://kotlinlang.org/docs/inline-functions.html) which allows the generic type parameter's
+type information to be accessed at runtime. If a generic type `T` is reified, then it can be used with the `is`
+operator, the `as` operator, and you can even get `T`'s `Class` object.
+
+One good example of the use of a reified type parameter is in Kotlin's standard library function `filterIsInstance()`.
+This is used to filter a collection by a specific type, which is supplied as a type parameter. I use this function all
+over the place. In particular, if I have a `List<Cell>` and I want to filter by which ones are unsolved, then I will
+call `filterIsInstance<UnsolvedCell>()` to get a `List<UnsolvedCell>`.
+
+Another good example of a reified type parameter is in my function `enumUnion()`. In that function, the type parameter
+`T` is reified because I need access to `T`'s `Class` object. If this feature was not available to me, then I would need
+to both have a generic type parameter and pass in a `Class` object.
