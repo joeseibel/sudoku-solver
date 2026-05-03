@@ -653,3 +653,50 @@ companion object just to limit its scope to the type hierarchy of `AbstractBoard
 with a private top-level function and everything would be fine.
 
 Perhaps some day, someone will convince me of the value of companion objects, but that day is not today.
+
+### Destructuring
+
+Like many other modern languages, Kotlin has the ability to
+[destructure](https://kotlinlang.org/docs/destructuring-declarations.html) objects into its component parts. Kotlin's
+approach is a bit unique though. Any object in Kotlin can be destructured as long as it has the operator methods
+`component1()`, `component2()`, ..., `componentN()`. In practice, it is rare to implement these methods manually. It is
+much more common to use data classes which provide these methods automatically. Lists and arrays can also be
+destructured, but only up to five elements.
+
+One issue with Kotlin's destructuring is that there is no requirement to destructure all of the component parts of an
+object. For example, the following code is perfectly legal:
+
+```kotlin
+val triple = Triple("A", "B", "C")
+val (a, b) = triple
+```
+
+There isn't even a warning that the method `component3()` is not used! I personally don't like this. I think that the
+compiler should complain when the destructure isn't complete. If one of the parts are not needed, then the programmer
+can use an underscore to indicate that.
+
+Another issue with Kotlin's approach is that care must be taken when destructuring a list or an array to ensure that the
+size of the collection is not exceeded. Otherwise, an `ArrayIndexOutOfBoundsException` might be thrown at runtime. This
+is different from other languages such as Rust which a refutable pattern to destructure slices.
+
+My final issue with Kotlin's destructuring is that it cannot be nested. For example, the following will not work and is
+not valid Kotlin syntax:
+
+```kotlin
+fun destructureMap(map: Map<String, Pair<Int, Int>>) {
+    for ((key, (a, b)) in map) {
+        println("This doesn't compile!")
+    }
+}
+```
+
+In order to properly destructure the map's value, a separate destructuring statement is required:
+
+```kotlin
+fun destructureMap(map: Map<String, Pair<Int, Int>>) {
+    for ((key, value) in map) {
+        val (a, b) = value
+        println("Now it works!")
+    }
+}
+```
