@@ -700,3 +700,13 @@ fun destructureMap(map: Map<String, Pair<Int, Int>>) {
     }
 }
 ```
+
+### Scope Functions
+
+One of the features of Kotlin that I use extensively are their
+[scope functions](https://kotlinlang.org/docs/scope-functions.html), in particular the
+[`let()` function](https://kotlinlang.org/docs/scope-functions.html#let). These functions simply take an object and pass
+it to a supplied lambda. They vary on how that object is operated on and what the return value of the scope function is.
+The benefit of these functions is that they create a limited scope for working with a particular object. Using scope
+functions can limit the number of local variables that need to be declared in a function. I have found that I can often
+condense multiple statements into a single expression when I use scope functions.
