@@ -28,7 +28,8 @@ Follow these steps to setup a development environment:
 Follow these steps to create a run configuration for running the solver:
 
 1. In the project tool window, right-click on the file `SudokuSolver_Java/src/main/sudokusolver.java/SudokuSolver.Java`.
-2. Select **Run 'SudokuSolver.main()'**. It is expected that the solver will complain that a board has not been specified.
+2. Select **Run 'SudokuSolver.main()'**. It is expected that the solver will complain that a board has not been
+   specified.
 3. Edit the **SudokuSolver** run configuration.
 4. In the **Program arguments** field, paste in the board to solve as a sequence of 81 digits, e.g.,
    `010040560230615080000800100050020008600781005900060020006008000080473056045090010`.
