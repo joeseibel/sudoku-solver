@@ -26,7 +26,7 @@ Follow these steps to create a run configuration for running the solver:
 2. Select **Run 'SudokuSolverKt'**. It is expected that the solver will complain that a board has not been specified.
 3. Edit the **SudokuSolverKt** run configuration.
 4. In the **Program arguments** field, paste in the board to solve as a sequence of 81 digits, e.g.,
-   `0100405602306150800008001000500200086007810059000600200060080000804730560450900101`.
+   `010040560230615080000800100050020008600781005900060020006008000080473056045090010`.
 5. Click **Run**.
 
 ### Running the unit tests
