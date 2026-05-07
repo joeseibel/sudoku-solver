@@ -41,3 +41,24 @@ Follow these steps to run the unit tests:
 
 1. In the project tool window, right-click on the project `SudokuSolver_Java`.
 2. Select **Run 'All Tests'**.
+
+## My experience with Java
+
+I love Java. It is old and sometimes feels clunky, but I still love it. I have enjoyed seeing Java advance over the
+years. Now that they have added switch expressions, sealed types, records, type inference, pattern matching, etc., it
+feels like Java is catching up to other newer languages such as Kotlin and Scala. Java has even picked up the pace of
+their improvements. It used to be that Java would release very large and infrequent updates such as Java 5 and Java 8.
+They now make their updates more frequent and incremental.
+
+Java still has its pain points. They don't handle null well and the addition of Java 8's `Optional` does nothing to
+improve legacy code. `NullPointerException`s are still a common headache. Some of Java's improvements have introduced
+more concise constructs, but it is still a very verbose language. Even some of the new features such as sealed types are
+more verbose than the alternatives found in other languages. Also, there is no good way of expressing a collection's
+mutability with the type system. It is very easy to encounter an `UnsupportedOperationException` when trying to modify
+an unmodifiable collection.
+
+Finally, I'll say that I feel very much at home with Java. It has amazing community and tool support, more so than many
+of the other languages I have worked with. It may not have all the amazing features of other languages, but it is still
+a solid and reliable choice. All of Java's features are well thought out and properly designed, even if they do feel a
+bit clunky. It is nice to know that I never have to worry about Java's garbage collector or the Just-In-Time compiler.
+The whole Java ecosystem works very well.
