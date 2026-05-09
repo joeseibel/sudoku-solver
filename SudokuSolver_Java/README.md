@@ -62,3 +62,8 @@ of the other languages I have worked with. It may not have all the amazing featu
 a solid and reliable choice. All of Java's features are well thought out and properly designed, even if they do feel a
 bit clunky. It is nice to know that I never have to worry about Java's garbage collector or the Just-In-Time compiler.
 The whole Java ecosystem works very well.
+
+In the following sections, I talk about my experience working with some of Java's newer features that have been released
+since Java 11. These are features that I believe have significantly improved the experience of programming in Java. Note
+that the following is not a tutorial, but I instead describe my opinion of these features and what it was like to use
+them.
