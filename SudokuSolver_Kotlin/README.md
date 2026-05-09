@@ -68,6 +68,11 @@ Java has come a long way. They have added records, switch expressions, pattern m
 Java still has issues with null safety and it is still more verbose than Kotlin, but I have to admit that Kotlin's
 advantages over Java have been diminishing as Java advances.
 
+In the following sections, I talk about my experience working with some of the Kotlin features that I believe are worthy
+of note. These are features that, in my opinion, help distinguish Kotlin from other languages, especially Java. These
+are not tutorials, but I instead describe what I like or dislike about these features and what it was like for me to use
+them.
+
 ### Null Safety
 
 Kotlin's approach to [null safety](https://kotlinlang.org/docs/null-safety.html) is, in my opinion, the best thing about
