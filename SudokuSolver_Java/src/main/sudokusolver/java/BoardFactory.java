@@ -96,7 +96,7 @@ public class BoardFactory {
                     throw new IllegalArgumentException("Nested '{'.");
                 }
                 var candidates = EnumSet.noneOf(SudokuNumber.class);
-                for (int i = 0; i < charsInBraces.length(); i++) {
+                for (var i = 0; i < charsInBraces.length(); i++) {
                     candidates.add(SudokuNumber.valueOf(charsInBraces.charAt(i)));
                 }
                 cellBuilders.add((row, column) -> new UnsolvedCell(row, column, candidates));

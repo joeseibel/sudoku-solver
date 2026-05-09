@@ -104,7 +104,7 @@ public class SudokuSolver {
         } else {
             var board = args[0];
             var showError = board.length() != Board.UNIT_SIZE_SQUARED;
-            for (int i = 0; !showError && i < board.length(); i++) {
+            for (var i = 0; !showError && i < board.length(); i++) {
                 if (board.charAt(i) < '0' || board.charAt(i) > '9') {
                     showError = true;
                     break;
