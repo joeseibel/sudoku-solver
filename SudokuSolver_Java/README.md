@@ -67,3 +67,119 @@ In the following sections, I talk about my experience working with some of Java'
 since Java 11. These are features that I believe have significantly improved the experience of programming in Java. Note
 that the following is not a tutorial, but I instead describe my opinion of these features and what it was like to use
 them.
+
+### Records
+
+One of the pain points of Java is the amount of boilerplate code that is required when writing a simple class that
+contains a handful of immutable fields and that class needs to override `equals()`, `hashCode()`, and `toString()`. As
+of Java 16, this has been much simplified with the addition of [records](https://openjdk.org/jeps/395). A Java record is
+an immutable class which has its entire state defined during construction and it provides good defaults for `equals()`,
+`hashCode()`, and `toString()`. Java records are very similar to Kotlin's
+[data classes](https://kotlinlang.org/docs/data-classes.html).
+
+Let us consider and example to demonstrate the value of records. The following is a class which represents a person with
+fields for that person's name and age. This is how that class would be written before records:
+
+```java
+public final class Person {
+    private final String name;
+    private final int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Person other && Objects.equals(name, other.name) && age == other.age;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" + "name='" + name + "', age=" + age + '}';
+    }
+}
+```
+
+Now that Java has records, the above example can be condensed down to this:
+
+```java
+public record Person(String name, int age) {
+}
+```
+
+As you can see, records greatly simplify the writing of basic Java classes. They do have their limitations though. Their
+fields cannot be mutable, which is different from Kotlin's data classes. They also cannot extend a class other than
+`java.lang.Record` or be extended by other classes. Records cannot contain native methods either. These restrictions
+ensure that records can only be used in the most simple of cases.
+
+As of Java 21, records now support destructuring, but in limited contexts. One place where records can be destructured
+is when performing an [`instanceof` check](https://openjdk.org/jeps/440):
+
+```java
+if (obj instanceof Person(var name, var age)) {
+    IO.println(name + " is " + age + " years old.");
+}
+```
+
+Another place where records can be destructured is in [switch statements and expressions](https://openjdk.org/jeps/441):
+
+```java
+var label = switch (obj) {
+    case Person(var name, var age) -> name + " is " + age + " years old.";
+    default -> obj.toString();
+};
+```
+
+Java records also support nested destructuring, which is something that Kotlin does not support:
+
+```java
+if (obj instanceof Pair(String label, Pair(Integer a, Integer b))) {
+    IO.println(label + ": [" + a + ", " + b + ']');
+}
+```
+
+The nested destructuring can be used to perform complicated `instanceof` checks for every level of nesting. Here is an
+example switch expression that performs such checks:
+
+```java
+public static String checkValue(Pair<String, ?> pair) {
+    return switch (pair) {
+        case Pair(var key, String value) -> "I have a String value";
+        case Pair(var key, Integer value) -> "I have an Integer value";
+        case Pair(var key, List<?> value) -> "I have a List<?> value";
+        case Pair(var key, Person(var name, var age)) -> "I have a Person value";
+        case Pair(var key, Pair(String a, String b)) -> "I have a Pair<String, String> value";
+        case Pair(var key, Pair(Integer a, Integer b)) -> "I have a Pair<Integer, Integer> value";
+        case Pair(var key, Pair(Pair(String a, Integer b), Pair(Person c, List<?> d))) ->
+                "I have a Pair<Pair<String, Integer>, Pair<Person, List<?>>";
+        case Pair(var key, var value) -> "I have an Object value";
+    };
+}
+```
+
+Unfortunately, Java records cannot be destructured in some places that would be very useful including simple variable
+declarations, for loops, and lambda parameters.
+
+Finally, Java 22 added the ability to [ignore record fields](https://openjdk.org/jeps/456) when destructuring them by
+using an underscore placeholder:
+
+```java
+if (obj instanceof Person(var name, _)) {
+    IO.println("Hi " + name + '!');
+}
+```
