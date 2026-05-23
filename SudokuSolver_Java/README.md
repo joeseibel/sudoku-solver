@@ -77,7 +77,7 @@ an immutable class which has its entire state defined during construction and it
 `hashCode()`, and `toString()`. Java records are very similar to Kotlin's
 [data classes](https://kotlinlang.org/docs/data-classes.html).
 
-Let us consider and example to demonstrate the value of records. The following is a class which represents a person with
+Let us consider an example to demonstrate the value of records. The following is a class which represents a person with
 fields for that person's name and age. This is how that class would be written before records:
 
 ```java
