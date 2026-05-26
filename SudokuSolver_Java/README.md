@@ -183,3 +183,54 @@ if (obj instanceof Person(var name, _)) {
     IO.println("Hi " + name + '!');
 }
 ```
+
+### Improved instanceof
+
+In Java 16, there was a nice little improvement to the `instanceof` operator. It is now possible to perform the
+`instanceof` check and the followup cast in a [single operation](https://openjdk.org/jeps/394). This is a very minor and
+simple change to the language, but I think it does make a big difference.
+
+In the days before Java 16, I used to write a lot of code that looked like this:
+
+```java
+String name;
+if (obj instanceof NamedElement) {
+    name = ((NamedElement) obj).getName();
+} else {
+    name = obj.toString();
+}
+```
+
+This approach works, but feels a bit clunky. It is also possible to make a mistake and cast the value to a different
+type than what was checked for in the `instanceof` check. With Java 16's Pattern Matching for `instanceof`, the above
+example can be changed to the following:
+
+```java
+String name;
+if (obj instanceof NamedElement namedElement) {
+    name = namedElement.getName();
+} else {
+    name = obj.toString();
+}
+```
+
+As you can see, a new variable `namedElement` is introduced as a part of the `instanceof` operator which gets assigned
+only if the `instanceof` check passes. This cleans up the syntax a little and removes the chance that the programmer
+might accidentally cast the value to a different type than what was checked for.
+
+Java's approach is to introduce a new variable, whereas Kotlin handles this by maintaining the existing variable. Kotlin
+uses flow typing to know that the type has changed if the check has been successful. The following is how the above
+example would be written in Kotlin:
+
+```kotlin
+val name = if (obj is NamedElement) {
+    obj.getName()
+} else {
+    obj.toString()
+}
+```
+
+In this case, the type of `obj` is known to be `NamedElement` within the then-branch of the if, but it will not be a
+`NamedElement` in the else-branch. As you can see, Kotlin does not have a new variable introduced, whereas Java does. I
+don't think I have a strong preference between the Java or the Kotlin approach. I am just happy that we are no longer
+dealing with the pre-Java 16 way of doing things.
