@@ -234,3 +234,112 @@ In this case, the type of `obj` is known to be `NamedElement` within the then-br
 `NamedElement` in the else-branch. As you can see, Kotlin does not have a new variable introduced, whereas Java does. I
 don't think I have a strong preference between the Java or the Kotlin approach. I am just happy that we are no longer
 dealing with the pre-Java 16 way of doing things.
+
+### Sealed types
+
+[Sealed types](https://openjdk.org/jeps/409) have finally arrived in Java 17! I have experienced them in Scala and
+Kotlin before and now we have them in Java as well. Sealed types allow the programmer to specify a type hierarchy that
+is limited and fully known at compile time. A sealed class or interface cannot be extended by third-party code. This
+way, the compiler can be certain about what are all of the possible sub-types of a given sealed type.
+
+Java's sealed types are semantically very similar to the sealed types found in Scala and Kotlin. However, the syntax is
+a bit more verbose in Java than in Scala or Kotlin. This is Java after all. Extra verbosity should not come as a
+surprise. Anyway, let's consider a sealed hierarchy that is used in the solver. There is a sealed type called `Cell`
+which has exactly two sub-types: `SolvedCell` and `UnsolvedCell`. In Kotlin, the sealed hierarchy for `Cell` looks like
+this:
+
+```kotlin
+sealed class Cell {
+    ...
+}
+
+data class SolvedCell(override val row: Int, override val column: Int, val value: SudokuNumber) : Cell() {
+    ...
+}
+
+data class UnsolvedCell(
+    override val row: Int,
+    override val column: Int,
+    val candidates: EnumSet<SudokuNumber> = EnumSet.allOf(SudokuNumber::class.java)
+) : Cell() {
+    ...
+}
+```
+
+Now let's see how this same hierarchy is implemented in Java:
+
+```java
+public sealed interface Cell permits SolvedCell, UnsolvedCell {
+    ...
+}
+
+public record SolvedCell(int row, int column, SudokuNumber value) implements Cell {
+    ...
+}
+
+public record UnsolvedCell(int row, int column, EnumSet<SudokuNumber> candidates) implements Cell {
+    ...
+}
+```
+
+The key difference here is that the Java version of `Cell` has a `permits` clause while the Kotlin version does not. In
+Kotlin, a sealed class can only be extended within the same file, but in Java, it is customary to declare each class in
+it's own file. Java needs a different mechanism to determine the limitations of a sealed class's hierarchy.
+
+The real value that sealed types provide wasn't fully realized until Java 21 when switch expressions and statements were
+updated to include [pattern matching](https://openjdk.org/jeps/441). When a switch is being performed over a sealed
+type, the compiler can check that all subtypes are handled by the switch and produce an error if they are not. To
+demonstrate this, let's first consider a typical pre-Java 21 if-else chain that checks for a specific type in a type
+hierarchy. This particular example comes from OSATE's
+[AADL to SysML Translator](https://github.com/osate/aadl-sysmlv2/blob/ad33c6e53ab5e8a88ee53aeb78aded544ccb6093/aadl2sysml/org.osate.aadl2sysml/src/org/osate/aadl2sysml/Aadl2SysmlTranslator.java#L245-L264):
+
+```java
+if (feature instanceof AbstractFeature) {
+    template.add("kind", "AbstractFeature");
+} else if (feature instanceof DataPort) {
+    template.add("kind", "DataPort");
+} else if (feature instanceof EventDataPort) {
+    template.add("kind", "EventDataPort");
+} else if (feature instanceof EventPort) {
+    template.add("kind", "EventPort");
+} else if (feature instanceof DataAccess) {
+    template.add("kind", "DataAccess");
+} else if (feature instanceof BusAccess busAccess) {
+    template.add("kind", busAccess.isVirtual() ? "VirtualBusAccess" : "BusAccess");
+} else if (feature instanceof SubprogramAccess) {
+    template.add("kind", "SubprogramAccess");
+} else if (feature instanceof SubprogramGroupAccess) {
+    template.add("kind", "SubprogramGroupAccess");
+} else {
+    throw new AssertionError("Unexpected class: " + feature.getClass());
+}
+```
+
+The issue with this if-else chain is that there is no way for the compiler to check that every option is handled. If, at
+some later date, a new kind of feature type were to be added such as `Parameter`, the compiler would not be able to warn
+the programmer that this if-else chain needs to be updated. The only check is at runtime with the possible
+`AssertionError`. Now, consider how the above if-else chain can be rewritten as a switch with pattern matching:
+
+```java
+switch (feature) {
+    case AbstractFeature _ -> template.add("kind", "AbstractFeature");
+    case DataPort _ -> template.add("kind", "DataPort");
+    case EventDataPort _ -> template.add("kind", "EventDataPort");
+    case EventPort _ -> template.add("kind", "EventPort");
+    case DataAccess _ -> template.add("kind", "DataAccess");
+    case BusAccess busAccess -> template.add("kind", busAccess.isVirtual() ? "VirtualBusAccess" : "BusAccess");
+    case SubprogramAccess _ -> template.add("kind", "SubprogramAccess");
+    case SubprogramGroupAccess _ -> template.add("kind", "SubprogramGroupAccess");
+}
+```
+
+As you can see, the exception at the end is no longer needed since the compiler can ensure that all cases are handled.
+Now using the switch, if another type such as `Parameter` were to be added to the hierarchy, then the compiler would
+complain with the following error message:
+
+```txt
+'switch' statement does not cover all possible input values
+```
+
+Overall, I'm very happy with sealed types in Java. The syntax isn't as nice as sealed types in Kotlin, but this is not a
+major complaint. Hopefully, many bugs will be caught by the compiler with the use of sealed types.
