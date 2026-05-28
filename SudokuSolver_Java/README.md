@@ -235,7 +235,7 @@ In this case, the type of `obj` is known to be `NamedElement` within the then-br
 don't think I have a strong preference between the Java or the Kotlin approach. I am just happy that we are no longer
 dealing with the pre-Java 16 way of doing things.
 
-### Sealed types
+### Sealed Types
 
 [Sealed types](https://openjdk.org/jeps/409) have finally arrived in Java 17! I have experienced them in Scala and
 Kotlin before and now we have them in Java as well. Sealed types allow the programmer to specify a type hierarchy that
