@@ -343,3 +343,85 @@ complain with the following error message:
 
 Overall, I'm very happy with sealed types in Java. The syntax isn't as nice as sealed types in Kotlin, but this is not a
 major complaint. Hopefully, many bugs will be caught by the compiler with the use of sealed types.
+
+### Switch Expressions
+
+What is the worst part about C-style switch statements? It is implicit fall through. There have been so many bugs
+introduced because a programmer forgot to break out of a switch case. It is a dumb feature and one that I have never
+needed. In all of my years of programming, I can't think of a single time that I've wanted or needed to use fallthrough
+behavior. Java has finally solved this issue in Java 14 with the addition of
+[switch expressions](https://openjdk.org/jeps/361). Unlike a switch statement, a switch expression only executes one of
+the cases and then exits out of the switch. It is also possible to return a value from each of the cases and thus return
+a value from the whole switch.
+
+Let's look at an example switch statement and then see what it's corresponding switch expression looks like. The
+following is a modified switch statement adopted from a switch found in the
+[SudokuNumber](src/main/sudokusolver/java/SudokuNumber.java) enum:
+
+```java
+SudokuNumber number;
+switch (ch) {
+    case '1':
+        number = ONE;
+        break;
+    case '2':
+        number = TWO;
+        break;
+    case '3':
+        number = THREE;
+        break;
+    case '4':
+        number = FOUR;
+        break;
+    case '5':
+        number = FIVE;
+        break;
+    case '6':
+        number = SIX;
+        break;
+    case '7':
+        number = SEVEN;
+        break;
+    case '8':
+        number = EIGHT;
+        break;
+    case '9':
+        number = NINE;
+        break;
+    default:
+        throw new IllegalArgumentException("ch is '" + ch + ", must be between '1' and '9'.");
+}
+```
+
+*Note that this example is a little more complicated than it needs to be. If you look at the method `valueOf()` in the
+enum `SudokuNumber`, you'll see that nothing comes after the switch in that method. It is certainly possible to return a
+value from each case in the switch as opposed to assigning to a variable, but I wanted to demonstrate the old way of
+breaking out of a switch in this example.*
+
+Now let's see what a switch expression looks like:
+
+```java
+var number = switch (ch) {
+    case '1' -> ONE;
+    case '2' -> TWO;
+    case '3' -> THREE;
+    case '4' -> FOUR;
+    case '5' -> FIVE;
+    case '6' -> SIX;
+    case '7' -> SEVEN;
+    case '8' -> EIGHT;
+    case '9' -> NINE;
+    default -> throw new IllegalArgumentException("ch is '" + ch + ", must be between '1' and '9'.");
+};
+```
+
+This looks a lot better! It is easier to read and there is no risk to accidentally falling through to the next case.
+Switch expressions are useful on their own, but they also form a key building block for other features that were added
+later including pattern matching and record patterns.
+
+Many modern languages are realizing the dangers of implicit fallthrough. Kotlin's when, Scala's match, and Rust's match
+have all abandoned fallthrough. The one interesting case here is Swift's switch. By default, a
+[switch statement](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/controlflow) in Swift
+does not fallthrough, but that functionality can be
+[performed explicitly](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/controlflow#Fallthrough)
+with the `fallthrough` keyword. I don't know how often that will be useful, but it is there if anyone needs it.
