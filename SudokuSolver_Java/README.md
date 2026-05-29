@@ -415,7 +415,7 @@ var number = switch (ch) {
 };
 ```
 
-This looks a lot better! It is easier to read and there is no risk to accidentally falling through to the next case.
+This looks a lot better! It is easier to read and there is no risk of accidentally falling through to the next case.
 Switch expressions are useful on their own, but they also form a key building block for other features that were added
 later including pattern matching and record patterns.
 
