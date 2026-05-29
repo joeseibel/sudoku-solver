@@ -421,7 +421,7 @@ later including pattern matching and record patterns.
 
 Many modern languages are realizing the dangers of implicit fallthrough. Kotlin's when, Scala's match, and Rust's match
 have all abandoned fallthrough. The one interesting case here is Swift's switch. By default, a
-[switch statement](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/controlflow) in Swift
-does not fallthrough, but that functionality can be
+[switch statement](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/controlflow/#Switch)
+in Swift does not fallthrough, but that functionality can be
 [performed explicitly](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/controlflow#Fallthrough)
 with the `fallthrough` keyword. I don't know how often that will be useful, but it is there if anyone needs it.
