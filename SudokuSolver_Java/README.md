@@ -425,3 +425,215 @@ have all abandoned fallthrough. The one interesting case here is Swift's switch.
 in Swift does not fallthrough, but that functionality can be
 [performed explicitly](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/controlflow#Fallthrough)
 with the `fallthrough` keyword. I don't know how often that will be useful, but it is there if anyone needs it.
+
+### Flexible Constructors
+
+For decades, Java's rules of construction have been simple and stable. Every constructor must start with a call to
+`this()`, an explicit call to `super()`, or an implicit call to the default no-argument `super()` constructor. This
+call, if explicit, must appear before any other statement in a constructor. Afterwards, constructors can pretty much do
+whatever they want as long as they initialize all final fields before completing. The idea is that when constructing an
+object, each parent-type is fully constructed before the child-type is constructed. For example, if we want to construct
+an `ArrayList`, the constructor for `Object` is called first, then `AbstractCollection`, then `AbstractList`, then
+finally the constructor for `ArrayList`. This guarantees that when the body of a constructor is executing, all of it's
+super classes have already been constructed and they can be fully utilized by the child's constructor. This is an
+important guarantee and Java's constructor rules do a good job of ensuring this guarantee, but over the years it has
+become clear that there are a few shortcomings with these rules. In particular, there are three specific problem areas:
+
+1. Validating constructor arguments
+2. Transforming constructor arguments
+3. Preventing access to uninitialized fields
+
+Java 25 addresses these problems with the addition of [flexible constructor bodies](https://openjdk.org/jeps/513) which
+allow limited statements before the call to `this()` or `super()`. These statements can initialize fields of the current
+class, but they cannot otherwise access the object itself. Let's look at how flexible constructor bodies address the
+three areas of concern:
+
+#### Validating Constructor Arguments
+
+Suppose that you want validate constructor arguments and throw an `IllegalArgumentException` if they are not valid. This
+is very common and most of the time, Java developers validate the data after calling the `super()` constructor:
+
+```java
+public class PositiveFraction extends Fraction {
+    public PositiveFraction(int numerator, int denominator) {
+        super(numerator, denominator);
+        if (numerator <= 0) {
+            throw new IllegalArgumentException("numerator must be positive.");
+        }
+        if (denominator <= 0) {
+            throw new IllegalArgumentException("denominator must be positive.");
+        }
+    }
+}
+```
+
+The potential problem with this is that the `PositiveFraction` constructor still calls the `Fraction` constructor even
+if it is going to throw an exception. The waste is not too much of a concern in this example, but it could be for
+expensive constructors. One way of dealing with this before Java 25 was by passing the arguments to a method call that
+is nested in the super constructor call:
+
+```java
+public class PositiveFraction extends Fraction {
+    public PositiveFraction(int numerator, int denominator) {
+        super(validateArgument(numerator, "numerator"), validateArgument(denominator, "denominator"));
+    }
+
+    private static int validateArgument(int value, String label) {
+        if (value <= 0) {
+            throw new IllegalArgumentException(label + " must be positive.");
+        }
+        return value;
+    }
+}
+```
+
+While this is possible, it does make the code more difficult to read. With flexible constructor bodies, it is now
+possible to perform these checks before calling the super constructor:
+
+```java
+public class PositiveFraction extends Fraction {
+    public PositiveFraction(int numerator, int denominator) {
+        if (numerator <= 0) {
+            throw new IllegalArgumentException("numerator must be positive.");
+        }
+        if (denominator <= 0) {
+            throw new IllegalArgumentException("denominator must be positive.");
+        }
+        super(numerator, denominator);
+    }
+}
+```
+
+This makes the call to `super()` conditional. It is only called when the arguments are valid.
+
+#### Transforming Constructor Arguments
+
+Suppose that a constructor takes arguments and those arguments need to be modified before passing them to another
+constructor. Before Java 25, this had to be embedded as an expression nested within the call to the other constructor. I
+actually ran into this issue in the class [`RemoveCandidates`](src/main/sudokusolver/java/RemoveCandidates.java) in
+which an `int...` needs to be transformed into an `EnumSet<SudokuNumber>` before making a call to `this()`. Before Java
+25, my solution was to have a rather complicated expression embedded into the call to `this()`:
+
+```java
+public RemoveCandidates(int row, int column, int... candidates) {
+    this(row, column, Arrays.stream(candidates)
+            .mapToObj(candidate -> SudokuNumber.values()[candidate - 1])
+            .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class))));
+}
+```
+
+The above code performs the transformation, but it is a little complicated to read. It would be better if the
+transformation of `candidates` occurred before the call to `this()`. This is what the constructor looks like now:
+
+```java
+public RemoveCandidates(int row, int column, int... candidates) {
+    var candidatesSet = Arrays.stream(candidates)
+            .mapToObj(candidate -> SudokuNumber.values()[candidate - 1])
+            .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
+    this(row, column, candidatesSet);
+}
+```
+
+#### Preventing Access to Uninitialized Fields
+
+When Java was first released, one of its advantages was that it prevented access to uninitialized variables. This is a
+no-brainer these days, but back then, it was a problem that was frequently encountered by C and C++ programmers. You
+would think that Java would also prevent access to uninitialized fields of a class, but this gets a bit tricky. First of
+all, mutable fields that are not initialized during construction are given a default value such as `0` for integer
+types, `false` for booleans, `null` for object types, etc. I disagree with this design decision, but it is well known
+and well documented. Another problem is that it is actually possible to access an uninitialized final field. When
+programmers discover this, it is often a huge surprise. Based upon Java's rules for objects and classes, one would think
+that the `final` keyword would necessarily prevent uninitialized access and in most cases it does, except for a tricky
+corner case.
+
+To demonstrate this issue, let's first look at a simple Java class which does prevent uninitialized access to a final
+field:
+
+```java
+public class ObjectHolder {
+    private final Object obj;
+
+    public ObjectHolder(Object obj) {
+        if (obj == null) {
+            throw new IllegalArgumentException("obj cannot be null.");
+        }
+        this.obj = obj;
+    }
+
+    public void printObject() {
+        IO.println(obj.toString());
+    }
+}
+```
+
+In this example, the method `printObject()` will never throw a `NullPointerException` because the constructor guarantees
+that `obj` can never be `null`. However, this guarantee falls apart if we make `ObjectHolder` extend from another class:
+
+```java
+public class ObjectHolder extends ParentClass {
+```
+
+Intuitively, this should not be a problem, but it is possible for `ParentClass` to call `printObject()` before `obj` has
+been initialized. Consider this implementation of `ParentClass`:
+
+```java
+public abstract class ParentClass {
+    public ParentClass() {
+        printObject();
+    }
+
+    public abstract void printObject();
+}
+```
+
+With this implementation of `ParentClass`, any construction of `ObjectHolder` will result in a `NullPointerException`
+being thrown from `printObject()` even if the object passed to `ObjectHolder` isn't `null`. Why does this happen? This
+is an unfortunate and unforeseen consequence of Java's constructor rules. Let's walk through what happens step-by-step
+when `ObjectHolder` is constructed with a `non-null` value such as the string literal `"My String Value"`:
+
+1. `ObjectHolder("My String Value")` is called and passed a string literal.
+2. The constructor `ObjectHolder(Object)` implicitly calls the no-argument constructor `ParentClass()`.
+3. The constructor `ParentClass()` calls the abstract method `printObject()`.
+4. The method `printObject()` is overridden in `ObjectHolder`, so the method `ObjectHolder.printObject()` is the one
+   that is actually called.
+5. The method `ObjectHolder.printObject()` accesses `obj`, but it has not yet been initialized, so `obj` defaults to a
+   value of `null`.
+6. The method `Object.toString()` is called on a `null` object thus leading to a `NullPointerException`.
+
+With flexible constructor bodies, we can solve this issue in the constructor of `ObjectHolder` by assigning a value to
+`obj` before calling the super constructor:
+
+```java
+public ObjectHolder(Object obj) {
+    if (obj == null) {
+        throw new IllegalArgumentException("obj cannot be null.");
+    }
+    this.obj = obj;
+    super();
+}
+```
+
+Now, if we call `ObjectHolder("My String Value")`, an exception is not thrown, but instead, the string
+`"My String Value"` is printed to stdout, which is what we wanted in the first place.
+
+I first ran into this issue years ago upon reading a paper that a colleague recommended to me:
+[Declaring and Checking Non-null Types in an Object-Oriented Language](https://www.microsoft.com/en-us/research/publication/declaring-and-checking-non-null-types-in-an-object-oriented-language/).
+The authors tackle the issue of guaranteeing non-null types in C# and Java when a field can be accessed before it is
+initialized. To make a long story short, adding non-null types would be so much simpler if accessing uninitialized
+fields was forbidden. Java 25's flexible constructor bodies is a step in the right direction.
+
+When I started learning Swift, I discovered that it had solved the problem of exposing partially initialized objects.
+Unlike Java and C#, it is not possible to access an uninitialized field in Swift. This is accomplished through Swift's
+rules for
+[class initialization](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/initialization#Two-Phase-Initialization).
+The key difference between Java/C# constructors and Swift initializers is that a Swift initializer must assign values
+for each of the fields of its immediate class before calling the super class's initializer. This way, all of the fields
+of a subclass are given values before initializing its parent class. After the super class's initializer returns, the
+subclass's initializer is free to perform other actions, change mutable fields, call methods, pass the object around,
+etc.
+
+When I discovered this about Swift, I was so excited! I told all my software friends about what I found and I'm sure
+they thought I was crazy for loudly celebrating such a nuanced and oddly specific implementation detail. Swift
+essentially enforces Java 25's flexible constructor bodies and doesn't allow classes to be initialized in the
+traditional Java way. Even though Java can never enforce flexible constructor bodies, as that would break a lot of
+existing code, I feel that Java is heading in the right direction.
