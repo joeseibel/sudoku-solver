@@ -637,3 +637,81 @@ they thought I was crazy for loudly celebrating such a nuanced and oddly specifi
 essentially enforces Java 25's flexible constructor bodies and doesn't allow classes to be initialized in the
 traditional Java way. Even though Java can never enforce flexible constructor bodies, as that would break a lot of
 existing code, I feel that Java is heading in the right direction.
+
+### Compact Source Files
+
+Java is very verbose. It always has been. One key complaint that is often raised against Java is that its verbosity can
+get in the way of teaching introductory programming. Often times, the first program that a student or someone learning
+programming will encounter is the basic and fundamental Hello World program. This is what Java's Hello World has looked
+like since its inception:
+
+```java
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
+That is a lot of stuff to introduce to a new programmer! What are classes? What are visibility modifiers? What is
+`static`? So many topics are packed into the most basic and simple Java program. At the very beginning, these concepts
+often get in the way. Many teachers say, "Don't worry about this stuff now. It will be explained later." How could you
+not take that approach when teaching Java?
+
+Many other languages offer a simpler on-ramp to programming concepts. Languages like Kotlin, Scala, and Rust only
+require the programmer to define a main function as opposed to starting with classes. As an example, here is Hello World
+in Rust:
+
+```rust
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+Some other languages such as Swift and Python don't even require a main function but instead support bare statements.
+For example, here is a Hello World program that works in both Swift and Python:
+
+```swift
+print("Hello, world!")
+```
+
+Many have argued that it is better for a language to offer a simpler introduction and to make the more complex features
+such as classes optional. Chris Lattner, the creator of Swift describes this as "Progressive Disclosure of Complexity".
+In [this interview](https://youtu.be/nWTvXbQHwWs?si=-K3MsU7qfQkhK59K&t=1377) (22:57 - 24:48), he describes how this
+concept influenced Swift's design while also complaining about Java's overly complicated Hello World.
+
+After years of complaints, Java now has a simplified Hello World program made possible in Java 25 with
+[compact source files](https://openjdk.org/jeps/512). A Hello World program in Java now looks like this:
+
+```java
+void main() {
+    IO.println("Hello, World!");
+}
+```
+
+There are a few things going on under the hood to make this work:
+
+1. When defining a main method like this, the compiler will implicitly insert the method into an undeclared class.
+2. The main method no longer needs to be declared as `public`.
+3. The main method no longer needs to be declared as `static`. This simplified version is an instance method and the JRE
+   will instantiate the enclosing class (declared or undeclared).
+4. The main method no longer needs to accept command-line arguments as a parameter.
+5. A new class called `IO` acts as a simplified wrapper that provides access to `System.out` and `System.in`.
+
+I think this is a good change for Java, especially when it comes to teaching students programming. However, I don't
+expect much existing code to make use of this change. Even in the solver, I only take advantage of a couple of these
+changes. My main method in [SudokuSolver](src/main/sudokusolver/java/SudokuSolver.java) now looks like this:
+
+```java
+public class SudokuSolver {
+    static void main(String[] args) {
+```
+
+As you can see, this looks very similar to Java's original entry point. The only change is that I have removed `public`
+from the method declaration. I still need to declare an enclosing class so that other methods in the file can be called
+from unit tests. I also keep `String[] args` because I need to process command line arguments. If I wanted to, I could
+have removed `static`, but I decided to leave it in so that `SudokuSolver` does not get instantiated. Finally, I have
+replaced all calls to `System.out.println()` with `IO.println()`.
+
+I expect this change to be wildly celebrated by Computer Science professors, but to go largely unnoticed by much of the
+professional Java community.
