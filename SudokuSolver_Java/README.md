@@ -715,3 +715,50 @@ replaced all calls to `System.out.println()` with `IO.println()`.
 
 I expect this change to be wildly celebrated by Computer Science professors, but to go largely unnoticed by much of the
 professional Java community.
+
+### Text blocks
+
+One of Java's improvements that has made life easier for me, especially when writing unit tests for the solver, has been
+Java 15's [text blocks](https://openjdk.org/jeps/378). A text block allows a programmer to write a multi-line string
+literal in which the margin is indented. Before text blocks, it was common for programmers to represent multi-line
+strings by concatenating each individual line. Programmers would also manually insert each line terminator. Text blocks
+automatically handle line terminators as well as proper indentation.
+
+To demonstrate the benefits of text blocks, let's look at an example variable assignment in which the value is a
+multi-line string. This particular example comes from the method `testSolution()` in the class
+[`SudokuSolverTest`](src/test/sudokusolver/java/SudokuSolverTest.java). This is what the assignment to the variable
+`expected` would have looked like before text blocks:
+
+```java
+var expected = "8 1 7 | 9 4 2 | 5 6 3\n" +
+        "2 3 4 | 6 1 5 | 7 8 9\n" +
+        "5 6 9 | 8 3 7 | 1 4 2\n" +
+        "------+-------+------\n" +
+        "4 5 1 | 3 2 9 | 6 7 8\n" +
+        "6 2 3 | 7 8 1 | 4 9 5\n" +
+        "9 7 8 | 5 6 4 | 3 2 1\n" +
+        "------+-------+------\n" +
+        "7 9 6 | 1 5 8 | 2 3 4\n" +
+        "1 8 2 | 4 7 3 | 9 5 6\n" +
+        "3 4 5 | 2 9 6 | 8 1 7";
+```
+
+As you can see, this required explicit newline characters as well as concatenation. Now let's look at what the same
+assignment looks like with text blocks:
+
+```java
+var expected = """
+        8 1 7 | 9 4 2 | 5 6 3
+        2 3 4 | 6 1 5 | 7 8 9
+        5 6 9 | 8 3 7 | 1 4 2
+        ------+-------+------
+        4 5 1 | 3 2 9 | 6 7 8
+        6 2 3 | 7 8 1 | 4 9 5
+        9 7 8 | 5 6 4 | 3 2 1
+        ------+-------+------
+        7 9 6 | 1 5 8 | 2 3 4
+        1 8 2 | 4 7 3 | 9 5 6
+        3 4 5 | 2 9 6 | 8 1 7""";
+```
+
+This is much cleaner and easier to represent. I am very happy with text blocks.
