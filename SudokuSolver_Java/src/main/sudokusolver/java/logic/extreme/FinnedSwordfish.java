@@ -2,6 +2,7 @@ package sudokusolver.java.logic.extreme;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -78,8 +79,7 @@ public class FinnedSwordfish {
     ) {
         var unitsWithCandidate = units.stream()
                 .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .filter(cell -> cell.candidates().contains(candidate))
                         .toList())
                 .filter(unit -> !unit.isEmpty())
@@ -119,8 +119,7 @@ public class FinnedSwordfish {
                                             return getOtherUnit
                                                     .apply(getOtherUnitIndex.applyAsInt(finnedCells.getFirst()))
                                                     .stream()
-                                                    .filter(UnsolvedCell.class::isInstance)
-                                                    .map(UnsolvedCell.class::cast)
+                                                    .gather(FilterType.of(UnsolvedCell.class))
                                                     .filter(cell -> cell.candidates().contains(candidate) &&
                                                             cell.block() == blockIndex &&
                                                             !unitIndices.contains(getUnitIndex.applyAsInt(cell)))

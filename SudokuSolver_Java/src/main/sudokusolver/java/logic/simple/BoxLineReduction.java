@@ -2,6 +2,7 @@ package sudokusolver.java.logic.simple;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.RemoveCandidates;
 import sudokusolver.java.SudokuNumber;
@@ -51,8 +52,7 @@ public class BoxLineReduction {
     ) {
         return units.stream().flatMap(unit -> {
             var blockIndices = unit.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate))
                     .map(Cell::block)
                     .collect(Collectors.toSet());
@@ -60,8 +60,7 @@ public class BoxLineReduction {
                 var unitIndex = getUnitIndex.applyAsInt(unit.getFirst());
                 return board.getBlock(blockIndices.iterator().next())
                         .stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .filter(cell -> getUnitIndex.applyAsInt(cell) != unitIndex &&
                                 cell.candidates().contains(candidate))
                         .map(cell -> new LocatedCandidate(cell, candidate));

@@ -8,6 +8,7 @@ import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -151,8 +152,7 @@ public class Medusa {
                     var colorTwo = colors.get(VertexColor.COLOR_TWO);
                     return board.getCells()
                             .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
+                            .gather(FilterType.of(UnsolvedCell.class))
                             .flatMap(cell -> cell.candidates()
                                     .stream()
                                     .map(candidate -> new LocatedCandidate(cell, candidate)))
@@ -188,8 +188,7 @@ public class Medusa {
                     var colorTwo = colors.get(VertexColor.COLOR_TWO);
                     return board.getCells()
                             .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
+                            .gather(FilterType.of(UnsolvedCell.class))
                             .flatMap(cell -> cell.candidates()
                                     .stream().map(candidate -> new LocatedCandidate(cell, candidate)))
                             .filter(removal -> !graph.vertexSet().contains(removal) &&
@@ -221,8 +220,7 @@ public class Medusa {
                     var colorTwo = colors.get(VertexColor.COLOR_TWO);
                     return board.getCells()
                             .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
+                            .gather(FilterType.of(UnsolvedCell.class))
                             .filter(cell -> cell.candidates()
                                     .stream()
                                     .noneMatch(candidate -> graph.vertexSet()
@@ -268,8 +266,7 @@ public class Medusa {
         var graph = new SimpleGraph<LocatedCandidate, DefaultEdge>(DefaultEdge.class);
         board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(cell -> cell.candidates().size() == 2)
                 .forEach(cell -> {
                     var candidates = cell.candidates().toArray(SudokuNumber[]::new);
@@ -280,8 +277,7 @@ public class Medusa {
         Arrays.stream(SudokuNumber.values()).forEach(candidate -> board.getUnits()
                 .stream()
                 .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .filter(cell -> cell.candidates().contains(candidate))
                         .toList())
                 .filter(unit -> unit.size() == 2)

@@ -2,6 +2,7 @@ package sudokusolver.java.logic.extreme;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.Quad;
@@ -51,9 +52,7 @@ public class SueDeCoq {
             ToIntFunction<Cell> getUnitIndex
     ) {
         return units.stream()
-                .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast).toList())
+                .map(unit -> unit.stream().gather(FilterType.of(UnsolvedCell.class)).toList())
                 .flatMap(unit -> unit.stream()
                         .collect(Collectors.groupingBy(Cell::block))
                         .entrySet()
@@ -66,8 +65,7 @@ public class SueDeCoq {
                                     .toList();
                             var block = board.getBlock(blockIndex)
                                     .stream()
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
+                                    .gather(FilterType.of(UnsolvedCell.class))
                                     .toList();
                             var otherCellsInBlock = block.stream()
                                     .filter(cell -> getUnitIndex.applyAsInt(cell) !=

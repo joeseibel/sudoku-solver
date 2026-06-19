@@ -2,6 +2,7 @@ package sudokusolver.java.logic.extreme;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.RemoveCandidates;
 import sudokusolver.java.SudokuNumber;
@@ -77,8 +78,7 @@ public class FinnedXWing {
     ) {
         return units.stream().flatMap(baseUnit -> {
             var withCandidate = baseUnit.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             if (withCandidate.size() == 2) {
@@ -89,8 +89,7 @@ public class FinnedXWing {
                             .filter(finnedUnit -> finnedUnit.getFirst().block() != baseUnit.getFirst().block())
                             .flatMap(finnedUnit -> {
                                 var finnedUnitByBlock = finnedUnit.stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
+                                        .gather(FilterType.of(UnsolvedCell.class))
                                         .filter(cell -> cell.candidates().contains(candidate))
                                         .collect(Collectors.groupingBy(Cell::block));
                                 if (finnedUnitByBlock.size() == 2) {
@@ -150,8 +149,7 @@ public class FinnedXWing {
         ) {
             var modifications = board.getBlock(finnedCorner.block())
                     .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> getOtherUnitIndex.applyAsInt(cell) == getOtherUnitIndex.applyAsInt(finnedCorner) &&
                             !cell.equals(finnedCorner) &&
                             cell.candidates().contains(candidate))

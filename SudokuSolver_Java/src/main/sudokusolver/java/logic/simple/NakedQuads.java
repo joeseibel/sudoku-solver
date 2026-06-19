@@ -2,6 +2,7 @@ package sudokusolver.java.logic.simple;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Quad;
 import sudokusolver.java.RemoveCandidates;
@@ -22,8 +23,7 @@ public class NakedQuads {
         return board.getUnits()
                 .stream()
                 .flatMap(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .gather(Quad.zipEveryQuad())
                         .flatMap(quad -> {
                             var a = quad.first();
@@ -36,8 +36,7 @@ public class NakedQuads {
                             unionOfCandidates.addAll(d.candidates());
                             if (unionOfCandidates.size() == 4) {
                                 return unit.stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
+                                        .gather(FilterType.of(UnsolvedCell.class))
                                         .filter(cell -> !cell.equals(a) &&
                                                 !cell.equals(b) &&
                                                 !cell.equals(c) &&

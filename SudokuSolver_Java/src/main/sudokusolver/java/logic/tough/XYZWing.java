@@ -2,6 +2,7 @@ package sudokusolver.java.logic.tough;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -24,13 +25,11 @@ public class XYZWing {
     public static List<RemoveCandidates> xyzWing(Board<Cell> board) {
         return board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(hinge -> hinge.candidates().size() == 3)
                 .flatMap(hinge -> board.getCells()
                         .stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .gather(Pair.zipEveryPair())
                         .filter(pair -> {
                             var wingA = pair.first();
@@ -51,8 +50,7 @@ public class XYZWing {
                                 var candidate = toRemove.iterator().next();
                                 return board.getCells()
                                         .stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
+                                        .gather(FilterType.of(UnsolvedCell.class))
                                         .filter(cell -> !cell.equals(hinge) &&
                                                 !cell.equals(wingA) &&
                                                 !cell.equals(wingB) &&

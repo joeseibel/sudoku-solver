@@ -2,6 +2,7 @@ package sudokusolver.java.logic.simple;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.RemoveCandidates;
 import sudokusolver.java.Triple;
@@ -22,8 +23,7 @@ public class NakedTriples {
         return board.getUnits()
                 .stream()
                 .flatMap(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .gather(Triple.zipEveryTriple())
                         .flatMap(triple -> {
                             var a = triple.first();
@@ -34,8 +34,7 @@ public class NakedTriples {
                             unionOfCandidates.addAll(c.candidates());
                             if (unionOfCandidates.size() == 3) {
                                 return unit.stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
+                                        .gather(FilterType.of(UnsolvedCell.class))
                                         .filter(cell -> !cell.equals(a) && !cell.equals(b) && !cell.equals(c))
                                         .flatMap(cell -> {
                                             var toRemove = EnumSet.copyOf(cell.candidates());

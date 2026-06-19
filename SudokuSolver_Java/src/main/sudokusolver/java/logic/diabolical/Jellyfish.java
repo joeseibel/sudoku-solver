@@ -2,6 +2,7 @@ package sudokusolver.java.logic.diabolical;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Quad;
 import sudokusolver.java.RemoveCandidates;
@@ -60,23 +61,19 @@ public class Jellyfish {
             var unitC = quad.third();
             var unitD = quad.fourth();
             var aWithCandidate = unitA.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             var bWithCandidate = unitB.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             var cWithCandidate = unitC.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             var dWithCandidate = unitD.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             if (aWithCandidate.size() >= 2 && aWithCandidate.size() <= 4 &&
@@ -95,8 +92,7 @@ public class Jellyfish {
                 if (otherUnitIndices.size() == 4) {
                     return otherUnitIndices.stream()
                             .flatMap(otherUnitIndex -> getOtherUnit.apply(otherUnitIndex).stream())
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
+                            .gather(FilterType.of(UnsolvedCell.class))
                             .filter(cell -> cell.candidates().contains(candidate) && !withCandidate.contains(cell))
                             .map(cell -> new LocatedCandidate(cell, candidate));
                 } else {

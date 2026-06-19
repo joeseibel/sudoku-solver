@@ -2,6 +2,7 @@ package sudokusolver.java.logic.diabolical;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.Rectangle;
@@ -80,8 +81,7 @@ public class UniqueRectangles {
                                 var additionalCandidate = additionalCandidates.iterator().next();
                                 return board.getCells()
                                         .stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
+                                        .gather(FilterType.of(UnsolvedCell.class))
                                         .filter(cell -> cell.candidates().contains(additionalCandidate) &&
                                                 !cell.equals(roofA) &&
                                                 !cell.equals(roofB) &&
@@ -163,8 +163,7 @@ public class UniqueRectangles {
         if (indexA == indexB) {
             var unit = getUnit.apply(indexA)
                     .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .toList();
             return unit.stream()
                     .filter(cell -> cell.candidates().equals(additionalCandidates))
@@ -239,8 +238,7 @@ public class UniqueRectangles {
         if (indexA == indexB) {
             var unit = getUnit.apply(indexA)
                     .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> !cell.equals(roofA) && !cell.equals(roofB))
                     .toList();
             return unit.stream()
@@ -320,10 +318,7 @@ public class UniqueRectangles {
         var indexA = getUnitIndex.applyAsInt(roofA);
         var indexB = getUnitIndex.applyAsInt(roofB);
         if (indexA == indexB) {
-            var unit = getUnit.apply(indexA)
-                    .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast).toList();
+            var unit = getUnit.apply(indexA).stream().gather(FilterType.of(UnsolvedCell.class)).toList();
             var commonCandidateA = commonCandidates[0];
             var commonCandidateB = commonCandidates[1];
             return Stream.concat(
@@ -390,8 +385,7 @@ public class UniqueRectangles {
 
     private static boolean hasStrongLink(SudokuNumber candidate, List<Cell> unit) {
         return unit.stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(cell -> cell.candidates().contains(candidate))
                 .count() == 2;
     }

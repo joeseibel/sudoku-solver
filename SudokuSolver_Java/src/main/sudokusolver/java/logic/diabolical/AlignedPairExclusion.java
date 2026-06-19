@@ -2,6 +2,7 @@ package sudokusolver.java.logic.diabolical;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.Quad;
@@ -47,8 +48,7 @@ public class AlignedPairExclusion {
     public static List<RemoveCandidates> alignedPairExclusion(Board<Cell> board) {
         return board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .gather(Pair.zipEveryPair())
                 .flatMap(pair -> {
                     var cellA = pair.first();
@@ -90,8 +90,7 @@ public class AlignedPairExclusion {
     ) {
         var visible = board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(cell -> !cell.equals(cellA) &&
                         !cell.equals(cellB) &&
                         cell.isInSameUnit(cellA) &&

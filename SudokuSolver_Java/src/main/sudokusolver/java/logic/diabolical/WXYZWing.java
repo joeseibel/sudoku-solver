@@ -2,6 +2,7 @@ package sudokusolver.java.logic.diabolical;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.Quad;
@@ -27,8 +28,7 @@ public class WXYZWing {
     public static List<RemoveCandidates> wxyzWing(Board<Cell> board) {
         return board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(cell -> cell.candidates().size() <= 4)
                 .gather(Quad.zipEveryQuad())
                 .flatMap(quad -> {
@@ -55,8 +55,7 @@ public class WXYZWing {
                                     .toList();
                             return board.getCells()
                                     .stream()
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
+                                    .gather(FilterType.of(UnsolvedCell.class))
                                     .filter(cell -> cell.candidates().contains(nonRestricted) &&
                                             !quadList.contains(cell) &&
                                             withCandidate.stream().allMatch(cell::isInSameUnit))

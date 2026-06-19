@@ -2,6 +2,7 @@ package sudokusolver.java.logic.tough;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -56,13 +57,11 @@ public class XWing {
             var unitA = pair.first();
             var unitB = pair.second();
             var aWithCandidate = unitA.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             var bWithCandidate = unitB.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             if (aWithCandidate.size() == 2 && bWithCandidate.size() == 2 &&
@@ -74,8 +73,7 @@ public class XWing {
                 var otherUnitA = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.getFirst()));
                 var otherUnitB = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(aWithCandidate.getLast()));
                 return Stream.concat(otherUnitA.stream(), otherUnitB.stream())
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .filter(cell -> cell.candidates().contains(candidate) &&
                                 !unitA.contains(cell) &&
                                 !unitB.contains(cell))

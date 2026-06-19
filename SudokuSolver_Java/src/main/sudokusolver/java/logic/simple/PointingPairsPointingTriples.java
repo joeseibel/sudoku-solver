@@ -2,6 +2,7 @@ package sudokusolver.java.logic.simple;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.RemoveCandidates;
 import sudokusolver.java.SudokuNumber;
@@ -51,8 +52,7 @@ public class PointingPairsPointingTriples {
             ToIntFunction<Cell> getUnitIndex
     ) {
         var unitIndices = block.stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(cell -> cell.candidates().contains(candidate))
                 .mapToInt(getUnitIndex)
                 .distinct()
@@ -60,8 +60,7 @@ public class PointingPairsPointingTriples {
         if (unitIndices.length == 1) {
             return getUnit.apply(unitIndices[0])
                     .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.block() != block.getFirst().block() && cell.candidates().contains(candidate))
                     .map(cell -> new LocatedCandidate(cell, candidate));
         } else {

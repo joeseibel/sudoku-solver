@@ -6,6 +6,7 @@ import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.builder.GraphBuilder;
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -110,8 +111,7 @@ public class AlternatingInferenceChains {
         if (sourceUnitIndex == getUnitIndex.applyAsInt(targetCell)) {
             return getUnit.apply(sourceUnitIndex)
                     .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(sourceCandidate) &&
                             !cell.equals(sourceCell) &&
                             !cell.equals(targetCell))
@@ -169,8 +169,7 @@ public class AlternatingInferenceChains {
         // Connect cells.
         board.getUnits().forEach(unit -> Arrays.stream(SudokuNumber.values()).forEach(candidate -> {
             var withCandidates = unit.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate))
                     .toList();
             var strength = withCandidates.size() == 2 ? Strength.STRONG : Strength.WEAK;
@@ -186,7 +185,7 @@ public class AlternatingInferenceChains {
         }));
 
         // Connect candidates in cells.
-        board.getCells().stream().filter(UnsolvedCell.class::isInstance).map(UnsolvedCell.class::cast).forEach(cell -> {
+        board.getCells().stream().gather(FilterType.of(UnsolvedCell.class)).forEach(cell -> {
             var strength = cell.candidates().size() == 2 ? Strength.STRONG : Strength.WEAK;
             cell.candidates().stream().gather(Pair.zipEveryPair()).forEach(pair -> {
                 var a = pair.first();

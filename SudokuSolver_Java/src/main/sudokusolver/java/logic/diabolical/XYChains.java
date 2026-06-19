@@ -7,6 +7,7 @@ import org.jgrapht.graph.builder.GraphBuilder;
 import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -61,8 +62,7 @@ public class XYChains {
                                 var cellB = vertexB.cell();
                                 var visibleCells = board.getCells()
                                         .stream()
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
+                                        .gather(FilterType.of(UnsolvedCell.class))
                                         .filter(cell -> cell.candidates().contains(candidate) &&
                                                 !cell.equals(cellA) && !cell.equals(cellB) &&
                                                 cell.isInSameUnit(cellA) && cell.isInSameUnit(cellB))
@@ -91,8 +91,7 @@ public class XYChains {
         var builder = new GraphBuilder<>(new SimpleGraph<LocatedCandidate, StrengthEdge>(StrengthEdge.class));
         board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(cell -> cell.candidates().size() == 2)
                 .forEach(cell -> {
                     var candidates = cell.candidates().toArray(SudokuNumber[]::new);

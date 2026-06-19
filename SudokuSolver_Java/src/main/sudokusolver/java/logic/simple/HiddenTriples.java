@@ -2,6 +2,7 @@ package sudokusolver.java.logic.simple;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.RemoveCandidates;
 import sudokusolver.java.SudokuNumber;
@@ -31,8 +32,7 @@ public class HiddenTriples {
                             var b = triple.second();
                             var c = triple.third();
                             var cells = unit.stream()
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
+                                    .gather(FilterType.of(UnsolvedCell.class))
                                     .filter(cell -> cell.candidates().contains(a) ||
                                             cell.candidates().contains(b) ||
                                             cell.candidates().contains(c))

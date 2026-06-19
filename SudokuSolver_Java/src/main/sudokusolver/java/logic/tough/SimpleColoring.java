@@ -8,6 +8,7 @@ import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -74,8 +75,7 @@ public class SimpleColoring {
                     var colorTwo = colors.get(VertexColor.COLOR_TWO);
                     return board.getCells()
                             .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
+                            .gather(FilterType.of(UnsolvedCell.class))
                             .filter(cell -> cell.candidates().contains(candidate) &&
                                     !graph.vertexSet().contains(cell) &&
                                     colorOne.stream().anyMatch(cell::isInSameUnit) &&
@@ -102,8 +102,7 @@ public class SimpleColoring {
         board.getUnits()
                 .stream()
                 .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .filter(cell -> cell.candidates().contains(candidate))
                         .toList())
                 .filter(withCandidate -> withCandidate.size() == 2)

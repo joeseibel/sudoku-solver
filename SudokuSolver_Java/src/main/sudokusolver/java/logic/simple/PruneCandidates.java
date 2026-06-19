@@ -2,6 +2,7 @@ package sudokusolver.java.logic.simple;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.RemoveCandidates;
 import sudokusolver.java.SolvedCell;
 import sudokusolver.java.SudokuNumber;
@@ -20,16 +21,14 @@ public class PruneCandidates {
     public static List<RemoveCandidates> pruneCandidates(Board<Cell> board) {
         return board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .flatMap(cell -> {
                     var sameUnits = new ArrayList<Cell>();
                     sameUnits.addAll(board.getRow(cell.row()));
                     sameUnits.addAll(board.getColumn(cell.column()));
                     sameUnits.addAll(board.getBlock(cell.block()));
                     var toRemove = sameUnits.stream()
-                            .filter(SolvedCell.class::isInstance)
-                            .map(SolvedCell.class::cast)
+                            .gather(FilterType.of(SolvedCell.class))
                             .map(SolvedCell::value)
                             .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
                     toRemove.retainAll(cell.candidates());

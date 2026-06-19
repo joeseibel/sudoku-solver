@@ -50,8 +50,7 @@ public class Rectangle {
                                 var cellC = board.get(rowB, columnA);
                                 var cellD = board.get(rowB, columnB);
                                 return Stream.of(cellA, cellB, cellC, cellD)
-                                        .filter(UnsolvedCell.class::isInstance)
-                                        .map(UnsolvedCell.class::cast)
+                                        .gather(FilterType.of(UnsolvedCell.class))
                                         .toList();
                             })
                             .filter(cells -> cells.size() == 4)

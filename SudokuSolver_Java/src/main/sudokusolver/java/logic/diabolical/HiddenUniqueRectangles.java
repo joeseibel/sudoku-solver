@@ -2,6 +2,7 @@ package sudokusolver.java.logic.diabolical;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Rectangle;
 import sudokusolver.java.RemoveCandidates;
@@ -56,16 +57,8 @@ public class HiddenUniqueRectangles {
      * is opposite of the one floor cell.
      */
     private static Optional<LocatedCandidate> type1(Board<Cell> board, Rectangle rectangle, UnsolvedCell floor) {
-        var row = board.getRow(floor.row())
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .toList();
-        var column = board.getColumn(floor.column())
-                .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
-                .toList();
+        var row = board.getRow(floor.row()).stream().gather(FilterType.of(UnsolvedCell.class)).toList();
+        var column = board.getColumn(floor.column()).stream().gather(FilterType.of(UnsolvedCell.class)).toList();
         var strongCandidates = rectangle.getCommonCandidates()
                 .stream()
                 .filter(candidate -> {
@@ -138,13 +131,11 @@ public class HiddenUniqueRectangles {
     ) {
         var unitA = getUnit.apply(getUnitIndex.applyAsInt(roofA))
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .toList();
         var unitB = getUnit.apply(getUnitIndex.applyAsInt(roofB))
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .toList();
         if (unitA.stream().filter(cell -> cell.candidates().contains(candidateA)).count() == 2) {
             return Optional.of(new LocatedCandidate(roofB, candidateB));

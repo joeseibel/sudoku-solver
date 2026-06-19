@@ -2,6 +2,7 @@ package sudokusolver.java.logic.simple;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -29,13 +30,11 @@ public class HiddenPairs {
                             var a = pair.first();
                             var b = pair.second();
                             var cellsWithA = unit.stream()
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
+                                    .gather(FilterType.of(UnsolvedCell.class))
                                     .filter(cell -> cell.candidates().contains(a))
                                     .toList();
                             var cellsWithB = unit.stream()
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
+                                    .gather(FilterType.of(UnsolvedCell.class))
                                     .filter(cell -> cell.candidates().contains(b));
                             if (cellsWithA.size() == 2 && cellsWithA.equals(cellsWithB.toList())) {
                                 return cellsWithA.stream().flatMap(cell -> {

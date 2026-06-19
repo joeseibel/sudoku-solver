@@ -2,6 +2,7 @@ package sudokusolver.java.logic.tough;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.RemoveCandidates;
 import sudokusolver.java.Triple;
@@ -24,8 +25,7 @@ public class YWing {
     public static List<RemoveCandidates> yWing(Board<Cell> board) {
         return board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(cell -> cell.candidates().size() == 2)
                 .gather(Triple.zipEveryTriple())
                 .filter(triple -> {
@@ -68,8 +68,7 @@ public class YWing {
             var candidate = wingCandidates.iterator().next();
             return board.getCells()
                     .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> !cell.equals(wingA) && !cell.equals(wingB) &&
                             cell.candidates().contains(candidate) &&
                             cell.isInSameUnit(wingA) && cell.isInSameUnit(wingB))

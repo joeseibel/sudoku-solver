@@ -2,6 +2,7 @@ package sudokusolver.java.logic.tough;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.RemoveCandidates;
 import sudokusolver.java.SudokuNumber;
@@ -61,18 +62,15 @@ public class Swordfish {
                     var unitB = triple.second();
                     var unitC = triple.third();
                     var aWithCandidate = unitA.stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
+                            .gather(FilterType.of(UnsolvedCell.class))
                             .filter(cell -> cell.candidates().contains(candidate))
                             .toList();
                     var bWithCandidate = unitB.stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
+                            .gather(FilterType.of(UnsolvedCell.class))
                             .filter(cell -> cell.candidates().contains(candidate))
                             .toList();
                     var cWithCandidate = unitC.stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
+                            .gather(FilterType.of(UnsolvedCell.class))
                             .filter(cell -> cell.candidates().contains(candidate))
                             .toList();
                     if ((aWithCandidate.size() == 2 || aWithCandidate.size() == 3) &&
@@ -88,8 +86,7 @@ public class Swordfish {
                         if (otherUnitIndices.size() == 3) {
                             return otherUnitIndices.stream()
                                     .flatMap(otherUnitIndex -> getOtherUnit.apply(otherUnitIndex).stream())
-                                    .filter(UnsolvedCell.class::isInstance)
-                                    .map(UnsolvedCell.class::cast)
+                                    .gather(FilterType.of(UnsolvedCell.class))
                                     .filter(cell -> cell.candidates().contains(candidate) &&
                                             !withCandidate.contains(cell))
                                     .map(cell -> new LocatedCandidate(cell, candidate));

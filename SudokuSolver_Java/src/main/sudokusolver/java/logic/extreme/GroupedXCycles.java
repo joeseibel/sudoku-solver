@@ -7,6 +7,7 @@ import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -156,8 +157,7 @@ public class GroupedXCycles {
             if (sourceUnitIndex == getUnitIndex.applyAsInt(target)) {
                 return getUnit.apply(sourceUnitIndex)
                         .stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .filter(cell -> cell.candidates().contains(candidate) &&
                                 !source.getCells().contains(cell) &&
                                 !target.getCells().contains(cell))
@@ -182,8 +182,7 @@ public class GroupedXCycles {
                     var graph = buildGraph(board, candidate);
                     return graph.vertexSet()
                             .stream()
-                            .filter(CellNode.class::isInstance)
-                            .map(CellNode.class::cast)
+                            .gather(FilterType.of(CellNode.class))
                             .filter(vertex -> Strength.alternatingCycleExists(graph, vertex, Strength.STRONG))
                             .map(vertex -> new SetValue(vertex.cell(), candidate));
                 })
@@ -205,8 +204,7 @@ public class GroupedXCycles {
                     var graph = buildGraph(board, candidate);
                     return graph.vertexSet()
                             .stream()
-                            .filter(CellNode.class::isInstance)
-                            .map(CellNode.class::cast)
+                            .gather(FilterType.of(CellNode.class))
                             .filter(vertex -> Strength.alternatingCycleExists(graph, vertex, Strength.WEAK))
                             .map(vertex -> new LocatedCandidate(vertex.cell(), candidate));
                 })
@@ -231,8 +229,7 @@ public class GroupedXCycles {
         board.getUnits()
                 .stream()
                 .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .filter(cell -> cell.candidates().contains(candidate))
                         .toList())
                 .forEach(withCandidate -> {
@@ -271,8 +268,7 @@ public class GroupedXCycles {
     ) {
         return units.stream()
                 .flatMap(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .filter(cell -> cell.candidates().contains(candidate))
                         .collect(Collectors.groupingBy(Cell::block, Collectors.toSet()))
                         .values()
@@ -292,8 +288,7 @@ public class GroupedXCycles {
         groups.forEach(group -> {
             var otherCellsInUnit = getUnit.apply(getUnitIndex.applyAsInt(group))
                     .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate) && !group.getCells().contains(cell))
                     .toList();
             var strength = otherCellsInUnit.size() == 1 ? Strength.STRONG : Strength.WEAK;
@@ -322,8 +317,7 @@ public class GroupedXCycles {
                     var b = pair.second();
                     var otherCellsInUnit = getUnit.apply(getUnitIndex.applyAsInt(a))
                             .stream()
-                            .filter(UnsolvedCell.class::isInstance)
-                            .map(UnsolvedCell.class::cast)
+                            .gather(FilterType.of(UnsolvedCell.class))
                             .filter(cell -> cell.candidates().contains(candidate) &&
                                     !a.getCells().contains(cell) &&
                                     !b.getCells().contains(cell))

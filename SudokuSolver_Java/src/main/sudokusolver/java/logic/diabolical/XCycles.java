@@ -6,6 +6,7 @@ import org.jgrapht.graph.builder.GraphBuilder;
 import org.jgrapht.nio.dot.DOTExporter;
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.LocatedCandidate;
 import sudokusolver.java.Pair;
 import sudokusolver.java.RemoveCandidates;
@@ -92,8 +93,7 @@ public class XCycles {
         if (getUnitIndex.applyAsInt(source) == getUnitIndex.applyAsInt(target)) {
             return getUnit.apply(getUnitIndex.applyAsInt(source))
                     .stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
+                    .gather(FilterType.of(UnsolvedCell.class))
                     .filter(cell -> cell.candidates().contains(candidate) &&
                             !cell.equals(source) && !cell.equals(target))
                     .map(cell -> new LocatedCandidate(cell, candidate));
@@ -162,8 +162,7 @@ public class XCycles {
         board.getUnits()
                 .stream()
                 .map(unit -> unit.stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
+                        .gather(FilterType.of(UnsolvedCell.class))
                         .filter(cell -> cell.candidates().contains(candidate))
                         .toList())
                 .filter(withCandidate -> withCandidate.size() == 2)
@@ -199,8 +198,7 @@ public class XCycles {
         var vertices = Set.copyOf(graph.vertexSet());
         board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(cell -> cell.candidates().contains(candidate) && !vertices.contains(cell))
                 .forEach(cell -> vertices.stream()
                         .filter(vertex -> vertex.isInSameUnit(cell))

@@ -2,6 +2,7 @@ package sudokusolver.java.logic.simple;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.SetValue;
 import sudokusolver.java.SudokuNumber;
 import sudokusolver.java.UnsolvedCell;
@@ -18,10 +19,7 @@ import java.util.stream.Stream;
 public class HiddenSingles {
     public static List<SetValue> hiddenSingles(Board<Cell> board) {
         return board.getUnits().stream().flatMap(unit -> {
-            var unsolved = unit.stream()
-                    .filter(UnsolvedCell.class::isInstance)
-                    .map(UnsolvedCell.class::cast)
-                    .toList();
+            var unsolved = unit.stream().gather(FilterType.of(UnsolvedCell.class)).toList();
             return Arrays.stream(SudokuNumber.values()).flatMap(candidate -> {
                 var unsolvedWithCandidate = unsolved.stream()
                         .filter(cell -> cell.candidates().contains(candidate))

@@ -2,6 +2,7 @@ package sudokusolver.java.logic.diabolical;
 
 import sudokusolver.java.Board;
 import sudokusolver.java.Cell;
+import sudokusolver.java.FilterType;
 import sudokusolver.java.SetValue;
 import sudokusolver.java.UnsolvedCell;
 
@@ -23,18 +24,13 @@ public class BUG {
     public static Optional<SetValue> bug(Board<Cell> board) {
         var cellsWithNotTwo = board.getCells()
                 .stream()
-                .filter(UnsolvedCell.class::isInstance)
-                .map(UnsolvedCell.class::cast)
+                .gather(FilterType.of(UnsolvedCell.class))
                 .filter(cell -> cell.candidates().size() != 2)
                 .toList();
         if (cellsWithNotTwo.size() == 1) {
             var cell = cellsWithNotTwo.getFirst();
             if (cell.candidates().size() == 3) {
-                var row = board.getRow(cell.row())
-                        .stream()
-                        .filter(UnsolvedCell.class::isInstance)
-                        .map(UnsolvedCell.class::cast)
-                        .toList();
+                var row = board.getRow(cell.row()).stream().gather(FilterType.of(UnsolvedCell.class)).toList();
                 var candidates = cell.candidates()
                         .stream()
                         .filter(candidate -> row.stream()
