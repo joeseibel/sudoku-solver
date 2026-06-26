@@ -762,3 +762,141 @@ var expected = """
 ```
 
 This is much cleaner and easier to represent. I am very happy with text blocks.
+
+### Gatherers
+
+I love Java 8 streams. Yes, I know that they are clunky, more verbose, and more expensive than what other languages have
+to offer, but I am so happy that Java at least has the option for functional-style stream processing. Sometimes, it is
+so much nicer to tackle a problem with calls to `filter()`, `map()`, and `flatMap()`, rather than using a bunch of `for`
+loops and `if` statements.
+
+Java's streams just got a little bit better in Java 24 with the introduction of
+[gatherers](https://openjdk.org/jeps/485). What is a gatherer and what problem does it solve? Gatherers allow a
+programmer to define a reusable custom intermediate operation. A simplistic way of looking at it is that a gatherer
+receives stream elements, processes those elements, and sends elements to the next stream operation. The elements
+sent can be the same as or different from the elements received. Also, there can be a one-to-one, one-to-many,
+many-to-one, or many-to-many relationship between a gatherer's input elements and its output elements. Implementing a
+custom gatherer feels similar to implementing a custom collector.
+
+To demonstrate the value of a gatherer, let's look an example gatherer that I've implemented in the solver. The method
+[`Pair.zipEveryPair()`](src/main/sudokusolver/java/Pair.java) returns such a custom gatherer. Before gatherers were
+introduced, this method had instead returned a custom collector. This was a little clunky since a `Stream<T>` was
+collected into a `List<T>`, only to be converted into a `Stream<Pair<T, T>>`. With gatherers, the `Stream<T>` can be
+converted directly to a `Stream<Pair<T, T>>`. This is what `zipEveryPair()` looked like before gatherers:
+
+```java
+public static <T> Collector<T, ?, Stream<Pair<T, T>>> zipEveryPair() {
+    return Collectors.collectingAndThen(
+            Collectors.toList(),
+            list -> IntStream.range(0, list.size() - 1)
+                    .mapToObj(first -> IntStream.range(first + 1, list.size())
+                            .mapToObj(second -> new Pair<>(list.get(first), list.get(second))))
+                    .flatMap(Function.identity())
+    );
+}
+```
+
+The call to `collectingAndThen()` first collects the input stream into a list and then the finisher performs the zipping
+and returns a separate stream. While calling the collector version of `zipEveryPair()` has the appearance of being an
+intermediate operation, since it returns a `Stream<T>`, it really is a terminal operation. The input stream is collected
+and fully consumed while a new and separate stream is returned. This is important to know because stream operations are
+normally lazily evaluated, but the collector version of `zipEveryPair()` is eagerly evaluated.
+
+With the introduction of gatherers, I've rewritten `zipEveryPair()` to be a truly intermediate operation. This is what
+`zipEveryPair()` looks like now as a gatherer:
+
+```java
+public static <T> Gatherer<T, ?, Pair<T, T>> zipEveryPair() {
+    return Gatherer.<T, List<T>, Pair<T, T>>ofSequential(
+            ArrayList::new,
+            Gatherer.Integrator.ofGreedy((list, element, downstream) -> {
+                list.add(element);
+                if (list.size() >= 2) {
+                    return downstream.push(new Pair<>(list.getFirst(), list.getLast()));
+                } else {
+                    return true;
+                }
+            }),
+            (list, downstream) -> {
+                for (var i = 1; i < list.size() - 1; i++) {
+                    for (var j = i + 1; j < list.size(); j++) {
+                        if (downstream.isRejecting()) {
+                            return;
+                        }
+                        downstream.push(new Pair<>(list.get(i), list.get(j)));
+                    }
+                }
+            }
+    );
+}
+```
+
+Even though the gatherer version looks more complicated than the collector version, it truly is better. This version
+really is an intermediate operation, not just pretending to be one. This means that if the downstream operations are no
+longer interested in results, then the zipping of pairs will end. The collector version did not do this. The collector
+version always zipped every pair even if the downstream operations didn't need every single result.
+
+This particular gatherer is made up of three different functions passed to `Gatherer.ofSequential()`: an initializer, an
+integrator, and a finisher. The initializer instantiates a list object that is used to temporarily store data used by
+both the integrator and the finisher while the gatherer is processing elements. The integrator is called once for each
+stream element received by the gatherer. In this case, I first store the element in a list so that it can be used in
+subsequent calls to the integrator as well as the finisher. The integrator then returns a `Pair` object if the gatherer
+has encountered enough elements to form a pair. Another way of looking at it is that the integrator is responsible for
+creating all of the `Pair` objects for which the first object of the pair was the first element passed to the gatherer.
+Once the gatherer has seen two elements, it will lazily produce a `Pair` object for each element of the stream that is
+processed.
+
+The finisher is called exactly once when the end of the stream has been reached and there are no more elements to
+process. A finisher can produce output elements even after the last input element has been seen by the gatherer and this
+is exactly what I do here. In this case, this finisher will use the elements stored in the temporary list to create all
+of the remaining `Pair` objects that are needed. You'll notice that this finisher can terminate early in the event that
+the downstream operations are no longer accepting new elements. This can occur if any of the downstream operations are
+short-circuiting. As a result, the finisher will lazily create only the `Pair` objects that are actually needed.
+
+I have implemented similar gatherers for [`Triple.zipEveryTriple()`](src/main/sudokusolver/java/Triple.java) and
+[`Quad.zipEveryQuad()`](src/main/sudokusolver/java/Quad.java).
+
+In addition to creating the Gatherer API for developers to use, Java has also produced a number of useful gatherers
+themselves. These serve as examples for how to implement a gatherer, but I also make use of them in the solver. In
+particular, I use `Gatherers.windowFixed()` in [`BoardFactory`](src/main/sudokusolver/java/BoardFactory.java).
+`windowFixed()` is analogous to Kotlin's `chunked()` function.
+
+Finally, I have also implemented a gatherer to address what I believe is one of the shortcomings of Java streams: the
+lack of a simple means of filtering a stream by type. Before gatherers, I would normally filter a stream by type using
+a call to `filter()` followed by a call to `map()` such as in the following example:
+
+```java
+var row = board.getRow(floor.row())
+        .stream()
+        .filter(UnsolvedCell.class::isInstance)
+        .map(UnsolvedCell.class::cast)
+        .toList();
+```
+
+The problem with this approach is that the programmer must specify the type twice: first in the call to `filter()`, then
+in the call to `map()`. I really wish that Java streams had a `filterType()` method like Kotlin's `filterIsInstance()`.
+With gatherers, I am finally able to get what I want. The following is my implementation of a
+[`FilterType`](src/main/sudokusolver/java/FilterType.java) gatherer:
+
+```java
+public class FilterType {
+    public static <T, R> Gatherer<T, ?, R> of(Class<R> type) {
+        return Gatherer.of(Gatherer.Integrator.ofGreedy((_, object, downstream) -> {
+            if (type.isInstance(object)) {
+                return downstream.push(type.cast(object));
+            } else {
+                return true;
+            }
+        }));
+    }
+}
+```
+
+Using this gatherer simplifies the process of filtering a stream by type:
+
+```java
+var row = board.getRow(floor.row())
+        .stream()
+        .gather(FilterType.of(UnsolvedCell.class))
+        .toList();
+```
