@@ -716,7 +716,7 @@ replaced all calls to `System.out.println()` with `IO.println()`.
 I expect this change to be wildly celebrated by Computer Science professors, but to go largely unnoticed by much of the
 professional Java community.
 
-### Text blocks
+### Text Blocks
 
 One of Java's improvements that has made life easier for me, especially when writing unit tests for the solver, has been
 Java 15's [text blocks](https://openjdk.org/jeps/378). A text block allows a programmer to write a multi-line string
