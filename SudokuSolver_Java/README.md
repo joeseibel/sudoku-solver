@@ -900,3 +900,36 @@ var row = board.getRow(floor.row())
         .gather(FilterType.of(UnsolvedCell.class))
         .toList();
 ```
+
+### Sequenced Collections
+
+In Java 21, working with some of Java's standard collection types got a little easier with the introduction of
+[sequenced collections](https://openjdk.org/jeps/431). In particular, it is now easier to access the first and last
+elements of a list. Before Java 21, getting the first and last elements of a list looked like this:
+
+```java
+var first = list.get(0);
+var last = list.get(list.size() - 1);
+```
+
+Getting the first element with an index of `0` isn't too bad, but the expression to get the last element is a bit busy.
+It is also easy to make a mistake and miss it. Now with sequenced collections, getting the first and last elements of a
+list look like this:
+
+```java
+var first = list.getFirst();
+var last = list.getLast();
+```
+
+This looks a lot nicer and is easier to read, especially the call to `getLast()`. Sequenced collections also offer easy
+methods for adding and removing the first and last elements as well as getting a reversed view of the collection.
+
+Unfortunately, getting an arbitrary single element from a set is still a bit ugly. Since most sets are unordered, the
+`Set` interface does not extend from `SequencedCollection`. I know that the concepts of first and last don't really
+apply to an unordered set, but it would be nice to have an `any()` method on `Set` which would allow me to say, "I want
+to get an element from this set and I don't care which one it is." Kotlin, Scala, and Swift offer this functionality on
+sets, but not Java. Getting an arbitrary element from a set in Java still looks like this:
+
+```java
+var any = set.iterator().next();
+```
