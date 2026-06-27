@@ -83,7 +83,7 @@ public class EmptyRectangles {
     ) {
         return unit.stream()
                 .filter(strongLink1 -> strongLink1.block() != block && hasCandidate(strongLink1, candidate))
-                .flatMap(strongLink1 -> {
+                .mapMulti((strongLink1, consumer) -> {
                     var otherUnit = getOtherUnit.apply(getOtherUnitIndex.applyAsInt(strongLink1))
                             .stream()
                             .filter(cell -> hasCandidate(cell, candidate) && !cell.equals(strongLink1))
@@ -94,10 +94,9 @@ public class EmptyRectangles {
                                 board.get(getRemovalRow.applyAsInt(strongLink2),
                                         getRemovalColumn.applyAsInt(strongLink2)) instanceof UnsolvedCell removalCell &&
                                 removalCell.candidates().contains(candidate)) {
-                            return Stream.of(new LocatedCandidate(removalCell, candidate));
+                            consumer.accept(new LocatedCandidate(removalCell, candidate));
                         }
                     }
-                    return Stream.empty();
                 });
     }
 

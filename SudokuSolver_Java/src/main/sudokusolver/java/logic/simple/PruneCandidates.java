@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * If a cell is solved, then no other cells in the same unit can have that number as a candidate.
@@ -22,7 +21,7 @@ public class PruneCandidates {
         return board.getCells()
                 .stream()
                 .gather(FilterType.of(UnsolvedCell.class))
-                .flatMap(cell -> {
+                .<RemoveCandidates>mapMulti((cell, consumer) -> {
                     var sameUnits = new ArrayList<Cell>();
                     sameUnits.addAll(board.getRow(cell.row()));
                     sameUnits.addAll(board.getColumn(cell.column()));
@@ -32,7 +31,9 @@ public class PruneCandidates {
                             .map(SolvedCell::value)
                             .collect(Collectors.toCollection(() -> EnumSet.noneOf(SudokuNumber.class)));
                     toRemove.retainAll(cell.candidates());
-                    return toRemove.isEmpty() ? Stream.empty() : Stream.of(new RemoveCandidates(cell, toRemove));
+                    if (!toRemove.isEmpty()) {
+                        consumer.accept(new RemoveCandidates(cell, toRemove));
+                    }
                 })
                 .toList();
     }

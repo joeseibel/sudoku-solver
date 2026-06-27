@@ -9,7 +9,6 @@ import sudokusolver.java.UnsolvedCell;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 /*
  * https://www.sudokuwiki.org/Getting_Started
@@ -20,14 +19,12 @@ public class HiddenSingles {
     public static List<SetValue> hiddenSingles(Board<Cell> board) {
         return board.getUnits().stream().flatMap(unit -> {
             var unsolved = unit.stream().gather(FilterType.of(UnsolvedCell.class)).toList();
-            return Arrays.stream(SudokuNumber.values()).flatMap(candidate -> {
+            return Arrays.stream(SudokuNumber.values()).<SetValue>mapMulti((candidate, consumer) -> {
                 var unsolvedWithCandidate = unsolved.stream()
                         .filter(cell -> cell.candidates().contains(candidate))
                         .toList();
                 if (unsolvedWithCandidate.size() == 1) {
-                    return Stream.of(new SetValue(unsolvedWithCandidate.getFirst(), candidate));
-                } else {
-                    return Stream.empty();
+                    consumer.accept(new SetValue(unsolvedWithCandidate.getFirst(), candidate));
                 }
             });
         }).distinct().toList();
