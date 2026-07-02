@@ -27,7 +27,7 @@ Follow these steps to setup a development environment:
 
 Follow these steps to create a run configuration for running the solver:
 
-1. In the project tool window, right-click on the file `SudokuSolver_Java/src/main/sudokusolver.java/SudokuSolver.Java`.
+1. In the project tool window, right-click on the file `SudokuSolver_Java/src/main/sudokusolver.java/SudokuSolver.java`.
 2. Select **Run 'SudokuSolver.main()'**. It is expected that the solver will complain that a board has not been
    specified.
 3. Edit the **SudokuSolver** run configuration.
