@@ -356,7 +356,7 @@ a value from the whole switch.
 
 Let's look at an example switch statement and then see what it's corresponding switch expression looks like. The
 following is a modified switch statement adopted from a switch found in the
-[SudokuNumber](src/main/sudokusolver/java/SudokuNumber.java) enum:
+[`SudokuNumber`](src/main/sudokusolver/java/SudokuNumber.java) enum:
 
 ```java
 SudokuNumber number;
@@ -700,7 +700,7 @@ There are a few things going on under the hood to make this work:
 
 I think this is a good change for Java, especially when it comes to teaching students programming. However, I don't
 expect much existing code to make use of this change. Even in the solver, I only take advantage of a couple of these
-changes. My main method in [SudokuSolver](src/main/sudokusolver/java/SudokuSolver.java) now looks like this:
+changes. My main method in [`SudokuSolver`](src/main/sudokusolver/java/SudokuSolver.java) now looks like this:
 
 ```java
 public class SudokuSolver {
