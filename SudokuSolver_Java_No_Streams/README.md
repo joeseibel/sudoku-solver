@@ -169,3 +169,42 @@ especially `row` which only takes up a single line of code. In contrast, I find 
 these collections are built in the imperative version. To understand how an imperative program is processing data, one
 must look at multiple separate declarations that may or may not be grouped together. This often requires maintaining a
 mental model of what variables are being mutated, where those mutations occur, and why they happen.
+
+### Performance
+
+As much as I love Java streams, they do have a performance downside. Well, it depends. If a programmer is using parallel
+streams in a multi-core environment and they are working with a large dataset that lends itself to parallelism, then
+using parallel streams can be faster than using an imperative approach. However, this is not guaranteed. There is a cost
+to parallelism and to streams as well.
+
+In the Java implementation of the solver, all of the streams that I use are sequential streams, not parallel streams. By
+using streams, my Java implementation does incur an overhead cost that does not come when using for loops and if
+statements. As a result, the implementation without streams runs faster than the implementation with streams. To give
+you some numbers, I decided to perform 30 executions of the **Run 'All Tests'** run configuration for both the Java
+implementation and the Java (no streams) implementation. I performed this test on my 2020 MacBook Air with an M1
+processor with 8GB of RAM. Running all of the unit tests for the Java implementation took an average of 13.742 seconds.
+Performing the same test on the Java (no streams) implementation took an average of 10.869 seconds.
+
+I am assuming that the reason the version with streams is more expensive is that there are more allocations and function
+calls involved. However, I have not looked into the details of this. I've only looked at the high-level results of my
+experiment. So, when working with Java, if readability is more important, then use streams. If performance is more
+important, then don't use streams. If the dataset is large and the benefits of parallelism outweigh the overhead of
+streams, then use parallel streams.
+
+Finally, I will say that the performance issue here only applies to Java streams. It does not apply to a functional
+style in general. There are other languages that support a functional style, but do not incur this performance penalty.
+For example, Rust iterators are one of that language's
+[zero-cost abstractions](https://doc.rust-lang.org/book/ch13-04-performance.html). In most cases, all of the extra
+structs, function calls, and even extra loops get optimized away.
+
+Another interesting case is Kotlin. Kotlin's functional operations such as `filter()`, `map()`, and `flatMap()` are all
+inlined. In fact, Kotlin's `inline` keyword is meant to be used with
+[higher-order functions](https://kotlinlang.org/docs/inline-functions.html). As a result of this optimization, a
+functional style in Kotlin does not come with the same performance penalty that a functional style in Java does. In
+fact, I ran the same experiment in Kotlin and found that it was even faster than the Java (no streams) implementation!
+Running all of the unit tests for the Kotlin implementation took an average of 3.475 seconds!
+
+I am very perplexed by this. I expected the performance of Kotlin to be the same as Java (no streams), not faster. At
+present, I don't really know why this is, but I am curious. At some point, I might do some more testing, rigorous
+benchmarking and profiling, and maybe even learn a bit more about Java byte code to see what the Kotlin compiler is
+doing that the Java compiler isn't.
