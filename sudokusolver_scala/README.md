@@ -1,6 +1,6 @@
 # Scala Implementation
 
-My first exposure to Scala was back in either 2014 or 2015. A colleague of mine, [@lwrage](https://github.com/lwrage)
+My first exposure to Scala was back in either 2014 or 2015. A colleague of mine, [@lwrage](https://github.com/lwrage),
 recommended that I take an online course taught by Martin Odersky called
 [Functional Programming Principles in Scala](https://www.coursera.org/learn/scala-functional-programming). Like many
 other developers of my generation, I was very familiar with imperative and object-oriented programming, but not as much
