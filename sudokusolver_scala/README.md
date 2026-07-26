@@ -108,3 +108,22 @@ Follow these steps to run the unit tests:
 
 1. In the project tool window, right-click on the folder `sudokusolver_scala/src/test`.
 2. Select **Run 'MUnit in 'test''**.
+
+## My experience with Scala
+
+I enjoyed writing the solver in a purely functional style and Scala helps a lot with that. In particular, Scala's
+immutable collections are really what has enabled me to write the solver in a purely functional manner. At some point in
+the future, I want to implement the solver in Haskell and I suspect that the Scala implementation will serve as a good
+baseline for the future Haskell implementation.
+
+Even though I appreciate what Scala has to bring to functional programming, I will admit that it is not my favorite
+language. I find some elements of Scala's syntax to be unintuitive, their official documentation leaves much to be
+desired, and the tooling seems to be less polished. I will admit that there are many features which were in Scala for a
+long time and then only later were brought into Java. It also seems like much of Kotlin's design has been inspired by
+Scala. While I appreciate what Scala has brought to the JVM world, I still view it as somewhat of an academic language.
+I think that Java and Kotlin are much better suited in a professional setting.
+
+In the following sections, I talk about some of Scala's features that I think are worth mentioning. These could be
+features that I really like or features that I find frustrating. In these sections, I will primarily be comparing Scala
+with Java and Kotlin. Note that the following is not a tutorial, but I instead describe what I like or dislike about
+these features and what it was like for me to use them.
