@@ -127,3 +127,56 @@ In the following sections, I talk about some of Scala's features that I think ar
 features that I really like or features that I find frustrating. In these sections, I will primarily be comparing Scala
 with Java and Kotlin. Note that the following is not a tutorial, but I instead describe what I like or dislike about
 these features and what it was like for me to use them.
+
+### Immutable Collections
+
+Unlike many of the other languages that I have explored, Scala genuinely has immutable collections. Scala supports both
+[mutable and immutable collections](https://docs.scala-lang.org/overviews/collections-2.13/overview.html), but I only
+used immutable collections in the solver in order to be purely functional. Once an immutable collection is constructed
+with its elements, those elements cannot change. Instead of changing a collection directly, a common approach is to
+create a new collection with the new elements that a change would have resulted in. Many Scala collections have methods
+that make it easier to create a new collection by specifying the difference from an existing collection.
+
+Selecting the right collection is a little more involved in Scala than other languages. For example, I use two different
+sequential collection types in the solver: `Vector` and `List`. The big difference between these two is how they are
+optimized for access and for updates. `Vector` is a collection that is designed to be accessed by index. Updating an
+element at a given index is also more efficient in `Vector`. On the other hand, `List` is a linked list and works well
+as a stack. It is efficient when adding elements to the head of the `List` and looking at the element at the head of the
+`List`. This approach is different from a language like Java in which it is very common to simply default to an
+`ArrayList`.
+
+I not only utilize immutable collections, but I've also mimicked this pattern and implemented `Board` as an immutable
+collection. `Board` has an `updated` method which takes row and column indices and a new element and returns a new board
+with the new element at the specified indices. The old board remains unchanged. This follows the same pattern found in
+Scala's `Vector` class. `Vector` also has an `updated` method which returns a new vector with the updated element.
+Internally, `Board` stores its data as a `Vector` of `Vector`s representing the rows of the board. `Board`'s `updated`
+method simply delegates to `Vector`'s `updated` method:
+
+```scala
+def updated[U >: T](rowIndex: Int, columnIndex: Int, element: U): Board[U] =
+  Board(rows.updated(rowIndex, rows(rowIndex).updated(columnIndex, element)))
+```
+
+What is the value of having immutable collections anyway? Why bother with the restrictions that immutable collections
+impose on a programmer? Having immutable collections makes it so much easier to reason about and guarantee the integrity
+of collections especially when multiple parts of a program hold references to the same collection. In Scala, if there
+are multiple references to the the same immutable collection, then it is very easy to guarantee that collection's
+integrity. None of the holders of the various references can mutate the collection, so it is impossible to be in a
+situation in which one part of a program is modifying the collection while another part of the program expects the
+collection's elements to be stable. The guarantees that Scala provides are much stronger than what is available in Java
+and Kotlin.
+
+In Java, care must be taken to address this question of collection mutability. This is often addressed by copying a
+collection or wrapping it in an unmodifiable view. While Java'a unmodifiable views provide runtime protection against
+mutations, the compiler cannot warn about mutation attempts that will fail at runtime. Even Java's unmodifiable lists
+still have methods such as `add()`, `remove()`, and `set()`, even if those methods simply throw an exception.
+
+Kotlin at least has different interfaces for mutable and immutable types. However, this is at times only a compile time
+guardrail without any runtime protection. In some situations, it is possible to cast a Kotlin `List` to a `MutableList`
+and perform a mutation.
+
+So, an immutable list in Java provides runtime protection, but no compile time checks while Kotlin does the opposite and
+has compile time checks, but questionable runtime protection. Scala's collections provide the strongest immutability
+guarantees at both compile time and runtime. They do not have mutating methods and cannot be cast to a mutable
+counterpart. This guarantee comes at a cost though. Scala's collections are not compatible with Java collection. When
+interfacing with Java code, one must often convert between Scala collection types and their corresponding types in Java.
