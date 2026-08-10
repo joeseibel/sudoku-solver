@@ -70,29 +70,29 @@ def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
   type CellBuilder = (Int, Int) => Cell
 
   @tailrec
-  def getCellBuilders(acc: List[CellBuilder], withCandidates: List[Char]): List[CellBuilder] = withCandidates match
+  def getCellBuilders(withCandidates: List[Char], builders: List[CellBuilder]): List[CellBuilder] = withCandidates match
     case '{' :: tail =>
 
       @tailrec
-      def collectCandidates(acc: List[Char], withCandidates: List[Char]): (Set[SudokuNumber], List[Char]) =
+      def collectCandidates(withCandidates: List[Char], candidates: List[Char]): (List[Char], Set[SudokuNumber]) =
         withCandidates match
           case '{' :: _ => throw IllegalArgumentException("Nested '{'.")
-          case '}' :: _ if acc.isEmpty => throw IllegalArgumentException("Empty \"{}\".")
-          case '}' :: tail => (acc.map(sudokuNumber).toSet, tail)
-          case ch :: tail => collectCandidates(ch :: acc, tail)
+          case '}' :: _ if candidates.isEmpty => throw IllegalArgumentException("Empty \"{}\".")
+          case '}' :: tail => (tail, candidates.map(sudokuNumber).toSet)
+          case ch :: tail => collectCandidates(tail, ch :: candidates)
           case Nil => throw IllegalArgumentException("Unmatched '{'.")
 
-      val (candidates, next) = collectCandidates(Nil, tail)
+      val (nextWithCandidates, candidates) = collectCandidates(tail, Nil)
       val builder = (row, column) => UnsolvedCell(row, column, candidates)
-      getCellBuilders(builder :: acc, next)
+      getCellBuilders(nextWithCandidates, builder :: builders)
     case '}' :: _ => throw IllegalArgumentException("Unmatched '}'.")
     case ch :: tail =>
       val value = sudokuNumber(ch)
       val builder = (row, column) => SolvedCell(row, column, value)
-      getCellBuilders(builder :: acc, tail)
-    case Nil => acc.reverse
+      getCellBuilders(tail, builder :: builders)
+    case Nil => builders.reverse
 
-  val cellBuilders = getCellBuilders(Nil, withCandidates.toList)
+  val cellBuilders = getCellBuilders(withCandidates.toList, Nil)
   require(cellBuilders.size == UnitSizeSquared, s"Found ${cellBuilders.size} cells, required $UnitSizeSquared.")
   val cells = for (row, rowIndex) <- cellBuilders.grouped(UnitSize).zipWithIndex yield
     for (cell, columnIndex) <- row.zipWithIndex yield cell(rowIndex, columnIndex)
