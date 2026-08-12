@@ -71,7 +71,7 @@ def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
 
   @tailrec
   def getCellBuilders(withCandidates: List[Char], builders: List[CellBuilder]): List[CellBuilder] = withCandidates match
-    case '{' :: '}' :: tail => throw IllegalArgumentException("Empty \"{}\".")
+    case '{' :: '}' :: _ => throw IllegalArgumentException("Empty \"{}\".")
     case '{' :: tail =>
 
       @tailrec

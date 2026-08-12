@@ -386,7 +386,7 @@ def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
 
   @tailrec
   def getCellBuilders(withCandidates: List[Char], builders: List[CellBuilder]): List[CellBuilder] = withCandidates match
-    case '{' :: '}' :: tail => throw IllegalArgumentException("Empty \"{}\".")
+    case '{' :: '}' :: _ => throw IllegalArgumentException("Empty \"{}\".")
     case '{' :: tail =>
       val closingBrace = tail.indexOf('}')
       require(closingBrace != -1, "Unmatched '{'.")
@@ -426,7 +426,7 @@ def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
 
   @tailrec
   def getCellBuilders(withCandidates: List[Char], builders: List[CellBuilder]): List[CellBuilder] = withCandidates match
-    case '{' :: '}' :: tail => throw IllegalArgumentException("Empty \"{}\".")
+    case '{' :: '}' :: _ => throw IllegalArgumentException("Empty \"{}\".")
     case '{' :: tail =>
 
       @tailrec
