@@ -180,3 +180,287 @@ has compile time checks, but questionable runtime protection. Scala's collection
 guarantees at both compile time and runtime. They do not have mutating methods and cannot be cast to a mutable
 counterpart. This guarantee comes at a cost though. Scala's collections are not compatible with Java collection. When
 interfacing with Java code, one must often convert between Scala collection types and their corresponding types in Java.
+
+### Tail Recursion
+
+The Kotlin and Java implementations of the solver are mostly functional, so implementing the solver in Scala was pretty
+straightforward. However, there are a couple functions in the Kotlin and Java implementations that weren't purely
+functional. In particular, implementing the functions `solve()` in
+[`SudokuSolver.scala`](src/main/scala/sudokusolver/scala/SudokuSolver.scala) and `parseCellsWithCandidates()` in
+[`Cell.scala`](src/main/scala/sudokusolver/scala/Cell.scala) required special attention. Both of these functions in the
+Kotlin implementation contain loops which in their conditionals inspect variables with changing state. This is a big no
+no for writing a purely functional program.
+
+The standard approach for addressing this problem is to convert any loop-based algorithms into their recursive-based
+equivalents. But wouldn't this cause a performance penalty or potentially lead to a stack overflow? This is where
+[tail recursion](https://en.wikipedia.org/wiki/Tail_call) comes in. Tail recursion is a compiler optimization which
+converts a recursive function in which the recursive call is the last operation of the function into its loop equivalent
+in the resulting executable. This allows a programmer to write a recursive function which has the same performance
+characteristics of a while loop.
+
+Tail recursion is a critical feature of functional programming languages as it is necessary for the performance of
+functional programs. Functions in Scala can be annotated with
+[`@tailrec`](https://scala-lang.org/api/3.x/scala/annotation/tailrec.html) which indicates that the programmer expects
+the function to be eligible for tail recursion. If the function cannot be optimized, then an error is produced by the
+compiler. Note that Scala will optimize eligible functions even if the annotation is absent. Therefore, the annotation
+is solely useful as a way of expressing and checking for programmer intent. It is a way of saying to the compiler, "I
+expect this function to be tail recursive. Please complain if it is not."
+
+One thing to be aware of when writing a tail recursive function is that any exception's stack trace will be condensed.
+Normally, when an exception propagates through a recursive function, there will be an entry in the stack trace for every
+recursive call. This is sometimes useful as it shows the line number of each call. However, when tail recursion is used,
+there is only one entry instead of many. This is because, as far as the JVM is concerned, the function is only called
+once. I find that this issue doesn't cause major problems, but it is worthwhile to know about.
+
+Converting loop-based functions to tail recursive functions was one of the more involved parts of implementing the
+solver in Scala. Even though I am a big fan of functional programming in general, I do find that there are some
+algorithms that are more intuitive in their loop-based form rather than their equivalent tail recursive form. To
+demonstrate this, let's look at the the function `parseCellsWithCandidates()` as an example. The following is the
+loop-based version of `parseCellsWithCandidates()` as it appears in the Kotlin implementation:
+
+```kotlin
+fun parseCellsWithCandidates(withCandidates: String): Board<Cell> {
+    val cellBuilders = mutableListOf<(row: Int, column: Int) -> Cell>()
+    var index = 0
+    while (index < withCandidates.length) {
+        when (val ch = withCandidates[index]) {
+            '{' -> {
+                index++
+                val closingBrace = withCandidates.indexOf('}', index)
+                require(closingBrace != -1) { "Unmatched '{'." }
+                require(closingBrace != index) { "Empty \"{}\"." }
+                val charsInBraces = (index..<closingBrace).map { withCandidates[it] }
+                require('{' !in charsInBraces) { "Nested '{'." }
+                val candidates = charsInBraces.mapTo(EnumSet.noneOf(SudokuNumber::class.java)) { sudokuNumber(it) }
+                cellBuilders += { row, column -> UnsolvedCell(row, column, candidates) }
+                index = closingBrace + 1
+            }
+
+            '}' -> throw IllegalArgumentException("Unmatched '}'.")
+
+            else -> {
+                val value = sudokuNumber(ch)
+                cellBuilders += { row, column -> SolvedCell(row, column, value) }
+                index++
+            }
+        }
+    }
+    require(cellBuilders.size == UNIT_SIZE_SQUARED) {
+        "Found ${cellBuilders.size} cells, required $UNIT_SIZE_SQUARED."
+    }
+    return Board(cellBuilders.chunked(UNIT_SIZE).mapIndexed { rowIndex, row ->
+        row.mapIndexed { columnIndex, cell -> cell(rowIndex, columnIndex) }
+    })
+}
+```
+
+There are a few issues that need to be addressed when converting this function to it's tail recursive equivalent.
+Specifically, the variables `cellBuilders` and `index` are mutated and the function contains a while loop. Let's go
+through the process of converting this function to Scala and making it purely functional step by step. For the first
+step, here is the function in Scala with the same mutations as the Kotlin version:
+
+```scala
+def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
+  val cellBuilders = ArrayBuffer[(Int, Int) => Cell]()
+  var index = 0
+  while index < withCandidates.length do
+    withCandidates(index) match
+      case '{' =>
+        index += 1
+        val closingBrace = withCandidates.indexOf('}', index)
+        require(closingBrace != -1, "Unmatched '{'.")
+        require(closingBrace != index, "Empty \"{}\".")
+        val charsInBraces = (index until closingBrace).map(withCandidates)
+        require(!charsInBraces.contains('{'), "Nested '{'.")
+        val candidates = charsInBraces.map(sudokuNumber).toSet
+        cellBuilders += ((row, column) => UnsolvedCell(row, column, candidates))
+        index = closingBrace + 1
+
+      case '}' => throw IllegalArgumentException("Unmatched '}'.")
+
+      case ch =>
+        val value = sudokuNumber(ch)
+        cellBuilders += ((row, column) => SolvedCell(row, column, value))
+        index += 1
+  require(cellBuilders.size == UnitSizeSquared, s"Found ${cellBuilders.size} cells, required $UnitSizeSquared.")
+  val cells = for (row, rowIndex) <- cellBuilders.grouped(UnitSize).zipWithIndex yield
+    for (cell, columnIndex) <- row.zipWithIndex yield cell(rowIndex, columnIndex)
+  Board(cells.to(Iterable))
+```
+
+Now that we have the function in Scala, let's make it more functional. The big issue will be the while loop and the
+mutations that it performs. We can replace the loop with a tail recursive function. Since the purpose of the loop is to
+populate `cellBuilders`, we'll call the new function `getCellBuilders`. For now, we'll leave the mutations of
+`cellBuilders` in place, but we will tackle the mutations of `index`. Instead of mutating `index`, the new function will
+take `index` as a parameter and its value will be updated in the recursive call. Here is the next step of
+`parseCellsWithCandidates`:
+
+```scala
+def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
+  val cellBuilders = ArrayBuffer[(Int, Int) => Cell]()
+
+  @tailrec
+  def getCellBuilders(index: Int): Unit =
+    if index < withCandidates.length then
+      withCandidates(index) match
+        case '{' =>
+          val nextIndex = index + 1
+          val closingBrace = withCandidates.indexOf('}', nextIndex)
+          require(closingBrace != -1, "Unmatched '{'.")
+          require(closingBrace != nextIndex, "Empty \"{}\".")
+          val charsInBraces = (nextIndex until closingBrace).map(withCandidates)
+          require(!charsInBraces.contains('{'), "Nested '{'.")
+          val candidates = charsInBraces.map(sudokuNumber).toSet
+          cellBuilders += ((row, column) => UnsolvedCell(row, column, candidates))
+          getCellBuilders(closingBrace + 1)
+
+        case '}' => throw IllegalArgumentException("Unmatched '}'.")
+
+        case ch =>
+          val value = sudokuNumber(ch)
+          cellBuilders += ((row, column) => SolvedCell(row, column, value))
+          getCellBuilders(index + 1)
+
+  getCellBuilders(0)
+  require(cellBuilders.size == UnitSizeSquared, s"Found ${cellBuilders.size} cells, required $UnitSizeSquared.")
+  val cells = for (row, rowIndex) <- cellBuilders.grouped(UnitSize).zipWithIndex yield
+    for (cell, columnIndex) <- row.zipWithIndex yield cell(rowIndex, columnIndex)
+  Board(cells.to(Iterable))
+```
+
+The next step is to handle the mutations of `cellBuilders`. Instead of having `getCellBuilders` modify the
+`cellBuilders` variable, it can return the final collection. We will also need to add another parameter to keep track of
+the cell builders created so far in the recursive calls. Let's also change the collection type from `ArrayBuffer` to the
+immutable collection type `List`. So now, `getCellBuilders` will take an index and a list of builders created so far.
+The recursive function will create a new list of builders with the new builder as its first element and then pass that
+new list to the next call of the function. When the function has reached the end of the string, it will reverse the list
+and return it. Finally, we will create a `CellBuilder` type alias so that we don't have to write `(Int, Int) => Cell`
+multiple places. This is the next step of our function:
+
+```scala
+def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
+  type CellBuilder = (Int, Int) => Cell
+
+  @tailrec
+  def getCellBuilders(index: Int, builders: List[CellBuilder]): List[CellBuilder] =
+    if index < withCandidates.length then
+      withCandidates(index) match
+        case '{' =>
+          val nextIndex = index + 1
+          val closingBrace = withCandidates.indexOf('}', nextIndex)
+          require(closingBrace != -1, "Unmatched '{'.")
+          require(closingBrace != nextIndex, "Empty \"{}\".")
+          val charsInBraces = (nextIndex until closingBrace).map(withCandidates)
+          require(!charsInBraces.contains('{'), "Nested '{'.")
+          val candidates = charsInBraces.map(sudokuNumber).toSet
+          val builder = (row, column) => UnsolvedCell(row, column, candidates)
+          getCellBuilders(closingBrace + 1, builder :: builders)
+
+        case '}' => throw IllegalArgumentException("Unmatched '}'.")
+
+        case ch =>
+          val value = sudokuNumber(ch)
+          val builder = (row, column) => SolvedCell(row, column, value)
+          getCellBuilders(index + 1, builder :: builders)
+    else
+      builders.reverse
+
+  val cellBuilders = getCellBuilders(0, Nil)
+  require(cellBuilders.size == UnitSizeSquared, s"Found ${cellBuilders.size} cells, required $UnitSizeSquared.")
+  val cells = for (row, rowIndex) <- cellBuilders.grouped(UnitSize).zipWithIndex yield
+    for (cell, columnIndex) <- row.zipWithIndex yield cell(rowIndex, columnIndex)
+  Board(cells.to(Iterable))
+```
+
+Hooray! Our function is now purely functional. There are no more mutations. However, we aren't finished since the
+function isn't quite idiomatic Scala yet. In Scala, when working with a recursive function that operates on a
+collection, it is customary to use pattern matching on the collection and to split a collection into its first element
+and the remainder of the collection. This often shows up as the pattern `head :: tail`. To take advantage of this, let's
+convert `withCandidates` from a `String` to a `List[Char]` so that we can use pattern matching. We will also update
+`getCellBuilders` so that it no longer takes an index as a parameter, but instead takes the remaining `withCandidates`
+list that is left to process. Here is the next step of our function:
+
+```scala
+def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
+  type CellBuilder = (Int, Int) => Cell
+
+  @tailrec
+  def getCellBuilders(withCandidates: List[Char], builders: List[CellBuilder]): List[CellBuilder] = withCandidates match
+    case '{' :: tail =>
+      val closingBrace = tail.indexOf('}')
+      require(closingBrace != -1, "Unmatched '{'.")
+      require(closingBrace != 0, "Empty \"{}\".")
+      val charsInBraces = tail.take(closingBrace)
+      require(!charsInBraces.contains('{'), "Nested '{'.")
+      val candidates = charsInBraces.map(sudokuNumber).toSet
+      val builder = (row, column) => UnsolvedCell(row, column, candidates)
+      getCellBuilders(tail.drop(closingBrace + 1), builder :: builders)
+    case '}' :: _ => throw IllegalArgumentException("Unmatched '}'.")
+    case ch :: tail =>
+      val value = sudokuNumber(ch)
+      val builder = (row, column) => SolvedCell(row, column, value)
+      getCellBuilders(tail, builder :: builders)
+    case Nil => builders.reverse
+
+  val cellBuilders = getCellBuilders(withCandidates.toList, Nil)
+  require(cellBuilders.size == UnitSizeSquared, s"Found ${cellBuilders.size} cells, required $UnitSizeSquared.")
+  val cells = for (row, rowIndex) <- cellBuilders.grouped(UnitSize).zipWithIndex yield
+    for (cell, columnIndex) <- row.zipWithIndex yield cell(rowIndex, columnIndex)
+  Board(cells.to(Iterable))
+```
+
+This is better, but we aren't using pattern matching for the candidates within the braces. Can we use pattern matching
+for those characters as well? It turns out that we can if we create another tail recursive function. This function will
+be called `collectCandidates` and will be used to handle all of the characters in the braces. Similar to
+`getCellBuilders`, `collectCandidates` will take `withCandidates` as a parameter, the `candidates` processed so far as a
+parameter, and return the final set of `SudokuNumber` objects that represent all of the candidates between the braces.
+However, since `collectCandidates` and `getCellBuilders` both advance through `withCandidates`, `collectCandidates` will
+need to return what remains of `withCandidates` back to `getCellBuilders`. As a result of this, `collectCandidates` will
+actually return the tuple `(List[Char], Set[SudokuNumber])`. The first element is what remains of `withCandidates` and
+the second element contains the collected candidates. Finally, we have arrived at our last modification of
+`parseCellsWithCandidates`:
+
+```scala
+def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
+  type CellBuilder = (Int, Int) => Cell
+
+  @tailrec
+  def getCellBuilders(withCandidates: List[Char], builders: List[CellBuilder]): List[CellBuilder] = withCandidates match
+    case '{' :: tail =>
+
+      @tailrec
+      def collectCandidates(withCandidates: List[Char], candidates: List[Char]): (List[Char], Set[SudokuNumber]) =
+        withCandidates match
+          case '{' :: _ => throw IllegalArgumentException("Nested '{'.")
+          case '}' :: _ if candidates.isEmpty => throw IllegalArgumentException("Empty \"{}\".")
+          case '}' :: tail => (tail, candidates.map(sudokuNumber).toSet)
+          case ch :: tail => collectCandidates(tail, ch :: candidates)
+          case Nil => throw IllegalArgumentException("Unmatched '{'.")
+
+      val (nextWithCandidates, candidates) = collectCandidates(tail, Nil)
+      val builder = (row, column) => UnsolvedCell(row, column, candidates)
+      getCellBuilders(nextWithCandidates, builder :: builders)
+    case '}' :: _ => throw IllegalArgumentException("Unmatched '}'.")
+    case ch :: tail =>
+      val value = sudokuNumber(ch)
+      val builder = (row, column) => SolvedCell(row, column, value)
+      getCellBuilders(tail, builder :: builders)
+    case Nil => builders.reverse
+
+  val cellBuilders = getCellBuilders(withCandidates.toList, Nil)
+  require(cellBuilders.size == UnitSizeSquared, s"Found ${cellBuilders.size} cells, required $UnitSizeSquared.")
+  val cells = for (row, rowIndex) <- cellBuilders.grouped(UnitSize).zipWithIndex yield
+    for (cell, columnIndex) <- row.zipWithIndex yield cell(rowIndex, columnIndex)
+  Board(cells.to(Iterable))
+```
+
+While this final version is purely functional and takes full advantage of Scala's features such as pattern matching, I
+do find the Kotlin version easier to read. Therefore, I find that I am an advocate of mostly functional, but not purely
+functional programming. There are a few cases in which an imperative approach is easier to understand. These cases are
+rare, but they do happen.
+
+When writing these descriptions of Scala's features, I wanted to avoid writing tutorials and simply express my opinion
+of these features. For tail recursion, I decided that this would be a worthy exception. Since I rarely write purely
+functional programs, I thought it would be good to document an example process of how to go from an imperative
+loop-based function to its functional equivalent. If I ever need to go through this process again, I might refer to this
+section to guide my process.
