@@ -71,13 +71,13 @@ def parseCellsWithCandidates(withCandidates: String): Board[Cell] =
 
   @tailrec
   def getCellBuilders(withCandidates: List[Char], builders: List[CellBuilder]): List[CellBuilder] = withCandidates match
+    case '{' :: '}' :: tail => throw IllegalArgumentException("Empty \"{}\".")
     case '{' :: tail =>
 
       @tailrec
       def collectCandidates(withCandidates: List[Char], candidates: List[Char]): (List[Char], Set[SudokuNumber]) =
         withCandidates match
           case '{' :: _ => throw IllegalArgumentException("Nested '{'.")
-          case '}' :: _ if candidates.isEmpty => throw IllegalArgumentException("Empty \"{}\".")
           case '}' :: tail => (tail, candidates.map(sudokuNumber).toSet)
           case ch :: tail => collectCandidates(tail, ch :: candidates)
           case Nil => throw IllegalArgumentException("Unmatched '{'.")
