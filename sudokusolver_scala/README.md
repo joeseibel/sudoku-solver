@@ -464,3 +464,115 @@ of these features. For tail recursion, I decided that this would be a worthy exc
 functional programs, I thought it would be good to document an example process of how to go from an imperative
 loop-based function to its functional equivalent. If I ever need to go through this process again, I might refer to this
 section to guide my process.
+
+### For Comprehensions
+
+One of the more interesting syntactic sugar features that Scala has to offer is
+[for comprehensions](https://docs.scala-lang.org/tour/for-comprehensions.html). This construct allows a programmer to
+replace multiple calls to `flatMap`, `filter`, and `map` into a single condensed expression. Often times, a for
+comprehension can be used to reduce layers of nesting and make it easier to express multiple collection processing
+operations. A for comprehension consists of the following components:
+
+- **A List of Enumerators**: Each enumerator can be one of the following kinds:
+  - **Generators**: These are the fundamental enumerators of a for comprehension and define the collections that the for
+    comprehension will loop through. Generators take the form `name <- collection` and specify that the collection will
+    be looped through and that each element will be accessible through the given name.
+  - **Guards**: A guard takes the form `if condition` and defines what elements will be filtered out of the for
+    comprehension.
+  - **Assignments**: An assignment takes the form `name = expression` and simply makes the name available in the
+    remainder of the for comprehension.
+- **Yield Statement**: The yield statement is an expression, which might be a code block, that returns a value. The
+  yield statement is evaluated for each combination of elements produced by all the generators and filtered out by the
+  guards. The final result of the whole for comprehension is a collection of all the elements that are produced by the
+  multiple executions of the yield statement.
+
+To demonstrate the benefits of a for comprehension, let's look at a few examples. This first example is the method
+`zipEveryQuad` from the file [`Collections.scala`](src/main/scala/sudokusolver/scala/Collections.scala):
+
+```scala
+def zipEveryQuad: IndexedSeq[(T, T, T, T)] =
+  for
+    (first, firstIndex) <- seq.zipWithIndex
+    (second, secondIndex) <- seq.zipWithIndex.drop(firstIndex + 1)
+    (third, thirdIndex) <- seq.zipWithIndex.drop(secondIndex + 1)
+    fourth <- seq.drop(thirdIndex + 1)
+  yield (first, second, third, fourth)
+```
+
+The method `zipEveryQuad` only has four generators, no guards, and no assignments. This is what `zipEveryQuad` would
+look like without using a for comprehension:
+
+```scala
+def zipEveryQuad: IndexedSeq[(T, T, T, T)] =
+  seq.zipWithIndex.flatMap { (first, firstIndex) =>
+    seq.zipWithIndex.drop(firstIndex + 1).flatMap { (second, secondIndex) =>
+      seq.zipWithIndex.drop(secondIndex + 1).flatMap { (third, thirdIndex) =>
+        seq.drop(thirdIndex + 1).map(fourth => (first, second, third, fourth))
+      }
+    }
+  }
+```
+
+I personally find the version with the for comprehension a little easier to read than the version without. This next
+example is the method `xCyclesRule2` from the file
+[`XCycles.scala`](src/main/scala/sudokusolver/scala/logic/diabolical/XCycles.scala):
+
+```scala
+def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
+  for
+    candidate <- SudokuNumber.values.toSeq
+    graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles()
+    vertex <- graph.nodes
+    if alternatingCycleExists(graph, vertex, Strength.STRONG)
+  yield SetValue(vertex, candidate)
+```
+
+This is a little more of an interesting example since `xCyclesRule2` has two generators, a guard, and an assignment.
+This is what `xCyclesRule2` would look like without using a for comprehension:
+
+```scala
+def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
+  SudokuNumber.values.toSeq.flatMap { candidate =>
+    val graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles()
+    graph.nodes.filter(vertex => alternatingCycleExists(graph, vertex, STRONG)).map(SetValue(_, candidate))
+  }
+```
+
+Finally, let's look at one of the more complicated for comprehensions in the solver. This one is found in the method
+`uniqueRectanglesType3BWithTriplePseudoCells` from the file
+[`UniqueRectangles.scala`](src/main/scala/sudokusolver/scala/logic/diabolical/UniqueRectangles.scala):
+
+```scala
+for
+  (tripleA, tripleB) <- unit.toIndexedSeq.zipEveryPair
+  tripleCandidates = additionalCandidates | tripleA.candidates | tripleB.candidates
+  if tripleCandidates.size == 3
+  cell <- unit
+  if cell != tripleA && cell != tripleB
+  candidate <- cell.candidates & tripleCandidates
+yield cell -> candidate
+```
+
+This example has three generators, two guards, and an assignment. The above example would look like the following if it
+wasn't a for comprehension:
+
+```scala
+unit.toIndexedSeq.zipEveryPair.flatMap { (tripleA, tripleB) =>
+  val tripleCandidates = additionalCandidates | tripleA.candidates | tripleB.candidates
+  if tripleCandidates.size == 3 then
+    unit.filter(cell => cell != tripleA && cell != tripleB)
+      .flatMap(cell => (cell.candidates & tripleCandidates).map(cell -> _))
+  else
+    Nil
+}
+```
+
+As far as I have seen, Scala seems to be unique with its offering of for comprehensions. Yes, Python does have list
+comprehensions, but they are much simpler than Scala's for comprehensions. Python's list comprehensions are best suited
+for handling a single filtering operation and/or a single transformation operation on a list. They are not suited for
+anything more complex, but Scala's for comprehensions handle the complexity very well.
+
+Even though I appreciate for comprehensions, I find that I don't miss them too much in other languages. Using `flatMap`,
+`filter`, and `map` work very well and I find using them to be readable enough. So, as far as modern programming
+language features go, I find for comprehensions to be a neat idea, but I don't think I would push for it in languages
+like Kotlin, Swift, or Rust.
