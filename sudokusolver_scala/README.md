@@ -576,3 +576,92 @@ Even though I appreciate for comprehensions, I find that I don't miss them too m
 `filter`, and `map` work very well and I find using them to be readable enough. So, as far as modern programming
 language features go, I find for comprehensions to be a neat idea, but I don't think I would push for it in languages
 like Kotlin, Swift, or Rust.
+
+### Partial Functions
+
+Another unique offering that Scala provides are
+[partial functions](https://docs.scala-lang.org/scala3/book/fun-partial-functions.html). These are functions that accept
+only a subset of values of the function's parameter types. For example, it is possible to specify a partial function
+that accepts a parameter with the type of `int`, but only accepts integers that are positive and even. In this example,
+the function would not be able to accept a negative integer, zero, or an odd integer and would throw an exception if
+such a value were to be passed to the function. All partial functions are actually objects that implement the trait
+`PartialFunction` and have the method `isDefinedAt` which is used to determine if the function accepts a particular
+value.
+
+In practice, it is rare for someone to manually write a class that implements `PartialFunction` as there is special
+lambda syntax that gets compiled into a partial function. Instead of starting a lambda with a parameter list, a partial
+function starts with one or more pattern matching cases. A partial function only applies for values that match any of
+the cases. Let us look at a simple example of a partial function:
+
+```scala
+{ case cell: UnsolvedCell if cell.candidates.contains(candidate) => cell }
+```
+
+In this example, the partial function only applies for values that are instances of `UnsolvedCell` in which the guard
+`if cell.candidates.contains(candidate)` evaluates to `true`. All other values are rejected by this partial function.
+
+Partial functions are mostly used as a parameter to the `collect` method which is found on Scala's collections.
+`collect` filters items in the collection to only the values that the partial function accepts and then calls the
+partial function for each value. This is a syntactically concise way of combining filtering and transformation in a
+single step. Here is an example of a partial function from
+[`NakedSingles.scala`](src/main/scala/sudokusolver/scala/logic/simple/NakedSingles.scala) that filters by type, contains
+a guard, and performs a transformation:
+
+```scala
+def nakedSingles(board: Board[Cell]): Seq[SetValue] =
+  board.cells.collect { case cell: UnsolvedCell if cell.candidates.size == 1 => SetValue(cell, cell.candidates.head) }
+```
+
+The concept of the `collect` method paired with a partial function is something that I have not seen in other languages
+so far. In many other languages, the closest alternative to partial functions would be to call a flat map based
+operation and pass in a lambda that returns an optional. A good example of this difference can be found in the method
+`groupedXCyclesRule3` from the file
+[`GroupedXCycles.scala`](src/main/scala/sudokusolver/scala/logic/extreme/GroupedXCycles.scala). Scala uses `collect` and
+a partial function while Swift and Rust both use flat map on a lambda that returns an optional. Here is the Scala
+version:
+
+```scala
+graph.nodes
+  .map(_.outer)
+  .collect { case cell: UnsolvedCell if alternatingCycleExists(graph, cell, Strength.WEAK) => cell -> candidate }
+```
+
+The Swift version instead uses `compactMap` which is similar to `flatMap` except that it is used for lambdas that return
+an `Optional`:
+
+```swift
+graph.indices.compactMap { index in
+    if case .cell(let cell) = graph.vertexAtIndex(index),
+        alternatingCycleExists(graph: graph, index: index, adjacentEdgesType: .weak)
+    {
+        (cell, candidate)
+    } else {
+        nil
+    }
+}
+```
+
+The Rust version uses `filter_map` which is also similar to `flat_map` except that it expects a lambda which returns an
+`Option`:
+
+```rust
+graph.node_indices().filter_map(move |index| match graph[index].as_cell_node() {
+    Ok(cell) if graphs::alternating_cycle_exists(&graph, index, Strength::Weak) => Some((cell, candidate)),
+    _ => None,
+})
+```
+
+As you can see from the above examples, Scala's `collect` is a little more concise than the Swift and Rust versions.
+
+Finally, I use `collect` and partial functions a lot in the solver to simply filter by type. This often times looks
+something like this:
+
+```scala
+board.cells.collect { case cell: UnsolvedCell => cell }
+```
+
+I do find this to be a little more clunky than Kotlin's `filterIsInstance`, which I greatly prefer:
+
+```kotlin
+board.cells.filterIsInstance<UnsolvedCell>()
+```
