@@ -51,13 +51,13 @@ pub fn finned_swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
                     .iter()
                     .filter(|unit| (2..=3).contains(&unit.len()))
                     .zip_every_pair()
-                    .flat_map(|(base_unit_a, base_unit_b)| {
+                    .filter_map(|(base_unit_a, base_unit_b)| {
                         let other_unit_indices: HashSet<_> =
                             base_unit_a.iter().chain(base_unit_b).map(|&cell| get_other_unit_index(cell)).collect();
                         if other_unit_indices.len() == 3 {
                             let removals = units_with_candidate
                                 .iter()
-                                .flat_map({
+                                .filter_map({
                                     let get_unit_index = &get_unit_index;
                                     let get_other_unit_index = &get_other_unit_index;
                                     let get_finned_cell = &get_finned_cell;

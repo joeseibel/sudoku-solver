@@ -34,12 +34,12 @@ pub fn create_rectangles(board: &Board<Cell>) -> impl Iterator<Item = Rectangle<
     board.rows().zip_every_pair().flat_map(|(row_a, row_b)| {
         row_a
             .zip(row_b)
-            .flat_map(|(cell_a, cell_b)| match (cell_a, cell_b) {
+            .filter_map(|(cell_a, cell_b)| match (cell_a, cell_b) {
                 (Cell::UnsolvedCell(cell_a), Cell::UnsolvedCell(cell_b)) => Some((cell_a, cell_b)),
                 _ => None,
             })
             .zip_every_pair()
-            .flat_map(|((cell_a, cell_b), (cell_c, cell_d))| {
+            .filter_map(|((cell_a, cell_b), (cell_c, cell_d))| {
                 let cells = [cell_a, cell_b, cell_c, cell_d];
                 let mut common_candidates: HashSet<_> = SudokuNumber::iter().collect();
                 for cell in cells {

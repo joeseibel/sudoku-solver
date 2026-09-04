@@ -47,7 +47,7 @@ pub fn empty_rectangles(board: &Board<Cell>) -> Vec<BoardModification> {
                     unit.filter(move |strong_link_1| {
                         strong_link_1.block() != block && strong_link_1.has_candidate(candidate)
                     })
-                    .flat_map(move |strong_link_1| {
+                    .filter_map(move |strong_link_1| {
                         let mut other_unit = get_other_unit(get_other_unit_index(strong_link_1))
                             .filter(|&cell| cell.has_candidate(candidate) && cell != strong_link_1);
                         if let Some(strong_link_2) = other_unit.next()

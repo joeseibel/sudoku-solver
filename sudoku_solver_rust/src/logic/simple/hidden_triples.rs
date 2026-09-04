@@ -17,7 +17,7 @@ pub fn hidden_triples(board: &Board<Cell>) -> Vec<BoardModification> {
         .units()
         .flat_map(|unit| {
             let unit: Vec<_> = unit.collect();
-            SudokuNumber::iter().zip_every_triple().flat_map(move |(a, b, c)| {
+            SudokuNumber::iter().zip_every_triple().filter_map(move |(a, b, c)| {
                 let cells: Vec<_> = unit
                     .iter()
                     .copied()

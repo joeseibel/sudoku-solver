@@ -9,7 +9,7 @@ pub fn prune_candidates(board: &Board<Cell>) -> Vec<BoardModification> {
     board
         .cells()
         .unsolved_cells()
-        .flat_map(|cell| {
+        .filter_map(|cell| {
             let same_row = board.get_row(cell.row());
             let same_column = board.get_column(cell.column());
             let same_block = board.get_block(cell.block());

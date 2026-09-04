@@ -17,7 +17,7 @@ pub fn hidden_quads(board: &Board<Cell>) -> Vec<BoardModification> {
         .units()
         .flat_map(|unit| {
             let unit: Vec<_> = unit.collect();
-            SudokuNumber::iter().zip_every_quad().flat_map(move |(a, b, c, d)| {
+            SudokuNumber::iter().zip_every_quad().filter_map(move |(a, b, c, d)| {
                 let cells: Vec<_> = unit
                     .iter()
                     .copied()

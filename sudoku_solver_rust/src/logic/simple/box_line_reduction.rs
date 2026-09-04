@@ -24,7 +24,7 @@ pub fn box_line_reduction(board: &Board<Cell>) -> Vec<BoardModification> {
                 get_unit_index: impl Fn(&dyn Location) -> usize,
             ) -> impl Iterator<Item = LocatedCandidate<'_>> {
                 units
-                    .flat_map(|unit| {
+                    .filter_map(|unit| {
                         let mut unit = unit.peekable();
                         let &first_cell = unit.peek().unwrap();
                         let block_indices: HashSet<_> = unit

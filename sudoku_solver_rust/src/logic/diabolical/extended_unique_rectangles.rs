@@ -26,7 +26,7 @@ fn get_removals<'a, U: Iterator<Item = &'a Cell>>(
         .flat_map(|(unit_a, unit_b)| {
             unit_a
                 .zip(unit_b)
-                .flat_map(|(cell_a, cell_b)| {
+                .filter_map(|(cell_a, cell_b)| {
                     if let Cell::UnsolvedCell(cell_a) = cell_a
                         && let Cell::UnsolvedCell(cell_b) = cell_b
                     {

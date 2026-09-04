@@ -28,7 +28,7 @@ pub fn swordfish(board: &Board<Cell>) -> Vec<BoardModification> {
             ) -> impl Iterator<Item = LocatedCandidate<'a>> {
                 units
                     .zip_every_triple()
-                    .flat_map(move |(unit_a, unit_b, unit_c)| {
+                    .filter_map(move |(unit_a, unit_b, unit_c)| {
                         let a_with_candidate: Vec<_> =
                             unit_a.unsolved_cells().filter(|cell| cell.candidates().contains(&candidate)).collect();
                         let b_with_candidate: Vec<_> =

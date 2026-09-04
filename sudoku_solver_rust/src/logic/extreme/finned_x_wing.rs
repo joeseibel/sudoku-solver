@@ -56,7 +56,7 @@ pub fn finned_x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                 let units: Vec<Vec<_>> = units.map(Iterator::collect).collect();
                 units
                     .iter()
-                    .flat_map(|base_unit| {
+                    .filter_map(|base_unit| {
                         let mut with_candidate = base_unit
                             .iter()
                             .copied()
@@ -72,7 +72,7 @@ pub fn finned_x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                                 .filter(|finned_unit| {
                                     finned_unit.first().unwrap().block() != base_unit.first().unwrap().block()
                                 })
-                                .flat_map(|finned_unit| {
+                                .filter_map(|finned_unit| {
                                     let finned_unit_by_block = finned_unit
                                         .iter()
                                         .copied()

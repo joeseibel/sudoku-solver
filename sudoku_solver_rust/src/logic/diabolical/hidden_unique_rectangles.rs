@@ -14,7 +14,7 @@ use crate::{
 // two cells are the only cells with the candidate in a given row or column.
 pub fn hidden_unique_rectangles(board: &Board<Cell>) -> Vec<BoardModification> {
     rectangles::create_rectangles(board)
-        .flat_map(|rectangle| {
+        .filter_map(|rectangle| {
             let (floor, roof): (Vec<_>, Vec<_>) =
                 rectangle.cells().iter().partition(|cell| cell.candidates().len() == 2);
             if let [floor] = floor[..] {

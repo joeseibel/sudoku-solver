@@ -37,7 +37,7 @@ pub fn xyz_wing(board: &Board<Cell>) -> Vec<BoardModification> {
                             union.len() == 3
                         }
                 })
-                .flat_map(move |(wing_a, wing_b)| {
+                .filter_map(move |(wing_a, wing_b)| {
                     let mut candidates = wing_a.candidates().intersection(wing_b.candidates());
                     if let Some(&candidate) = candidates.next()
                         && candidates.next().is_none()

@@ -36,7 +36,7 @@ pub fn xy_chains(board: &Board<Cell>) -> Vec<BoardModification> {
             vertices
                 .into_iter()
                 .zip_every_pair()
-                .flat_map({
+                .filter_map({
                     let graph = &graph;
                     move |(vertex_a @ (cell_a, _), vertex_b @ (cell_b, _))| {
                         let mut visible_cells = board

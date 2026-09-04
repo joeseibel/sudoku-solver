@@ -131,7 +131,7 @@ pub fn grouped_x_cycles_rule_2(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
             let graph = build_graph(board, candidate);
-            graph.node_indices().flat_map(move |index| match graph[index].as_cell_node() {
+            graph.node_indices().filter_map(move |index| match graph[index].as_cell_node() {
                 Ok(cell) if graphs::alternating_cycle_exists(&graph, index, Strength::Strong) => {
                     Some(SetValue::from_cell(cell, candidate))
                 }
@@ -152,7 +152,7 @@ pub fn grouped_x_cycles_rule_3(board: &Board<Cell>) -> Vec<BoardModification> {
     SudokuNumber::iter()
         .flat_map(|candidate| {
             let graph = build_graph(board, candidate);
-            graph.node_indices().flat_map(move |index| match graph[index].as_cell_node() {
+            graph.node_indices().filter_map(move |index| match graph[index].as_cell_node() {
                 Ok(cell) if graphs::alternating_cycle_exists(&graph, index, Strength::Weak) => Some((cell, candidate)),
                 _ => None,
             })

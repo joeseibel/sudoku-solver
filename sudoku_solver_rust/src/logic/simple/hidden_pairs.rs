@@ -15,7 +15,7 @@ pub fn hidden_pairs(board: &Board<Cell>) -> Vec<BoardModification> {
             let unit: Vec<_> = unit.collect();
             SudokuNumber::iter()
                 .zip_every_pair()
-                .flat_map(move |(a, b)| {
+                .filter_map(move |(a, b)| {
                     let cells_with_a: Vec<_> =
                         unit.iter().copied().unsolved_cells().filter(|cell| cell.candidates().contains(&a)).collect();
                     let cells_with_b: Vec<_> =

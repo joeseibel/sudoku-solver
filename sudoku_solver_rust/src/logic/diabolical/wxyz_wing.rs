@@ -21,7 +21,7 @@ pub fn wxyz_wing(board: &Board<Cell>) -> Vec<BoardModification> {
         .unsolved_cells()
         .filter(|cell| cell.candidates().len() <= 4)
         .zip_every_quad()
-        .flat_map(|(a, b, c, d)| {
+        .filter_map(|(a, b, c, d)| {
             let quad = [a, b, c, d];
             let mut candidates = HashSet::new();
             for cell in quad {

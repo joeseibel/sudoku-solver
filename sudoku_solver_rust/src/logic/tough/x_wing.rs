@@ -27,7 +27,7 @@ pub fn x_wing(board: &Board<Cell>) -> Vec<BoardModification> {
             ) -> impl Iterator<Item = LocatedCandidate<'a>> {
                 units
                     .zip_every_pair()
-                    .flat_map(move |(unit_a, unit_b)| {
+                    .filter_map(move |(unit_a, unit_b)| {
                         let unit_a: Vec<_> = unit_a.unsolved_cells().collect();
                         let unit_b: Vec<_> = unit_b.unsolved_cells().collect();
                         let a_with_candidate: Result<[_; 2], _> = unit_a

@@ -313,14 +313,14 @@ pub trait IteratorCellExt<'a> {
 
 impl<'a, I: Iterator<Item = &'a Cell>> IteratorCellExt<'a> for I {
     fn solved_cells(self) -> impl Iterator<Item = &'a SolvedCell> {
-        self.flat_map(|cell| match cell {
+        self.filter_map(|cell| match cell {
             Cell::SolvedCell(solved_cell) => Some(solved_cell),
             Cell::UnsolvedCell(_) => None,
         })
     }
 
     fn unsolved_cells(self) -> impl Iterator<Item = &'a UnsolvedCell> {
-        self.flat_map(|cell| match cell {
+        self.filter_map(|cell| match cell {
             Cell::SolvedCell(_) => None,
             Cell::UnsolvedCell(unsolved_cell) => Some(unsolved_cell),
         })
