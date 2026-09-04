@@ -81,8 +81,9 @@ def groupedXCyclesRule2(board: Board[Cell]): Seq[SetValue] =
     val graph = buildGraphGroupedXCycles(board, candidate)
     graph.nodes
       .map(_.outer)
-      .collect { case cell: UnsolvedCell if alternatingCycleExists(graph, cell, Strength.STRONG) => cell }
-      .map(SetValue(_, candidate))
+      .collect { case cell: UnsolvedCell
+        if alternatingCycleExists(graph, cell, Strength.STRONG) => SetValue(cell, candidate)
+      }
   }
 
 /*
@@ -99,8 +100,7 @@ def groupedXCyclesRule3(board: Board[Cell]): Seq[RemoveCandidates] =
     val graph = buildGraphGroupedXCycles(board, candidate)
     graph.nodes
       .map(_.outer)
-      .collect { case cell: UnsolvedCell if alternatingCycleExists(graph, cell, Strength.WEAK) => cell }
-      .map(_ -> candidate)
+      .collect { case cell: UnsolvedCell if alternatingCycleExists(graph, cell, Strength.WEAK) => cell -> candidate }
   }.mergeToRemoveCandidates
 
 extension (graph: Graph[Node, StrengthEdge[Node]])
