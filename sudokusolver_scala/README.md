@@ -665,3 +665,50 @@ I do find this to be a little more clunky than Kotlin's `filterIsInstance`, whic
 ```kotlin
 board.cells.filterIsInstance<UnsolvedCell>()
 ```
+
+### Union Types
+
+One of the neat features that Scala offers are [union types](https://docs.scala-lang.org/scala3/book/types-union.html).
+They allow a programmer to specify a list of acceptable types without having to create a separate hierarchy of subtypes.
+As such, union types are one of Scala's algebraic data types alongside sealed types and enumerations.
+
+When would you want to use a sealed type and when would you want to use a union type? My general approach is that if I
+am in control of all of the member types and it makes sense for them to all be declared in the same file, then I will
+use a sealed type. Otherwise, I will use a union type. Union types can be very helpful when you want an algebraic data
+type that includes a type that you are not in control of.
+
+I have used union types exactly once in the solver. Here is the declaration of the sole union type found in the file
+[`GroupedXCycles.scala`](src/main/scala/sudokusolver/scala/logic/extreme/GroupedXCycles.scala):
+
+```scala
+type Node = UnsolvedCell | Group
+```
+
+In this case, I wanted the types `Node` and `Group` to be local to the file `GroupedXCycles.scala`. However, the type
+`UnsolvedCell` is not declared in the same file, so making `Node` a sealed type would be a bit more tricky. A union type
+allows `UnsolvedCell` to be untouched and to be used here.
+
+The other JVM languages that I have implemented the solver in don't have union types. In those situations, I used a
+traditional type hierarchy, but I had to create a wrapper type called `CellNode` that only contains an `UnsolvedCell`.
+Here is what `Node` and `CellNode` look like in Kotlin:
+
+```kotlin
+interface Node {
+    val row: Int?
+    val column: Int?
+    val block: Int
+    val cells: Set<UnsolvedCell>
+}
+
+data class CellNode(val cell: UnsolvedCell) : Node {
+    override val row: Int = cell.row
+    override val column: Int = cell.column
+    override val block: Int = cell.block
+    override val cells: Set<UnsolvedCell> by lazy { setOf(cell) }
+
+    override fun toString(): String = cell.vertexLabel
+}
+```
+
+I'm happy that Scala provides union types as they can be used to solve some specific problems, but I feel like their
+usefulness is a little limited simply because Scala offers sealed types as well.
