@@ -712,3 +712,26 @@ data class CellNode(val cell: UnsolvedCell) : Node {
 
 I'm happy that Scala provides union types as they can be used to solve some specific problems, but I feel like their
 usefulness is a little limited simply because Scala offers sealed types as well.
+
+### Other Modern Features
+
+Scala has a number of nice features that also show up in Kotlin and Java. Since I've written about these features
+extensively in my descriptions of Kotlin and Java, I felt that I didn't need to repeat myself here, but it was still
+worthwhile to mention them:
+
+- [Sealed types](https://docs.scala-lang.org/scala3/book/types-adts-gadts.html): These work exactly the same as sealed
+  types in Kotlin and Java.
+- [Case classes](https://docs.scala-lang.org/tour/case-classes.html): These are very similar to data classes in Kotlin
+  and records in Java. Similar to Kotlin and Java, case classes in Scala can be used in pattern matching, but the
+  mechanism that makes this work is different in each language.
+- [Extension methods](https://docs.scala-lang.org/scala3/book/ca-extension-methods.html): These works very similar to
+  extensions in Kotlin, but the syntax is a bit different.
+
+Sealed types and case classes showed up in Scala first, then arrived in Kotlin, and then, many years later, finally
+arrived in Java. Even though I'm not writing about these features in great detail here, I do want to acknowledge that
+Scala pioneered them in the JVM.
+
+Extension methods are a more recent addition and have only showed up in Scala 3. They have replaced implicit classes.
+One thing that Scala 3 tried to address was all of the confusion around implicit classes, implicit conversions, and
+implicit parameters. The `implicit` keyword has caused so much confusion in Scala 2 and has allowed people to write
+completely unreadable code. Scala listened to its users and gave us more manageable constructs like extension methods.
