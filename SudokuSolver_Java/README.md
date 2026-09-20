@@ -12,6 +12,12 @@ environment was restricted to an older Java release (I think Java 8, but maybe J
 Java's latest features in the workplace. As I have been exploring new features, I have limited myself to only utilizing
 fully released features. I decided to not experiment with preview or incubator features.
 
+While I was in the midst of writing up my opinion of the various languages that I have implemented the solver in,
+CultRepo released an amazing documentary called
+[Write Once, Run Forever: The Story of Java](https://youtu.be/ZqGSg4b_cZA). It features key people from the history of
+Java including James Gosling, Joshua Bloch, and Brian Goetz. I found it captivating to watch the human story behind the
+language that I feel so familiar with. You should definitely go and watch it!
+
 ## Development Setup
 
 Follow these steps to setup a development environment:
