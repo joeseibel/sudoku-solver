@@ -735,3 +735,218 @@ Extension methods are a more recent addition and have only showed up in Scala 3.
 One thing that Scala 3 tried to address was all of the confusion around implicit classes, implicit conversions, and
 implicit parameters. The `implicit` keyword has caused so much confusion in Scala 2 and has allowed people to write
 completely unreadable code. Scala listened to its users and gave us more manageable constructs like extension methods.
+
+### Syntax
+
+Scala's syntax is an area that has unfortunately provided some friction for me. I didn't notice this at first when
+writing Scala, but I noticed it later when returning to Scala after being away from the language for a while. There have
+been times when I'll look at the Scala implementation of the solver for the first time in a while and have a hard time
+understanding what my code is doing. I'll understand it again once I go look up again the specific syntax that was
+confusing me. For me to understand Scala syntax, I have to be actively developing in Scala. Otherwise, I find the syntax
+to at times be unintuitive. I have never had this problem with any of my other implementations. For example, I always
+find Kotlin syntax to be intuitive, even if I haven't been working with Kotlin in a while.
+
+#### Underscores
+
+My first complaint is that Scala has way too many uses for the underscore character. I won't get into all of its uses,
+but I will highlight a couple of them. First of all, the underscore is used as a placeholder for a name instead of
+having an unused name. This shows up a lot in pattern matching such as in the following incomplete example:
+
+```scala
+board(modification.row, modification.column) match
+  case SolvedCell(row, column, _) => throw IllegalStateException(s"[$row, $column] is already solved.")
+```
+
+In this case, the `row` and `column` of `SolvedCell` are needed, but not `value`, so it has been replaced with an
+underscore.
+
+In addition to pattern matching, this kind of usage also shows up when destructuring a tuple and some elements of the
+tuple are not needed:
+
+```scala
+nextEdgesAndVertices.exists((_, nextVertex) => nextVertex == end)
+```
+
+In this case, `nextEdge` is not needed, so it has been replaced with an underscore.
+
+This kind of usage of the underscore is fine and it shows up in other languages as well, but this is where it should
+stop. In Scala, the underscore is also used as an implicit name of a lambda parameter. In this case, it is a little like
+Kotlin's `it` or Swift's `$0`. I find this to be a bit confusing because I'm used to thinking, "I don't care about that
+value," when I see an underscore. However, when it's used in a lambda, I really do care about its value.
+
+Another issue with using the underscore in lambdas is what happens when the underscore is used multiple times in the
+same lambda. Each subsequent use of the lambda refers to the next lambda parameter. This is wild, crazy, and I think it
+is bad design. In this regard, Scala's underscore is very different from Kotlin's `it` which always refers to the same
+parameter regardless of how many times it is used. Scala's underscore is more like Swift's `$0`, `$1`, `$2`, and so on.
+For example, let's look at the following Scala code:
+
+```scala
+val unitACandidates = unitA.map(_.candidates).reduce(_ | _)
+```
+
+In this case, the two underscores in the call to `reduce` refer to the first and second lambda parameters respectively.
+I think this is absolutely bonkers and makes Scala code more challenging to read. Here is the equivalent code in Swift:
+
+```swift
+let unitACandidates = unitA.reduce(Set()) { $0.union($1.candidates) }
+```
+
+Note that Swift's `reduce` is more like `fold` in other languages, so the function call looks a little different.
+Anyway, isn't it so much easier to see what `$0` and `$1` are doing rather than what `_` and `_` are doing?
+
+#### Lambdas
+
+One of my complaints about Scala's syntax is that its
+[lambdas](https://docs.scala-lang.org/scala3/book/fun-anonymous-functions.html) are not syntactically distinctive, so it
+is easy to miss that there is a lambda present when looking at Scala code. Many of the lambdas that I have written in
+Scala are simply passed to another function in parentheses, but some are enclosed in curly braces when they span
+multiple lines. Here is an example of a lambda that I find syntactically easy to miss:
+
+```scala
+unit.find(_.candidates == additionalCandidates)
+```
+
+I will admit that the underscore helps me to notice that there is a lambda, but given that underscores can mean so many
+things in Scala, I find its help to be limited. My eyes have glazed over many Scala lambdas like this one without
+realizing that they were lambdas.
+
+The other languages that I have explored all have some kind of distinctive syntax to their lambdas. For example, both
+Kotlin and Swift require their lambdas to be enclosed in curly braces. The conventional formatting for both languages
+also has extra spaces surrounding the curly braces which helps the lambdas to stand out. Here is the same code example
+in Kotlin (the Swift version looks very similar):
+
+```kotlin
+unit.find { it.candidates == additionalCandidates }
+```
+
+Java's lambdas don't require curly braces, but they always have the `->` symbol. There is no shortened lambda syntax
+without the arrow. Here is the same code example in Java:
+
+```java
+unit.stream().filter(cell -> cell.candidates().equals(additionalCandidates)).findFirst()
+```
+
+Rust's lambdas always have two vertical bars (`||`) for a lambda's parameter list, even if there are no parameters. Here
+is the same example in Rust:
+
+```rust
+unit.iter().find(|cell| cell.candidates() == additional_candidates)
+```
+
+I don't know how Scala's lambda syntax compares with other functional programming languages such as Haskell, Lisp,
+OCaml, etc, but at least compared with the other languages that I have explored, I appreciate the syntactic
+distinctiveness that the other languages offer, especially Kotlin and Swift.
+
+#### Too Many Symbols
+
+One complaint that has been raised against Scala's readability is that there are too many symbols and that it can be
+difficult to keep track of all of them. I even found this
+[post](https://www.geekabyte.io/2016/09/making-sense-of-symbols-in-scalas.html) which tries to make sense of Scala's
+symbols. I have personally found that learning and understanding Scala's symbols while actively developing Scala code
+isn't too bad. The problem that I run into happens when I step away from Scala for a while and then try to look at some
+of my Scala code months or years down the road. It always takes me a while to "remember" what the symbols mean.
+
+One symbol that I use frequently is the double plus operator (`++`). For anyone experienced with languages that have a
+C-style syntax, this operator can be very counterintuitive. It does not increment anything. It is instead a binary
+operator that concatenates two collections, such as in the following example:
+
+```scala
+rowModifications ++ columnModifications
+```
+
+This operator is doubly counterintuitive because the single plus operator (`+`) is used to do the same thing in Kotlin
+and Swift:
+
+```kotlin
+rowModifications + columnModifications
+```
+
+If you try to use the `+` to join two collections in Scala, this will fail because the `+` operator is used to combine a
+collection with a single element such as in this example:
+
+```scala
+val nextVisited = visited + nextVertex
+```
+
+So, keeping the operators `++` and `+` straight can be challenging when switching between Scala and other languages.
+
+To add even more confusion to the mix, when you want to add a single element to the front of a list, you use the double
+colon operator (`::`) and not the `+` operator, such as in this example:
+
+```scala
+getCellBuilders(tail, builder :: builders)
+```
+
+The `::` operator can also be used in pattern matching to separate the first element of a list from the remainder of the
+list:
+
+```scala
+case ch :: tail => collectCandidates(tail, ch :: candidates)
+```
+
+These operators can even be chained together to separate out multiple elements of a list:
+
+```scala
+case '{' :: '}' :: _ => throw IllegalArgumentException("Empty \"{}\".")
+```
+
+It does seem like Scala's language designers realized that the symbols were getting out of hand. Apparently, the `:/`
+operator used to be used as an alias for the method `foldRight` and the `/:` operator used to be used for `foldLeft`.
+These operators have been deprecated and compiler will now warn the programmer to write out the words `foldLeft` and
+`foldRight`.
+
+All of this considered, I do think that Scala's use of symbolic operators increases the conciseness of Scala code at the
+cost of readability. If Java is at one end of the verbosity spectrum and Scala is at the other end, I feel like Kotlin
+is a happy medium.
+
+#### Python-like Syntax
+
+Scala 3 has introduced an optional Python-like
+[syntax](https://docs.scala-lang.org/scala3/new-in-scala3.html#new--shiny-the-syntax) which uses indentation instead of
+curly braces for many constructs. The old syntax is still supported, so it is possible to mix both the old syntax and
+new syntax in a single Scala file. I decided that I wanted to fully explore the new syntax, so I set the `-new-syntax`
+compiler flag in my `build.sbt` file. This flag causes the compiler to issue a warning anytime the old syntax is used.
+
+To demonstrate this new syntax, let's look at the `@main` method of the solver found in
+[`SudokuSolver.scala`](src/main/scala/sudokusolver/scala/SudokuSolver.scala). This is what the method looks like with
+the new syntax:
+
+```scala
+@main def sudokuSolver(board: String): Unit =
+  if board.length != UnitSizeSquared || board.exists(!('0' to '9').contains(_)) then
+    println(s"board must be $UnitSizeSquared numbers with blanks expressed as 0")
+  else
+    val message = solve(parseOptionalBoard(board)) match
+      case InvalidNoSolutions => "No Solutions"
+      case InvalidMultipleSolutions => "Multiple Solutions"
+      case Solution(board) => board
+      case unableToSolve: UnableToSolve => unableToSolve.message
+    println(message)
+```
+
+You'll notice that there are no curly braces and the indentation is significant. This is what the same method looks like
+with the old syntax:
+
+```scala
+@main def sudokuSolver(board: String): Unit = {
+  if (board.length != UnitSizeSquared || board.exists(!('0' to '9').contains(_))) {
+    println(s"board must be $UnitSizeSquared numbers with blanks expressed as 0")
+  } else {
+    val message = solve(parseOptionalBoard(board)) match {
+      case InvalidNoSolutions => "No Solutions"
+      case InvalidMultipleSolutions => "Multiple Solutions"
+      case Solution(board) => board
+      case unableToSolve: UnableToSolve => unableToSolve.message
+    }
+    println(message)
+  }
+}
+```
+
+With the old syntax, there are curly braces for the method body, the if-then-else, and the match. The `then` keyword has
+been removed and the conditional in the if has been enclosed in parentheses.
+
+As a long time Java programmer, I don't find the new syntax all that exciting. I'm sure it is great for Python
+programmers coming to Scala, but I wonder how much benefit it really brings to the language. I think that having two
+valid syntax options for many constructs does decrease the readability of Scala code. In my opinion, Scala 3 would have
+been completely fine staying as a curly brace language.
