@@ -29,7 +29,7 @@ Follow these steps to setup a development environment:
    `SudokuSolver_Java/src/main/sudokusolver.java/SudokuSolver.java` and click the link at the top of the file for
    downloading the appropriate JDK.
 
-### Running the solver
+### Running the Solver
 
 Follow these steps to create a run configuration for running the solver:
 
@@ -41,14 +41,14 @@ Follow these steps to create a run configuration for running the solver:
    `010040560230615080000800100050020008600781005900060020006008000080473056045090010`.
 5. Click **Run**.
 
-### Running the unit tests
+### Running the Unit Tests
 
 Follow these steps to run the unit tests:
 
 1. In the project tool window, right-click on the project `SudokuSolver_Java`.
 2. Select **Run 'All Tests'**.
 
-## My experience with Java
+## My Experience with Java
 
 I love Java. It is old and sometimes feels clunky, but I still love it. I have enjoyed seeing Java advance over the
 years. Now that they have added switch expressions, sealed types, records, type inference, pattern matching, etc., it
@@ -190,7 +190,7 @@ if (obj instanceof Person(var name, _)) {
 }
 ```
 
-### Improved instanceof
+### Improved `instanceof`
 
 In Java 16, there was a nice little improvement to the `instanceof` operator. It is now possible to perform the
 `instanceof` check and the followup cast in a [single operation](https://openjdk.org/jeps/394). This is a very minor and

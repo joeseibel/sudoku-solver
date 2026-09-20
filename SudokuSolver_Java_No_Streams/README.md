@@ -1,4 +1,4 @@
-# Java (no streams) implementation
+# Java (no streams) Implementation
 
 After implementing the solver in both Kotlin and Java using a functional style, I decided that I wanted to also
 implement the solver using a more imperative style. I am very happy that many modern languages are borrowing some
@@ -23,7 +23,7 @@ Follow these steps to setup a development environment:
    `SudokuSolver_Java_No_Streams/src/main/sudokusolver.javanostreams/SudokuSolver.java` and click the link at the top of
    the file for downloading the appropriate JDK.
 
-### Running the solver
+### Running the Solver
 
 Follow these steps to create a run configuration for running the solver:
 
@@ -36,14 +36,14 @@ Follow these steps to create a run configuration for running the solver:
    `010040560230615080000800100050020008600781005900060020006008000080473056045090010`.
 5. Click **Run**.
 
-### Running the unit tests
+### Running the Unit Tests
 
 Follow these steps to run the unit tests:
 
 1. In the project tool window, right-click on the project `SudokuSolver_Java_No_Streams`.
 2. Select **Run 'All Tests'**.
 
-## My experience with Java (no streams)
+## My Experience with Java (no streams)
 
 I feel like I don't have much to say about the no streams version. Much of what I have written about Java including
 records, sealed types, and switch expressions also apply here. With that said, I do have a couple observations worth

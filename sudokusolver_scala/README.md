@@ -46,7 +46,7 @@ Follow these steps to setup a development environment using sbt:
 1. Download and install [sbt](https://www.scala-sbt.org/download/).
 2. Navigate to the `sudoku-solver/sudokusolver_scala` directory.
 
-#### Running the solver with sbt
+#### Running the Solver with sbt
 
 To run the solver, run the following command while replacing `<board>` with a sequence of 81 digits:
 
@@ -60,7 +60,7 @@ The following is an example command to run the solver with a valid board:
 sbt "run 010040560230615080000800100050020008600781005900060020006008000080473056045090010"
 ```
 
-#### Running the unit tests with sbt
+#### Running the Unit Tests with sbt
 
 To run all of the tests, run the following command:
 
@@ -89,7 +89,7 @@ Follow these steps to setup a development environment using IntelliJ:
       **Oracle OpenJDK**.
    4. Click **Download**.
 
-#### Running the solver with IntelliJ
+#### Running the Solver with IntelliJ
 
 Follow these steps to create a run configuration for running the solver:
 
@@ -102,14 +102,14 @@ Follow these steps to create a run configuration for running the solver:
 4. Click **Ok**.
 5. Run the **sudokuSolver** run configuration again.
 
-#### Running the unit tests with IntelliJ
+#### Running the Unit Tests with IntelliJ
 
 Follow these steps to run the unit tests:
 
 1. In the project tool window, right-click on the folder `sudokusolver_scala/src/test`.
 2. Select **Run 'MUnit in 'test''**.
 
-## My experience with Scala
+## My Experience with Scala
 
 I enjoyed writing the solver in a purely functional style and Scala helps a lot with that. In particular, Scala's
 immutable collections are really what has enabled me to write the solver in a purely functional manner. At some point in
@@ -899,7 +899,7 @@ All of this considered, I do think that Scala's use of symbolic operators increa
 cost of readability. If Java is at one end of the verbosity spectrum and Scala is at the other end, I feel like Kotlin
 is a happy medium.
 
-#### Python-like Syntax
+#### Python-Like Syntax
 
 Scala 3 has introduced an optional Python-like
 [syntax](https://docs.scala-lang.org/scala3/new-in-scala3.html#new--shiny-the-syntax) which uses indentation instead of

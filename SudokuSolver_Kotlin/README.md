@@ -17,7 +17,7 @@ Follow these steps to setup a development environment:
    `SudokuSolver_Kotlin/src/main/sudokusolver.kotlin/SudokuSolver.kt` and click the link at the top of the file for
    downloading the appropriate JDK.
 
-### Running the solver
+### Running the Solver
 
 Follow these steps to create a run configuration for running the solver:
 
@@ -29,14 +29,14 @@ Follow these steps to create a run configuration for running the solver:
    `010040560230615080000800100050020008600781005900060020006008000080473056045090010`.
 5. Click **Run**.
 
-### Running the unit tests
+### Running the Unit Tests
 
 Follow these steps to run the unit tests:
 
 1. In the project tool window, right-click on the project `SudokuSolver_Kotlin`.
 2. Select **Run 'All Tests'**.
 
-## My experience with Kotlin
+## My Experience with Kotlin
 
 I love programming in Kotlin. It could very well be my favorite language, although Rust is a close second. It was very
 easy to learn Kotlin given my Java background. All of Kotlin's core programming concepts are the same or very similar to
