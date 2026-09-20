@@ -245,7 +245,7 @@ particular block.
 
 Each language also has a `Cell` type that represents either a solved cell or an unsolved cell. In languages that support
 it, the `Cell` type is a tagged union with the variants of `SolvedCell` and `UnsolvedCell`. `SolvedCell` has a `value`
-field for the number at that location while `UnsolvedCell` has a `candidates` fields which is a set of potential values
+field for the number at that location while `UnsolvedCell` has a `candidates` field which is a set of potential values
 for that location. `Cell` also has methods for getting the cell's row index, column index, and block index.
 
 There is also a `SudokuNumber` enumeration type which represents the numbers `1` through `9`. While I could have chosen
