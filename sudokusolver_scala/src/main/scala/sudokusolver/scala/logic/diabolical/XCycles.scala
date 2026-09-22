@@ -26,7 +26,7 @@ import sudokusolver.scala.*
  */
 def xCyclesRule1(board: Board[Cell]): Seq[RemoveCandidates] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
-    val graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles().trim
+    val graph = createStrongLinksXCycles(board, candidate).withWeakLinksXCycles.trim
     getWeakEdgesInAlternatingCycle(graph).flatMap { edge =>
       val source = graph.get(edge).source
       val target = graph.get(edge).target
@@ -59,7 +59,7 @@ def xCyclesRule1(board: Board[Cell]): Seq[RemoveCandidates] =
 def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
   for
     candidate <- SudokuNumber.values.toSeq
-    graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles()
+    graph = createStrongLinksXCycles(board, candidate).withWeakLinksXCycles
     vertex <- graph.nodes
     if alternatingCycleExists(graph, vertex, Strength.STRONG)
   yield SetValue(vertex, candidate)
@@ -76,7 +76,7 @@ def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
 def xCyclesRule3(board: Board[Cell]): Seq[RemoveCandidates] =
   val removals = for
     candidate <- SudokuNumber.values.toSeq
-    graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles().additionalWeakLinks(board, candidate)
+    graph = createStrongLinksXCycles(board, candidate).withWeakLinksXCycles.additionalWeakLinks(board, candidate)
     vertex <- graph.nodes
     if alternatingCycleExists(graph, vertex, Strength.WEAK)
   yield vertex.outer -> candidate
@@ -89,12 +89,23 @@ extension (graph: Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]])
    * the two functions exist in the same package. This is different from Kotlin which allows toDOT to exist in different
    * files, but in the same package.
    *
-   * Similar changes have been made to createStrongLinks and addWeakLinks
+   * Similar changes have been made to createStrongLinks and withWeakLinks
    */
   def toDOTXCycles(candidate: SudokuNumber): String =
     graph.toDOTCommon(Some(candidate.toString), _.getVertexLabel, _.getEdgeAttributes)
 
-  private def addWeakLinksXCycles(): Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]] =
+  /*
+   * I've changed the name of this method from addWeakLinks to withWeakLinks for a couple of reasons.
+   *
+   * In Scala, when a method takes no parameters, it should be defined with empty parentheses if the method has side
+   * effects, and it should be defined without parentheses if it is a pure function. This is a Scala convention only; it
+   * is not enforced by the compiler. As such, this method is defined without parentheses because it does not have side
+   * effects.
+   *
+   * When I try to leave this method named addWeakLinks and remove the parentheses, IntelliJ gives the warning,
+   * "Mutator-like named method is parameterless." My solution to this was to rename the method to withWeakLinks.
+   */
+  private def withWeakLinksXCycles: Graph[UnsolvedCell, StrengthEdge[UnsolvedCell]] =
     val weakEdges = for
       (a, b) <- graph.nodes.toIndexedSeq.zipEveryPair
       if a.isInSameUnit(b) && !a.neighbors.contains(b)

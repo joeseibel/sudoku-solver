@@ -23,7 +23,7 @@ import sudokusolver.scala.*
  * strong and weak links. It is tolerant of cases in which a strong link takes the place of a weak link.
  */
 def xyChains(board: Board[Cell]): Seq[RemoveCandidates] =
-  val graph = createStrongLinksXYChains(board).addWeakLinksXYChains()
+  val graph = createStrongLinksXYChains(board).withWeakLinksXYChains
   graph.nodes.map(_.outer).groupBy((_, candidate) => candidate).toSeq.flatMap { (candidate, vertices) =>
     vertices.toIndexedSeq
       .zipEveryPair
@@ -50,11 +50,22 @@ extension (graph: Graph[LocatedCandidate, StrengthEdge[LocatedCandidate]])
    * the two functions exist in the same package. This is different from Kotlin which allows toDOT to exist in different
    * files, but in the same package.
    *
-   * Similar changes have been made to createStrongLinks and addWeakLinks
+   * Similar changes have been made to createStrongLinks and withWeakLinks
    */
   def toDOTXYChains: String = graph.toDOTCommon(None, _.getVertexLabel, _.getEdgeAttributes)
 
-  def addWeakLinksXYChains(): Graph[LocatedCandidate, StrengthEdge[LocatedCandidate]] =
+  /*
+   * I've changed the name of this method from addWeakLinks to withWeakLinks for a couple of reasons.
+   *
+   * In Scala, when a method takes no parameters, it should be defined with empty parentheses if the method has side
+   * effects, and it should be defined without parentheses if it is a pure function. This is a Scala convention only; it
+   * is not enforced by the compiler. As such, this method is defined without parentheses because it does not have side
+   * effects.
+   *
+   * When I try to leave this method named addWeakLinks and remove the parentheses, IntelliJ gives the warning,
+   * "Mutator-like named method is parameterless." My solution to this was to rename the method to withWeakLinks.
+   */
+  def withWeakLinksXYChains: Graph[LocatedCandidate, StrengthEdge[LocatedCandidate]] =
     val weakEdges = for
       (vertexA, vertexB) <- graph.nodes.map(_.outer).toIndexedSeq.zipEveryPair
       (cellA, candidateA) = vertexA
