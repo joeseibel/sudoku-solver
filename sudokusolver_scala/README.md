@@ -185,8 +185,8 @@ interfacing with Java code, one must often convert between Scala collection type
 
 The Kotlin and Java implementations of the solver are mostly functional, so implementing the solver in Scala was pretty
 straightforward. However, there are a couple functions in the Kotlin and Java implementations that weren't purely
-functional. In particular, implementing the functions `solve()` in
-[`SudokuSolver.scala`](src/main/scala/sudokusolver/scala/SudokuSolver.scala) and `parseCellsWithCandidates()` in
+functional. In particular, implementing the functions `solve` in
+[`SudokuSolver.scala`](src/main/scala/sudokusolver/scala/SudokuSolver.scala) and `parseCellsWithCandidates` in
 [`Cell.scala`](src/main/scala/sudokusolver/scala/Cell.scala) required special attention. Both of these functions in the
 Kotlin implementation contain loops which in their conditionals inspect variables with changing state. This is a big no
 no for writing a purely functional program.
@@ -215,7 +215,7 @@ once. I find that this issue doesn't cause major problems, but it is worthwhile 
 Converting loop-based functions to tail recursive functions was one of the more involved parts of implementing the
 solver in Scala. Even though I am a big fan of functional programming in general, I do find that there are some
 algorithms that are more intuitive in their loop-based form rather than their equivalent tail recursive form. To
-demonstrate this, let's look at the the function `parseCellsWithCandidates()` as an example. The following is the
+demonstrate this, let's look at the the function `parseCellsWithCandidates` as an example. The following is the
 loop-based version of `parseCellsWithCandidates()` as it appears in the Kotlin implementation:
 
 ```kotlin
@@ -521,7 +521,7 @@ example is the method `xCyclesRule2` from the file
 def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
   for
     candidate <- SudokuNumber.values.toSeq
-    graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles()
+    graph = createStrongLinksXCycles(board, candidate).withWeakLinksXCycles
     vertex <- graph.nodes
     if alternatingCycleExists(graph, vertex, Strength.STRONG)
   yield SetValue(vertex, candidate)
@@ -533,7 +533,7 @@ This is what `xCyclesRule2` would look like without using a for comprehension:
 ```scala
 def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
   SudokuNumber.values.toSeq.flatMap { candidate =>
-    val graph = createStrongLinksXCycles(board, candidate).addWeakLinksXCycles()
+    val graph = createStrongLinksXCycles(board, candidate).withWeakLinksXCycles
     graph.nodes.filter(vertex => alternatingCycleExists(graph, vertex, STRONG)).map(SetValue(_, candidate))
   }
 ```
