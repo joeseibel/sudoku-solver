@@ -50,7 +50,7 @@ class Board[+T](elements: Iterable[Iterable[T]]):
     case otherBoard: Board[?] => rows == otherBoard.rows
     case _ => false
 
-  override def hashCode(): Int = rows.hashCode()
+  override def hashCode: Int = rows.hashCode
 
   override def toString: String =
     def joinRows(fromIndex: Int, toIndex: Int) =
