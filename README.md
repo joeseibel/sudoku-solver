@@ -288,7 +288,7 @@ After specifying the board, each test then lists out the expected modifications,
 candidates to remove. This is really where the value of having the logical solutions return modification instructions
 pays off.
 
-Finally, each test calls the `assertLogicalSolution` helper function. This first solves the puzzle with a brute force
+Finally, each test calls the `assertLogicalSolution()` helper function. This first solves the puzzle with a brute force
 solution, just to determine what the known solution to the puzzle should be. It will then call the logical solution and
 retrieve its modifications. Each modification is compared with the brute force solution to check that it is a valid
 modification. Finally, the modifications returned from the logical solution are compared with the list of expected
