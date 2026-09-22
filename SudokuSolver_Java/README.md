@@ -595,7 +595,7 @@ public abstract class ParentClass {
 With this implementation of `ParentClass`, any construction of `ObjectHolder` will result in a `NullPointerException`
 being thrown from `printObject()` even if the object passed to `ObjectHolder` isn't `null`. Why does this happen? This
 is an unfortunate and unforeseen consequence of Java's constructor rules. Let's walk through what happens step-by-step
-when `ObjectHolder` is constructed with a `non-null` value such as the string literal `"My String Value"`:
+when `ObjectHolder` is constructed with a non-`null` value such as the string literal `"My String Value"`:
 
 1. `ObjectHolder("My String Value")` is called and passed a string literal.
 2. The constructor `ObjectHolder(Object)` implicitly calls the no-argument constructor `ParentClass()`.
