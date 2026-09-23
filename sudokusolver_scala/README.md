@@ -185,11 +185,12 @@ interfacing with Java code, one must often convert between Scala collection type
 
 The Kotlin and Java implementations of the solver are mostly functional, so implementing the solver in Scala was pretty
 straightforward. However, there are a couple functions in the Kotlin and Java implementations that weren't purely
-functional. In particular, implementing the functions `solve` in
-[`SudokuSolver.scala`](src/main/scala/sudokusolver/scala/SudokuSolver.scala) and `parseCellsWithCandidates` in
-[`Cell.scala`](src/main/scala/sudokusolver/scala/Cell.scala) required special attention. Both of these functions in the
-Kotlin implementation contain loops which in their conditionals inspect variables with changing state. This is a big no
-no for writing a purely functional program.
+functional. In particular, implementing the methods
+[`solve`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/sudokusolver_scala/src/main/scala/sudokusolver/scala/SudokuSolver.scala#L43-L83)
+and
+[`parseCellsWithCandidates`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/sudokusolver_scala/src/main/scala/sudokusolver/scala/Cell.scala#L62-L99)
+required special attention. Both of these functions in the Kotlin implementation contain loops which in their
+conditionals inspect variables with changing state. This is a big no no for writing a purely functional program.
 
 The standard approach for addressing this problem is to convert any loop-based algorithms into their recursive-based
 equivalents. But wouldn't this cause a performance penalty or potentially lead to a stack overflow? This is where
@@ -487,7 +488,7 @@ operations. A for comprehension consists of the following components:
   multiple executions of the yield statement.
 
 To demonstrate the benefits of a for comprehension, let's look at a few examples. This first example is the method
-`zipEveryQuad` from the file [`Collections.scala`](src/main/scala/sudokusolver/scala/Collections.scala):
+[`zipEveryQuad`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/sudokusolver_scala/src/main/scala/sudokusolver/scala/Collections.scala#L17-L23):
 
 ```scala
 def zipEveryQuad: IndexedSeq[(T, T, T, T)] =
@@ -514,8 +515,8 @@ def zipEveryQuad: IndexedSeq[(T, T, T, T)] =
 ```
 
 I personally find the version with the for comprehension a little easier to read than the version without. This next
-example is the method `xCyclesRule2` from the file
-[`XCycles.scala`](src/main/scala/sudokusolver/scala/logic/diabolical/XCycles.scala):
+example is the method
+[`xCyclesRule2`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/sudokusolver_scala/src/main/scala/sudokusolver/scala/logic/diabolical/XCycles.scala#L50-L65):
 
 ```scala
 def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
@@ -539,8 +540,7 @@ def xCyclesRule2(board: Board[Cell]): Seq[SetValue] =
 ```
 
 Finally, let's look at one of the more complicated for comprehensions in the solver. This one is found in the method
-`uniqueRectanglesType3BWithTriplePseudoCells` from the file
-[`UniqueRectangles.scala`](src/main/scala/sudokusolver/scala/logic/diabolical/UniqueRectangles.scala):
+[`uniqueRectanglesType3BWithTriplePseudoCells`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/sudokusolver_scala/src/main/scala/sudokusolver/scala/logic/diabolical/UniqueRectangles.scala#L115-L122):
 
 ```scala
 for
@@ -603,9 +603,9 @@ In this example, the partial function only applies for values that are instances
 Partial functions are mostly used as a parameter to the `collect` method which is found on Scala's collections.
 `collect` filters items in the collection to only the values that the partial function accepts and then calls the
 partial function for each value. This is a syntactically concise way of combining filtering and transformation in a
-single step. Here is an example of a partial function from
-[`NakedSingles.scala`](src/main/scala/sudokusolver/scala/logic/simple/NakedSingles.scala) that filters by type, contains
-a guard, and performs a transformation:
+single step. Here is an example of a partial function from the
+[Naked Singles](src/main/scala/sudokusolver/scala/logic/simple/NakedSingles.scala) logical solution that filters by
+type, contains a guard, and performs a transformation:
 
 ```scala
 def nakedSingles(board: Board[Cell]): Seq[SetValue] =
@@ -615,10 +615,9 @@ def nakedSingles(board: Board[Cell]): Seq[SetValue] =
 The concept of the `collect` method paired with a partial function is something that I have not seen in other languages
 so far. In many other languages, the closest alternative to partial functions would be to call a flat map based
 operation and pass in a lambda that returns an optional. A good example of this difference can be found in the method
-`groupedXCyclesRule3` from the file
-[`GroupedXCycles.scala`](src/main/scala/sudokusolver/scala/logic/extreme/GroupedXCycles.scala). Scala uses `collect` and
-a partial function while Swift and Rust both use flat map on a lambda that returns an optional. Here is the Scala
-version:
+[`groupedXCyclesRule3`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/sudokusolver_scala/src/main/scala/sudokusolver/scala/logic/extreme/GroupedXCycles.scala#L101-L103).
+Scala uses `collect` and a partial function while Swift and Rust both use flat map on a lambda that returns an optional.
+Here is the Scala version:
 
 ```scala
 graph.nodes
@@ -678,7 +677,7 @@ use a sealed type. Otherwise, I will use a union type. Union types can be very h
 type that includes a type that you are not in control of.
 
 I have used union types exactly once in the solver. Here is the declaration of the sole union type found in the file
-[`GroupedXCycles.scala`](src/main/scala/sudokusolver/scala/logic/extreme/GroupedXCycles.scala):
+[`GroupedXCycles.scala`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/sudokusolver_scala/src/main/scala/sudokusolver/scala/logic/extreme/GroupedXCycles.scala#L175):
 
 ```scala
 type Node = UnsolvedCell | Group
@@ -907,9 +906,9 @@ curly braces for many constructs. The old syntax is still supported, so it is po
 new syntax in a single Scala file. I decided that I wanted to fully explore the new syntax, so I set the `-new-syntax`
 compiler flag in my `build.sbt` file. This flag causes the compiler to issue a warning anytime the old syntax is used.
 
-To demonstrate this new syntax, let's look at the `@main` method of the solver found in
-[`SudokuSolver.scala`](src/main/scala/sudokusolver/scala/SudokuSolver.scala). This is what the method looks like with
-the new syntax:
+To demonstrate this new syntax, let's look at the
+[`@main`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/sudokusolver_scala/src/main/scala/sudokusolver/scala/SudokuSolver.scala#L12-L21)
+method of the solver. This is what the method looks like with the new syntax:
 
 ```scala
 @main def sudokuSolver(board: String): Unit =

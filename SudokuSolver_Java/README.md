@@ -362,7 +362,8 @@ a value from the whole switch.
 
 Let's look at an example switch statement and then see what it's corresponding switch expression looks like. The
 following is a modified switch statement adopted from a switch found in the
-[`SudokuNumber`](src/main/sudokusolver/java/SudokuNumber.java) enum:
+[`SudokuNumber`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/SudokuSolver_Java/src/main/sudokusolver/java/SudokuNumber.java#L16-L27)
+enum:
 
 ```java
 SudokuNumber number;
@@ -516,9 +517,10 @@ This makes the call to `super()` conditional. It is only called when the argumen
 
 Suppose that a constructor takes arguments and those arguments need to be modified before passing them to another
 constructor. Before Java 25, this had to be embedded as an expression nested within the call to the other constructor. I
-actually ran into this issue in the class [`RemoveCandidates`](src/main/sudokusolver/java/RemoveCandidates.java) in
-which an `int...` needs to be transformed into an `EnumSet<SudokuNumber>` before making a call to `this()`. Before Java
-25, my solution was to have a rather complicated expression embedded into the call to `this()`:
+actually ran into this issue in the class
+[`RemoveCandidates`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/SudokuSolver_Java/src/main/sudokusolver/java/RemoveCandidates.java#L25-L30)
+in which an `int...` needs to be transformed into an `EnumSet<SudokuNumber>` before making a call to `this()`. Before
+Java 25, my solution was to have a rather complicated expression embedded into the call to `this()`:
 
 ```java
 public RemoveCandidates(int row, int column, int... candidates) {
@@ -706,7 +708,9 @@ There are a few things going on under the hood to make this work:
 
 I think this is a good change for Java, especially when it comes to teaching students programming. However, I don't
 expect much existing code to make use of this change. Even in the solver, I only take advantage of a couple of these
-changes. My main method in [`SudokuSolver`](src/main/sudokusolver/java/SudokuSolver.java) now looks like this:
+changes. My main method in
+[`SudokuSolver`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/SudokuSolver_Java/src/main/sudokusolver/java/SudokuSolver.java#L45-L46)
+now looks like this:
 
 ```java
 public class SudokuSolver {
@@ -731,9 +735,9 @@ strings by concatenating each individual line. Programmers would also manually i
 automatically handle line terminators as well as proper indentation.
 
 To demonstrate the benefits of text blocks, let's look at an example variable assignment in which the value is a
-multi-line string. This particular example comes from the method `testSolution()` in the class
-[`SudokuSolverTest`](src/test/sudokusolver/java/SudokuSolverTest.java). This is what the assignment to the variable
-`expected` would have looked like before text blocks:
+multi-line string. This particular example comes from the method
+[`SudokuSolverTest.testSolution()`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/SudokuSolver_Java/src/test/sudokusolver/java/SudokuSolverTest.java#L13-L24).
+This is what the assignment to the variable `expected` would have looked like before text blocks:
 
 ```java
 var expected = "8 1 7 | 9 4 2 | 5 6 3\n" +
@@ -864,7 +868,8 @@ I have implemented similar gatherers for [`Triple.zipEveryTriple()`](src/main/su
 
 In addition to creating the Gatherer API for developers to use, Java has also produced a number of useful gatherers
 themselves. These serve as examples for how to implement a gatherer, but I also make use of them in the solver. In
-particular, I use `Gatherers.windowFixed()` in [`BoardFactory`](src/main/sudokusolver/java/BoardFactory.java).
+particular, I use `Gatherers.windowFixed()` in
+[`BoardFactory`](https://github.com/joeseibel/sudoku-solver/blob/4b00cc89bc551fbe68384dd8f236e022fb0387c0/SudokuSolver_Java/src/main/sudokusolver/java/BoardFactory.java#L18).
 `windowFixed()` is analogous to Kotlin's `chunked()` function.
 
 Finally, I have also implemented a gatherer to address what I believe is one of the shortcomings of Java streams: the
