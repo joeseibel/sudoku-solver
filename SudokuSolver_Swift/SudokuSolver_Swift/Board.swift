@@ -102,7 +102,7 @@ extension Board: CustomStringConvertible {
                          *    String.init(describing:).
                          *
                          * The fact that #2 is a possible solution really confuses me because this is only a syntax
-                         * change and doesn't impact the symantics of the call to map. I suspect that the warning may be
+                         * change and doesn't impact the semantics of the call to map. I suspect that the warning may be
                          * a false positive, because this entire solver is single threaded and nothing is crossing a
                          * thread boundary here. It would be good for me to better understand Swift concurrency so that
                          * I can truly see if this is indeed a false positive.
