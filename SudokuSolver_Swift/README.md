@@ -57,3 +57,29 @@ arguments. Follow these steps to specify a different board and run the solver:
 ### Running the Unit Tests
 
 To run the unit tests, either select **Product** -> **Test** from the main menu or press Command-U.
+
+## My Experience with Swift
+
+I really enjoyed programming in Swift. On the surface, programming in Swift feels similar to programming in Kotlin. Both
+languages have a similar syntax for lambdas and optionals. They both support and promote a mostly, but not purely,
+functional programming style. They both have properties, algebraic data types, extensions, and other modern features.
+Coming from the JVM and already knowing Kotlin, it was a very easy transition to learn the details of Swift.
+
+While there are surface level similarities, there are some key differences when you dig a little deeper. Swift was the
+first non-JVM language that I implemented the solver in, and I noticed that Swift is not as enthusiastic about
+object-oriented programming as Java is. While Swift does have classes and it is possible to create complicated Java-like
+class hierarchies, Swift encourages programmers to embrace its value types over classes. I think this is a decision that
+makes sense, especially since the software industry went way too overboard in its embrace of OOP back in the 90s and
+early 2000s, but it does have some subtle implications about how a programmer handles the movement of data through a
+program. I had to unlearn some of my Java ways of doing things as I left the world of "everything is a reference" and
+embraced value semantics.
+
+Overall, I had a fun time learning Swift. Anytime I ran into an issue in which Swift wasn't behaving the way I expected
+it to, I would take a step back and really look at the issue with Swift's core design decisions in mind. At the end of
+the day, anything that didn't feel intuitive really was designed well, but was running up against my Java background. I
+feel that both Java and Swift have been very well designed given their different core design philosophies.
+
+In the following sections, I talk about some of Swift's features that I think are worth mentioning. Most of these will
+be features that I think make Swift a great programming language, but I will also talk about a couple pain points that I
+encountered. Note that the following is not a tutorial, but I instead describe what I like or dislike about these
+features and what it was like for me to use them.
