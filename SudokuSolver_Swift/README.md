@@ -83,3 +83,28 @@ In the following sections, I talk about some of Swift's features that I think ar
 be features that I think make Swift a great programming language, but I will also talk about a couple pain points that I
 encountered. Note that the following is not a tutorial, but I instead describe what I like or dislike about these
 features and what it was like for me to use them.
+
+### The Official Book
+
+In my opinion, the best way to learn how to program in Swift is to read
+[The Swift Programming Language](https://docs.swift.org/latest/documentation/the-swift-programming-language). It is a
+very well written book and contains everything an experienced developer would need in order to become familiar with
+Swift. The book assumes prior programming experience, which was great for me. It didn't try to teach me what types are
+or how loops work, it simply showed me how these features work in Swift. The book is thorough, detailed, and full of
+good examples.
+
+One thing that I was very pleased about is that while the book assumes prior programming experience, it does not assume
+experience with Objective-C. In fact, I found that Objective-C was referenced rather infrequently in the book even
+though Swift was intended to replace Objective-C. All of the concepts were explained in a way that practically any
+programmer could comprehend them.
+
+The process of learning Swift provided an interesting contrast to learning Kotlin. When I was learning Kotlin, I found
+that its documentation was well written and very easy to understand, but I was coming from a Java background, so I was
+already familiar with the problems in Java that Kotlin was addressing. I honestly have no idea what learning Kotlin
+would be like for a developer that wasn't experienced in Java.
+
+Bringing things back to Swift, I was now in the place of not being experienced with the previous language. To this day,
+I'm still not familiar with the pain points in Objective-C that Swift was designed to address, but that didn't really
+matter. The language was so well designed and the book was so well written that I didn't just learn the syntax and
+semantics of Swift features, but it often felt like I was also understanding Swift's core design decisions. The book
+helped me to get the "why" behind Swift.
