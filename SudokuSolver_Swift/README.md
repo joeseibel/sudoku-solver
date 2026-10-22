@@ -108,3 +108,32 @@ I'm still not familiar with the pain points in Objective-C that Swift was design
 matter. The language was so well designed and the book was so well written that I didn't just learn the syntax and
 semantics of Swift features, but it often felt like I was also understanding Swift's core design decisions. The book
 helped me to get the "why" behind Swift.
+
+### Reference Counting
+
+Swift is rare among programming languages in that it utilizes
+[reference counting](https://docs.swift.org/latest/documentation/the-swift-programming-language/automaticreferencecounting)
+to manage memory. This is a fundamental and key distinction between Swift and the Java world that I am used to. For the
+most part, working with Swift's reference counting feels the same as working with Java's garbage collector. One can
+simply allocate new objects on the heap when needed and the runtime will deallocate those objects when they are no
+longer needed. However, reference counting does place an additional burden on the programmer: handling cycles.
+
+For languages like Java that use tracing garbage collection, cycles pose no problem whatsoever as the garbage collector
+can easily deallocate cycles when the objects of a cycle are no longer needed. However, this is not the case for a
+reference counted language like Swift. A naively implemented cycle in Swift will never be deallocated because the
+reference counts for the objects of a cycle will never reach zero. A Swift programmer must recognize the presence of a
+cycle and mark some of the references as either `weak` or `unowned`. These kinds of references are not counted and it is
+thus possible for an object to be deallocated even when there are `weak` or `unowned` references to that object. A
+`weak` reference is always of an optional type and will be `nil` when the object is no longer available. An `unowned`
+reference will instead cause a runtime error if it is accessed after the object has been released. Additionally,
+closures in Swift are reference types and can contribute to cycles. These kinds of cycles can be addressed by specifying
+`weak` or `unowned` references in a closure's capture list. I have not needed to use either `weak` or `unowned`
+references in the solver, so in this case, working with reference counting has felt exactly like working with a garbage
+collector.
+
+I feel like I don't have a strong preference between tracing garbage collection and reference counting. The advantage of
+garbage collection is that it is easier for the programmer while the advantages of reference counting is that it is more
+deterministic and requires less CPU and memory resources. It makes sense to me that Apple chose reference counting for
+Swift so that the battery life of devices can be extended. Garbage collection utilizes the CPU and memory more than
+reference counting which does impact battery life. Perhaps garbage collected languages like Java are better suited to
+server applications while reference counted languages like Swift are better suited to smart phones and smart watches.
