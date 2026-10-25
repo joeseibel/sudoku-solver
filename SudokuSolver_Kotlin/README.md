@@ -273,7 +273,7 @@ the methods `List.of()`, `List.copyOf()`, `Collections.unmodifiableList()`, and 
 but the concrete type will throw an exception when calling a mutating method on that list. One of the problems with
 Java's approach is that when working with a `List` object that came from someone else's code, there is no way to
 determine its mutability at compile time. Lists that are passed across a library boundary are frequently copied either
-to prevent mutation or to ensure mutability without risking a exception. Kotlin's addition of their own `List` and
+to prevent mutation or to ensure mutability without risking an exception. Kotlin's addition of their own `List` and
 `MutableList` interfaces are a very welcome change.
 
 Kotlin's collection interfaces map to Java interfaces and the implementations themselves are often, but not always, a
