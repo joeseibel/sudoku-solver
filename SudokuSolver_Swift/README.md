@@ -137,3 +137,136 @@ deterministic and requires less CPU and memory resources. It makes sense to me t
 Swift so that the battery life of devices can be extended. Garbage collection utilizes the CPU and memory more than
 reference counting which does impact battery life. Perhaps garbage collected languages like Java are better suited to
 server applications while reference counted languages like Swift are better suited to smart phones and smart watches.
+
+### Value Types and Reference Types
+
+Swift draws a clear distinction between
+[value types and reference types](https://www.swift.org/documentation/articles/value-and-reference-types.html). Structs,
+enumerations, and tuples are value types while classes, actors, and closures are reference types. This is similar to the
+distinction between primitive types and reference types in Java. However, working with value types in Swift is much more
+expansive than working with primitive types in Java.
+
+Swift has both
+[structs and classes](https://docs.swift.org/latest/documentation/the-swift-programming-language/classesandstructures/).
+and the key distinction between the two is that structs are value types while classes are reference types. Let's
+consider a simple example of a `Point` type that has x and y coordinates and is implemented as a struct:
+
+```swift
+struct Point {
+    var x: Double
+    var y: Double
+}
+```
+
+As a result of `Point` being a struct which is a value type, anytime a `Point` is passed around, a copy is made. Any
+modifications to the copy are not reflected on the original.
+
+Another advantage of value types has to do with how they are stored in memory. Suppose that we have an array of
+`Point`s:
+
+```swift
+let points = [
+    Point(x: 0, y: 0),
+    Point(x: 1, y: 1),
+    // And so on...
+]
+```
+
+In this example, all of the individual `Point` objects will be stored next to each other in memory. This has the
+advantage that it will reduce cache misses when iterating through the `points` array. Even though `Point` could be
+implemented as a class in Swift, it really does make more sense to implement it as a struct.
+
+If I were to implement a similar `Point` type in Java, it would have to be a class and therefore be a reference type:
+
+```java
+public class Point {
+    public double x;
+    public double y;
+
+    public Point(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+```
+
+Java currently does not have a way to implement a type that utilizes composition as a value type. This has real
+performance implications especially if we have an array of `Point`s:
+
+```java
+var points = new Point[]{
+        new Point(0, 0),
+        new Point(1, 1),
+        // And so on...
+};
+```
+
+In this example, the `points` array is not really an array of `Point` objects. It is instead an array of references to
+`Point` objects. The distinction is that while all of the references will be stored contiguously in memory, each
+individual `Point` object that is referenced could be stored anywhere on the heap. They might be stored near each other,
+but they might not be. If they are not stored near each other, that can result in more cache misses when iterating
+through the `points` array. This is a well known limitation in Java and they are working on addressing this by adding
+[value objects](https://openjdk.org/projects/valhalla/value-objects).
+
+Due to the advantages of using value types, Swift highly encourages programmers to choose structs over classes and to
+only use classes [when needed](https://developer.apple.com/documentation/swift/choosing-between-structures-and-classes).
+
+#### Assigning to `self`
+
+One interesting thing about value types is that it is possible to assign a value to `self` in a method of a value type.
+Here is an example method that could be added to `Point` which reassigns `self`:
+
+```swift
+mutating func moveToOrigin() {
+    self = Point(x: 0, y: 0)
+}
+```
+
+In the solver, I mostly use this technique of assigning to `self` in custom initializers on enums. For example, this is
+an initializer for the enum `SudokuNumber` which is used to convert a `Character` to a `SudokuNumber`:
+
+```swift
+init(number: Character) {
+    guard let number = SudokuNumber(rawValue: number) else {
+        preconditionFailure(#"Invalid character: "\#(number)", must be between "1" and "9"."#)
+    }
+    self = number
+}
+```
+
+The fact that I was able to assign to `self` allowed me to implement this functionality as an initializer. Otherwise, I
+would have had to implement this as a regular function such as this equivalent function in Kotlin:
+
+```kotlin
+fun sudokuNumber(ch: Char): SudokuNumber =
+    when (ch) {
+        '1' -> SudokuNumber.ONE
+        '2' -> SudokuNumber.TWO
+        '3' -> SudokuNumber.THREE
+        '4' -> SudokuNumber.FOUR
+        '5' -> SudokuNumber.FIVE
+        '6' -> SudokuNumber.SIX
+        '7' -> SudokuNumber.SEVEN
+        '8' -> SudokuNumber.EIGHT
+        '9' -> SudokuNumber.NINE
+        else -> throw IllegalArgumentException("ch is '$ch', must be between '1' and '9'.")
+    }
+```
+
+I also use this technique for type conversions such as converting a `Board<SudokuNumber?>` to a `Board<Cell>`:
+
+```swift
+extension Board<Cell> {
+    init(toCellBoard board: Board<SudokuNumber?>) {
+        self = board.mapCellsIndexed { row, column, cell in
+            if let cell {
+                Cell(row: row, column: column, value: cell)
+            } else {
+                Cell(row: row, column: column)
+            }
+        }
+    }
+}
+```
+
+Note that assigning a value to `self` is not possible for reference types such as classes.
