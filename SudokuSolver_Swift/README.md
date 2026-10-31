@@ -273,10 +273,12 @@ Note that assigning a value to `self` is not possible for reference types such a
 
 ### Collections Are Value Types
 
-One of the very interesting design decisions that Swift made was for all of the standard collections to be value types.
-This is very different from languages like Java or Python in which collections are reference types. The nice thing about
-this is that changes to a collection in Swift only affect that specific collection in the local function. This is so
-much nicer than in Java in which modifying a collection might impact any piece of code that refers to that collection.
+One of the very interesting design decisions that Swift made was for all of the
+[standard collections](https://docs.swift.org/latest/documentation/the-swift-programming-language/collectiontypes/) to
+be value types. This is very different from languages like Java or Python in which collections are reference types. The
+nice thing about this is that changes to a collection in Swift only affect that specific collection in the local
+function. This is so much nicer than in Java in which modifying a collection might impact any piece of code that refers
+to that collection.
 
 In Java, when passing collections around, there is often a lot of defensive programming to ensure that modifications to
 a collection in one part of the code don't interfere with how that collection is used through a shared reference in
@@ -379,3 +381,28 @@ list.append(4)
 ```
 
 It took a little getting used to, but I like the way that Swift handles the expression of collection mutability.
+
+- Argument labels
+- Class initializer rules
+- Optionals
+- Enumerations
+- Protocols (like Interfaces, but different)
+- Equatable, Hashable, and CustomStringConvertible
+- Extensions
+- Properties
+- Curly braces are required for if and loops
+- Errors
+- No implicit type conversions, especially between integer types
+- Explicit fallthrough
+- guard statement
+- defer statement
+- inout parameters
+- Designated initializers and convenience initializers
+- Failable initializers
+- Associated types
+- private(set)
+- tuples can't conform to protocols: Board, Graphs
+- Protocol types can't conform to protocols: GroupedXCycles
+- XCTest vs Swift Testing
+- Objective-C interop
+- @retroactive attribute: Graphs
