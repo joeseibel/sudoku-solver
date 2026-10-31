@@ -381,28 +381,3 @@ list.append(4)
 ```
 
 It took a little getting used to, but I like the way that Swift handles the expression of collection mutability.
-
-- Argument labels
-- Class initializer rules
-- Optionals
-- Enumerations
-- Protocols (like Interfaces, but different)
-- Equatable, Hashable, and CustomStringConvertible
-- Extensions
-- Properties
-- Curly braces are required for if and loops
-- Errors
-- No implicit type conversions, especially between integer types
-- Explicit fallthrough
-- guard statement
-- defer statement
-- inout parameters
-- Designated initializers and convenience initializers
-- Failable initializers
-- Associated types
-- private(set)
-- tuples can't conform to protocols: Board, Graphs
-- Protocol types can't conform to protocols: GroupedXCycles
-- XCTest vs Swift Testing
-- Objective-C interop
-- @retroactive attribute: Graphs
