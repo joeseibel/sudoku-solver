@@ -270,3 +270,112 @@ extension Board<Cell> {
 ```
 
 Note that assigning a value to `self` is not possible for reference types such as classes.
+
+### Collections Are Value Types
+
+One of the very interesting design decisions that Swift made was for all of the standard collections to be value types.
+This is very different from languages like Java or Python in which collections are reference types. The nice thing about
+this is that changes to a collection in Swift only affect that specific collection in the local function. This is so
+much nicer than in Java in which modifying a collection might impact any piece of code that refers to that collection.
+
+In Java, when passing collections around, there is often a lot of defensive programming to ensure that modifications to
+a collection in one part of the code don't interfere with how that collection is used through a shared reference in
+another part of the code. This is often accomplished through copying a collection or wrapping it in an unmodifiable
+view. Sometimes, this can lead to unnecessarily copying a collection just to ensure that it can't be unexpectedly
+modified. To demonstrate this, let's consider a simple Java class which holds on to a list:
+
+```java
+public class Holder {
+    private final List<String> values;
+
+    public Holder(List<String> values) {
+        this.values = List.copyOf(values);
+    }
+
+    public void printValues() {
+        IO.println(values);
+    }
+}
+```
+
+You'll notice that the constructor in the above example copies the list before assigning it to the `values` field. This
+is important because the list that is passed into the constructor might be modified outside of `Holder` after the call
+to the constructor.
+
+Swift handles this very differently. Let's consider the equivalent example in Swift:
+
+```swift
+struct Holder {
+    let values: [String]
+
+    func printValues() {
+        print(values)
+    }
+}
+```
+
+As you can see in the Swift version, there is no explicit copying of the `values` array. This is because Swift arrays
+are value types and a semantic copy of the array is made when it is passed to `Holder`'s initializer. If other code
+modifies its version of the array after creating a `Holder`, those modifications have no impact on the `values` array in
+`Holder`.
+
+The nice thing about the Swift approach is that it makes it so much easier to reason about the integrity of a
+collection. If one piece of code is holding on to a collection, it is guaranteed that no other piece of code can
+interfere with that collection.
+
+#### Copy-on-Write
+
+Since collections in Swift are value types, couldn't this lead to unnecessary copying of large collections every time
+one is passed around? Isn't this terribly inefficient? Swift uses a mechanism called
+[copy-on-write](https://developer.apple.com/documentation/swift/array#Modifying-Copies-of-Arrays) to ensure that a
+collection is only truly copied when needed. This allows Swift to give the appearance of copying a collection every time
+it is passed around while only actually copying the collection when modifications are being made.
+
+Swift collections such as `Array`s and `String`s are struct types, but the actual data for these collections are stored
+in a reference type inside the struct type. This way, when an array is passed to a function, the fields of the struct
+are copied, but not the data inside. When a collection is passed around to many parts of a codebase, all of those struct
+copies contain references to the same data which has not been copied.
+
+When a modification is performed on a collection, the collection's struct will first check to see if it is the only
+struct with a reference to that particular data. If the collection holds a unique reference, then the modification
+proceeds normally. If the collection does not hold onto a unique reference, then the data is copied at that point and
+the copy is modified.
+
+I really like the way that Swift designed collections as value types and optimized them through the copy-on-write
+mechanism. I think this elegantly solves a collection integrity issue that is found in other languages. It is so nice to
+pass around and modify collections with as much ease as integers or booleans.
+
+#### Collection Mutability
+
+Another way that working with collections in Swift is different from working with collections on the JVM is how
+mutability is expressed. In the JVM world, collection mutability is handled through types, but there is actually a lot
+of variety here. In Java, the `List` interface has all of the methods for modifying a list, but it is possible to create
+an unmodifiable list which will throw an exception when why trying to modify it. Kotlin does it a little differently by
+having the interfaces `List` and `MutableList`, thus clearly expressing mutability in the type system. However, a `List`
+in Kotlin can sometimes be cast to a `MutableList`, thus breaking the contract of the declared type. Scala is the
+strictest in the JVM world by having independent sets of mutable collection types and immutable collection types. In
+Scala, it is not possible to cast from an immutable collection into a mutable one. Even with this variety, since I was
+coming from the JVM world, I was very used to having immutable types for collections. This is important in JVM languages
+since JVM collections are reference types.
+
+Swift does not have different types for mutable and immutable collections. This is not necessary because Swift
+collections are value types and it is not possible mutate a shared collection. However, it is still valuable to express
+collection mutability in order to prevent unwanted mutations within a function. This is done simply with the keywords
+`let` and `var`, just like with other simple types. In this way, a Swift collection declared as a constant with a `let`
+keyword really is constant and can't have its contents change. This is different from Java in which the `final` keyword
+simply means that the reference is constant, but the the contents are not constant. For example, the following is
+perfectly legal in Java:
+
+```java
+final var list = new ArrayList<>(List.of(1, 2, 3));
+list.add(4);
+```
+
+However, the following is not legal in Swift:
+
+```swift
+let list = [1, 2, 3]
+list.append(4)
+```
+
+It took a little getting used to, but I like the way that Swift handles the expression of collection mutability.
