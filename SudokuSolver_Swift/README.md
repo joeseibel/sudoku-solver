@@ -381,3 +381,138 @@ list.append(4)
 ```
 
 It took a little getting used to, but I like the way that Swift handles the expression of collection mutability.
+
+### Enumerations
+
+One of the features that has been gaining popularity in modern programming languages is the support for Algebraic Data
+Types (ADTs). Swift supports ADTs through
+[enumerations](https://docs.swift.org/latest/documentation/the-swift-programming-language/enumerations/), specifically
+enumerations that have associated values. It is the associated values that distinguish the enumeration type in Swift
+from the enumeration type in languages like C or Java. Here is an example enumeration with associated values that comes
+from the Swift book:
+
+```swift
+enum Barcode {
+    case upc(Int, Int, Int, Int)
+    case qrCode(String)
+}
+```
+
+In this example, a `Barcode` is either a `upc` with four integer values or a `qrCode` with one string value. One of the
+nice things about these kinds of enums is that it is very easy to switch on an enum value and extract all of the
+individual values of each case. Here is an example switch that also comes from the Swift book:
+
+```swift
+switch productBarcode {
+case let .upc(numberSystem, manufacturer, product, check):
+    print("UPC: \(numberSystem), \(manufacturer), \(product), \(check).")
+case let .qrCode(productCode):
+    print("QR code: \(productCode).")
+}
+```
+
+Switch statements in Swift must be exhaustive. This means that if a switch statement doesn't handle every case of an
+enum, then the compiler will complain. I love this because I remember the days before Java had ADTs and I wrote a lot of
+code that looked like this:
+
+```java
+if (productBarcode instanceof UPC upc) {
+    System.out.println("UPC: " + upc.getNumberSystem() + ", " + upc.getManufacturer() + ", " + upc.getProduct()
+            + ", " + upc.getCheck() + '.');
+} else if (productBarcode instanceof QRCode qrCode) {
+    System.out.println("QR code: " + qrCode.getProductCode() + '.');
+} else {
+    throw new AssertionError("Unrecognized Barcode: " + productBarcode);
+}
+```
+
+Without ADTs, the compiler can't be sure that the only valid `Barcode` objects are either `UPC` or `QRCode`. This is why
+the above Java example has an else which throws an exception.
+
+#### Individual Cases Are Not Types
+
+Even though I love ADTs and I mostly like the way that Swift implemented them as enums with associated values, I do have
+one significant complaint: the individual cases of a Swift enum are not types themselves. The key downside to this is
+that is not possible to type a parameter, variable, or return type as an individual case. It must be typed as the whole
+enum. To demonstrate some of my complaints, let's consider the `Cell` type which is an ADT in the solver. I originally
+tried to implement `Cell` like this:
+
+```swift
+enum Cell {
+    case solvedCell(row: Int, column: Int, value: SudokuNumber)
+    case unsolvedCell(row: Int, column: Int, candidates: Set<SudokuNumber>)
+    
+    // Additional initializers and methods omitted from example.
+}
+```
+
+The definition of the above `Cell` type is very concise and elegant, but it suffers from two problems. First, since the
+individual cases are not types themselves, it is not possible to pass around a cell object which is known to be a
+`solvedCell` or known to be an `unsolvedCell`. This is very different from how the JVM languages implement ADTs as
+sealed types. In Kotlin, Java, and Scala, I can pass around an `UnsolvedCell` without any problems. One common way that
+I do this is to filter a list of cells to only have `UnsolvedCell` objects such as in the following Kotlin example:
+
+```kotlin
+val unsolvedCells = cells.filterIsInstance<UnsolvedCell>()
+```
+
+In this example, `cells` has the type `List<Cell>` and `unsolvedCells` has the type `List<UnsolvedCell>`. Any further
+operations that I perform on objects from this new list are guaranteed at compile time to be an unsolved cell. Swift
+does not have this advantage. Anytime a `Cell` is passed around in Swift, it is not known at compile time whether it is
+solved or unsolved and a check must be performed.
+
+Another problem with my first attempt at implementing `Cell` in Swift is that there is no way to ensure that validation
+is performed on the associated values. While it is possible to write custom initializers for an enum which do validate
+their inputs, there is no way to force users of an enum to only use an initializer and not directly create an enum
+object. For example, this following code would be legal and there is no way to prevent a user of the `Cell` enum from
+doing this:
+
+```swift
+let badCell = Cell.solvedCell(row: 42, column: 85, value: .one)
+```
+
+The row and column indices of 42 and 85 are invalid, but there is way to prevent such a cell from being created.
+
+Given these two problems, the solution I chose, and one that seems common in the Swift community, was to create the
+struct types `SolvedCell` and `UnsolvedCell` and then have the individual cases contain one of these types. This is an
+abbreviated version of what the `Cell` type looks like now:
+
+```swift
+enum Cell {
+    case solvedCell(SolvedCell)
+    case unsolvedCell(UnsolvedCell)
+}
+
+struct SolvedCell {
+    let row: Int
+    let column: Int
+    let value: SudokuNumber
+    
+    fileprivate init(row: Int, column: Int, value: SudokuNumber) {
+        validateRowAndColumn(row: row, column: column)
+        self.row = row
+        self.column = column
+        self.value = value
+    }
+}
+
+struct UnsolvedCell {
+    let row: Int
+    let column: Int
+    let candidates: Set<SudokuNumber>
+    
+    fileprivate init(row: Int, column: Int, candidates: Set<SudokuNumber>) {
+        validateRowAndColumn(row: row, column: column)
+        precondition(!candidates.isEmpty, "candidates must not be empty.")
+        self.row = row
+        self.column = column
+        self.candidates = candidates
+    }
+}
+```
+
+With the above version of `Cell`, it is no longer possible to create an invalid cell. It is also now possible to pass
+around `SolvedCell` or `UnsolvedCell` objects. However, I do find this solution to be a bit clunky and not as nice as
+working with sealed types in Kotlin. My complaint isn't a major one and I still really enjoy programming in Swift even
+with this clunky workaround, but I do wish that Swift enums with associated values were as nice to work with as the JVM
+sealed types.
