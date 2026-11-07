@@ -516,3 +516,58 @@ around `SolvedCell` or `UnsolvedCell` objects. However, I do find this solution 
 working with sealed types in Kotlin. My complaint isn't a major one and I still really enjoy programming in Swift even
 with this clunky workaround, but I do wish that Swift enums with associated values were as nice to work with as the JVM
 sealed types.
+
+### Optionals
+
+I only have a few things worth mentioning about
+[optional values](https://docs.swift.org/latest/documentation/the-swift-programming-language/thebasics/#Optionals)
+in Swift. For the most part, they work very similar to optional types found in other languages such as Java, Scala, or
+Rust.
+
+One thing worth mentioning is that there is a bit of very nice syntactic sugar that makes working with optionals a
+little easier. This first shows up with how the optional type is written itself. Instead of writing `Optional`, one can
+simply append a question mark (`?`) to a type to mark it as optional. For example, the following two declarations both
+have the same type:
+
+```swift
+let a: Optional<String>
+let b: String?
+```
+
+Another piece of syntactic sugar is that the keyword `nil` is short for the enum case `Optional.none`. In the following
+example, I assign values to both `a` and `b` and the values are equivalent:
+
+```swift
+let a: Optional<String> = .none
+let b: String? = nil
+```
+
+It is also possible to use
+[optional chaining](https://docs.swift.org/latest/documentation/the-swift-programming-language/optionalchaining) to
+access members of an optional value that might be `nil`. This is equivalent to calling the `map` function, but with much
+nicer syntax. To demonstrate this, the following two statements are also equivalent:
+
+```swift
+let a = optionalString.map { $0.uppercased() }
+let b = optionalString?.uppercased()
+```
+
+The last piece of syntactic sugar that I'll talk about is that it is possible to use an actual value when an optional is
+expected without wrapping the actual value in the `Optional.some` case. Like before, the following two statements are
+equivalent such that `a` and `b` have the same value:
+
+```swift
+let a: String? = .some("String Value")
+let b: String? = "String Value"
+```
+
+All of this syntactic sugar makes working with optionals in Swift feel like working with nullable values in Kotlin, but
+under the hood, optionals in Swift work more like optionals in Java, Scala, and Rust.
+
+The last thing I'll say about Swift optionals is that it is not possible for a non-optional to not have a value. For
+example, if a variable has the type `String`, then that variable will always have a valid string value and will never be
+`nil`. This is very different from optionals in the JVM world. Even though Java and Scala both have an optional type, it
+is still possible to assign `null` to any reference type. This means that in much of the JVM world, distinguishing
+between optional and non-optional values is something that must be opted into and is possible to circumvent. However, in
+Swift, distinguishing between optionals and non optionals is required by the language and cannot be worked around. I
+appreciate this as it increases the level of confidence that a successfully compiled Swift program will be correct.
